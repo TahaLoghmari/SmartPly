@@ -1,4 +1,4 @@
-
+namespace backend.DTOs;
 public class EmailMessageDto
 {
     public string Id { get; set; } = string.Empty;

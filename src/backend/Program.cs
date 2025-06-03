@@ -6,7 +6,8 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder
     .AddControllers()
-    .AddAuthentication();
+    .AddAuthentication()
+    .AddErrorHandling();
 
 var app = builder.Build();
 
@@ -22,6 +23,8 @@ app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseExceptionHandler();
 
 app.MapControllers();
 

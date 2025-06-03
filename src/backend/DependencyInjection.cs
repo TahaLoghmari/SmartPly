@@ -6,8 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using backend.Database;
 using backend.Entities;
+using FluentValidation;
+using backend.Middleware;
 
 public static class DependencyInjection
 {
@@ -21,12 +22,30 @@ public static class DependencyInjection
         {
             options.AddPolicy("AllowFrontend", policy =>
             {
-                policy.WithOrigins(["http://localhost:5173", "https://localhost:5173"])
+                policy.WithOrigins("http://localhost:5173")
                       .AllowAnyMethod()
                       .AllowAnyHeader()
                       .AllowCredentials();
             });
         });
+
+        return builder;
+    }
+
+    public static WebApplicationBuilder AddErrorHandling(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
+        builder.Services.AddProblemDetails(options =>
+        {
+            options.CustomizeProblemDetails = context =>
+            {
+                context.ProblemDetails.Extensions.TryAdd("requestId", context.HttpContext.TraceIdentifier);
+            };
+        });
+
+        builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
         return builder;
     }
@@ -68,7 +87,9 @@ public static class DependencyInjection
             });
 
         builder.Services.AddTransient<TokenProvider>();
-        
+        builder.Services.AddTransient<GoogleTokensProvider>();
+        builder.Services.AddTransient<GmailProvider>();
+
         builder.Services.AddHttpClient();
 
         return builder;

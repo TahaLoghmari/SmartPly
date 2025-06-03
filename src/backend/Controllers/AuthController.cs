@@ -1,16 +1,14 @@
-using System.Security.Claims;
-using System.Text.Json;
 using backend.DTOs;
 using backend.Entities;
 using backend.Services;
 using backend.Settings;
-using Google.Apis.Auth;
-using Microsoft.AspNetCore.Authentication;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace backend.Controllers;
 
@@ -22,13 +20,19 @@ public sealed class AuthController(
     TokenProvider tokenProvider,
     ApplicationDbContext applicationDbContext,
     IOptions<JwtAuthOptions> options,
-    IConfiguration configuration) : ControllerBase
+    IConfiguration configuration,
+    GoogleTokensProvider googleTokensProvider ) : ControllerBase
 {
     private readonly JwtAuthOptions _jwtAuthOptions = options.Value;
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterUserDto registerUserDto)
+    public async Task<IActionResult> Register(
+        RegisterUserDto registerUserDto,
+        IValidator<RegisterUserDto> validator,
+        ProblemDetailsFactory problemDetailsFactory)
     {
+        await validator.ValidateAndThrowAsync(registerUserDto);
+
         var user = new User
         {
             UserName = registerUserDto.Email,
@@ -39,14 +43,22 @@ public sealed class AuthController(
 
         if (!result.Succeeded)
         {
-            // add Proper Error Handling Later
-            foreach (var e in result.Errors)
-                ModelState.AddModelError(e.Code, e.Description);
-            return ValidationProblem(ModelState);
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status400BadRequest,
+                title: "Registration failed",
+                detail: "User registration failed due to invalid input or duplicate email."
+            );
+            problem.Extensions.Add("errors", result.Errors.Select(e => new { e.Code, e.Description }));
+            return BadRequest(problem);
         }
 
         TokenRequest tokenRequest = new TokenRequest(user.Id, registerUserDto.Email);
         AccessTokensDto accessTokens = tokenProvider.Create(tokenRequest);
+
+        applicationDbContext.RefreshTokens.RemoveRange(
+            applicationDbContext.RefreshTokens.Where(rt => rt.UserId == user.Id)
+        );
 
         var refreshToken = new RefreshToken
         {
@@ -63,8 +75,12 @@ public sealed class AuthController(
         return Ok(accessTokens);
     }
     [HttpPost("login")]
-    public async Task<ActionResult<AccessTokensDto>> Login(LoginUserDto loginUserDto)
+    public async Task<ActionResult<AccessTokensDto>> Login(
+        LoginUserDto loginUserDto,
+        IValidator<LoginUserDto> validator)
     {
+        await validator.ValidateAndThrowAsync(loginUserDto);
+
         User? user = await userManager.FindByEmailAsync(loginUserDto.Email);
 
         if (user is null || !await userManager.CheckPasswordAsync(user, loginUserDto.Password))
@@ -82,7 +98,11 @@ public sealed class AuthController(
             Token = accessTokens.RefreshToken,
             ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthOptions.RefreshTokenExpirationDays)
         };
-        // you are not removing previous refresh Tokens
+
+        applicationDbContext.RefreshTokens.RemoveRange(
+            applicationDbContext.RefreshTokens.Where(rt => rt.UserId == user.Id)
+        );
+
         applicationDbContext.RefreshTokens.Add(refreshToken);
 
         await applicationDbContext.SaveChangesAsync();
@@ -90,11 +110,14 @@ public sealed class AuthController(
         return Ok(accessTokens);
     }
     [HttpPost("refresh")]
-    public async Task<ActionResult<AccessTokensDto>> Refresh(RefreshTokenDto refreshTokenDto)
+    public async Task<ActionResult<AccessTokensDto>> Refresh()
     {
+
+        var refreshTokenValue = Request.Cookies["refreshToken"];
+
         RefreshToken? refreshToken = await applicationDbContext.RefreshTokens
             .Include(rt => rt.User)
-            .FirstOrDefaultAsync(rt => rt.Token == refreshTokenDto.RefreshToken);
+            .FirstOrDefaultAsync(rt => rt.Token == refreshTokenValue );
 
         if (refreshToken is null)
         {
@@ -121,8 +144,8 @@ public sealed class AuthController(
     public IActionResult GoogleAuthorize()
     {
         var clientId = configuration["Google:ClientId"];
-        var redirectUri = configuration["Google:RedirectUri"];
-        var scope = configuration["Google:Scopes"] ?? "openid profile email https://www.googleapis.com/auth/gmail.readonly";
+        var redirectUri = configuration["Google:RedirectUri"]!;
+        var scope = configuration["Google:Scopes"] !;
         var state = Guid.NewGuid().ToString();
 
         var authUrl = $"https://accounts.google.com/o/oauth2/v2/auth?" +
@@ -138,25 +161,41 @@ public sealed class AuthController(
     }
 
     [HttpGet("google/callback")]
-    public async Task<IActionResult> GoogleCallback(string code, string state, string? error)
+    public async Task<IActionResult> GoogleCallback(
+        string code,
+         string state,
+          string? error,
+          ProblemDetailsFactory problemDetailsFactory)
     {
         if (!string.IsNullOrEmpty(error))
         {
-            return BadRequest($"Google authorization error: {error}");
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status400BadRequest,
+                title: "Google authorization error",
+                detail: error
+            );
+            return BadRequest(problem);
         }
 
         if (string.IsNullOrEmpty(code))
         {
-            return BadRequest("Authorization code is missing");
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status400BadRequest,
+                title: "Authorization code is missing",
+                detail: "No authorization code was provided by Google."
+            );
+            return BadRequest(problem);
         }
 
-        var tokens = await ExchangeCodeForTokens(code);
+        var tokens = await googleTokensProvider.ExchangeCodeForTokens(code);
 
-        var googleUser = await GetGoogleUserInfo(tokens.IdToken);
+        var googleUser = await googleTokensProvider.GetGoogleUserInfo(tokens.IdToken);
 
-        var user = await FindOrCreateUser(googleUser);
+        var user = await googleTokensProvider.FindOrCreateUser(googleUser);
 
-        await StoreGoogleTokens(user, tokens);
+        await googleTokensProvider.StoreGoogleTokens(user, tokens);
 
         var tokenRequest = new TokenRequest(user.Id, user.Email!);
         var accessTokens = tokenProvider.Create(tokenRequest);
@@ -172,144 +211,8 @@ public sealed class AuthController(
         applicationDbContext.RefreshTokens.Add(refreshToken);
         await applicationDbContext.SaveChangesAsync();
 
-        var frontendUrl = $"http://localhost:5173?" +
-                                $"access_token={accessTokens.AccessToken}&" +
-                                $"refresh_token={accessTokens.RefreshToken}";
+        var frontendUrl = $"http://localhost:5173";
+    
         return Redirect(frontendUrl);
-
-    }
-    private async Task<GoogleTokenResponse> ExchangeCodeForTokens(string code)
-    {
-        var clientId = configuration["Google:ClientId"];
-        var clientSecret = configuration["Google:ClientSecret"];
-        var redirectUri = configuration["Google:RedirectUri"];
-
-        using var httpClient = new HttpClient();
-
-        var tokenRequest = new FormUrlEncodedContent(new[]
-        {
-            new KeyValuePair<string, string>("code", code),
-            new KeyValuePair<string, string>("client_id", clientId!),
-            new KeyValuePair<string, string>("client_secret", clientSecret!),
-            new KeyValuePair<string, string>("redirect_uri", redirectUri!),
-            new KeyValuePair<string, string>("grant_type", "authorization_code")
-        });
-
-        var response = await httpClient.PostAsync("https://oauth2.googleapis.com/token", tokenRequest);
-        var responseContent = await response.Content.ReadAsStringAsync();
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception($"Failed to exchange code for tokens: {responseContent}");
-        }
-
-        var tokenResponse = JsonSerializer.Deserialize<GoogleTokenResponse>(responseContent, new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
-        });
-
-        return tokenResponse!;
-    }
-
-    private async Task<GoogleUserInfo> GetGoogleUserInfo(string idToken)
-    {
-        var payload = await GoogleJsonWebSignature.ValidateAsync(idToken);
-
-        return new GoogleUserInfo
-        {
-            Id = payload.Subject,
-            Email = payload.Email,
-            Name = payload.Name,
-            Picture = payload.Picture,
-            GivenName = payload.GivenName,
-            FamilyName = payload.FamilyName
-        };
-    }
-
-    private async Task StoreGoogleTokens(User user, GoogleTokenResponse tokens)
-    {
-        // Store access token
-        await userManager.SetAuthenticationTokenAsync(
-            user,
-            "Google",
-            "access_token",
-            tokens.AccessToken);
-
-        // Store refresh token if available
-        if (!string.IsNullOrEmpty(tokens.RefreshToken))
-        {
-            await userManager.SetAuthenticationTokenAsync(
-                user,
-                "Google",
-                "refresh_token",
-                tokens.RefreshToken);
-        }
-
-        // Store token expiration (optional but recommended)
-        var expiresAt = DateTime.UtcNow.AddSeconds(tokens.ExpiresIn);
-        await userManager.SetAuthenticationTokenAsync(
-            user,
-            "Google",
-            "expires_at",
-            expiresAt.ToString("O"));
-
-        // Store ID token (optional)
-        await userManager.SetAuthenticationTokenAsync(
-            user,
-            "Google",
-            "id_token",
-            tokens.IdToken);
-    }
-
-    private async Task<User> FindOrCreateUser(GoogleUserInfo googleUser)
-    {
-        var loginInfo = new UserLoginInfo("Google", googleUser.Id, "Google");
-
-        var user = await userManager.FindByLoginAsync(loginInfo.LoginProvider, loginInfo.ProviderKey);
-
-        if (user != null)
-        {
-            if (user.Email != googleUser.Email)
-            {
-                user.Email = googleUser.Email;
-                user.UserName = googleUser.Email;
-                await userManager.UpdateAsync(user);
-            }
-            return user;
-        }
-
-        user = await userManager.FindByEmailAsync(googleUser.Email);
-
-        if (user != null)
-        {
-            var addLoginResult = await userManager.AddLoginAsync(user, loginInfo);
-            if (!addLoginResult.Succeeded)
-            {
-                throw new Exception($"Failed to link Google account: {string.Join(", ", addLoginResult.Errors.Select(e => e.Description))}");
-            }
-            return user;
-        }
-
-        user = new User
-        {
-            UserName = googleUser.Email,
-            Email = googleUser.Email,
-            EmailConfirmed = true
-        };
-
-        var createResult = await userManager.CreateAsync(user);
-        if (!createResult.Succeeded)
-        {
-            throw new Exception($"Failed to create user: {string.Join(", ", createResult.Errors.Select(e => e.Description))}");
-        }
-
-        var linkResult = await userManager.AddLoginAsync(user, loginInfo);
-        if (!linkResult.Succeeded)
-        {
-            await userManager.DeleteAsync(user);
-            throw new Exception($"Failed to link Google account to new user: {string.Join(", ", linkResult.Errors.Select(e => e.Description))}");
-        }
-
-        return user;
     }
 }
