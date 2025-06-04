@@ -1,115 +1,43 @@
 using backend.DTOs;
 using backend.Entities;
+using backend.Mappings;
 using backend.Services;
 using backend.Settings;
-using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 namespace backend.Controllers;
 
 [ApiController]
 [Route("auth")]
-[AllowAnonymous]
 public sealed class AuthController(
     UserManager<User> userManager,
-    TokenProvider tokenProvider,
-    ApplicationDbContext applicationDbContext,
     IOptions<JwtAuthOptions> options,
     IConfiguration configuration,
     GoogleTokensProvider googleTokensProvider,
-    CookieService cookieService ) : ControllerBase
+    CookieService cookieService,
+    TokenManagementService tokenManagementService) : ControllerBase
 {
     private readonly JwtAuthOptions _jwtAuthOptions = options.Value;
 
-    [HttpPost("register")]
-    public async Task<IActionResult> Register(
-        RegisterUserDto registerUserDto,
-        IValidator<RegisterUserDto> validator,
-        ProblemDetailsFactory problemDetailsFactory)
-    {
-        await validator.ValidateAndThrowAsync(registerUserDto);
-
-        var user = new User
-        {
-            UserName = registerUserDto.Email,
-            Email = registerUserDto.Email
-        };
-
-        IdentityResult result = await userManager.CreateAsync(user, registerUserDto.Password);
-
-        if (!result.Succeeded)
-        {
-            var problem = problemDetailsFactory.CreateProblemDetails(
-                HttpContext,
-                StatusCodes.Status400BadRequest,
-                title: "Registration failed",
-                detail: "User registration failed due to invalid input or duplicate email."
-            );
-            problem.Extensions.Add("errors", result.Errors.Select(e => new { e.Code, e.Description }));
-            return BadRequest(problem);
-        }
-
-        AccessTokensDto accessTokens = await tokenProvider.CreateAndStoreTokens(user.Id, registerUserDto.Email);
-
-        cookieService.StoreCookies(_jwtAuthOptions, Response, accessTokens);
-        
-        return Ok(new { message = "Registration successful" });
-    }
-    [HttpPost("login")]
-    public async Task<IActionResult> Login(
-        LoginUserDto loginUserDto,
-        IValidator<LoginUserDto> validator)
-    {
-        await validator.ValidateAndThrowAsync(loginUserDto);
-
-        User? user = await userManager.FindByEmailAsync(loginUserDto.Email);
-
-        if (user is null || !await userManager.CheckPasswordAsync(user, loginUserDto.Password))
-        {
-            return Unauthorized();
-        }
-
-        AccessTokensDto accessTokens = await tokenProvider.CreateAndStoreTokens(user.Id, loginUserDto.Email);
-
-        cookieService.StoreCookies(_jwtAuthOptions, Response, accessTokens);
-
-        return Ok(new { message = "Login successful" });
-    }
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh()
     {
-
         var refreshTokenValue = Request.Cookies["refreshToken"];
 
-        RefreshToken? refreshToken = await applicationDbContext.RefreshTokens
-            .Include(rt => rt.User)
-            .FirstOrDefaultAsync(rt => rt.Token == refreshTokenValue );
-
-        if (refreshToken is null)
+        if (string.IsNullOrEmpty(refreshTokenValue))
         {
             return Unauthorized();
         }
 
-        if (refreshToken.ExpiresAtUtc < DateTime.UtcNow)
-        {
-            return Unauthorized();
-        }
-
-        var tokenRequest = new TokenRequest(refreshToken.User.Id, refreshToken.User.Email!);
-        AccessTokensDto accessTokens = tokenProvider.Create(tokenRequest);
-
-        cookieService.StoreCookies(_jwtAuthOptions, Response, accessTokens);
-
-        refreshToken.Token = accessTokens.RefreshToken;
-        refreshToken.ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthOptions.RefreshTokenExpirationDays);
-
-        await applicationDbContext.SaveChangesAsync();
-
+        AccessTokensDto accessTokens = await tokenManagementService.RefreshUserTokens(refreshTokenValue);
+        
+        cookieService.AddCookies(Response, accessTokens, _jwtAuthOptions);
+        
         return Ok(new { message = "Token refreshed successfully" });
     }
 
@@ -118,7 +46,7 @@ public sealed class AuthController(
     {
         var clientId = configuration["Google:ClientId"];
         var redirectUri = configuration["Google:RedirectUri"]!;
-        var scope = configuration["Google:Scopes"] !;
+        var scope = configuration["Google:Scopes"]!;
         var state = Guid.NewGuid().ToString();
 
         var authUrl = $"https://accounts.google.com/o/oauth2/v2/auth?" +
@@ -136,9 +64,8 @@ public sealed class AuthController(
     [HttpGet("google/callback")]
     public async Task<IActionResult> GoogleCallback(
         string code,
-         string state,
-          string? error,
-          ProblemDetailsFactory problemDetailsFactory)
+        string? error,
+        ProblemDetailsFactory problemDetailsFactory)
     {
         if (!string.IsNullOrEmpty(error))
         {
@@ -163,18 +90,51 @@ public sealed class AuthController(
         }
 
         var tokens = await googleTokensProvider.ExchangeCodeForTokens(code);
-
         var googleUser = await googleTokensProvider.GetGoogleUserInfo(tokens.IdToken);
         var user = await googleTokensProvider.FindOrCreateUser(googleUser);
 
         await googleTokensProvider.StoreGoogleTokens(user, tokens);
 
-        AccessTokensDto accessTokens = await tokenProvider.CreateAndStoreTokens(user.Id, user.Email!);
+        AccessTokensDto accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, user.Email!);
 
-        cookieService.StoreCookies(_jwtAuthOptions, Response, accessTokens);
+        cookieService.AddCookies(Response, accessTokens, _jwtAuthOptions);
 
-        var frontendUrl = $"http://localhost:5173";
-    
+        var frontendUrl = "http://localhost:5173";
         return Redirect(frontendUrl);
+    }
+
+    [HttpGet("me")]
+    [Authorize]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+
+        var user = await userManager.FindByIdAsync(userId);
+
+        if (user is null) return NotFound();
+        
+        var userDto = user.toUserDto();
+
+        return Ok(userDto);
+    }
+
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        var refreshTokenValue = Request.Cookies["refreshToken"];
+
+        if (!string.IsNullOrEmpty(refreshTokenValue))
+        {
+            await tokenManagementService.RemoveRefreshToken(refreshTokenValue);
+        }
+
+        cookieService.RemoveCookies(Response);
+
+        return Ok(new { message = "Logged out successfully" });
     }
 }

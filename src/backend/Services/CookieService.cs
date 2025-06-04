@@ -5,28 +5,50 @@ namespace backend.Services;
 
 public sealed class CookieService
 {
-    public void StoreCookies(
-        JwtAuthOptions jwtAuthOptions,
-        HttpResponse Response,
-        AccessTokensDto accessTokens)
+    private CookieOptions CreateCookieOptions(JwtAuthOptions jwtAuthOptions, bool isDevelopment = true)
     {
-        var cookieOptions = new CookieOptions
+        return new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
+            Secure = !isDevelopment, 
+            SameSite = isDevelopment ? SameSiteMode.Lax : SameSiteMode.Strict, 
             Expires = DateTime.UtcNow.AddMinutes(jwtAuthOptions.ExpirationInMinutes)
         };
-
-        var refreshCookieOptions = new CookieOptions
+    }
+    
+    private CookieOptions CreateRefreshCookieOptions(JwtAuthOptions jwtAuthOptions, bool isDevelopment = true)
+    {
+        return new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
+            Secure = !isDevelopment, 
+            SameSite = isDevelopment ? SameSiteMode.Lax : SameSiteMode.Strict, 
             Expires = DateTime.UtcNow.AddDays(jwtAuthOptions.RefreshTokenExpirationDays)
         };
+    }
+    
+    public void AddCookies(
+        HttpResponse Response,
+        AccessTokensDto accessTokens,
+        JwtAuthOptions jwtAuthOptions,
+        bool isDevelopment = true) 
+    {
+        RemoveCookies(Response, isDevelopment);
+        Response.Cookies.Append("accessToken", accessTokens.AccessToken, CreateCookieOptions(jwtAuthOptions, isDevelopment));
+        Response.Cookies.Append("refreshToken", accessTokens.RefreshToken, CreateRefreshCookieOptions(jwtAuthOptions, isDevelopment));
+    }
+    
+    public void RemoveCookies(HttpResponse Response, bool isDevelopment = true)
+    {
+        var expiredOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = !isDevelopment,
+            SameSite = isDevelopment ? SameSiteMode.Lax : SameSiteMode.Strict,
+            Expires = DateTime.UtcNow.AddDays(-1)
+        };
 
-        Response.Cookies.Append("accessToken", accessTokens.AccessToken, cookieOptions);
-        Response.Cookies.Append("refreshToken", accessTokens.RefreshToken, refreshCookieOptions);
+        Response.Cookies.Append("accessToken", "", expiredOptions);
+        Response.Cookies.Append("refreshToken", "", expiredOptions);
     }
 }
