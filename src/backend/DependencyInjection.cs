@@ -86,12 +86,18 @@ public static class DependencyInjection
                 options.ClientSecret = builder.Configuration["Google:ClientSecret"]!;
             });
 
-        builder.Services.AddTransient<TokenProvider>();
-        builder.Services.AddTransient<GoogleTokensProvider>();
-        builder.Services.AddTransient<GmailProvider>();
-
         builder.Services.AddHttpClient();
 
         return builder;
+    }
+
+    public static WebApplicationBuilder AddServices(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddTransient<TokenProvider>();
+        builder.Services.AddTransient<GoogleTokensProvider>();
+        builder.Services.AddTransient<GmailProvider>();
+        builder.Services.AddTransient<CookieService>();
+
+        return builder; 
     }
 }

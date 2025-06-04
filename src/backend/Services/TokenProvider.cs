@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using backend.DTOs;
+using backend.Entities;
 using backend.Settings;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -9,7 +10,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Services;
 
-public sealed class TokenProvider(IOptions<JwtAuthOptions> options)
+public sealed class TokenProvider(
+    IOptions<JwtAuthOptions> options,
+    ApplicationDbContext applicationDbContext)
 {
     public readonly JwtAuthOptions _jwtAuthOptions = options.Value;
     public AccessTokensDto Create(TokenRequest tokenRequest)
@@ -54,5 +57,27 @@ public sealed class TokenProvider(IOptions<JwtAuthOptions> options)
         byte[] randomBytes = RandomNumberGenerator.GetBytes(32);
 
         return Convert.ToBase64String(randomBytes);
+    }
+    public async Task<AccessTokensDto> CreateAndStoreTokens(string id, string email)
+    {
+        TokenRequest tokenRequest = new TokenRequest(id, email);
+        AccessTokensDto accessTokens = Create(tokenRequest);
+
+        applicationDbContext.RefreshTokens.RemoveRange(
+            applicationDbContext.RefreshTokens.Where(rt => rt.UserId == id)
+        );
+
+        var refreshToken = new RefreshToken
+        {
+            Id = Guid.CreateVersion7(),
+            UserId = id,
+            Token = accessTokens.RefreshToken,
+            ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthOptions.RefreshTokenExpirationDays)
+        };
+
+        applicationDbContext.RefreshTokens.Add(refreshToken);
+        await applicationDbContext.SaveChangesAsync();
+
+        return accessTokens;
     }
 }

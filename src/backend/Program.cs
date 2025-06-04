@@ -7,7 +7,8 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder
     .AddControllers()
     .AddAuthentication()
-    .AddErrorHandling();
+    .AddErrorHandling()
+    .AddServices();
 
 var app = builder.Build();
 

@@ -21,7 +21,8 @@ public sealed class AuthController(
     ApplicationDbContext applicationDbContext,
     IOptions<JwtAuthOptions> options,
     IConfiguration configuration,
-    GoogleTokensProvider googleTokensProvider ) : ControllerBase
+    GoogleTokensProvider googleTokensProvider,
+    CookieService cookieService ) : ControllerBase
 {
     private readonly JwtAuthOptions _jwtAuthOptions = options.Value;
 
@@ -53,29 +54,14 @@ public sealed class AuthController(
             return BadRequest(problem);
         }
 
-        TokenRequest tokenRequest = new TokenRequest(user.Id, registerUserDto.Email);
-        AccessTokensDto accessTokens = tokenProvider.Create(tokenRequest);
+        AccessTokensDto accessTokens = await tokenProvider.CreateAndStoreTokens(user.Id, registerUserDto.Email);
 
-        applicationDbContext.RefreshTokens.RemoveRange(
-            applicationDbContext.RefreshTokens.Where(rt => rt.UserId == user.Id)
-        );
-
-        var refreshToken = new RefreshToken
-        {
-            Id = Guid.CreateVersion7(),
-            UserId = user.Id,
-            Token = accessTokens.RefreshToken,
-            ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthOptions.RefreshTokenExpirationDays)
-        };
-
-        applicationDbContext.RefreshTokens.Add(refreshToken);
-
-        await applicationDbContext.SaveChangesAsync();
-
-        return Ok(accessTokens);
+        cookieService.StoreCookies(_jwtAuthOptions, Response, accessTokens);
+        
+        return Ok(new { message = "Registration successful" });
     }
     [HttpPost("login")]
-    public async Task<ActionResult<AccessTokensDto>> Login(
+    public async Task<IActionResult> Login(
         LoginUserDto loginUserDto,
         IValidator<LoginUserDto> validator)
     {
@@ -88,29 +74,14 @@ public sealed class AuthController(
             return Unauthorized();
         }
 
-        TokenRequest tokenRequest = new TokenRequest(user.Id, loginUserDto.Email);
-        AccessTokensDto accessTokens = tokenProvider.Create(tokenRequest);
+        AccessTokensDto accessTokens = await tokenProvider.CreateAndStoreTokens(user.Id, loginUserDto.Email);
 
-        var refreshToken = new RefreshToken
-        {
-            Id = Guid.CreateVersion7(),
-            UserId = user.Id,
-            Token = accessTokens.RefreshToken,
-            ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthOptions.RefreshTokenExpirationDays)
-        };
+        cookieService.StoreCookies(_jwtAuthOptions, Response, accessTokens);
 
-        applicationDbContext.RefreshTokens.RemoveRange(
-            applicationDbContext.RefreshTokens.Where(rt => rt.UserId == user.Id)
-        );
-
-        applicationDbContext.RefreshTokens.Add(refreshToken);
-
-        await applicationDbContext.SaveChangesAsync();
-
-        return Ok(accessTokens);
+        return Ok(new { message = "Login successful" });
     }
     [HttpPost("refresh")]
-    public async Task<ActionResult<AccessTokensDto>> Refresh()
+    public async Task<IActionResult> Refresh()
     {
 
         var refreshTokenValue = Request.Cookies["refreshToken"];
@@ -132,12 +103,14 @@ public sealed class AuthController(
         var tokenRequest = new TokenRequest(refreshToken.User.Id, refreshToken.User.Email!);
         AccessTokensDto accessTokens = tokenProvider.Create(tokenRequest);
 
+        cookieService.StoreCookies(_jwtAuthOptions, Response, accessTokens);
+
         refreshToken.Token = accessTokens.RefreshToken;
         refreshToken.ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthOptions.RefreshTokenExpirationDays);
 
         await applicationDbContext.SaveChangesAsync();
 
-        return Ok(accessTokens);
+        return Ok(new { message = "Token refreshed successfully" });
     }
 
     [HttpGet("google/authorize")]
@@ -192,24 +165,13 @@ public sealed class AuthController(
         var tokens = await googleTokensProvider.ExchangeCodeForTokens(code);
 
         var googleUser = await googleTokensProvider.GetGoogleUserInfo(tokens.IdToken);
-
         var user = await googleTokensProvider.FindOrCreateUser(googleUser);
 
         await googleTokensProvider.StoreGoogleTokens(user, tokens);
 
-        var tokenRequest = new TokenRequest(user.Id, user.Email!);
-        var accessTokens = tokenProvider.Create(tokenRequest);
+        AccessTokensDto accessTokens = await tokenProvider.CreateAndStoreTokens(user.Id, user.Email!);
 
-        var refreshToken = new RefreshToken
-        {
-            Id = Guid.CreateVersion7(),
-            UserId = user.Id,
-            Token = accessTokens.RefreshToken,
-            ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthOptions.RefreshTokenExpirationDays)
-        };
-
-        applicationDbContext.RefreshTokens.Add(refreshToken);
-        await applicationDbContext.SaveChangesAsync();
+        cookieService.StoreCookies(_jwtAuthOptions, Response, accessTokens);
 
         var frontendUrl = $"http://localhost:5173";
     
