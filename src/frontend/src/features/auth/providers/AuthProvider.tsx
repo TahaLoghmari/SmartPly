@@ -1,5 +1,7 @@
 // This file manages authentication state and provides auth functions to the app via React Context
 // It uses authApi for HTTP requests and updates state based on responses
+// it's for  API orchestration and workflows and  Application state management
+
 import { createContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import { authApi } from "../api/authApi";
@@ -18,7 +20,7 @@ const initialState: AuthState = {
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -29,7 +31,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     authApi
       .getCurrentUser()
       .then((user) =>
-        setState({ user, isAuthenticated: true, isLoading: false, error: null })
+        setState({
+          user,
+          isAuthenticated: true,
+          isLoading: false,
+          error: null,
+        }),
       )
       .catch(() => setState({ ...initialState, isLoading: false }));
   }, []);
@@ -45,6 +52,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         ...s,
         isLoading: false,
         error: error.title || error.message || "Login failed",
+      }));
+      throw error;
+    }
+  };
+
+  const googleLogin = async () => {
+    setState((s) => ({ ...s, isLoading: true, error: null }));
+    try {
+      await authApi.googleLogin();
+      const user = await authApi.getCurrentUser();
+      setState({ user, isAuthenticated: true, isLoading: false, error: null });
+    } catch (error: any) {
+      setState((s) => ({
+        ...s,
+        isLoading: false,
+        error: error.title || error.message || "Google login failed",
       }));
       throw error;
     }
@@ -87,6 +110,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value: AuthContextType = {
     ...state,
     login,
+    googleLogin,
     register,
     logout,
     refreshAuth,

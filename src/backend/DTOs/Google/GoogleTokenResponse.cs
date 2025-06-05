@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace backend.DTOs ;
 
 public sealed record GoogleTokenResponse

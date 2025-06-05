@@ -1,18 +1,12 @@
-import type {
-  LoginUserDto,
-  RegisterUserDto,
-  AccessTokensDto,
-  User,
-} from "../types";
+import type { LoginUserDto, RegisterUserDto, User } from "../types";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 async function request<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<T> {
-
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -22,8 +16,8 @@ async function request<T>(
   if (!response.ok) {
     let error = "An error occurred";
     try {
-      const data = await response.json();
-      error = data.title || data.message || error;
+      const data = await response.text();
+      error = data || error;
     } catch {}
     throw new Error(error);
   }
@@ -37,25 +31,33 @@ async function request<T>(
 
 export const authApi = {
   login(credentials: LoginUserDto) {
-    return request<AccessTokensDto>("/auth/login", {
+    return request<{ message: string }>("/auth/login", {
       method: "POST",
       body: JSON.stringify(credentials),
     });
   },
 
   register(credentials: RegisterUserDto) {
-    return request<AccessTokensDto>("/auth/register", {
+    return request<{ message: string }>("/auth/register", {
       method: "POST",
       body: JSON.stringify(credentials),
     });
   },
 
+  async googleLogin() {
+    const response = await request<{ authorizationUrl: string }>(
+      "/auth/google/authorize",
+    );
+    window.location.href = response.authorizationUrl;
+    return { message: "Redirecting to Google..." };
+  },
+
   refresh() {
-    return request<AccessTokensDto>("/auth/refresh", { method: "POST" });
+    return request<{ message: string }>("/auth/refresh", { method: "POST" });
   },
 
   logout() {
-    return request<void>("/auth/logout", { method: "POST" });
+    return request<{ message: string }>("/auth/logout", { method: "POST" });
   },
 
   getCurrentUser() {
@@ -63,4 +65,4 @@ export const authApi = {
   },
 };
 
-// this file declares the API Calls without state management 
+// this file declares the API Calls without state management

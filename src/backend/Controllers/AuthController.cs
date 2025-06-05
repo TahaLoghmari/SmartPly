@@ -3,6 +3,7 @@ using backend.Entities;
 using backend.Mappings;
 using backend.Services;
 using backend.Settings;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,61 @@ public sealed class AuthController(
     TokenManagementService tokenManagementService) : ControllerBase
 {
     private readonly JwtAuthOptions _jwtAuthOptions = options.Value;
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register(
+        RegisterUserDto registerUserDto,
+        IValidator<RegisterUserDto> validator,
+        ProblemDetailsFactory problemDetailsFactory)
+    {
+        await validator.ValidateAndThrowAsync(registerUserDto);
+
+        var user = new User
+        {
+            UserName = registerUserDto.Email,
+            Email = registerUserDto.Email
+        };
+
+        IdentityResult result = await userManager.CreateAsync(user, registerUserDto.Password);
+
+        if (!result.Succeeded)
+        {
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status400BadRequest,
+                title: "Registration failed",
+                detail: "User registration failed due to invalid input or duplicate email."
+            );
+            problem.Extensions.Add("errors", result.Errors.Select(e => new { e.Code, e.Description }));
+            return BadRequest(problem);
+        }
+
+        AccessTokensDto accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, registerUserDto.Email);
+
+        cookieService.AddCookies(Response, accessTokens, _jwtAuthOptions);
+        
+        return Ok(new { message = "Registration successful" });
+    }
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(
+        LoginUserDto loginUserDto,
+        IValidator<LoginUserDto> validator)
+    {
+        await validator.ValidateAndThrowAsync(loginUserDto);
+
+        User? user = await userManager.FindByEmailAsync(loginUserDto.Email);
+
+        if (user is null || !await userManager.CheckPasswordAsync(user, loginUserDto.Password))
+        {
+            return Unauthorized();
+        }
+
+        AccessTokensDto accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, loginUserDto.Email);
+
+        cookieService.AddCookies(Response, accessTokens, _jwtAuthOptions);
+
+        return Ok(new { message = "Login successful" });
+    }
 
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh()
@@ -63,22 +119,21 @@ public sealed class AuthController(
 
     [HttpGet("google/callback")]
     public async Task<IActionResult> GoogleCallback(
-        string code,
-        string? error,
+        [FromQuery] GoogleCallbackDto googleCallbackDto,
         ProblemDetailsFactory problemDetailsFactory)
     {
-        if (!string.IsNullOrEmpty(error))
+        if (!string.IsNullOrEmpty(googleCallbackDto.error))
         {
             var problem = problemDetailsFactory.CreateProblemDetails(
                 HttpContext,
                 StatusCodes.Status400BadRequest,
                 title: "Google authorization error",
-                detail: error
+                detail: googleCallbackDto.error
             );
             return BadRequest(problem);
         }
 
-        if (string.IsNullOrEmpty(code))
+        if (string.IsNullOrEmpty(googleCallbackDto.code))
         {
             var problem = problemDetailsFactory.CreateProblemDetails(
                 HttpContext,
@@ -89,8 +144,10 @@ public sealed class AuthController(
             return BadRequest(problem);
         }
 
-        var tokens = await googleTokensProvider.ExchangeCodeForTokens(code);
+        var tokens = await googleTokensProvider.ExchangeCodeForTokens(googleCallbackDto.code);
+        // now I Have the access Token and refresh Token for Google's APIs
         var googleUser = await googleTokensProvider.GetGoogleUserInfo(tokens.IdToken);
+        // the idToken is validated
         var user = await googleTokensProvider.FindOrCreateUser(googleUser);
 
         await googleTokensProvider.StoreGoogleTokens(user, tokens);

@@ -38,6 +38,10 @@ public sealed class GoogleTokensProvider(UserManager<User> userManager, IConfigu
             PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
         });
 
+        Console.WriteLine($"Access Token: {tokenResponse?.AccessToken}");
+        Console.WriteLine($"ID Token: {tokenResponse?.IdToken}");
+        Console.WriteLine($"Refresh Token: {tokenResponse?.RefreshToken}");
+
         return tokenResponse!;
     }
 

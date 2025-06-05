@@ -12,7 +12,7 @@ public sealed class TokenManagementService(
     TokenProvider tokenProvider
 )
 {
-    private readonly JwtAuthOptions _jwtAuthOptions = options.Value; // ✅ Make private
+    private readonly JwtAuthOptions _jwtAuthOptions = options.Value;
 
     public async Task<AccessTokensDto> CreateAndStoreTokens(string userId, string email)
     {
