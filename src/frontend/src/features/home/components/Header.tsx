@@ -1,4 +1,3 @@
-import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../auth/hooks/useAuth";
@@ -23,7 +22,6 @@ export default function Header() {
         >
           Login
         </Link>
-        <ModeToggle />
         <Link to={isAuthenticated ? "/app" : "/login"}>
           <Button className="psm:flex hidden cursor-pointer">
             Try it for free

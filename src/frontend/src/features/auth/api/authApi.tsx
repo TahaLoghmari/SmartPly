@@ -1,7 +1,7 @@
 import type { LoginUserDto, RegisterUserDto, User } from "../types";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+  import.meta.env.VITE_API_BASE_URL || "https://localhost:5001";
 
 async function request<T>(
   endpoint: string,
@@ -48,7 +48,11 @@ export const authApi = {
     const response = await request<{ authorizationUrl: string }>(
       "/auth/google/authorize",
     );
-    window.location.href = response.authorizationUrl;
+    window.open(
+      response.authorizationUrl,
+      "google-oauth-popup",
+      "width=500,height=600,top=100,left=100,noopener,noreferrer",
+    );
     return { message: "Redirecting to Google..." };
   },
 

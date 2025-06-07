@@ -20,13 +20,14 @@ public static class DependencyInjection
 
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowFrontend", policy =>
-            {
-                policy.WithOrigins("http://localhost:5173")
-                      .AllowAnyMethod()
-                      .AllowAnyHeader()
-                      .AllowCredentials();
-            });
+            options.AddPolicy("AllowReactApp",
+                policy =>
+                {
+                    policy.WithOrigins("https://localhost:5173", "http://localhost:5173")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                });
         });
 
         return builder;

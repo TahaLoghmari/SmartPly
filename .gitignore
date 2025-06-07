@@ -62,6 +62,7 @@ src/frontend/.env
 .env.production
 .env.staging
 src/backend/appsettings.Development.json
+src/backend/appsettings.json
 
 # OS generated files
 .DS_Store

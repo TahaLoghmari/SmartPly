@@ -61,7 +61,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setState((s) => ({ ...s, isLoading: true, error: null }));
     try {
       await authApi.googleLogin();
+      console.log("success");
       const user = await authApi.getCurrentUser();
+      console.log("user", user);
       setState({ user, isAuthenticated: true, isLoading: false, error: null });
     } catch (error: any) {
       setState((s) => ({

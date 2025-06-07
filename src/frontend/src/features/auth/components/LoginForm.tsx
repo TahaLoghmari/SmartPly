@@ -68,7 +68,7 @@ export function LoginForm() {
               <FormDescription>
                 <Link
                   to="/"
-                  className="font-semibold text-[#2563EB] underline decoration-solid dark:text-[#60A5FA]"
+                  className="font-semibold text-[#2a8176] underline decoration-solid"
                 >
                   Forgot your password?
                 </Link>
@@ -89,7 +89,7 @@ export function LoginForm() {
           Don't have an account ?{" "}
           <Link
             to="/register"
-            className="font-semibold text-[#2563EB] underline decoration-solid dark:text-[#60A5FA]"
+            className="font-semibold text-[#2a8176] underline decoration-solid "
           >
             Register now
           </Link>

@@ -114,7 +114,7 @@ public sealed class AuthController(
                      $"access_type=offline&" +
                      $"prompt=consent";
 
-        return Ok(new { AuthorizationUrl = authUrl });
+        return Ok(new { authorizationUrl = authUrl });
     }
 
     [HttpGet("google/callback")]
@@ -156,8 +156,16 @@ public sealed class AuthController(
 
         cookieService.AddCookies(Response, accessTokens, _jwtAuthOptions);
 
-        var frontendUrl = "http://localhost:5173";
-        return Redirect(frontendUrl);
+        return Content(@"
+                        <html>
+                          <body>
+                            <script>
+                              window.opener && window.opener.postMessage('google-auth-success', '*');
+                              window.close();
+                            </script>
+                            <p>Authentication successful. You can close this window.</p>
+                          </body>
+                        </html>", "text/html");
     }
 
     [HttpGet("me")]
