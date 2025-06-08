@@ -18,8 +18,6 @@ if ( app.Environment.IsDevelopment() )
     await app.ApplyMigrationsAsync();
 }
 
-app.UseHttpsRedirection();
-
 app.UseCors("AllowReactApp");
 
 app.UseAuthentication();

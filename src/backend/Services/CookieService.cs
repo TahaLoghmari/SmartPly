@@ -5,24 +5,24 @@ namespace backend.Services;
 
 public sealed class CookieService
 {
-    private CookieOptions CreateCookieOptions(JwtAuthOptions jwtAuthOptions, bool isDevelopment = true)
+    private CookieOptions CreateCookieOptions(JwtAuthOptions jwtAuthOptions)
     {
         return new CookieOptions
         {
             HttpOnly = true,
-            Secure = !isDevelopment, 
-            SameSite = isDevelopment ? SameSiteMode.Lax : SameSiteMode.Strict, 
+            Secure = false, 
+            SameSite = SameSiteMode.Lax, 
             Expires = DateTime.UtcNow.AddMinutes(jwtAuthOptions.ExpirationInMinutes)
         };
     }
     
-    private CookieOptions CreateRefreshCookieOptions(JwtAuthOptions jwtAuthOptions, bool isDevelopment = true)
+    private CookieOptions CreateRefreshCookieOptions(JwtAuthOptions jwtAuthOptions)
     {
         return new CookieOptions
         {
             HttpOnly = true,
-            Secure = !isDevelopment, 
-            SameSite = isDevelopment ? SameSiteMode.Lax : SameSiteMode.Strict, 
+            Secure = false, 
+            SameSite = SameSiteMode.Lax, 
             Expires = DateTime.UtcNow.AddDays(jwtAuthOptions.RefreshTokenExpirationDays)
         };
     }
@@ -30,21 +30,21 @@ public sealed class CookieService
     public void AddCookies(
         HttpResponse Response,
         AccessTokensDto accessTokens,
-        JwtAuthOptions jwtAuthOptions,
-        bool isDevelopment = true) 
+        JwtAuthOptions jwtAuthOptions
+        ) 
     {
-        RemoveCookies(Response, isDevelopment);
-        Response.Cookies.Append("accessToken", accessTokens.AccessToken, CreateCookieOptions(jwtAuthOptions, isDevelopment));
-        Response.Cookies.Append("refreshToken", accessTokens.RefreshToken, CreateRefreshCookieOptions(jwtAuthOptions, isDevelopment));
+        RemoveCookies(Response);
+        Response.Cookies.Append("accessToken", accessTokens.AccessToken, CreateCookieOptions(jwtAuthOptions));
+        Response.Cookies.Append("refreshToken", accessTokens.RefreshToken, CreateRefreshCookieOptions(jwtAuthOptions));
     }
     
-    public void RemoveCookies(HttpResponse Response, bool isDevelopment = true)
+    public void RemoveCookies(HttpResponse Response )
     {
         var expiredOptions = new CookieOptions
         {
             HttpOnly = true,
-            Secure = !isDevelopment,
-            SameSite = isDevelopment ? SameSiteMode.Lax : SameSiteMode.Strict,
+            Secure = false,
+            SameSite = SameSiteMode.Lax ,
             Expires = DateTime.UtcNow.AddDays(-1)
         };
 
