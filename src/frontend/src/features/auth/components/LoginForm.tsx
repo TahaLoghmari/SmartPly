@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 const formSchema = z.object({
   email: z
@@ -21,12 +22,13 @@ const formSchema = z.object({
       message: "Username must be at least 2 characters.",
     })
     .email({ message: "Please enter a valid email address" }),
-  password: z.string().min(2, {
+  password: z.string().min(8, {
     message: "Password must be at least 8 characters.",
   }),
 });
 
 export function LoginForm() {
+  const { login } = useAuth();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
@@ -35,14 +37,9 @@ export function LoginForm() {
       password: "",
     },
   });
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-  }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
+      <form onSubmit={form.handleSubmit(login)} className="w-full space-y-6">
         <FormField
           control={form.control}
           name="email"
@@ -89,7 +86,7 @@ export function LoginForm() {
           Don't have an account ?{" "}
           <Link
             to="/register"
-            className="font-semibold text-[#2a8176] underline decoration-solid "
+            className="font-semibold text-[#2a8176] underline decoration-solid"
           >
             Register now
           </Link>

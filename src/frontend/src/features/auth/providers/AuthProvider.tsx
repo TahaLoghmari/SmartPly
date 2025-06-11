@@ -11,6 +11,8 @@ import type {
   LoginUserDto,
   RegisterUserDto,
 } from "../types";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useNavigate } from "react-router-dom";
 
 const initialState: AuthState = {
   user: null,
@@ -25,26 +27,68 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>(initialState);
+  const { getTokens, clearTokens, setTokens } = useLocalStorage();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setState((s) => ({ ...s, isLoading: true }));
-    authApi
-      .getCurrentUser()
-      .then((user) =>
+    const initializeAuth = async () => {
+      setState((s) => ({ ...s, isLoading: true }));
+
+      const { accessToken, refreshToken } = getTokens();
+
+      // Scenario C: No tokens - redirect to login
+      if (!accessToken && !refreshToken) {
+        setState({ ...initialState, isLoading: false });
+        return;
+      }
+
+      try {
+        // Scenario A: Try to get user with current access token
+        const user = await authApi.getCurrentUser();
+        console.log(user);
         setState({
           user,
           isAuthenticated: true,
           isLoading: false,
           error: null,
-        }),
-      )
-      .catch(() => setState({ ...initialState, isLoading: false }));
+        });
+      } catch (error: any) {
+        // getCurrentUser failed - token might be expired
+        if (refreshToken) {
+          try {
+            // Scenario B: Try to refresh the token
+            await authApi.refresh();
+            const user = await authApi.getCurrentUser();
+            console.log(user);
+            setState({
+              user,
+              isAuthenticated: true,
+              isLoading: false,
+              error: null,
+            });
+          } catch (refreshError) {
+            // Scenario C: Refresh failed - clear tokens and show login
+            clearTokens();
+            navigate("/login");
+            setState({ ...initialState, isLoading: false });
+          }
+        } else {
+          // Scenario C: No refresh token - clear and show login
+          clearTokens();
+          navigate("/login");
+          setState({ ...initialState, isLoading: false });
+        }
+      }
+    };
+    initializeAuth();
   }, []);
 
   const login = async (credentials: LoginUserDto) => {
     setState((s) => ({ ...s, isLoading: true, error: null }));
     try {
-      await authApi.login(credentials);
+      const response = await authApi.login(credentials);
+      setTokens(response);
+      navigate("/app");
       const user = await authApi.getCurrentUser();
       setState({ user, isAuthenticated: true, isLoading: false, error: null });
     } catch (error: any) {
@@ -57,28 +101,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const googleLogin = async () => {
-    setState((s) => ({ ...s, isLoading: true, error: null }));
-    try {
-      await authApi.googleLogin();
-      console.log("success");
-      const user = await authApi.getCurrentUser();
-      console.log("user", user);
-      setState({ user, isAuthenticated: true, isLoading: false, error: null });
-    } catch (error: any) {
-      setState((s) => ({
-        ...s,
-        isLoading: false,
-        error: error.title || error.message || "Google login failed",
-      }));
-      throw error;
-    }
-  };
-
   const register = async (credentials: RegisterUserDto) => {
     setState((s) => ({ ...s, isLoading: true, error: null }));
     try {
-      await authApi.register(credentials);
+      const response = await authApi.register(credentials);
+      console.log("API Response:", response); // Add this line to debug
+      setTokens(response);
+      navigate("/app");
       const user = await authApi.getCurrentUser();
       setState({ user, isAuthenticated: true, isLoading: false, error: null });
     } catch (error: any) {
@@ -92,16 +121,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    await authApi.logout();
+    // await authApi.logout(); this is after I add HTTP-ONLY Cookies
+    clearTokens();
     setState(initialState);
+    navigate("/");
+  };
+
+  const getGoogleOAuthUrl = async () => {
+    setState((s) => ({ ...s, isLoading: true, error: null }));
+    try {
+      await authApi.getGoogleOAuthUrl();
+    } catch (error: any) {
+      setState((s) => ({
+        ...s,
+        isLoading: false,
+        error: error.title || error.message || "Google login failed",
+      }));
+      throw error;
+    }
+  };
+
+  const googleLogin = async () => {
+    setState((s) => ({ ...s, isLoading: true, error: null }));
+    try {
+      const user = await authApi.getCurrentUser();
+      setState({ user, isAuthenticated: true, isLoading: false, error: null });
+    } catch (error: any) {
+      setState((s) => ({
+        ...s,
+        isLoading: false,
+        error: error.title || error.message || "Google login failed",
+      }));
+      throw error;
+    }
   };
 
   const refreshAuth = async () => {
     setState((s) => ({ ...s, isLoading: true }));
     try {
-      await authApi.refresh();
+      const response = await authApi.refresh();
+      setTokens(response);
       const user = await authApi.getCurrentUser();
       setState({ user, isAuthenticated: true, isLoading: false, error: null });
+      console.log("Token got refreshed");
     } catch {
       setState(initialState);
     }
@@ -112,9 +174,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value: AuthContextType = {
     ...state,
     login,
-    googleLogin,
     register,
     logout,
+    getGoogleOAuthUrl,
+    googleLogin,
     refreshAuth,
     clearError,
   };

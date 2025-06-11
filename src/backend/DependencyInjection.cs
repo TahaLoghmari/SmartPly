@@ -97,7 +97,6 @@ public static class DependencyInjection
         builder.Services.AddTransient<TokenProvider>();
         builder.Services.AddTransient<GoogleTokensProvider>();
         builder.Services.AddTransient<GmailProvider>();
-        builder.Services.AddTransient<CookieService>();
         builder.Services.AddTransient<TokenManagementService>();
 
         return builder; 

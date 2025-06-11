@@ -1,9 +1,11 @@
 import Header from "./Header";
-import { useAuth } from "../../auth/hooks/useAuth";
+import { useGoogleAuthCallback } from "../../auth/hooks/useGoogleAuthCallback";
 
 export default function HomePage() {
-  const { isAuthenticated } = useAuth();
-  // console.log(isAuthenticated);
+  const { isLoading , error } = useGoogleAuthCallback();
+
+  if ( isLoading ) return <div>Loading...</div>
+  if ( error ) return <div>error...</div>
   return (
     <div className="w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%]">
       <Header />

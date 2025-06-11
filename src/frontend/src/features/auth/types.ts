@@ -10,12 +10,13 @@ export interface LoginUserDto {
 }
 
 export interface RegisterUserDto {
+  name: string;
   email: string;
   password: string;
   confirmPassword: string;
 }
 
-export interface AccessTokensDto {
+export interface TokensDto {
   accessToken: string;
   refreshToken: string;
 }
@@ -29,9 +30,10 @@ export interface AuthState {
 
 export interface AuthContextType extends AuthState {
   login: (credentials: LoginUserDto) => Promise<void>;
-  googleLogin: () => Promise<void>;
   register: (credentials: RegisterUserDto) => Promise<void>;
   logout: () => Promise<void>;
+  getGoogleOAuthUrl: () => Promise<void>;
+  googleLogin: () => Promise<void>;
   refreshAuth: () => Promise<void>;
   clearError: () => void;
 }

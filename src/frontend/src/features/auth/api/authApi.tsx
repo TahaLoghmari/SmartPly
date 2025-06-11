@@ -1,4 +1,4 @@
-import type { LoginUserDto, RegisterUserDto, User } from "../types";
+import type { LoginUserDto, RegisterUserDto, TokensDto, User } from "../types";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
@@ -7,8 +7,15 @@ async function request<T>(
   endpoint: string,
   options: RequestInit = {},
 ): Promise<T> {
+  const accessToken = localStorage.getItem("accessToken");
+
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+    ...(options.headers || {}),
+  };
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    headers: { "Content-Type": "application/json" },
+    headers,
     credentials: "include",
     ...options,
   });
@@ -31,37 +38,36 @@ async function request<T>(
 
 export const authApi = {
   login(credentials: LoginUserDto) {
-    return request<{ message: string }>("/auth/login", {
+    return request<TokensDto>("/auth/login", {
       method: "POST",
       body: JSON.stringify(credentials),
     });
   },
 
   register(credentials: RegisterUserDto) {
-    return request<{ message: string }>("/auth/register", {
+    return request<TokensDto>("/auth/register", {
       method: "POST",
       body: JSON.stringify(credentials),
     });
   },
 
-  async googleLogin() {
+  logout() {
+    return request<{ message: string }>("/auth/logout", {
+      method: "POST",
+    });
+  },
+
+  async getGoogleOAuthUrl() {
     const response = await request<{ authorizationUrl: string }>(
       "/auth/google/authorize",
     );
-    window.open(
-      response.authorizationUrl,
-      "google-oauth-popup",
-      "width=500,height=600,top=100,left=100,noopener,noreferrer",
-    );
-    return { message: "Redirecting to Google..." };
+    window.location.href = response.authorizationUrl;
   },
 
   refresh() {
-    return request<{ message: string }>("/auth/refresh", { method: "POST" });
-  },
-
-  logout() {
-    return request<{ message: string }>("/auth/logout", { method: "POST" });
+    return request<TokensDto>("/auth/refresh", {
+      method: "POST",
+    });
   },
 
   getCurrentUser() {

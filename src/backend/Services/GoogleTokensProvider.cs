@@ -118,6 +118,7 @@ public sealed class GoogleTokensProvider(UserManager<User> userManager, IConfigu
         {
             UserName = googleUser.Email,
             Email = googleUser.Email,
+            Name = googleUser.Name,
             EmailConfirmed = true
         };
 

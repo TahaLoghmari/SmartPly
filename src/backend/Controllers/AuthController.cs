@@ -20,7 +20,6 @@ public sealed class AuthController(
     IOptions<JwtAuthOptions> options,
     IConfiguration configuration,
     GoogleTokensProvider googleTokensProvider,
-    CookieService cookieService,
     TokenManagementService tokenManagementService) : ControllerBase
 {
     private readonly JwtAuthOptions _jwtAuthOptions = options.Value;
@@ -36,7 +35,8 @@ public sealed class AuthController(
         var user = new User
         {
             UserName = registerUserDto.Email,
-            Email = registerUserDto.Email
+            Email = registerUserDto.Email,
+            Name = registerUserDto.Name,
         };
 
         IdentityResult result = await userManager.CreateAsync(user, registerUserDto.Password);
@@ -55,48 +55,65 @@ public sealed class AuthController(
 
         AccessTokensDto accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, registerUserDto.Email);
 
-        cookieService.AddCookies(Response, accessTokens, _jwtAuthOptions);
-        
-        return Ok(new { message = "Registration successful" });
+        return Ok(new {
+            accessToken = accessTokens.AccessToken,
+            refreshToken = accessTokens.RefreshToken
+        });
     }
     [HttpPost("login")]
     public async Task<IActionResult> Login(
         LoginUserDto loginUserDto,
-        IValidator<LoginUserDto> validator)
+        IValidator<LoginUserDto> validator,
+        ProblemDetailsFactory problemDetailsFactory)
     {
         await validator.ValidateAndThrowAsync(loginUserDto);
 
         User? user = await userManager.FindByEmailAsync(loginUserDto.Email);
 
-        if (user is null || !await userManager.CheckPasswordAsync(user, loginUserDto.Password))
+        var result = await userManager.CheckPasswordAsync(user, loginUserDto.Password);
+
+        if ( user is null || !result )
         {
-            return Unauthorized();
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status400BadRequest,
+                title: "Login failed",
+                detail: "Invalid email or password."
+            );
+            return BadRequest(problem);
         }
 
         AccessTokensDto accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, loginUserDto.Email);
 
-        cookieService.AddCookies(Response, accessTokens, _jwtAuthOptions);
-
-        return Ok(new { message = "Login successful" });
+        return Ok(new
+        {
+            accessToken = accessTokens.AccessToken,
+            refreshToken = accessTokens.RefreshToken
+        });
     }
 
     [HttpPost("refresh")]
-    public async Task<IActionResult> Refresh()
+    public async Task<IActionResult> Refresh(RefreshTokenRequestDto dto, [FromServices] ProblemDetailsFactory problemDetailsFactory)
     {
-        var refreshTokenValue = Request.Cookies["refreshToken"];
-
-        if (string.IsNullOrEmpty(refreshTokenValue))
+        if (string.IsNullOrEmpty(dto.RefreshToken))
         {
-            return Unauthorized();
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status401Unauthorized,
+                title: "Unauthorized",
+                detail: "Refresh token is missing."
+            );
+            return Unauthorized(problem);
         }
 
-        AccessTokensDto accessTokens = await tokenManagementService.RefreshUserTokens(refreshTokenValue);
-        
-        cookieService.AddCookies(Response, accessTokens, _jwtAuthOptions);
-        
-        return Ok(new { message = "Token refreshed successfully" });
+        AccessTokensDto accessTokens = await tokenManagementService.RefreshUserTokens(dto.RefreshToken);
+        return Ok(new
+        {
+            accessToken = accessTokens.AccessToken,
+            refreshToken = accessTokens.RefreshToken
+        });
     }
-
+    
     [HttpGet("google/authorize")]
     public IActionResult GoogleAuthorize()
     {
@@ -154,52 +171,43 @@ public sealed class AuthController(
 
         AccessTokensDto accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, user.Email!);
 
-        cookieService.AddCookies(Response, accessTokens, _jwtAuthOptions);
-
-        return Content(@"
-                        <html>
-                          <body>
-                            <script>
-                              window.opener && window.opener.postMessage('google-auth-success', '*');
-                              window.close();
-                            </script>
-                            <p>Authentication successful. You can close this window.</p>
-                          </body>
-                        </html>", "text/html");
+        return Redirect("http://localhost:5173/?accessToken=" + Uri.EscapeDataString(accessTokens.AccessToken) +
+                        "&refreshToken=" + Uri.EscapeDataString(accessTokens.RefreshToken));
     }
 
     [HttpGet("me")]
     [Authorize]
-    public async Task<IActionResult> GetCurrentUser()
+    public async Task<IActionResult> GetCurrentUser(
+        ProblemDetailsFactory problemDetailsFactory)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (string.IsNullOrEmpty(userId))
         {
-            return Unauthorized();
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status401Unauthorized,
+                title: "Unauthorized",
+                detail: "User ID claim is missing."
+            );
+            return Unauthorized(problem);
         }
 
         var user = await userManager.FindByIdAsync(userId);
 
-        if (user is null) return NotFound();
+        if (user is null)
+        {
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status404NotFound,
+                title: "User not found",
+                detail: $"No user found with ID '{userId}'."
+            );
+            return NotFound(problem);
+        }
         
         var userDto = user.toUserDto();
 
         return Ok(userDto);
-    }
-
-    [HttpPost("logout")]
-    public async Task<IActionResult> Logout()
-    {
-        var refreshTokenValue = Request.Cookies["refreshToken"];
-
-        if (!string.IsNullOrEmpty(refreshTokenValue))
-        {
-            await tokenManagementService.RemoveRefreshToken(refreshTokenValue);
-        }
-
-        cookieService.RemoveCookies(Response);
-
-        return Ok(new { message = "Logged out successfully" });
     }
 }
