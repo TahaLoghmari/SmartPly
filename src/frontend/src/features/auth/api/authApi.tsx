@@ -1,17 +1,17 @@
-import type { LoginUserDto, RegisterUserDto, TokensDto, User } from "../types";
+import type { LoginUserDto, RegisterUserDto, User } from "../types";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+
+let isRefreshing = false;
+let refreshPromise: Promise<void> | null = null;
 
 async function request<T>(
   endpoint: string,
   options: RequestInit = {},
 ): Promise<T> {
-  const accessToken = localStorage.getItem("accessToken");
-
   const headers: HeadersInit = {
     "Content-Type": "application/json",
-    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     ...(options.headers || {}),
   };
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -19,6 +19,33 @@ async function request<T>(
     credentials: "include",
     ...options,
   });
+
+  if (
+    response.status === 401 &&
+    !endpoint.includes("/auth/refresh") &&
+    !endpoint.includes("/auth/login")
+  ) {
+    if (!isRefreshing) {
+      isRefreshing = true;
+      refreshPromise = authApi
+        .refresh()
+        .then(() => {
+          isRefreshing = false;
+          refreshPromise = null;
+        })
+        .catch(() => {
+          isRefreshing = false;
+          refreshPromise = null;
+          window.location.href = "/login";
+          throw new Error("Session expired");
+        });
+    }
+
+    if (refreshPromise) {
+      await refreshPromise;
+      return request<T>(endpoint, options);
+    }
+  }
 
   if (!response.ok) {
     let error = "An error occurred";
@@ -38,21 +65,21 @@ async function request<T>(
 
 export const authApi = {
   login(credentials: LoginUserDto) {
-    return request<TokensDto>("/auth/login", {
+    return request<string>("/auth/login", {
       method: "POST",
       body: JSON.stringify(credentials),
     });
   },
 
   register(credentials: RegisterUserDto) {
-    return request<TokensDto>("/auth/register", {
+    return request<string>("/auth/register", {
       method: "POST",
       body: JSON.stringify(credentials),
     });
   },
 
   logout() {
-    return request<{ message: string }>("/auth/logout", {
+    return request<string>("/auth/logout", {
       method: "POST",
     });
   },
@@ -65,7 +92,7 @@ export const authApi = {
   },
 
   refresh() {
-    return request<TokensDto>("/auth/refresh", {
+    return request<string>("/auth/refresh", {
       method: "POST",
     });
   },

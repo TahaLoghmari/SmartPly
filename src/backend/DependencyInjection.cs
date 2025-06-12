@@ -80,6 +80,17 @@ public static class DependencyInjection
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAuthOptions.Key)),
 
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        if (context.Request.Cookies.ContainsKey("accessToken"))
+                        {
+                            context.Token = context.Request.Cookies["accessToken"];
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             })
             .AddGoogle(options =>
             {
@@ -98,7 +109,7 @@ public static class DependencyInjection
         builder.Services.AddTransient<GoogleTokensProvider>();
         builder.Services.AddTransient<GmailProvider>();
         builder.Services.AddTransient<TokenManagementService>();
-
+        builder.Services.AddScoped<CookieService>();
         return builder; 
     }
 }

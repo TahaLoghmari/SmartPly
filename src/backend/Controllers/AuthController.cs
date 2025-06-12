@@ -20,7 +20,8 @@ public sealed class AuthController(
     IOptions<JwtAuthOptions> options,
     IConfiguration configuration,
     GoogleTokensProvider googleTokensProvider,
-    TokenManagementService tokenManagementService) : ControllerBase
+    TokenManagementService tokenManagementService,
+    CookieService cookieService) : ControllerBase
 {
     private readonly JwtAuthOptions _jwtAuthOptions = options.Value;
 
@@ -55,10 +56,9 @@ public sealed class AuthController(
 
         AccessTokensDto accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, registerUserDto.Email);
 
-        return Ok(new {
-            accessToken = accessTokens.AccessToken,
-            refreshToken = accessTokens.RefreshToken
-        });
+        cookieService.AddCookies(Response, accessTokens, _jwtAuthOptions);
+        
+        return Ok(new { message = "Registration successful" });
     }
     [HttpPost("login")]
     public async Task<IActionResult> Login(
@@ -85,17 +85,16 @@ public sealed class AuthController(
 
         AccessTokensDto accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, loginUserDto.Email);
 
-        return Ok(new
-        {
-            accessToken = accessTokens.AccessToken,
-            refreshToken = accessTokens.RefreshToken
-        });
+        cookieService.AddCookies(Response, accessTokens, _jwtAuthOptions);
+
+        return Ok(new { message = "Login successful" });
     }
 
     [HttpPost("refresh")]
-    public async Task<IActionResult> Refresh(RefreshTokenRequestDto dto, [FromServices] ProblemDetailsFactory problemDetailsFactory)
+    public async Task<IActionResult> Refresh( [FromServices] ProblemDetailsFactory problemDetailsFactory)
     {
-        if (string.IsNullOrEmpty(dto.RefreshToken))
+        var refreshTokenValue = Request.Cookies["refreshToken"];
+        if (string.IsNullOrEmpty(refreshTokenValue))
         {
             var problem = problemDetailsFactory.CreateProblemDetails(
                 HttpContext,
@@ -106,12 +105,11 @@ public sealed class AuthController(
             return Unauthorized(problem);
         }
 
-        AccessTokensDto accessTokens = await tokenManagementService.RefreshUserTokens(dto.RefreshToken);
-        return Ok(new
-        {
-            accessToken = accessTokens.AccessToken,
-            refreshToken = accessTokens.RefreshToken
-        });
+        AccessTokensDto accessTokens = await tokenManagementService.RefreshUserTokens(refreshTokenValue);
+        
+        cookieService.AddCookies(Response, accessTokens, _jwtAuthOptions);
+        
+        return Ok(new { message = "Token refreshed successfully" });
     }
     
     [HttpGet("google/authorize")]
@@ -170,9 +168,10 @@ public sealed class AuthController(
         await googleTokensProvider.StoreGoogleTokens(user, tokens);
 
         AccessTokensDto accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, user.Email!);
+        
+        cookieService.AddCookies(Response, accessTokens, _jwtAuthOptions);
 
-        return Redirect("http://localhost:5173/?accessToken=" + Uri.EscapeDataString(accessTokens.AccessToken) +
-                        "&refreshToken=" + Uri.EscapeDataString(accessTokens.RefreshToken));
+        return Redirect("http://localhost:5173");
     }
 
     [HttpGet("me")]
@@ -209,5 +208,20 @@ public sealed class AuthController(
         var userDto = user.toUserDto();
 
         return Ok(userDto);
+    }
+    
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        var refreshTokenValue = Request.Cookies["refreshToken"];
+
+        if (!string.IsNullOrEmpty(refreshTokenValue))
+        {
+            await tokenManagementService.RemoveRefreshToken(refreshTokenValue);
+        }
+
+        cookieService.RemoveCookies(Response);
+
+        return Ok(new { message = "Logged out successfully" });
     }
 }
