@@ -130,7 +130,7 @@ export function RegisterForm() {
         />
         <Button
           type="submit"
-          className="w-full"
+          className="w-full cursor-pointer bg-gradient-to-r from-[#6c79e1] to-[#7057b0]"
           disabled={!form.formState.isValid}
         >
           Register
@@ -139,7 +139,7 @@ export function RegisterForm() {
           Already have an account ?{" "}
           <Link
             to="/login"
-            className="font-semibold text-[#2a8176] underline decoration-solid"
+            className="font-semibold text-[#7057b0] underline decoration-solid"
           >
             Login
           </Link>

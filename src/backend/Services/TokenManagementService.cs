@@ -39,31 +39,26 @@ public sealed class TokenManagementService(
         return accessTokens;
     }
 
-    public async Task<AccessTokensDto> RefreshUserTokens(string refreshTokenValue)
+    public async Task<AccessTokensDto?> RefreshUserTokens(string refreshTokenValue)
     {
         var refreshToken = await applicationDbContext.RefreshTokens
             .Include(rt => rt.User)
             .FirstOrDefaultAsync(rt => rt.Token == refreshTokenValue);
 
-        if (refreshToken is null)
+        if (refreshToken is null || refreshToken.ExpiresAtUtc < DateTime.UtcNow )
         {
-            throw new UnauthorizedAccessException("Refresh token not found");
-        }
-
-        if (refreshToken.ExpiresAtUtc < DateTime.UtcNow)
-        {
-            throw new UnauthorizedAccessException("Refresh token expired");
+            return null;
         }
 
         var tokenRequest = new TokenRequest(refreshToken.User.Id, refreshToken.User.Email!);
-        AccessTokensDto accessTokens = tokenProvider.Create(tokenRequest);
+        AccessTokensDto tokens = tokenProvider.Create(tokenRequest);
 
-        refreshToken.Token = accessTokens.RefreshToken;
+        refreshToken.Token = tokens.RefreshToken;
         refreshToken.ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthOptions.RefreshTokenExpirationDays);
 
         await applicationDbContext.SaveChangesAsync();
 
-        return accessTokens;
+        return tokens;
     }
 
     public async Task RemoveRefreshToken(string refreshTokenValue)
@@ -77,13 +72,5 @@ public sealed class TokenManagementService(
             await applicationDbContext.SaveChangesAsync();
         }
     }
-
-    public async Task RemoveAllUserRefreshTokens(string userId)
-    {
-        var userTokens = applicationDbContext.RefreshTokens
-            .Where(rt => rt.UserId == userId);
-        
-        applicationDbContext.RefreshTokens.RemoveRange(userTokens);
-        await applicationDbContext.SaveChangesAsync();
-    }
+    
 }

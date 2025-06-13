@@ -3,9 +3,6 @@ import type { LoginUserDto, RegisterUserDto, User } from "../types";
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
-let isRefreshing = false;
-let refreshPromise: Promise<void> | null = null;
-
 async function request<T>(
   endpoint: string,
   options: RequestInit = {},
@@ -25,25 +22,21 @@ async function request<T>(
     !endpoint.includes("/auth/refresh") &&
     !endpoint.includes("/auth/login")
   ) {
-    if (!isRefreshing) {
-      isRefreshing = true;
-      refreshPromise = authApi
-        .refresh()
-        .then(() => {
-          isRefreshing = false;
-          refreshPromise = null;
-        })
-        .catch(() => {
-          isRefreshing = false;
-          refreshPromise = null;
-          window.location.href = "/login";
-          throw new Error("Session expired");
-        });
-    }
+    try {
+      const refreshResponse = await fetch(`${API_BASE_URL}/auth/refresh`, {
+        credentials: "include",
+        method: "POST",
+      });
 
-    if (refreshPromise) {
-      await refreshPromise;
-      return request<T>(endpoint, options);
+      if (refreshResponse.ok) {
+        // Token refreshed successfully, retry the original request
+        return request(endpoint, options);
+      } else {
+        throw new Error("Session expired");
+      }
+    } catch (error) {
+      // Refresh failed
+      throw new Error("Session expired");
     }
   }
 
@@ -99,6 +92,13 @@ export const authApi = {
 
   getCurrentUser() {
     return request<User>("/auth/me");
+  },
+
+  resendConfirmationEmail(email: string) {
+    return request<string>("/auth/resend-confirmation-email", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    });
   },
 };
 

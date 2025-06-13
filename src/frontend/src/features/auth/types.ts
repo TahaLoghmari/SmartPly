@@ -35,5 +35,6 @@ export interface AuthContextType extends AuthState {
   getGoogleOAuthUrl: () => Promise<void>;
   googleLogin: () => Promise<void>;
   refreshAuth: () => Promise<void>;
+  resendConfirmationEmail: (email: string) => Promise<void>;
   clearError: () => void;
 }

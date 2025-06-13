@@ -11,7 +11,17 @@
     <list default="true" id="12fc8505-229a-4662-8141-0ba9b6687656" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.backend.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.backend.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Controllers/AuthController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Controllers/AuthController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DependencyInjection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DependencyInjection.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/GoogleTokensProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/GoogleTokensProvider.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/TokenManagementService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/TokenManagementService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/api/authApi.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/api/authApi.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/authRoutes.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/authRoutes.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/components/LoginForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/components/LoginForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/components/LoginPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/components/LoginPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/components/RegisterForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/components/RegisterForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/components/RegisterPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/components/RegisterPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/providers/AuthProvider.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/providers/AuthProvider.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/features/home/components/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/home/components/Header.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,6 +117,7 @@
       <workItem from="1749627744421" duration="16343000" />
       <workItem from="1749711765272" duration="4063000" />
       <workItem from="1749716264381" duration="12306000" />
+      <workItem from="1749800020485" duration="10100000" />
     </task>
     <servers />
   </component>
@@ -137,130 +148,26 @@
           <line>88</line>
           <properties documentPath="$PROJECT_DIR$/Services/GoogleTokensProvider.cs" containingFunctionPresentation="Method 'FindOrCreateUser'">
             <startOffsets>
-              <option value="3102" />
+              <option value="3038" />
             </startOffsets>
             <endOffsets>
-              <option value="3103" />
+              <option value="3039" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Controllers/AuthController.cs</url>
-          <line>73</line>
-          <properties documentPath="$PROJECT_DIR$/Controllers/AuthController.cs" containingFunctionPresentation="Method 'Login'">
+          <line>450</line>
+          <properties documentPath="$PROJECT_DIR$/Controllers/AuthController.cs" containingFunctionPresentation="Method 'ResendConfirmationEmail'">
             <startOffsets>
-              <option value="2510" />
+              <option value="17002" />
             </startOffsets>
             <endOffsets>
-              <option value="2511" />
+              <option value="17003" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="14" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Controllers/AuthController.cs</url>
-          <line>35</line>
-          <properties documentPath="$PROJECT_DIR$/Controllers/AuthController.cs" containingFunctionPresentation="Method 'Register'">
-            <startOffsets>
-              <option value="1113" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1114" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="15" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Controllers/AuthController.cs</url>
-          <line>100</line>
-          <properties documentPath="$PROJECT_DIR$/Controllers/AuthController.cs" containingFunctionPresentation="Method 'Refresh'">
-            <startOffsets>
-              <option value="3500" />
-            </startOffsets>
-            <endOffsets>
-              <option value="3501" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="16" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Controllers/AuthController.cs</url>
-          <line>122</line>
-          <properties documentPath="$PROJECT_DIR$/Controllers/AuthController.cs" containingFunctionPresentation="Method 'GoogleAuthorize'">
-            <startOffsets>
-              <option value="4299" />
-            </startOffsets>
-            <endOffsets>
-              <option value="4300" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Controllers/AuthController.cs</url>
-          <line>186</line>
-          <properties documentPath="$PROJECT_DIR$/Controllers/AuthController.cs" containingFunctionPresentation="Method 'GetCurrentUser'">
-            <startOffsets>
-              <option value="6856" />
-            </startOffsets>
-            <endOffsets>
-              <option value="6857" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="18" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Controllers/AuthController.cs</url>
-          <line>144</line>
-          <properties documentPath="$PROJECT_DIR$/Controllers/AuthController.cs" containingFunctionPresentation="Method 'GoogleCallback'">
-            <startOffsets>
-              <option value="5220" />
-            </startOffsets>
-            <endOffsets>
-              <option value="5221" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="19" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Controllers/AuthController.cs</url>
-          <line>220</line>
-          <properties documentPath="$PROJECT_DIR$/Controllers/AuthController.cs" containingFunctionPresentation="Method 'Logout'">
-            <startOffsets>
-              <option value="7863" />
-            </startOffsets>
-            <endOffsets>
-              <option value="7864" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="20" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Controllers/AuthController.cs</url>
-          <line>234</line>
-          <properties documentPath="$PROJECT_DIR$/Controllers/AuthController.cs" containingFunctionPresentation="Method 'SendConfirmationEmail'">
-            <startOffsets>
-              <option value="8283" />
-            </startOffsets>
-            <endOffsets>
-              <option value="8284" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="21" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Services/EmailSenderService.cs</url>
-          <line>13</line>
-          <properties documentPath="$PROJECT_DIR$/Services/EmailSenderService.cs" containingFunctionPresentation="Method 'SendEmailAsync'">
-            <startOffsets>
-              <option value="517" />
-            </startOffsets>
-            <endOffsets>
-              <option value="518" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="22" />
+          <option name="timeStamp" value="25" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

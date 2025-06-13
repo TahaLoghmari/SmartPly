@@ -35,6 +35,18 @@ public sealed class AuthController(
         ProblemDetailsFactory problemDetailsFactory)
     {
         await validator.ValidateAndThrowAsync(registerUserDto);
+        
+        var existingUser = await userManager.FindByEmailAsync(registerUserDto.Email);
+        if (existingUser != null)
+        {
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status400BadRequest,
+                title: "Registration failed",
+                detail: "Email is already in use."
+            );
+            return BadRequest(problem);
+        }
 
         var user = new User
         {
@@ -58,11 +70,10 @@ public sealed class AuthController(
         }
 
         await SendConfirmationEmail(registerUserDto.Email, user);
-
         
-        AccessTokensDto accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, registerUserDto.Email);
-
-        cookieService.AddCookies(Response, accessTokens, _jwtAuthOptions);
+        AccessTokensDto tokens = await tokenManagementService.CreateAndStoreTokens(user.Id, registerUserDto.Email);
+        
+        cookieService.AddCookies(Response, tokens, _jwtAuthOptions);
         
         return Ok(new { message = "Registration successful" });
     }
@@ -75,10 +86,21 @@ public sealed class AuthController(
         await validator.ValidateAndThrowAsync(loginUserDto);
 
         User? user = await userManager.FindByEmailAsync(loginUserDto.Email);
+        
+        if ( user is null )
+        {
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status400BadRequest,
+                title: "Login failed",
+                detail: "Invalid email."
+            );
+            return BadRequest(problem);
+        }
 
         var result = await userManager.CheckPasswordAsync(user, loginUserDto.Password);
 
-        if ( user is null || !result )
+        if ( !result )
         {
             var problem = problemDetailsFactory.CreateProblemDetails(
                 HttpContext,
@@ -89,9 +111,9 @@ public sealed class AuthController(
             return BadRequest(problem);
         }
         
-        AccessTokensDto accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, loginUserDto.Email);
+        AccessTokensDto tokens = await tokenManagementService.CreateAndStoreTokens(user.Id, loginUserDto.Email);
 
-        cookieService.AddCookies(Response, accessTokens, _jwtAuthOptions);
+        cookieService.AddCookies(Response, tokens, _jwtAuthOptions);
 
         return Ok(new { message = "Login successful" });
     }
@@ -111,9 +133,20 @@ public sealed class AuthController(
             return Unauthorized(problem);
         }
 
-        AccessTokensDto accessTokens = await tokenManagementService.RefreshUserTokens(refreshTokenValue);
+        AccessTokensDto? tokens = await tokenManagementService.RefreshUserTokens(refreshTokenValue);
         
-        cookieService.AddCookies(Response, accessTokens, _jwtAuthOptions);
+        if ( tokens is null)
+        {
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status401Unauthorized,
+                title: "Unauthorized",
+                detail: "Refresh token not found or expired."
+            );
+            return Problem(problem.Detail, statusCode: problem.Status, title: problem.Title);
+        }
+        
+        cookieService.AddCookies(Response, tokens, _jwtAuthOptions);
         
         return Ok(new { message = "Token refreshed successfully" });
     }
@@ -165,11 +198,33 @@ public sealed class AuthController(
             return BadRequest(problem);
         }
 
-        var tokens = await googleTokensProvider.ExchangeCodeForTokens(googleCallbackDto.code);
-        // now I Have the access Token and refresh Token for Google's APIs
+        GoogleTokenResponse? tokens = await googleTokensProvider.ExchangeCodeForTokens(googleCallbackDto.code);
+        
+        if (tokens is null)
+        {
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status400BadRequest,
+                title: "Failed to exchange authorization code",
+                detail: "Could not retrieve tokens from Google."
+            );
+            return BadRequest(problem);
+        }
+
         var googleUser = await googleTokensProvider.GetGoogleUserInfo(tokens.IdToken);
-        // the idToken is validated
-        var user = await googleTokensProvider.FindOrCreateUser(googleUser);
+
+        User? user = await googleTokensProvider.FindOrCreateUser(googleUser);
+        
+        if ( user is null )
+        {
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status400BadRequest,
+                title: "User creation failed",
+                detail: "Could not create , find user with Google information or link user to google account."
+            );
+            return BadRequest(problem);
+        }
 
         await googleTokensProvider.StoreGoogleTokens(user, tokens);
 
@@ -177,7 +232,7 @@ public sealed class AuthController(
         
         cookieService.AddCookies(Response, accessTokens, _jwtAuthOptions);
 
-        return Redirect("http://localhost:5173");
+        return Redirect(configuration["Frontend:BaseUrl"]!);
     }
 
     [HttpGet("me")]
@@ -238,9 +293,20 @@ public sealed class AuthController(
         var confirmationLink = Url.Action("ConfirmEmail", "Auth",
             new { UserId = user.Id, Token = token }, protocol: HttpContext.Request.Scheme);
 
+        if (confirmationLink is null)
+        {
+            var problem = new ProblemDetails
+            {
+                Status = StatusCodes.Status500InternalServerError,
+                Title = "Email confirmation link generation failed",
+                Detail = "Could not generate a valid email confirmation link."
+            };
+            throw new Exception(problem.Detail); 
+        }
+
         var safeLink = HtmlEncoder.Default.Encode(confirmationLink);
         
-        var subject = "Welcome to Dot Net Tutorials! Please Confirm Your Email";
+        var subject = "Welcome to SmartPly! Please Confirm Your Email";
 
         var messageBody = $@"
 <!DOCTYPE html>
@@ -338,47 +404,64 @@ public sealed class AuthController(
 
         await emailSenderService.SendEmailAsync(sendEmailDto);
     }
-    [HttpGet]
+    [HttpGet("confirm-email")]
     [AllowAnonymous]
-    public async Task<IActionResult> ConfirmEmail(string UserId, string Token)
+    public async Task<IActionResult> ConfirmEmail(
+        ConfirmationDto confirmationDto,
+        ProblemDetailsFactory problemDetailsFactory)
     {
-        if (string.IsNullOrEmpty(UserId) || string.IsNullOrEmpty(Token))
+        if (string.IsNullOrEmpty(confirmationDto.UserId) || string.IsNullOrEmpty(confirmationDto.Token))
         {
-            return BadRequest(new { error = "The link is invalid or has expired. Please request a new one if needed." });
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status400BadRequest,
+                title: "Invalid confirmation link",
+                detail: "The link is invalid or has expired. Please request a new one if needed."
+            );
+            return BadRequest(problem);
         }
 
-        var user = await userManager.FindByIdAsync(UserId);
-        if (user == null)
+        var user = await userManager.FindByIdAsync(confirmationDto.UserId);
+        if (user is null)
         {
-            return NotFound(new { error = "We could not find a user associated with the given link." });
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status400BadRequest,
+                title: "User does not exist",
+                detail: "the UserId is invalid."
+            );
+            return BadRequest(problem);
         }
 
-        var result = await userManager.ConfirmEmailAsync(user, Token);
+        var result = await userManager.ConfirmEmailAsync(user, confirmationDto.Token);
+        var frontendUrl = configuration["Frontend:BaseUrl"];
+        
         if (result.Succeeded)
         {
-            return Ok(new { message = "Thank you for confirming your email address. Your account is now verified!" });
+            return Redirect($"{frontendUrl}/email-confirmed?status=success");
         }
-
-        return BadRequest(new { error = "We were unable to confirm your email address. Please try again or request a new link." });
+        return Redirect($"{frontendUrl}/email-confirmed?status=error");
     }
     
-    [HttpGet]
-    public IActionResult ResendConfirmationEmail(bool IsResend = true)
+    [AllowAnonymous]
+    [HttpPost("resend-confirmation-email")]
+    public async Task<IActionResult> ResendConfirmationEmail( 
+        ResendConfirmationEmailDto dto,
+        ProblemDetailsFactory problemDetailsFactory)
     {
-        var message = IsResend ? "Resend Confirmation Email" : "Send Confirmation Email";
-        return Ok(new { message });
-    }
-    
-    [HttpPost]
-    public async Task<IActionResult> ResendConfirmationEmail(string Email)
-    {
-        var user = await userManager.FindByEmailAsync(Email);
-        if (user == null || await userManager.IsEmailConfirmedAsync(user))
+        var user = await userManager.FindByEmailAsync(dto.Email);
+        if (user is null || await userManager.IsEmailConfirmedAsync(user))
         {
-            return Ok(new { message = "If an account exists for this email, a confirmation email has been sent." });
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status400BadRequest,
+                title: "User not found",
+                detail: "No user exists with the provided email or the email is already confirmed."
+            );
+            return BadRequest(problem);
         }
 
-        await SendConfirmationEmail(Email, user);
+        await SendConfirmationEmail(dto.Email, user);
 
         return Ok(new { message = "Confirmation email sent. Please check your inbox." });
     }

@@ -8,7 +8,7 @@ namespace backend.Services;
 
 public sealed class GoogleTokensProvider(UserManager<User> userManager, IConfiguration configuration)
 {
-    public async Task<GoogleTokenResponse> ExchangeCodeForTokens(string code)
+    public async Task<GoogleTokenResponse?> ExchangeCodeForTokens(string code)
     {
         var clientId = configuration["Google:ClientId"];
         var clientSecret = configuration["Google:ClientSecret"];
@@ -30,7 +30,7 @@ public sealed class GoogleTokensProvider(UserManager<User> userManager, IConfigu
 
         if (!response.IsSuccessStatusCode)
         {
-            throw new Exception($"Failed to exchange code for tokens: {responseContent}");
+            return null;
         }
 
         var tokenResponse = JsonSerializer.Deserialize<GoogleTokenResponse>(responseContent, new JsonSerializerOptions
@@ -85,7 +85,7 @@ public sealed class GoogleTokensProvider(UserManager<User> userManager, IConfigu
                 expiresAt);
     }
 
-    public async Task<User> FindOrCreateUser(GoogleUserInfo googleUser)
+    public async Task<User?> FindOrCreateUser(GoogleUserInfo googleUser)
     {
         var loginInfo = new UserLoginInfo("Google", googleUser.Id, "Google");
 
@@ -109,7 +109,7 @@ public sealed class GoogleTokensProvider(UserManager<User> userManager, IConfigu
             var addLoginResult = await userManager.AddLoginAsync(user, loginInfo);
             if (!addLoginResult.Succeeded)
             {
-                throw new Exception($"Failed to link Google account: {string.Join(", ", addLoginResult.Errors.Select(e => e.Description))}");
+                return null;
             }
             return user;
         }
@@ -125,14 +125,15 @@ public sealed class GoogleTokensProvider(UserManager<User> userManager, IConfigu
         var createResult = await userManager.CreateAsync(user);
         if (!createResult.Succeeded)
         {
-            throw new Exception($"Failed to create user: {string.Join(", ", createResult.Errors.Select(e => e.Description))}");
+            return null;
         }
 
         var linkResult = await userManager.AddLoginAsync(user, loginInfo);
+        
         if (!linkResult.Succeeded)
         {
             await userManager.DeleteAsync(user);
-            throw new Exception($"Failed to link Google account to new user: {string.Join(", ", linkResult.Errors.Select(e => e.Description))}");
+            return null;
         }
 
         return user;

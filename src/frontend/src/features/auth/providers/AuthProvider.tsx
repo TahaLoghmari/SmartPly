@@ -70,9 +70,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setState((s) => ({ ...s, isLoading: true, error: null }));
     try {
       await authApi.register(credentials);
-      navigate("/app");
       const user = await authApi.getCurrentUser();
       setState({ user, isAuthenticated: true, isLoading: false, error: null });
+      navigate("/email-verification");
     } catch (error: any) {
       setState((s) => ({
         ...s,
@@ -133,6 +133,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setState(initialState);
     }
   };
+  const resendConfirmationEmail = async (email: string) => {
+    setState((s) => ({ ...s, isLoading: true }));
+    try {
+      await authApi.resendConfirmationEmail(email);
+      setState((s) => ({ ...s, isLoading: false }));
+    } catch {
+      setState(initialState);
+    }
+  };
 
   const clearError = () => setState((s) => ({ ...s, error: null }));
 
@@ -144,6 +153,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     getGoogleOAuthUrl,
     googleLogin,
     refreshAuth,
+    resendConfirmationEmail,
     clearError,
   };
 
