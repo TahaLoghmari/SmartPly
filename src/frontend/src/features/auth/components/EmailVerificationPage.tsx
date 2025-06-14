@@ -4,7 +4,15 @@ import { MoveRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export function EmailVerificationPage() {
-  const { user, isLoading, error, resendConfirmationEmail } = useAuth();
+  const { user, isLoading, resendConfirmationEmail } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen w-screen flex-col items-center justify-center sm:bg-[#f0f3f5]">
+        <div className="border-primary h-16 w-16 animate-spin rounded-full border-4 border-solid border-t-transparent"></div>
+      </div>
+    );
+  }
   return (
     <div className="flex min-h-screen w-screen flex-col items-center sm:rounded-md sm:bg-[#f0f3f5]">
       <div className="bg-background flex w-full flex-col items-center gap-8 p-9 sm:my-20 sm:w-[550px] sm:rounded-lg sm:p-12">

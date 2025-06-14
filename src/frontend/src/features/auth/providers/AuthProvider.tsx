@@ -2,8 +2,14 @@
 // It uses authApi for HTTP requests and updates state based on responses
 // it's for  API orchestration and workflows and  Application state management
 
-import { createContext, useState, useEffect } from "react";
-import type { ReactNode } from "react";
+import {
+  createContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react";
+import { useNavigate } from "react-router-dom";
+
 import { authApi } from "../api/authApi";
 import type {
   AuthState,
@@ -11,7 +17,6 @@ import type {
   LoginUserDto,
   RegisterUserDto,
 } from "../types";
-import { useNavigate } from "react-router-dom";
 
 const initialState: AuthState = {
   user: null,

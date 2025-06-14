@@ -408,8 +408,11 @@ public sealed class AuthController(
     [AllowAnonymous]
     public async Task<IActionResult> ConfirmEmail(
         ConfirmationDto confirmationDto,
-        ProblemDetailsFactory problemDetailsFactory)
+        ProblemDetailsFactory problemDetailsFactory,
+        IValidator<ConfirmationDto> validator)
     {
+        await validator.ValidateAndThrowAsync(confirmationDto);
+        
         if (string.IsNullOrEmpty(confirmationDto.UserId) || string.IsNullOrEmpty(confirmationDto.Token))
         {
             var problem = problemDetailsFactory.CreateProblemDetails(
@@ -447,8 +450,11 @@ public sealed class AuthController(
     [HttpPost("resend-confirmation-email")]
     public async Task<IActionResult> ResendConfirmationEmail( 
         ResendConfirmationEmailDto dto,
-        ProblemDetailsFactory problemDetailsFactory)
+        ProblemDetailsFactory problemDetailsFactory,
+        IValidator<ResendConfirmationEmailDto> validator)
     {
+        await validator.ValidateAndThrowAsync(dto);
+        
         var user = await userManager.FindByEmailAsync(dto.Email);
         if (user is null || await userManager.IsEmailConfirmedAsync(user))
         {

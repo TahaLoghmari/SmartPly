@@ -35,7 +35,6 @@ async function request<T>(
         throw new Error("Session expired");
       }
     } catch (error) {
-      // Refresh failed
       throw new Error("Session expired");
     }
   }

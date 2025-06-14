@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useAuth } from "../hooks/useAuth";
-import { RegisterForm } from "./RegisterForm";
+import { useAuth, RegisterForm } from "../../auth";
 
 export function RegisterPage() {
   const { isLoading, getGoogleOAuthUrl } = useAuth();

@@ -11,4 +11,7 @@ export { AuthProvider } from "./providers/AuthProvider";
 export { useAuth } from "./hooks/useAuth";
 
 // Components
-export { LoginForm } from "./components/LoginForm";
+export { LoginPage } from "./components/LoginPage";
+export { RegisterPage } from "./components/RegisterPage";
+export { EmailVerificationPage } from "./components/EmailVerificationPage";
+export { EmailConfirmedPage } from "./components/EmailConfirmedPage";

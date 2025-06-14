@@ -1,4 +1,5 @@
-export default function EmailConfirmedPage() {
+
+export function EmailConfirmedPage() {
   return (
     <div className="flex min-h-screen w-screen flex-col items-center sm:rounded-md sm:bg-[#f0f3f5]">
       <div className="bg-background flex w-full flex-col items-center gap-8 p-9 sm:my-20 sm:w-[550px] sm:rounded-lg sm:p-12">

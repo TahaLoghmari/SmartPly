@@ -11,17 +11,22 @@
     <list default="true" id="12fc8505-229a-4662-8141-0ba9b6687656" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.backend.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.backend.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Controllers/AuthController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Controllers/AuthController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/GoogleTokensProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/GoogleTokensProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/TokenManagementService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/TokenManagementService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DTOs/Auth/RefreshTokenRequestDto.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DTOs/Email/ConfirmationDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DTOs/Auth/ConfirmationDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DTOs/Email/ResendConfirmationDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DTOs/Auth/ResendConfirmationDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DTOs/Email/SendEmailDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DTOs/Auth/SendEmailDto.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/api/authApi.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/api/authApi.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/authRoutes.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/authRoutes.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/components/EmailConfirmedPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/components/EmailConfirmedPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/components/EmailVerificationPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/components/EmailVerificationPage.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/components/LoginForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/components/LoginForm.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/components/LoginPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/components/LoginPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/components/RegisterForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/components/RegisterForm.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/components/RegisterPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/components/RegisterPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/index.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/providers/AuthProvider.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/providers/AuthProvider.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/types.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/features/home/components/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/home/components/Header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/services/validationService.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/features/home/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/features/home/types.ts" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,24 +58,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Launch Settings Profile.backend: http.executor": "Debug",
-    ".NET Launch Settings Profile.backend: https.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "/home/tahaloghmari/Desktop/Projects/SmartPly/SmartPly.sln",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.backend: http.executor&quot;: &quot;Debug&quot;,
+    &quot;.NET Launch Settings Profile.backend: https.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/tahaloghmari/Desktop/Projects/SmartPly/SmartPly.sln&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.backend: http">
     <configuration name="backend: http" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/backend.csproj" />
@@ -117,7 +122,8 @@
       <workItem from="1749627744421" duration="16343000" />
       <workItem from="1749711765272" duration="4063000" />
       <workItem from="1749716264381" duration="12306000" />
-      <workItem from="1749800020485" duration="10100000" />
+      <workItem from="1749800020485" duration="10558000" />
+      <workItem from="1749883953941" duration="1800000" />
     </task>
     <servers />
   </component>
@@ -158,16 +164,42 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Controllers/AuthController.cs</url>
-          <line>450</line>
+          <line>454</line>
           <properties documentPath="$PROJECT_DIR$/Controllers/AuthController.cs" containingFunctionPresentation="Method 'ResendConfirmationEmail'">
             <startOffsets>
-              <option value="17002" />
+              <option value="17180" />
             </startOffsets>
             <endOffsets>
-              <option value="17003" />
+              <option value="17181" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Controllers/AuthController.cs</url>
+          <line>122</line>
+          <properties documentPath="$PROJECT_DIR$/Controllers/AuthController.cs" containingFunctionPresentation="Method 'Refresh'">
+            <startOffsets>
+              <option value="4256" />
+            </startOffsets>
+            <endOffsets>
+              <option value="4257" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Controllers/AuthController.cs</url>
+          <line>241</line>
+          <properties documentPath="$PROJECT_DIR$/Controllers/AuthController.cs" containingFunctionPresentation="Method 'GetCurrentUser'">
+            <startOffsets>
+              <option value="8747" />
+            </startOffsets>
+            <endOffsets>
+              <option value="8748" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="27" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
