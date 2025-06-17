@@ -13,7 +13,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+
+import { useAuth, useLogin, useCurrentUser } from "../../auth";
+
+import type { LoginUserDto } from "../types";
 
 const formSchema = z.object({
   email: z
@@ -28,7 +31,9 @@ const formSchema = z.object({
 });
 
 export function LoginForm() {
-  const { login, error } = useAuth();
+  const loginMutation = useLogin();
+  const { setAuthState } = useAuth();
+  const { refetch } = useCurrentUser();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
@@ -37,12 +42,24 @@ export function LoginForm() {
       password: "",
     },
   });
+  async function onSubmit(credentials: LoginUserDto) {
+    loginMutation.mutate(credentials, {
+      async onSuccess() {
+        const freshUser = await refetch();
+        setAuthState({
+          user: freshUser.data || null,
+          isAuthenticated: !!freshUser.data,
+          isLoading: false,
+        });
+      },
+    });
+  }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(login)} className="w-full space-y-6">
-        {error && (
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
+        {loginMutation.isError && (
           <div className="bg-destructive/10 border-destructive text-destructive mb-4 rounded-md border p-3 text-sm">
-            {error}
+            {loginMutation.error?.message}
           </div>
         )}
         <FormField
@@ -70,7 +87,7 @@ export function LoginForm() {
               <FormDescription>
                 <Link
                   to="/"
-                  className="font-semibold text-[#2a8176] underline decoration-solid"
+                  className="font-semibold text-[#7057b0] underline decoration-solid"
                 >
                   Forgot your password?
                 </Link>
@@ -83,9 +100,9 @@ export function LoginForm() {
         <Button
           type="submit"
           className="w-full cursor-pointer bg-gradient-to-r from-[#6c79e1] to-[#7057b0]"
-          disabled={!form.formState.isValid}
+          disabled={!form.formState.isValid || loginMutation.isPending}
         >
-          Login
+          {loginMutation.isPending ? "Logging in..." : "Login"}
         </Button>
         <p className="text-sm font-semibold">
           Don't have an account ?{" "}

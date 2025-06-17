@@ -23,9 +23,7 @@ export const authApi = {
   },
 
   getGoogleOAuthUrl() {
-    return request<string>(
-      "/auth/google/authorize",
-    );
+    return request<{ authorizationUrl: string }>("/auth/google/authorize");
   },
 
   refresh() {

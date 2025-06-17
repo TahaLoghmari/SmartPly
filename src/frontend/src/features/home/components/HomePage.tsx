@@ -1,11 +1,14 @@
 import Header from "./Header";
-import { useAuth } from "../../auth/hooks/useAuth";
+import { useAuth } from "../../auth";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function HomePage() {
-  const { isLoading, error } = useAuth();
+  const { isLoading } = useAuth();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>error...</div>;
+  if (isLoading) return;
+  <div className="h-screen w-full items-center justify-center">
+    <Spinner></Spinner>
+  </div>;
   return (
     <div className="w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%]">
       <Header />

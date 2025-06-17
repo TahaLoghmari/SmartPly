@@ -3,6 +3,8 @@ import { authApi } from "../api/authApi";
 
 export function useResendConfirmationEmail() {
   return useMutation({
-    mutationFn: authApi.resendConfirmationEmail,
+    mutationFn: async (email: string) => {
+      return authApi.resendConfirmationEmail(email);
+    },
   });
 }

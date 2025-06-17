@@ -11,8 +11,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+import { Link, useNavigate } from "react-router-dom";
+
+import { useAuth, useRegister, useCurrentUser } from "../../auth";
+import type { RegisterUserDto } from "../types";
 
 const formSchema = z
   .object({
@@ -53,7 +55,10 @@ const formSchema = z
   });
 
 export function RegisterForm() {
-  const { register, error } = useAuth();
+  const { setAuthState } = useAuth();
+  const registerMutation = useRegister();
+  const { refetch } = useCurrentUser();
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
@@ -64,12 +69,25 @@ export function RegisterForm() {
       name: "",
     },
   });
+  const onSubmit = async (credentials: RegisterUserDto) => {
+    registerMutation.mutate(credentials, {
+      onSuccess: async () => {
+        const freshUser = await refetch();
+        setAuthState({
+          user: freshUser.data || null,
+          isAuthenticated: !!freshUser.data,
+          isLoading: false,
+        });
+        navigate("/email-verification");
+      },
+    });
+  };
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(register)} className="w-full space-y-6">
-        {error && (
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
+        {registerMutation.isError && (
           <div className="bg-destructive/10 border-destructive text-destructive mb-4 rounded-md border p-3 text-sm">
-            {error}
+            {registerMutation.error.message}
           </div>
         )}
         <FormField
@@ -133,7 +151,7 @@ export function RegisterForm() {
           className="w-full cursor-pointer bg-gradient-to-r from-[#6c79e1] to-[#7057b0]"
           disabled={!form.formState.isValid}
         >
-          Register
+          {registerMutation.isPending ? "Signing in..." : "Sign in"}
         </Button>
         <p className="text-sm font-semibold">
           Already have an account ?{" "}

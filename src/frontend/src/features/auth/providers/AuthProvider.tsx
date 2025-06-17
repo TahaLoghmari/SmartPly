@@ -15,7 +15,6 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>(initialState);
 
-  // TanStack Query configuration prevents unnecessary re-fetches
   const { data: user, isLoading, isError } = useCurrentUser();
 
   useEffect(() => {

@@ -1,18 +1,15 @@
 import { Button } from "@/components/ui/button";
-import { useAuth, RegisterForm } from "../../auth";
+import { RegisterForm } from "../../auth";
+import { useGetGoogleOAuthUrl } from "../hooks/useGetGoogleOAuthUrl";
+import { Spinner } from "@/components/ui/spinner";
 
 export function RegisterPage() {
-  const { isLoading, getGoogleOAuthUrl } = useAuth();
+  const getGoogleOAuthUrlMutation = useGetGoogleOAuthUrl();
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen w-screen flex-col items-center justify-center sm:bg-[#f0f3f5]">
-        <div className="border-primary h-16 w-16 animate-spin rounded-full border-4 border-solid border-t-transparent"></div>
-      </div>
-    );
+  if (getGoogleOAuthUrlMutation.isPending) {
+    return <Spinner />;
   }
   return (
-    // this div is the one who's gonna become centered
     <div className="flex min-h-screen w-screen flex-col items-center sm:rounded-md sm:bg-[#f0f3f5]">
       <div className="bg-background flex w-full flex-col items-center gap-8 p-9 sm:my-20 sm:w-[450px] sm:rounded-lg sm:p-12">
         <svg
@@ -39,7 +36,9 @@ export function RegisterPage() {
           />
         </svg>
         <Button
-          onClick={getGoogleOAuthUrl}
+          onClick={() => {
+            getGoogleOAuthUrlMutation.mutate();
+          }}
           className="bg-background hover:border-primary w-full cursor-pointer border transition-colors hover:bg-gray-100"
         >
           <svg

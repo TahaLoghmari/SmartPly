@@ -407,7 +407,7 @@ public sealed class AuthController(
     [HttpGet("confirm-email")]
     [AllowAnonymous]
     public async Task<IActionResult> ConfirmEmail(
-        ConfirmationDto confirmationDto,
+        [FromQuery] ConfirmationDto confirmationDto,
         ProblemDetailsFactory problemDetailsFactory,
         IValidator<ConfirmationDto> validator)
     {

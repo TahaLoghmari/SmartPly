@@ -1,17 +1,17 @@
 import { Button } from "@/components/ui/button";
-import { useResendConfirmationEmail } from "../hooks/useResendConfirmationEmail";
+import { Spinner } from "@/components/ui/spinner";
+
+import { useAuth, useResendConfirmationEmail } from "../../auth";
+
 import { MoveRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export function EmailVerificationPage() {
   const resendConfirmationEmailMutation = useResendConfirmationEmail();
+  const { user } = useAuth();
 
   if (resendConfirmationEmailMutation.isPending) {
-    return (
-      <div className="flex min-h-screen w-screen flex-col items-center justify-center sm:bg-[#f0f3f5]">
-        <div className="border-primary h-16 w-16 animate-spin rounded-full border-4 border-solid border-t-transparent"></div>
-      </div>
-    );
+    return <Spinner />;
   }
   return (
     <div className="flex min-h-screen w-screen flex-col items-center sm:rounded-md sm:bg-[#f0f3f5]">
@@ -64,11 +64,13 @@ export function EmailVerificationPage() {
             className="cursor-pointer bg-gradient-to-r from-[#6c79e1] to-[#7057b0] p-6 hover:bg-[#9e85f4]"
             onClick={() => {
               if (user?.email) {
-                resendConfirmationEmail(user.email);
+                resendConfirmationEmailMutation.mutate(user.email);
               }
             }}
           >
-            Resend Email
+            {resendConfirmationEmailMutation.isPending
+              ? "Sending..."
+              : "Resend Email"}
           </Button>
           <Link
             to="/"
