@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 
-import { useAuth, useLogin, useCurrentUser } from "../../auth";
+import { useAuthStore, useLogin, useCurrentUser } from "../../auth";
 
 import type { LoginUserDto } from "../types";
 import { Spinner } from "@/components/ui/spinner";
@@ -33,7 +33,7 @@ const formSchema = z.object({
 
 export function LoginForm() {
   const loginMutation = useLogin();
-  const { setAuthState } = useAuth();
+  const { setAuthState } = useAuthStore();
   const { refetch } = useCurrentUser();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

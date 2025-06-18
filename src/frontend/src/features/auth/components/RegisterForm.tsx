@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
 
-import { useAuth, useRegister, useCurrentUser } from "../../auth";
+import { useAuthStore, useRegister, useCurrentUser } from "../../auth";
 import type { RegisterUserDto } from "../types";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -56,7 +56,7 @@ const formSchema = z
   });
 
 export function RegisterForm() {
-  const { setAuthState } = useAuth();
+  const { setAuthState } = useAuthStore();
   const registerMutation = useRegister();
   const { refetch } = useCurrentUser();
   const navigate = useNavigate();

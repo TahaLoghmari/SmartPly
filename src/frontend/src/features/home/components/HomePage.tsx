@@ -1,9 +1,9 @@
 import Header from "./Header";
-import { useAuth } from "../../auth";
+import { useAuthStore } from "../../auth";
 import { Spinner } from "@/components/ui/spinner";
 
 export default function HomePage() {
-  const { isLoading } = useAuth();
+  const { isLoading } = useAuthStore();
 
   if (isLoading)
     return (

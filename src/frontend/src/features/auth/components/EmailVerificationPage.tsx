@@ -1,14 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
-import { useAuth, useResendConfirmationEmail } from "../../auth";
+import { useAuthStore, useResendConfirmationEmail } from "../../auth";
 
 import { MoveRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export function EmailVerificationPage() {
   const resendConfirmationEmailMutation = useResendConfirmationEmail();
-  const { user } = useAuth();
+  const { user } = useAuthStore();
 
   return (
     <div className="flex min-h-screen w-screen flex-col items-center sm:rounded-md sm:bg-[#f0f3f5]">

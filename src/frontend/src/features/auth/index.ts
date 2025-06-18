@@ -4,11 +4,8 @@ export * from "./types";
 // API
 export { authApi } from "./api/authApi";
 
-// Providers
-export { AuthProvider } from "./providers/AuthProvider";
-
 // Hooks
-export { useAuth } from "./hooks/useAuth";
+export { useAuthStore } from "./hooks/useAuthStore";
 export { useResendConfirmationEmail } from "./hooks/useResendConfirmationEmail";
 export { useLogin } from "./hooks/useLogin";
 export { useRegister } from "./hooks/useRegister";
