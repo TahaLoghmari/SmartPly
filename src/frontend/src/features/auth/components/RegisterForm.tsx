@@ -11,11 +11,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-import { useAuthStore, useRegister, useCurrentUser } from "../../auth";
+import { useRegister } from "../../auth";
 import type { RegisterUserDto } from "../types";
 import { Spinner } from "@/components/ui/spinner";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z
   .object({
@@ -56,10 +57,9 @@ const formSchema = z
   });
 
 export function RegisterForm() {
-  const { setAuthState } = useAuthStore();
   const registerMutation = useRegister();
-  const { refetch } = useCurrentUser();
   const navigate = useNavigate();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
@@ -72,14 +72,8 @@ export function RegisterForm() {
   });
   const onSubmit = async (credentials: RegisterUserDto) => {
     registerMutation.mutate(credentials, {
-      onSuccess: async () => {
-        const freshUser = await refetch();
-        setAuthState({
-          user: freshUser.data || null,
-          isAuthenticated: !!freshUser.data,
-          isLoading: false,
-        });
-        navigate("/email-verification");
+      onSuccess: () => {
+        navigate(`/email-verification/?email=${credentials.email}`);
       },
     });
   };
@@ -155,7 +149,7 @@ export function RegisterForm() {
           {registerMutation.isPending ? (
             <Spinner className="h-8 w-auto" />
           ) : (
-            "Sign in"
+            "Sign up"
           )}
         </Button>
         <p className="text-sm font-semibold">

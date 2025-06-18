@@ -1,14 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
-import { useAuthStore, useResendConfirmationEmail } from "../../auth";
+import { useResendConfirmationEmail } from "../../auth";
 
 import { MoveRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 export function EmailVerificationPage() {
   const resendConfirmationEmailMutation = useResendConfirmationEmail();
-  const { user } = useAuthStore();
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get("email");
 
   return (
     <div className="flex min-h-screen w-screen flex-col items-center sm:rounded-md sm:bg-[#f0f3f5]">
@@ -47,7 +48,7 @@ export function EmailVerificationPage() {
         </p>
         <p className="text-center">
           We have sent a verification link to{" "}
-          <span className="font-bold">{user?.email}</span>.
+          <span className="font-bold">{email}</span>.
         </p>
         <p className="text-center">
           Click on the link to complete the verification process.
@@ -60,8 +61,8 @@ export function EmailVerificationPage() {
           <Button
             className="cursor-pointer bg-gradient-to-r from-[#6c79e1] to-[#7057b0] p-6 hover:bg-[#9e85f4]"
             onClick={() => {
-              if (user?.email) {
-                resendConfirmationEmailMutation.mutate(user.email);
+              if (email) {
+                resendConfirmationEmailMutation.mutate(email);
               }
             }}
             disabled={resendConfirmationEmailMutation.isPending}
@@ -73,7 +74,7 @@ export function EmailVerificationPage() {
             )}
           </Button>
           <Link
-            to="/"
+            to="/login"
             className="flex cursor-pointer items-center justify-center gap-1 bg-gradient-to-r from-[#6c79e1] to-[#7057b0] bg-clip-text text-transparent hover:text-[#9e85f4]"
           >
             Return to Site <MoveRight />
@@ -81,7 +82,7 @@ export function EmailVerificationPage() {
         </div>
         <p className="text-center text-sm text-[#7c7c7c]">
           Once you have verified your email, you can click on "Return to Site"
-          to continue.
+          to Log In.
         </p>
       </div>
     </div>

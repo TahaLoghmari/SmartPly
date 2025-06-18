@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 
-import { useAuthStore, useLogin, useCurrentUser } from "../../auth";
+import { useLogin } from "../../auth";
 
 import type { LoginUserDto } from "../types";
 import { Spinner } from "@/components/ui/spinner";
@@ -33,8 +33,6 @@ const formSchema = z.object({
 
 export function LoginForm() {
   const loginMutation = useLogin();
-  const { setAuthState } = useAuthStore();
-  const { refetch } = useCurrentUser();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
@@ -44,23 +42,27 @@ export function LoginForm() {
     },
   });
   async function onSubmit(credentials: LoginUserDto) {
-    loginMutation.mutate(credentials, {
-      async onSuccess() {
-        const freshUser = await refetch();
-        setAuthState({
-          user: freshUser.data || null,
-          isAuthenticated: !!freshUser.data,
-          isLoading: false,
-        });
-      },
-    });
+    loginMutation.mutate(credentials);
   }
+  const isEmailNotVerified =
+    loginMutation.error?.message?.startsWith("Email not Verified");
+  const errorMessage = loginMutation.error?.message;
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
         {loginMutation.isError && (
           <div className="bg-destructive/10 border-destructive text-destructive mb-4 rounded-md border p-3 text-sm">
-            {loginMutation.error?.message}
+            <div>{errorMessage}</div>
+            {isEmailNotVerified && (
+              <div className="mt-2">
+                <Link
+                  to={`/email-verification/?email=${form.getValues("email")}`}
+                  className="text-[#7057b0] underline hover:text-[#9e85f4]"
+                >
+                  Resend Email
+                </Link>
+              </div>
+            )}
           </div>
         )}
         <FormField

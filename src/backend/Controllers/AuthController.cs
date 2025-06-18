@@ -71,10 +71,6 @@ public sealed class AuthController(
 
         await SendConfirmationEmail(registerUserDto.Email, user);
         
-        AccessTokensDto tokens = await tokenManagementService.CreateAndStoreTokens(user.Id, registerUserDto.Email);
-        
-        cookieService.AddCookies(Response, tokens, _jwtAuthOptions);
-        
         return Ok(new { message = "Registration successful" });
     }
     [HttpPost("login")]
@@ -94,6 +90,17 @@ public sealed class AuthController(
                 StatusCodes.Status400BadRequest,
                 title: "Login failed",
                 detail: "Invalid email."
+            );
+            return BadRequest(problem);
+        }
+
+        if (!await userManager.IsEmailConfirmedAsync(user))
+        {
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status400BadRequest,
+                title: "Email not Verified",
+                detail: "Please confirm your email before logging in."
             );
             return BadRequest(problem);
         }
