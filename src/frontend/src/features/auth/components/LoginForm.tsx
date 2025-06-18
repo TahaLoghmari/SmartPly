@@ -17,6 +17,7 @@ import { Link } from "react-router-dom";
 import { useAuth, useLogin, useCurrentUser } from "../../auth";
 
 import type { LoginUserDto } from "../types";
+import { Spinner } from "@/components/ui/spinner";
 
 const formSchema = z.object({
   email: z
@@ -102,7 +103,11 @@ export function LoginForm() {
           className="w-full cursor-pointer bg-gradient-to-r from-[#6c79e1] to-[#7057b0]"
           disabled={!form.formState.isValid || loginMutation.isPending}
         >
-          {loginMutation.isPending ? "Logging in..." : "Login"}
+          {loginMutation.isPending ? (
+            <Spinner className="h-8 w-auto" />
+          ) : (
+            "Login"
+          )}
         </Button>
         <p className="text-sm font-semibold">
           Don't have an account ?{" "}

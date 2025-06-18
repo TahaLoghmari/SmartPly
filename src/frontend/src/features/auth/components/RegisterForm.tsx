@@ -15,6 +15,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { useAuth, useRegister, useCurrentUser } from "../../auth";
 import type { RegisterUserDto } from "../types";
+import { Spinner } from "@/components/ui/spinner";
 
 const formSchema = z
   .object({
@@ -149,9 +150,13 @@ export function RegisterForm() {
         <Button
           type="submit"
           className="w-full cursor-pointer bg-gradient-to-r from-[#6c79e1] to-[#7057b0]"
-          disabled={!form.formState.isValid}
+          disabled={!form.formState.isValid || registerMutation.isPending}
         >
-          {registerMutation.isPending ? "Signing in..." : "Sign in"}
+          {registerMutation.isPending ? (
+            <Spinner className="h-8 w-auto" />
+          ) : (
+            "Sign in"
+          )}
         </Button>
         <p className="text-sm font-semibold">
           Already have an account ?{" "}

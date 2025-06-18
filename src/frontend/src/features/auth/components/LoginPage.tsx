@@ -37,10 +37,10 @@ export function LoginPage() {
           onClick={() => {
             getGoogleOAuthUrlMutation.mutate();
           }}
-          className="bg-background hover:border-primary w-full cursor-pointer border transition-colors hover:bg-gray-100"
+          className="bg-background hover:border-primary flex w-full cursor-pointer items-center justify-center border transition-colors hover:bg-gray-100"
         >
           {getGoogleOAuthUrlMutation.isPending ? (
-            <Spinner />
+            <Spinner className="h-8 w-auto" />
           ) : (
             <>
               <svg
