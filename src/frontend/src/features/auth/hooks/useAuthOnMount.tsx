@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useCurrentUser } from "./useCurrentUser";
-import { useAuthStore } from "../hooks/useAuthStore";
+import { useAuthStore } from "../stores/useAuthStore";
 
 export function useAuthOnMount() {
   const { data: user, isLoading, isError } = useCurrentUser();

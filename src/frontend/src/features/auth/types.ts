@@ -10,6 +10,10 @@ export interface LoginUserDto {
   password: string;
 }
 
+export interface ForgotPasswordDto {
+  email: string;
+}
+
 export interface RegisterUserDto {
   name: string;
   email: string;

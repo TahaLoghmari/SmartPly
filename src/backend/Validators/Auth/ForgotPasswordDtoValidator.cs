@@ -1,9 +1,11 @@
+﻿using backend.DTOs;
 using FluentValidation;
-using backend.DTOs.Email;
 
-public class ResendConfirmationEmailDtoValidator : AbstractValidator<ResendConfirmationEmailDto>
+namespace backend.Validators;
+
+public sealed class ForgetPasswordDtoValidator : AbstractValidator<ForgotPasswordDto>
 {
-    public ResendConfirmationEmailDtoValidator()
+    public ForgetPasswordDtoValidator()
     {
         RuleFor(x => x.Email)
             .NotEmpty()

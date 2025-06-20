@@ -1,4 +1,6 @@
 using backend.DTOs;
+using backend.DTOs.Auth;
+using backend.DTOs.Email;
 using backend.Entities;
 using backend.Mappings;
 using backend.Services;
@@ -6,12 +8,12 @@ using backend.Settings;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
-using backend.DTOs.Email;
 
 namespace backend.Controllers;
 
@@ -292,7 +294,244 @@ public sealed class AuthController(
 
         return Ok(new { message = "Logged out successfully" });
     }
+    [HttpGet("confirm-email")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ConfirmEmail(
+        [FromQuery] ConfirmationDto confirmationDto,
+        ProblemDetailsFactory problemDetailsFactory,
+        IValidator<ConfirmationDto> validator)
+    {
+        await validator.ValidateAndThrowAsync(confirmationDto);
+
+        var user = await userManager.FindByIdAsync(confirmationDto.UserId);
+        if (user is null)
+        {
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status400BadRequest,
+                title: "User does not exist",
+                detail: "the UserId is invalid."
+            );
+            return BadRequest(problem);
+        }
+
+        var result = await userManager.ConfirmEmailAsync(user, confirmationDto.Token);
+        var frontendUrl = configuration["Frontend:BaseUrl"];
+        
+        if (result.Succeeded)
+        {
+            return Redirect($"{frontendUrl}/email-confirmed?status=success");
+        }
+        return Redirect($"{frontendUrl}/email-confirmed?status=error");
+    }
     
+    [AllowAnonymous]
+    [HttpPost("resend-confirmation-email")]
+    public async Task<IActionResult> ResendConfirmationEmail( 
+        ResendConfirmationEmailDto dto,
+        ProblemDetailsFactory problemDetailsFactory,
+        IValidator<ResendConfirmationEmailDto> validator)
+    {
+        await validator.ValidateAndThrowAsync(dto);
+        
+        var user = await userManager.FindByEmailAsync(dto.Email);
+
+        if (user is null || await userManager.IsEmailConfirmedAsync(user))
+        {
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status400BadRequest,
+                title: "User not found",
+                detail: "No user exists with the provided email or the email is already confirmed."
+            );
+            return BadRequest(problem);
+        }
+
+        await SendConfirmationEmail(dto.Email, user);
+
+        return Ok(new { message = "Confirmation email sent. Please check your inbox." });
+    }
+    [HttpPost("forgot-password")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ForgotPassword(
+        ForgotPasswordDto dto,
+        ProblemDetailsFactory problemDetailsFactory,
+        IValidator<ForgotPasswordDto> validator)
+    {
+        await validator.ValidateAndThrowAsync(dto);
+
+        var user = await userManager.FindByEmailAsync(dto.Email);
+
+        if ( user != null )
+        {
+            await SendForgotPasswordEmail(user.Email, user);
+        }
+        
+        return Ok(new { message = "Reset Password email sent. Please check your inbox." });
+    }
+    [HttpGet("reset-password")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ResetPassword(
+    [FromQuery] EmailResetPasswordDto emailResetPasswordDto,
+    IValidator<EmailResetPasswordDto> validator)
+    {
+        var frontendUrl = configuration["Frontend:BaseUrl"];
+
+        var validationResult = await validator.ValidateAsync(emailResetPasswordDto);
+        if (!validationResult.IsValid)
+        {
+            return Redirect($"{frontendUrl}/reset-password?status=invalid");
+        }
+
+        var encodedToken = Uri.EscapeDataString(emailResetPasswordDto.Token);
+        var encodedEmail = Uri.EscapeDataString(emailResetPasswordDto.Email);
+
+        return Redirect($"{frontendUrl}/reset-password?token={encodedToken}&email={encodedEmail}");
+    }
+    [HttpPost("reset-password")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ResetPassword(
+    ResetPasswordDto processResetPasswordDto,
+    ProblemDetailsFactory problemDetailsFactory,
+    IValidator<ResetPasswordDto> validator)
+    {
+        await validator.ValidateAndThrowAsync(processResetPasswordDto);
+
+        var user = await userManager.FindByEmailAsync(processResetPasswordDto.Email);
+        if (user is null)
+        {
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status400BadRequest,
+                title: "User not found",
+                detail: "No user exists with the provided email."
+            );
+            return BadRequest(problem);
+        }
+
+        var result = await userManager.ResetPasswordAsync(user, processResetPasswordDto.Token, processResetPasswordDto.NewPassword);
+        var frontendUrl = configuration["Frontend:BaseUrl"];
+
+        if (result.Succeeded)
+        {
+            return Redirect($"{frontendUrl}/reset-password?status=success");
+        }
+
+        var resetFailedProblem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status400BadRequest,
+                title: "Password Reset Failed",
+                detail: "The password reset token is invalid or has expired."
+            );
+        return BadRequest(resetFailedProblem);
+    }
+    private async Task SendForgotPasswordEmail(string? email, User? user)
+    {
+        var token = await userManager.GeneratePasswordResetTokenAsync(user);
+
+        var passwordResetLink = Url.Action("ResetPassword", "Auth",
+            new { Email = email, Token = token }, protocol: HttpContext.Request.Scheme);
+
+        var safeLink = HtmlEncoder.Default.Encode(passwordResetLink);
+
+        var subject = "Reset Your Password";
+
+        var messageBody = $@"
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Reset Your SmartPly Password</title>
+</head>
+<body style=""margin: 0; padding: 0; background-color: #f8f9fa;"">
+    <div style=""max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"">
+        
+        <!-- Header -->
+        <div style=""background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;"">
+            <h1 style=""color: #ffffff; margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 28px; font-weight: 300;"">
+                Password Reset Request
+            </h1>
+            <p style=""color: #e8ecff; margin: 10px 0 0 0; font-size: 16px;"">
+                Let's get you back in
+            </p>
+        </div>
+
+        <!-- Content -->
+        <div style=""padding: 40px 30px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.7; color: #2c3e50;"">
+            
+            <p style=""font-size: 18px; margin: 0 0 25px 0;"">
+                Hi <strong style=""color: #667eea;"">{user.Name}</strong>,
+            </p>
+
+            <p style=""font-size: 16px; margin: 0 0 30px 0;"">
+                We received a request to reset your password for your <strong>SmartPly</strong> account. 
+                If you made this request, please click the button below to reset your password:
+            </p>
+
+            <!-- CTA Button -->
+            <div style=""text-align: center; margin: 40px 0;"">
+                <a href=""{safeLink}"" 
+                   style=""background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                          color: #ffffff;
+                          padding: 16px 32px;
+                          text-decoration: none;
+                          font-weight: 600;
+                          font-size: 16px;
+                          border-radius: 8px;
+                          display: inline-block;
+                          box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                          transition: all 0.3s ease;"">
+                    🔑 Reset Password
+                </a>
+            </div>
+
+            <!-- Alternative Link -->
+            <div style=""background-color: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; margin: 30px 0;"">
+                <p style=""margin: 0 0 10px 0; font-size: 14px; color: #6c757d;"">
+                    <strong>Button not working?</strong> Copy and paste this link into your browser:
+                </p>
+                <p style=""margin: 0; word-break: break-all;"">
+                    <a href=""{safeLink}"" style=""color: #667eea; text-decoration: none; font-size: 14px;"">
+                        {safeLink}
+                    </a>
+                </p>
+            </div>
+
+            <!-- Security Note -->
+            <div style=""margin: 30px 0; padding: 15px; background-color: #fff3cd; border-radius: 6px; border: 1px solid #ffeaa7;"">
+                <p style=""margin: 0; font-size: 14px; color: #856404;"">
+                    🔒 <strong>Security Note:</strong> If you didn't request a password reset, you can safely ignore this email or contact support if you have concerns.
+                </p>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div style=""background-color: #2c3e50; padding: 30px; text-align: center;"">
+            <p style=""color: #ffffff; margin: 0 0 10px 0; font-size: 16px; font-weight: 500;"">
+                Best regards,
+            </p>
+            <p style=""color: #bdc3c7; margin: 0; font-size: 14px;"">
+                The SmartPly Team
+            </p>
+            
+            <div style=""margin-top: 20px; padding-top: 20px; border-top: 1px solid #34495e;"">
+                <p style=""color: #95a5a6; margin: 0; font-size: 12px;"">
+                    This email was sent to you because you requested a password reset for SmartPly.<br>
+                    © 2025 SmartPly. All rights reserved.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
+";
+
+        SendEmailDto sendEmailDto = new SendEmailDto(email, subject, messageBody, true);
+        await emailSenderService.SendEmailAsync(sendEmailDto);
+    }
     private async Task SendConfirmationEmail(string email, User user)
     {
         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -308,11 +547,11 @@ public sealed class AuthController(
                 Title = "Email confirmation link generation failed",
                 Detail = "Could not generate a valid email confirmation link."
             };
-            throw new Exception(problem.Detail); 
+            throw new Exception(problem.Detail);
         }
 
         var safeLink = HtmlEncoder.Default.Encode(confirmationLink);
-        
+
         var subject = "Welcome to SmartPly! Please Confirm Your Email";
 
         var messageBody = $@"
@@ -410,72 +649,5 @@ public sealed class AuthController(
         SendEmailDto sendEmailDto = new SendEmailDto(email, subject, messageBody, true);
 
         await emailSenderService.SendEmailAsync(sendEmailDto);
-    }
-    [HttpGet("confirm-email")]
-    [AllowAnonymous]
-    public async Task<IActionResult> ConfirmEmail(
-        [FromQuery] ConfirmationDto confirmationDto,
-        ProblemDetailsFactory problemDetailsFactory,
-        IValidator<ConfirmationDto> validator)
-    {
-        await validator.ValidateAndThrowAsync(confirmationDto);
-        
-        if (string.IsNullOrEmpty(confirmationDto.UserId) || string.IsNullOrEmpty(confirmationDto.Token))
-        {
-            var problem = problemDetailsFactory.CreateProblemDetails(
-                HttpContext,
-                StatusCodes.Status400BadRequest,
-                title: "Invalid confirmation link",
-                detail: "The link is invalid or has expired. Please request a new one if needed."
-            );
-            return BadRequest(problem);
-        }
-
-        var user = await userManager.FindByIdAsync(confirmationDto.UserId);
-        if (user is null)
-        {
-            var problem = problemDetailsFactory.CreateProblemDetails(
-                HttpContext,
-                StatusCodes.Status400BadRequest,
-                title: "User does not exist",
-                detail: "the UserId is invalid."
-            );
-            return BadRequest(problem);
-        }
-
-        var result = await userManager.ConfirmEmailAsync(user, confirmationDto.Token);
-        var frontendUrl = configuration["Frontend:BaseUrl"];
-        
-        if (result.Succeeded)
-        {
-            return Redirect($"{frontendUrl}/email-confirmed?status=success");
-        }
-        return Redirect($"{frontendUrl}/email-confirmed?status=error");
-    }
-    
-    [AllowAnonymous]
-    [HttpPost("resend-confirmation-email")]
-    public async Task<IActionResult> ResendConfirmationEmail( 
-        ResendConfirmationEmailDto dto,
-        ProblemDetailsFactory problemDetailsFactory,
-        IValidator<ResendConfirmationEmailDto> validator)
-    {
-        await validator.ValidateAndThrowAsync(dto);
-        
-        var user = await userManager.FindByEmailAsync(dto.Email);
-        if (user is null || await userManager.IsEmailConfirmedAsync(user))
-        {
-            var problem = problemDetailsFactory.CreateProblemDetails(
-                HttpContext,
-                StatusCodes.Status400BadRequest,
-                title: "User not found",
-                detail: "No user exists with the provided email or the email is already confirmed."
-            );
-            return BadRequest(problem);
-        }
-
-        await SendConfirmationEmail(dto.Email, user);
-
-        return Ok(new { message = "Confirmation email sent. Please check your inbox." });
     }
 }

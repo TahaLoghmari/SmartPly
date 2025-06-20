@@ -1,9 +1,9 @@
+﻿using backend.DTOs;
 using FluentValidation;
-using backend.DTOs.Email;
 
-public class ResendConfirmationEmailDtoValidator : AbstractValidator<ResendConfirmationEmailDto>
+public sealed class EmailResetPasswordDtoValidator : AbstractValidator<EmailResetPasswordDto>
 {
-    public ResendConfirmationEmailDtoValidator()
+    public EmailResetPasswordDtoValidator()
     {
         RuleFor(x => x.Email)
             .NotEmpty()
@@ -12,5 +12,8 @@ public class ResendConfirmationEmailDtoValidator : AbstractValidator<ResendConfi
             .WithMessage("Invalid email format.")
             .MaximumLength(256)
             .WithMessage("Email must be at most 256 characters.");
+
+        RuleFor(x => x.Token)
+            .NotEmpty().WithMessage("Token is required.");
     }
 }

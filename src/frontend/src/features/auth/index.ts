@@ -5,7 +5,7 @@ export * from "./types";
 export { authApi } from "./api/authApi";
 
 // Hooks
-export { useAuthStore } from "./hooks/useAuthStore";
+export { useAuthStore } from "./stores/useAuthStore";
 export { useResendConfirmationEmail } from "./hooks/useResendConfirmationEmail";
 export { useLogin } from "./hooks/useLogin";
 export { useRegister } from "./hooks/useRegister";
@@ -19,3 +19,6 @@ export { EmailVerificationPage } from "./components/EmailVerificationPage";
 export { EmailConfirmedPage } from "./components/EmailConfirmedPage";
 export { RegisterForm } from "./components/RegisterForm";
 export { LoginForm } from "./components/LoginForm";
+export { ForgotPasswordPage } from "./components/ForgotPasswordPage";
+export { ForgotPasswordForm } from "./components/ForgotPasswordForm";
+export { ResetPasswordSent } from "./components/ResetPasswordSent";

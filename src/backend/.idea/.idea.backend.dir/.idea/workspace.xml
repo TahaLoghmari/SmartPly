@@ -11,22 +11,17 @@
     <list default="true" id="12fc8505-229a-4662-8141-0ba9b6687656" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.backend.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.backend.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Controllers/AuthController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Controllers/AuthController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DTOs/Auth/RefreshTokenRequestDto.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DTOs/Email/ConfirmationDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DTOs/Auth/ConfirmationDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DTOs/Email/ResendConfirmationDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DTOs/Auth/ResendConfirmationDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DTOs/Email/SendEmailDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DTOs/Auth/SendEmailDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Validators/Auth/ResendConfirmationEmailDtoValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Validators/Auth/ResendConfirmationEmailDtoValidator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/App.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/api/authApi.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/api/authApi.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/authRoutes.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/authRoutes.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/components/EmailConfirmedPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/components/EmailConfirmedPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/components/EmailVerificationPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/components/EmailVerificationPage.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/components/LoginForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/components/LoginForm.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/components/LoginPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/components/LoginPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/components/RegisterPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/components/RegisterPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/hooks/useAuthOnMount.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/hooks/useAuthOnMount.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/hooks/useAuthStore.tsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/providers/AuthProvider.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/providers/AuthProvider.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/services/validationService.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/features/home/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/features/home/types.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/features/auth/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/features/auth/types.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,15 +35,17 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/5a88a5b8366349ff860c4c3c928123f221200/ec/35324b1d/AuthenticationMiddleware.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9280a82cb6c148d0b7070deaaaff0d3edc00/20/97e353f1/AuthorizationMiddleware.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c2766a3e812e42cdac93c1ca39bc3a54d19e00/59/e010f794/ValueTask`1.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d284fcef5ab54d28a75168f0fe7f7f7b1daa00/2a/81430a63/ActionMethodExecutor.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d284fcef5ab54d28a75168f0fe7f7f7b1daa00/82/d34f687a/ControllerActionInvoker.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d284fcef5ab54d28a75168f0fe7f7f7b1daa00/eb/e2f37c60/ResourceInvoker.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c07d444f10cfea95b513fdf6439f3f65c31415a5ca4f6054a3ba62c9c1338c/DefaultValidatorExtensions_Validate.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/117275599da316d4e45c62326f3097e45f8b5b17d8fe17bbcf9ca86b0819b16/ResourceInvoker.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/234a93d637d5e17f1de0ec244dc09d402281d71bab8d9d5bb507e14f1c26c9/HttpProtocol.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/294078ecfce6fdb942ecfee089f09717de7a6fcfe5efd9fdb6f4f93c0fb4813/ActionMethodExecutor.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/2f2b1d92f1ffcf2dabd664473f8c9dafa6039595ac228ce4b75a0f1619c5991/AsyncTaskMethodBuilderT.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/53b0d531c06faf86bf2ae111a9a2dbce4c52a9153feb9966ade60289c71bf52/ExecutionContext.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8789586b575d44528c2aa18853f6eb96f3e8f8d3f4fa7eb9d6a56b54b49d7/Task.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/879e3173b4f82be9a07b4366bcbf46161cc43f2bd9e494df2d923810e3c48/ControllerActionInvoker.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/918aa32966267955c2bcd6ecbee8af7ab7d84b7cb6cef6443c7b1cd33546d6e/AuthorizationMiddleware.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bde5a0e5fb6491e71267549d64518746e9cfebd10d35f355da6815637e3c/AuthenticationMiddleware.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c794baab3518d05f8546334d672798d62c10be97c2de99a62b39b885a637/TaskContinuation.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7f6bd65ecce6228f0f70982b61dd38ebcc554d98ff7cc551a9626daacbcda6/DeveloperExceptionPageMiddlewareImpl.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
@@ -66,13 +63,14 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;/home/tahaloghmari/Desktop/Projects/SmartPly/SmartPly.sln&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;debugger.stepping&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -124,6 +122,8 @@
       <workItem from="1749716264381" duration="12306000" />
       <workItem from="1749800020485" duration="10558000" />
       <workItem from="1749883953941" duration="1800000" />
+      <workItem from="1750414837221" duration="216000" />
+      <workItem from="1750415252720" duration="8166000" />
     </task>
     <servers />
   </component>
@@ -164,13 +164,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Controllers/AuthController.cs</url>
-          <line>454</line>
+          <line>446</line>
           <properties documentPath="$PROJECT_DIR$/Controllers/AuthController.cs" containingFunctionPresentation="Method 'ResendConfirmationEmail'">
             <startOffsets>
-              <option value="17180" />
+              <option value="16893" />
             </startOffsets>
             <endOffsets>
-              <option value="17181" />
+              <option value="16894" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="25" />
@@ -190,16 +190,55 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Controllers/AuthController.cs</url>
-          <line>241</line>
-          <properties documentPath="$PROJECT_DIR$/Controllers/AuthController.cs" containingFunctionPresentation="Method 'GetCurrentUser'">
+          <line>359</line>
+          <properties documentPath="C:\Users\medta\Desktop\Projects\SmartPly\src\backend\Controllers\AuthController.cs" containingFunctionPresentation="Method 'ForgotPassword'">
             <startOffsets>
-              <option value="8747" />
+              <option value="12731" />
             </startOffsets>
             <endOffsets>
-              <option value="8748" />
+              <option value="12732" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="27" />
+          <option name="timeStamp" value="28" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Controllers/AuthController.cs</url>
+          <line>376</line>
+          <properties documentPath="C:\Users\medta\Desktop\Projects\SmartPly\src\backend\Controllers\AuthController.cs" containingFunctionPresentation="Method 'ResetPassword'">
+            <startOffsets>
+              <option value="13288" />
+            </startOffsets>
+            <endOffsets>
+              <option value="13289" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="31" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Controllers/AuthController.cs</url>
+          <line>396</line>
+          <properties documentPath="C:\Users\medta\Desktop\Projects\SmartPly\src\backend\Controllers\AuthController.cs" containingFunctionPresentation="Method 'ResetPassword'">
+            <startOffsets>
+              <option value="14086" />
+            </startOffsets>
+            <endOffsets>
+              <option value="14087" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="32" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Controllers/AuthController.cs</url>
+          <line>428</line>
+          <properties documentPath="C:\Users\medta\Desktop\Projects\SmartPly\src\backend\Controllers\AuthController.cs" containingFunctionPresentation="Method 'SendForgotPasswordEmail'">
+            <startOffsets>
+              <option value="15354" />
+            </startOffsets>
+            <endOffsets>
+              <option value="15355" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="33" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

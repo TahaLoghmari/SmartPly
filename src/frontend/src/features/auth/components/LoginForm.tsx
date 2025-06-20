@@ -22,10 +22,9 @@ import { Spinner } from "@/components/ui/spinner";
 const formSchema = z.object({
   email: z
     .string()
-    .min(2, {
-      message: "Username must be at least 2 characters.",
-    })
-    .email({ message: "Please enter a valid email address" }),
+    .min(1, { message: "Email is required." })
+    .email({ message: "Invalid email format." })
+    .max(256, { message: "Email must be at most 256 characters." }),
   password: z.string().min(8, {
     message: "Password must be at least 8 characters.",
   }),
@@ -89,7 +88,7 @@ export function LoginForm() {
               </FormControl>
               <FormDescription>
                 <Link
-                  to="/"
+                  to="/forgot-password"
                   className="font-semibold text-[#7057b0] underline decoration-solid"
                 >
                   Forgot your password?

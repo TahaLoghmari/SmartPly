@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
 import { useAuthOnMount } from "../features/auth";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function App() {
   const { isLoading } = useAuthOnMount();
@@ -11,5 +12,11 @@ export default function App() {
         <Spinner />
       </div>
     );
-  else return <Outlet />;
+  else
+    return (
+      <>
+        <Outlet />
+        <Toaster />
+      </>
+    );
 }

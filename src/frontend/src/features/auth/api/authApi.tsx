@@ -1,4 +1,9 @@
-import type { LoginUserDto, RegisterUserDto, User } from "../types";
+import type {
+  ForgotPasswordDto,
+  LoginUserDto,
+  RegisterUserDto,
+  User,
+} from "../types";
 import { request } from "./client";
 
 export const authApi = {
@@ -40,6 +45,13 @@ export const authApi = {
     return request<string>("/auth/resend-confirmation-email", {
       method: "POST",
       body: JSON.stringify({ email }),
+    });
+  },
+
+  forgotPassword(credentials: ForgotPasswordDto) {
+    return request<string>("/auth/forgot-password", {
+      method: "POST",
+      body: JSON.stringify(credentials),
     });
   },
 };
