@@ -2,6 +2,7 @@ import type {
   ForgotPasswordDto,
   LoginUserDto,
   RegisterUserDto,
+  ResetPasswordDto,
   User,
 } from "../types";
 import { request } from "./client";
@@ -50,6 +51,13 @@ export const authApi = {
 
   forgotPassword(credentials: ForgotPasswordDto) {
     return request<string>("/auth/forgot-password", {
+      method: "POST",
+      body: JSON.stringify(credentials),
+    });
+  },
+
+  resetPassword(credentials: ResetPasswordDto) {
+    return request<string>("/auth/reset-password", {
       method: "POST",
       body: JSON.stringify(credentials),
     });

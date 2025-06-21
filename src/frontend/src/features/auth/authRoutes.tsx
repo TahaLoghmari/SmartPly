@@ -5,8 +5,7 @@ import {
   EmailVerificationPage,
   EmailConfirmedPage,
   ForgotPasswordPage,
-  ForgotPasswordForm,
-  ResetPasswordSent,
+  ResetPasswordPage,
 } from "../auth";
 
 export const authRoutes: RouteObject[] = [
@@ -29,15 +28,9 @@ export const authRoutes: RouteObject[] = [
   {
     path: "forgot-password",
     element: <ForgotPasswordPage />,
-    children: [
-      {
-        path: "",
-        element: <ForgotPasswordForm />,
-      },
-      {
-        path: "password-reset-sent",
-        element: <ResetPasswordSent />,
-      },
-    ],
+  },
+  {
+    path: "reset-password",
+    element: <ResetPasswordPage />,
   },
 ];

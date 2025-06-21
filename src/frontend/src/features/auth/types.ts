@@ -21,6 +21,13 @@ export interface RegisterUserDto {
   confirmPassword: string;
 }
 
+export interface ResetPasswordDto {
+  email: string;
+  token: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
 export interface TokensDto {
   accessToken: string;
   refreshToken: string;

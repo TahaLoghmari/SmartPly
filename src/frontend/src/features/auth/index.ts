@@ -21,4 +21,5 @@ export { RegisterForm } from "./components/RegisterForm";
 export { LoginForm } from "./components/LoginForm";
 export { ForgotPasswordPage } from "./components/ForgotPasswordPage";
 export { ForgotPasswordForm } from "./components/ForgotPasswordForm";
-export { ResetPasswordSent } from "./components/ResetPasswordSent";
+export { ResetPasswordPage } from "./components/ResetPasswordPage";
+export { ResetPasswordForm } from "./components/ResetPasswordForm";
