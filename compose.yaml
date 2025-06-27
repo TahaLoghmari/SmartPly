@@ -1,0 +1,55 @@
+services:
+  web:
+    depends_on:
+      - api
+    build: ./frontend
+    ports:
+      - 5173:5173
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+    develop:
+      watch:
+        - path: ./frontend/package.json
+          action: rebuild
+        - path: ./frontend/package-lock.json
+          action: rebuild
+        - path: ./frontend
+          target: /app
+          action: sync
+  api:
+    depends_on:
+      - db
+    build: ./backend
+    ports:
+      - 5000:8080
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    develop:
+      watch:
+        - path: ./backend
+          target: /app
+          action: sync
+        - path: ./backend/*.csproj
+          action: rebuild
+  db:
+    image: postgres
+    restart: always
+    user: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db-data:
