@@ -13,9 +13,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { Link } from "react-router-dom";
-import { useForgotPassword } from "../hooks/useForgotPassword";
-import type { ForgotPasswordDto } from "../types";
-import { useForgotPasswordStore } from "../stores/useForgotPasswordStore";
+import {
+  useForgotPassword,
+  useForgotPasswordStore,
+  type ForgotPasswordDto,
+} from "../../auth";
 
 const formSchema = z.object({
   email: z

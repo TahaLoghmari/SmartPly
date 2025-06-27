@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../../auth";
 
-export default function Header() {
+export function Header() {
   const { isAuthenticated } = useAuthStore();
   return (
     <div className="flex items-center justify-between px-1 py-4">

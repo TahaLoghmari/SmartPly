@@ -1,7 +1,9 @@
-import { ForgotPasswordForm } from "../../auth";
+import {
+  ForgotPasswordForm,
+  useForgotPassword,
+  useForgotPasswordStore,
+} from "../../auth";
 import questionMark from "../../../shared/assets/questionMark.png";
-import { useForgotPasswordStore } from "../stores/useForgotPasswordStore";
-import { useForgotPassword } from "../hooks/useForgotPassword";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";

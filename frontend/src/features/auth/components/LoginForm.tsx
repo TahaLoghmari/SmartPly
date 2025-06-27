@@ -14,9 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 
-import { useLogin } from "../../auth";
+import { useLogin, type LoginUserDto } from "../../auth";
 
-import type { LoginUserDto } from "../types";
 import { Spinner } from "@/components/ui/spinner";
 
 const formSchema = z.object({

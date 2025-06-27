@@ -13,8 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 
-import { useRegister } from "../../auth";
-import type { RegisterUserDto } from "../types";
+import { useRegister, type RegisterUserDto } from "../../auth";
 import { Spinner } from "@/components/ui/spinner";
 import { useNavigate } from "react-router-dom";
 

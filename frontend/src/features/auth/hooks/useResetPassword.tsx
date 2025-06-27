@@ -1,6 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { authApi } from "../api/authApi";
-import type { ResetPasswordDto } from "../types";
+import { authApi, type ResetPasswordDto } from "../../auth";
 import { useNavigate } from "react-router-dom";
 
 export function useResetPassword() {

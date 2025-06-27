@@ -1,3 +1,6 @@
+// Routes
+export { authRoutes } from "./authRoutes";
+
 // Types
 export * from "./types";
 
@@ -9,20 +12,24 @@ export { useAuthStore } from "./stores/useAuthStore";
 export { useForgotPasswordStore } from "./stores/useForgotPasswordStore";
 
 // Hooks
-export { useResendConfirmationEmail } from "./hooks/useResendConfirmationEmail";
-export { useLogin } from "./hooks/useLogin";
-export { useRegister } from "./hooks/useRegister";
-export { useCurrentUser } from "./hooks/useCurrentUser";
 export { useAuthOnMount } from "./hooks/useAuthOnMount";
+export { useCurrentUser } from "./hooks/useCurrentUser";
+export { useForgotPassword } from "./hooks/useForgotPassword";
+export { useGetGoogleOAuthUrl } from "./hooks/useGetGoogleOAuthUrl";
+export { useLogin } from "./hooks/useLogin";
+export { useLogout } from "./hooks/useLogout";
+export { useRegister } from "./hooks/useRegister";
+export { useResendConfirmationEmail } from "./hooks/useResendConfirmationEmail";
+export { useResetPassword } from "./hooks/useResetPassword";
 
 // Components
-export { LoginPage } from "./components/LoginPage";
-export { RegisterPage } from "./components/RegisterPage";
-export { EmailVerificationPage } from "./components/EmailVerificationPage";
 export { EmailConfirmedPage } from "./components/EmailConfirmedPage";
-export { RegisterForm } from "./components/RegisterForm";
-export { LoginForm } from "./components/LoginForm";
-export { ForgotPasswordPage } from "./components/ForgotPasswordPage";
+export { EmailVerificationPage } from "./components/EmailVerificationPage";
 export { ForgotPasswordForm } from "./components/ForgotPasswordForm";
-export { ResetPasswordPage } from "./components/ResetPasswordPage";
+export { ForgotPasswordPage } from "./components/ForgotPasswordPage";
+export { LoginForm } from "./components/LoginForm";
+export { LoginPage } from "./components/LoginPage";
+export { RegisterForm } from "./components/RegisterForm";
+export { RegisterPage } from "./components/RegisterPage";
 export { ResetPasswordForm } from "./components/ResetPasswordForm";
+export { ResetPasswordPage } from "./components/ResetPasswordPage";
