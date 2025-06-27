@@ -24,6 +24,8 @@ app.UseCors("AllowReactApp");
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapHealthChecks("/health");
+
 app.UseExceptionHandler();
 
 app.MapControllers();

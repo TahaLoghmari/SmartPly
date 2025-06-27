@@ -1,16 +1,16 @@
-using Serilog;
-
 namespace backend;
-using backend.Services;
-using backend.Settings;
+using Serilog;
+using Services;
+using Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using backend.Entities;
+using Entities;
 using FluentValidation;
-using backend.Middlewares;
+using Middlewares;
+
 
 public static class DependencyInjection
 {
@@ -112,6 +112,9 @@ public static class DependencyInjection
         builder.Services.AddTransient<TokenManagementService>();
         builder.Services.AddScoped<CookieService>();
         builder.Services.AddTransient<EmailSenderService>();
+        builder.Services.AddHealthChecks()
+            .AddDbContextCheck<ApplicationDbContext>("Database");
+        
         return builder; 
     }
     public static WebApplicationBuilder AddLogging(this WebApplicationBuilder builder)
