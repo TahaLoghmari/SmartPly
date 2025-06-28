@@ -23,6 +23,7 @@ export { useResendConfirmationEmail } from "./hooks/useResendConfirmationEmail";
 export { useResetPassword } from "./hooks/useResetPassword";
 
 // Components
+export { AuthGuard } from "./components/AuthGuard";
 export { EmailConfirmedPage } from "./components/EmailConfirmedPage";
 export { EmailVerificationPage } from "./components/EmailVerificationPage";
 export { ForgotPasswordForm } from "./components/ForgotPasswordForm";

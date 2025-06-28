@@ -6,31 +6,56 @@ import {
   EmailConfirmedPage,
   ForgotPasswordPage,
   ResetPasswordPage,
+  AuthGuard,
 } from "../auth";
 
 export const authRoutes: RouteObject[] = [
   {
     path: "login",
-    element: <LoginPage />,
+    element: (
+      <AuthGuard>
+        <LoginPage />
+      </AuthGuard>
+    ),
   },
   {
     path: "register",
-    element: <RegisterPage />,
+    element: (
+      <AuthGuard>
+        <RegisterPage />
+      </AuthGuard>
+    ),
   },
   {
     path: "email-verification",
-    element: <EmailVerificationPage />,
+    element: (
+      <AuthGuard>
+        <EmailVerificationPage />
+      </AuthGuard>
+    ),
   },
   {
     path: "email-confirmed",
-    element: <EmailConfirmedPage />,
+    element: (
+      <AuthGuard>
+        <EmailConfirmedPage />
+      </AuthGuard>
+    ),
   },
   {
     path: "forgot-password",
-    element: <ForgotPasswordPage />,
+    element: (
+      <AuthGuard>
+        <ForgotPasswordPage />
+      </AuthGuard>
+    ),
   },
   {
     path: "reset-password",
-    element: <ResetPasswordPage />,
+    element: (
+      <AuthGuard>
+        <ResetPasswordPage />
+      </AuthGuard>
+    ),
   },
 ];
