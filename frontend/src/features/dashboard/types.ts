@@ -16,6 +16,11 @@ export interface GmailState {
 }
 
 export interface NotificationsCount {
-  notificationsCount : number ; 
-  setNotificationsCount: (count : number ) => void ; 
+  notificationsCount: number;
+  setNotificationsCount: (count: number) => void;
+}
+
+export interface SideBarState {
+  activeState: boolean;
+  setActiveState: (state: boolean) => void;
 }
