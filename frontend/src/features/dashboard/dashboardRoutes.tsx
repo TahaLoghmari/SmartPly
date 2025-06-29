@@ -1,5 +1,5 @@
 import type { RouteObject } from "react-router-dom";
-import Test from "./components/Test";
+import { Dashboard } from "../dashboard";
 import { ProtectedRoute } from "../../shared";
 
 export const appRoutes: RouteObject[] = [
@@ -7,7 +7,7 @@ export const appRoutes: RouteObject[] = [
     path: "app",
     element: (
       <ProtectedRoute>
-        <Test />
+        <Dashboard />
       </ProtectedRoute>
     ),
   },
