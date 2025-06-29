@@ -2,27 +2,28 @@
 export * from "./types";
 
 // components
-export { Dashboard } from "./components/Dashboard";
-export { SideBar } from "./components/SideBar/SideBar";
-export { SideBarHeader } from "./components/SideBar/SideBarHeader";
-export { SideBarNavigation } from "./components/SideBar/SideBarNavigation";
-export { SideBarAI } from "./components/SideBar/SideBarAI";
-export { SideBarFooter } from "./components/SideBar/SideBarFooter";
-export { SideBarLogo } from "./components/SideBar/SideBarLogo";
-export { MainContent } from "./components/MainContent";
-export { Header } from "./components/Header/Header";
-export { Searchbar } from "./components/Header/Searchbar";
-export { GmailConnectionStatus } from "./components/Header/GmailConnectionStatus";
-export { NotificationBell } from "./components/Header/NotificationBell";
-export { AddApplicationButton } from "./components/Header/AddApplicationButton";
-export { Title } from "./components/Header/Title";
-export { LogoutButton } from "./components/SideBar/LogoutButton";
+// Header
+export { DashboardLayout } from "./components/DashboardLayout";
+export { DashboardHeaderAddApplicationButton } from "./components/header/DashboardHeaderAddApplicationButton";
+export { DashboardHeaderGmailConnectionStatus } from "./components/header/DashboardHeaderGmailConnectionStatus";
+export { DashboardHeaderLayout } from "./components/header/DashboardHeaderLayout";
+export { DashboardHeaderNotificationBell } from "./components/header/DashboardHeaderNotificationBell";
+export { DashboardHeaderSearchBar } from "./components/header/DashboardHeaderSearchBar";
+export { DashboardHeaderTitle } from "./components/header/DashboardHeaderTitle";
+// SideBar
+export { DashboardSideBarAI } from "./components/sideBar/DashboardSideBarAI";
+export { DashboardSideBarFooter } from "./components/sideBar/DashboardSideBarFooter";
+export { DashboardSideBarHeader } from "./components/sideBar/DashboardSideBarHeader";
+export { DashboardSideBarLogo } from "./components/sideBar/DashboardSideBarLogo";
+export { DashboardSideBarLogoutButton } from "./components/sideBar/DashboardSideBarLogoutButton";
+export { DashboardSideBarNavigation } from "./components/sideBar/DashboardSideBarNavigation";
+export { DashboardSideBarLayout } from "./components/sideBar/DashboardSideBarLayout";
 
 // Stores
-export { useActiveNavItemStore } from "./Stores/useActiveNavItemStore";
-export { useGmailState } from "./Stores/useGmailState";
-export { useNotificationsCount } from "./Stores/useNotificationsCount";
-export { useSideBarState } from "./Stores/useSideBarState";
+export { useDashboardActiveNavItemStore } from "./stores/useDashboardActiveNavItemStore";
+export { useDashboardGmailState } from "./stores/useDashboardGmailState";
+export { useDashboardNotificationsCount } from "./stores/useDashboardNotificationsCount";
+export { useDashboardSideBarState } from "./stores/useDashboardSideBarState";
 
 // constants
-export { navigationTitles } from "./constants/navigationTitles";
+export * from "./constants";
