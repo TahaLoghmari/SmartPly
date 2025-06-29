@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
 import { useAuthOnMount } from "../features/auth";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/ui/theme-provider";
 
 export default function App() {
   const { isLoading } = useAuthOnMount();
@@ -14,9 +15,9 @@ export default function App() {
     );
   else
     return (
-      <>
+      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
         <Outlet />
         <Toaster />
-      </>
+      </ThemeProvider>
     );
 }
