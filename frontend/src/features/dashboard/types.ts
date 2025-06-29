@@ -1,12 +1,21 @@
 export interface NavItemState {
   activeNavItem:
-    | "dashboard"
     | "applications"
+    | "contacts"
+    | "documents"
+    | "notifications"
+    | "analytics"
     | "gmail"
-    | "resumes"
     | "settings";
   setActiveNavItem: (
-    item: "dashboard" | "applications" | "gmail" | "resumes" | "settings",
+    item:
+      | "applications"
+      | "contacts"
+      | "documents"
+      | "notifications"
+      | "analytics"
+      | "gmail"
+      | "settings",
   ) => void;
 }
 

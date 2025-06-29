@@ -15,9 +15,14 @@ export { Searchbar } from "./components/Header/Searchbar";
 export { GmailConnectionStatus } from "./components/Header/GmailConnectionStatus";
 export { NotificationBell } from "./components/Header/NotificationBell";
 export { AddApplicationButton } from "./components/Header/AddApplicationButton";
+export { Title } from "./components/Header/Title";
+export { LogoutButton } from "./components/SideBar/LogoutButton";
 
 // Stores
 export { useActiveNavItemStore } from "./Stores/useActiveNavItemStore";
 export { useGmailState } from "./Stores/useGmailState";
 export { useNotificationsCount } from "./Stores/useNotificationsCount";
-export { useSideBarState } from "./Stores/useSidebarState";
+export { useSideBarState } from "./Stores/useSideBarState";
+
+// constants
+export { navigationTitles } from "./constants/navigationTitles";

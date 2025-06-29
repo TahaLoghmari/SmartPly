@@ -5,14 +5,19 @@ export function SideBarLogo() {
   const { activeState, setActiveState } = useSideBarState();
   return (
     <div
-      className={`flex items-center border-b border-gray-200 p-4 transition-all duration-300 ${!activeState ? "justify-center" : "justify-between"}`}
+      className={`flex items-center border-b border-gray-200 p-2 transition-all duration-300 ${!activeState ? "justify-center" : "justify-between"}`}
     >
       {activeState && (
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-[#6c79e1] to-[#7057b0]">
+          <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-lg">
             <Briefcase className="h-4 w-4 text-white" />
           </div>
-          <p className="font-bold text-gray-900">SmartPly</p>
+          <div>
+            <p className="text-primary font-bold">SmartPly</p>
+            <p className="text-muted-foreground text-xs whitespace-nowrap">
+              Smart Job Hunting
+            </p>
+          </div>
         </div>
       )}
       <button

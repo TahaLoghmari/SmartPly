@@ -142,7 +142,7 @@ export function RegisterForm() {
         />
         <Button
           type="submit"
-          className="w-full cursor-pointer bg-gradient-to-r from-[#6c79e1] to-[#7057b0]"
+          className="w-full cursor-pointer"
           disabled={!form.formState.isValid || registerMutation.isPending}
         >
           {registerMutation.isPending ? (
@@ -155,7 +155,7 @@ export function RegisterForm() {
           Already have an account ?{" "}
           <Link
             to="/login"
-            className="font-semibold text-[#7057b0] underline decoration-solid"
+            className="text-muted-foreground font-semibold underline decoration-solid"
           >
             Login
           </Link>

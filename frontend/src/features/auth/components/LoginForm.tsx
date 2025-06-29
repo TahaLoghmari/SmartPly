@@ -88,7 +88,7 @@ export function LoginForm() {
               <FormDescription>
                 <Link
                   to="/forgot-password"
-                  className="font-semibold text-[#7057b0] underline decoration-solid"
+                  className="text-muted-foreground font-semibold underline decoration-solid"
                 >
                   Forgot your password?
                 </Link>
@@ -100,7 +100,7 @@ export function LoginForm() {
 
         <Button
           type="submit"
-          className="w-full cursor-pointer bg-gradient-to-r from-[#6c79e1] to-[#7057b0]"
+          className="w-full cursor-pointer"
           disabled={!form.formState.isValid || loginMutation.isPending}
         >
           {loginMutation.isPending ? (
@@ -113,7 +113,7 @@ export function LoginForm() {
           Don't have an account ?{" "}
           <Link
             to="/register"
-            className="font-semibold text-[#7057b0] underline decoration-solid"
+            className="text-muted-foreground font-semibold underline decoration-solid"
           >
             Register now
           </Link>

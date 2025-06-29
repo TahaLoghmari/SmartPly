@@ -1,26 +1,35 @@
-import { LayoutDashboard, FileText, Mail, FileStack } from "lucide-react";
+import {
+  Mail,
+  ClipboardList,
+  Users,
+  FileText,
+  Bell,
+  ChartColumn,
+} from "lucide-react";
 import { useActiveNavItemStore, useSideBarState } from "../../../dashboard";
 
 export function SideBarNavigation() {
   const { activeNavItem, setActiveNavItem } = useActiveNavItemStore();
   const { activeState } = useSideBarState();
   const navItems = [
-    { id: "dashboard", icon: LayoutDashboard, label: "Dashboard" },
-    { id: "applications", icon: FileText, label: "Applications" },
-    { id: "resumes", icon: FileStack, label: "Resumes" },
+    { id: "applications", icon: ClipboardList, label: "Applications" },
+    { id: "analytics", icon: ChartColumn, label: "Analytics" },
+    { id: "contacts", icon: Users, label: "Contacts" },
+    { id: "documents", icon: FileText, label: "Documents" },
+    { id: "notifications", icon: Bell, label: "Notifications" },
     { id: "gmail", icon: Mail, label: "Gmail" },
   ] as const;
   return (
-    <div className="flex flex-1 flex-col gap-2 border-b border-gray-200 p-4">
+    <div className="flex flex-1 flex-col gap-2 border-b border-gray-200 p-2">
       {navItems.map(({ id, icon: Icon, label }) => (
         <div
           key={id}
-          className={`flex h-10 w-full cursor-pointer items-center rounded-md px-3 text-sm font-medium transition-all duration-200 ${
+          className={`text-secondary-foreground flex h-10 w-full cursor-pointer items-center rounded-md px-3 text-sm font-medium transition-all duration-200 ${
             activeState ? "justify-start gap-3" : "justify-center"
           } ${
             activeNavItem === id
-              ? "bg-gradient-to-r from-[#6c79e1] to-[#7057b0] text-white shadow-md"
-              : "text-gray-700 hover:bg-gray-100"
+              ? "bg-secondary"
+              : "hover:bg-secondary/80"
           }`}
           onClick={() => setActiveNavItem(id)}
         >

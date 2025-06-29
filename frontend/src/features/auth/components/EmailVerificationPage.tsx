@@ -18,12 +18,11 @@ export function EmailVerificationPage() {
           xmlns="http://www.w3.org/2000/svg"
           x="0px"
           y="0px"
-          className="h-25 w-25"
+          className="text-primary h-25 w-25"
           viewBox="0,0,256,256"
-          style={{ fill: "#7950F2" }}
         >
           <g
-            fill="#7950f2"
+            fill="currentColor"
             fill-rule="nonzero"
             stroke="none"
             stroke-width="1"
@@ -59,7 +58,7 @@ export function EmailVerificationPage() {
         </p>
         <div className="flex gap-3">
           <Button
-            className="cursor-pointer bg-gradient-to-r from-[#6c79e1] to-[#7057b0] p-6 hover:bg-[#9e85f4]"
+            className="cursor-pointer p-6"
             onClick={() => {
               if (email) {
                 resendConfirmationEmailMutation.mutate(email);
@@ -75,7 +74,7 @@ export function EmailVerificationPage() {
           </Button>
           <Link
             to="/login"
-            className="flex cursor-pointer items-center justify-center gap-1 bg-gradient-to-r from-[#6c79e1] to-[#7057b0] bg-clip-text text-transparent hover:text-[#9e85f4]"
+            className="text-muted-foreground flex cursor-pointer items-center justify-center gap-1"
           >
             Return to Site <MoveRight />
           </Link>

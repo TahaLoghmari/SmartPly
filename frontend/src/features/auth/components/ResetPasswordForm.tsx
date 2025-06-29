@@ -126,7 +126,7 @@ export function ResetPasswordForm() {
         />
         <Button
           type="submit"
-          className="w-full cursor-pointer bg-gradient-to-r from-[#6c79e1] to-[#7057b0]"
+          className="w-full cursor-pointer"
           disabled={!form.formState.isValid || resetPasswordMutation.isPending}
         >
           {resetPasswordMutation.isPending ? (

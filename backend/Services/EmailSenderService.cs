@@ -78,24 +78,24 @@ namespace backend.Services
         <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
         <title>Reset Your SmartPly Password</title>
     </head>
-    <body style=""margin: 0; padding: 0; background-color: #f8f9fa;"">
+    <body style=""margin: 0; padding: 0; background-color: #f0f0f0;"">
         <div style=""max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"">
             
             <!-- Header -->
-            <div style=""background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;"">
+            <div style=""background: linear-gradient(135deg, #444 0%, #222 100%); padding: 40px 30px; text-align: center;"">
                 <h1 style=""color: #ffffff; margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 28px; font-weight: 300;"">
                     Password Reset Request
                 </h1>
-                <p style=""color: #e8ecff; margin: 10px 0 0 0; font-size: 16px;"">
+                <p style=""color: #dddddd; margin: 10px 0 0 0; font-size: 16px;"">
                     Let's get you back in
                 </p>
             </div>
 
             <!-- Content -->
-            <div style=""padding: 40px 30px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.7; color: #2c3e50;"">
+            <div style=""padding: 40px 30px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.7; color: #1a1a1a;"">
                 
                 <p style=""font-size: 18px; margin: 0 0 25px 0;"">
-                    Hi <strong style=""color: #667eea;"">{user.Name}</strong>,
+                    Hi <strong style=""color: #444;"">{user.Name}</strong>,
                 </p>
 
                 <p style=""font-size: 16px; margin: 0 0 30px 0;"">
@@ -106,7 +106,7 @@ namespace backend.Services
                 <!-- CTA Button -->
                 <div style=""text-align: center; margin: 40px 0;"">
                     <a href=""{safeLink}"" 
-                       style=""background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                       style=""background: linear-gradient(135deg, #444 0%, #222 100%);
                               color: #ffffff;
                               padding: 16px 32px;
                               text-decoration: none;
@@ -114,27 +114,27 @@ namespace backend.Services
                               font-size: 16px;
                               border-radius: 8px;
                               display: inline-block;
-                              box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                              box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
                               transition: all 0.3s ease;"">
                         🔑 Reset Password
                     </a>
                 </div>
 
                 <!-- Alternative Link -->
-                <div style=""background-color: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; margin: 30px 0;"">
-                    <p style=""margin: 0 0 10px 0; font-size: 14px; color: #6c757d;"">
+                <div style=""background-color: #f0f0f0; padding: 20px; border-radius: 8px; border-left: 4px solid #444; margin: 30px 0;"">
+                    <p style=""margin: 0 0 10px 0; font-size: 14px; color: #555;"">
                         <strong>Button not working?</strong> Copy and paste this link into your browser:
                     </p>
                     <p style=""margin: 0; word-break: break-all;"">
-                        <a href=""{safeLink}"" style=""color: #667eea; text-decoration: none; font-size: 14px;"">
+                        <a href=""{safeLink}"" style=""color: #333; text-decoration: none; font-size: 14px;"">
                             {safeLink}
                         </a>
                     </p>
                 </div>
 
                 <!-- Security Note -->
-                <div style=""margin: 30px 0; padding: 15px; background-color: #fff3cd; border-radius: 6px; border: 1px solid #ffeaa7;"">
-                    <p style=""margin: 0; font-size: 14px; color: #856404;"">
+                <div style=""margin: 30px 0; padding: 15px; background-color: #eeeeee; border-radius: 6px; border: 1px solid #cccccc;"">
+                    <p style=""margin: 0; font-size: 14px; color: #333;"">
                         🔒 <strong>Security Note:</strong> If you didn't request a password reset, you can safely ignore this email or contact support if you have concerns.
                     </p>
                 </div>
@@ -142,16 +142,16 @@ namespace backend.Services
             </div>
 
             <!-- Footer -->
-            <div style=""background-color: #2c3e50; padding: 30px; text-align: center;"">
+            <div style=""background-color: #1a1a1a; padding: 30px; text-align: center;"">
                 <p style=""color: #ffffff; margin: 0 0 10px 0; font-size: 16px; font-weight: 500;"">
                     Best regards,
                 </p>
-                <p style=""color: #bdc3c7; margin: 0; font-size: 14px;"">
+                <p style=""color: #aaaaaa; margin: 0; font-size: 14px;"">
                     The SmartPly Team
                 </p>
                 
-                <div style=""margin-top: 20px; padding-top: 20px; border-top: 1px solid #34495e;"">
-                    <p style=""color: #95a5a6; margin: 0; font-size: 12px;"">
+                <div style=""margin-top: 20px; padding-top: 20px; border-top: 1px solid #333;"">
+                    <p style=""color: #888888; margin: 0; font-size: 12px;"">
                         This email was sent to you because you requested a password reset for SmartPly.<br>
                         © 2025 SmartPly. All rights reserved.
                     </p>
@@ -161,7 +161,7 @@ namespace backend.Services
         </div>
     </body>
     </html>
-    ";
+";
 
             SendEmailDto sendEmailDto = new SendEmailDto(email, subject, messageBody, true);
             await SendEmailAsync(sendEmailDto);
@@ -196,24 +196,24 @@ namespace backend.Services
         <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
         <title>Welcome to SmartPly</title>
     </head>
-    <body style=""margin: 0; padding: 0; background-color: #f8f9fa;"">
+    <body style=""margin: 0; padding: 0; background-color: #f0f0f0;"">
         <div style=""max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"">
             
             <!-- Header -->
-            <div style=""background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;"">
+            <div style=""background: linear-gradient(135deg, #444444 0%, #222222 100%); padding: 40px 30px; text-align: center;"">
                 <h1 style=""color: #ffffff; margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 28px; font-weight: 300;"">
                     Welcome to <strong>SmartPly</strong>
                 </h1>
-                <p style=""color: #e8ecff; margin: 10px 0 0 0; font-size: 16px;"">
+                <p style=""color: #dddddd; margin: 10px 0 0 0; font-size: 16px;"">
                     Let's get you started
                 </p>
             </div>
 
             <!-- Content -->
-            <div style=""padding: 40px 30px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.7; color: #2c3e50;"">
+            <div style=""padding: 40px 30px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.7; color: #1a1a1a;"">
                 
                 <p style=""font-size: 18px; margin: 0 0 25px 0;"">
-                    Hi <strong style=""color: #667eea;"">{user.Name}</strong>,
+                    Hi <strong style=""color: #444444;"">{user.Name}</strong>,
                 </p>
 
                 <p style=""font-size: 16px; margin: 0 0 30px 0;"">
@@ -224,7 +224,7 @@ namespace backend.Services
                 <!-- CTA Button -->
                 <div style=""text-align: center; margin: 40px 0;"">
                     <a href=""{safeLink}"" 
-                       style=""background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                       style=""background: linear-gradient(135deg, #444444 0%, #222222 100%);
                               color: #ffffff;
                               padding: 16px 32px;
                               text-decoration: none;
@@ -232,27 +232,27 @@ namespace backend.Services
                               font-size: 16px;
                               border-radius: 8px;
                               display: inline-block;
-                              box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                              box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
                               transition: all 0.3s ease;"">
                         ✓ Confirm Your Email
                     </a>
                 </div>
 
                 <!-- Alternative Link -->
-                <div style=""background-color: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; margin: 30px 0;"">
-                    <p style=""margin: 0 0 10px 0; font-size: 14px; color: #6c757d;"">
+                <div style=""background-color: #f0f0f0; padding: 20px; border-radius: 8px; border-left: 4px solid #444444; margin: 30px 0;"">
+                    <p style=""margin: 0 0 10px 0; font-size: 14px; color: #555555;"">
                         <strong>Button not working?</strong> Copy and paste this link into your browser:
                     </p>
                     <p style=""margin: 0; word-break: break-all;"">
-                        <a href=""{safeLink}"" style=""color: #667eea; text-decoration: none; font-size: 14px;"">
+                        <a href=""{safeLink}"" style=""color: #333333; text-decoration: none; font-size: 14px;"">
                             {safeLink}
                         </a>
                     </p>
                 </div>
 
                 <!-- Security Note -->
-                <div style=""margin: 30px 0; padding: 15px; background-color: #fff3cd; border-radius: 6px; border: 1px solid #ffeaa7;"">
-                    <p style=""margin: 0; font-size: 14px; color: #856404;"">
+                <div style=""margin: 30px 0; padding: 15px; background-color: #eeeeee; border-radius: 6px; border: 1px solid #cccccc;"">
+                    <p style=""margin: 0; font-size: 14px; color: #333333;"">
                         🔒 <strong>Security Note:</strong> If you didn't create this account, you can safely ignore this email.
                     </p>
                 </div>
@@ -260,16 +260,16 @@ namespace backend.Services
             </div>
 
             <!-- Footer -->
-            <div style=""background-color: #2c3e50; padding: 30px; text-align: center;"">
+            <div style=""background-color: #1a1a1a; padding: 30px; text-align: center;"">
                 <p style=""color: #ffffff; margin: 0 0 10px 0; font-size: 16px; font-weight: 500;"">
                     Best regards,
                 </p>
-                <p style=""color: #bdc3c7; margin: 0; font-size: 14px;"">
+                <p style=""color: #aaaaaa; margin: 0; font-size: 14px;"">
                     The SmartPly Team
                 </p>
                 
-                <div style=""margin-top: 20px; padding-top: 20px; border-top: 1px solid #34495e;"">
-                    <p style=""color: #95a5a6; margin: 0; font-size: 12px;"">
+                <div style=""margin-top: 20px; padding-top: 20px; border-top: 1px solid #333333;"">
+                    <p style=""color: #888888; margin: 0; font-size: 12px;"">
                         This email was sent to you because you signed up for SmartPly.<br>
                         © 2025 SmartPly. All rights reserved.
                     </p>
@@ -279,7 +279,8 @@ namespace backend.Services
         </div>
     </body>
     </html>
-    ";
+";
+
             SendEmailDto sendEmailDto = new SendEmailDto(email, subject, messageBody, true);
 
             await SendEmailAsync(sendEmailDto);
