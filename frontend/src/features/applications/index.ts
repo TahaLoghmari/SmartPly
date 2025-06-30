@@ -16,3 +16,7 @@ export { useApplicationsGhostedCountStore } from "./stores/useApplicationsGhoste
 export { useApplicationsStatusFilterStore } from "./stores/useApplicationsStatusFilterStore";
 export { useApplicationsTypeFilterStore } from "./stores/useApplicationsTypeFilterStore";
 export { useApplicationsLevelFilterStore } from "./stores/useApplicationsLevelFilterStore";
+export { useApplicationsJobTypeFilterStore } from "./stores/useApplicationsJobTypeFilterStore";
+
+// hooks
+export { useApplicationsFilters } from "./hooks/useApplicationsFilters";

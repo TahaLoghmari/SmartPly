@@ -16,59 +16,63 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-import {
-  useApplicationsLevelFilterStore,
-  applicationsLevel,
-} from "#/applications";
+interface ApplicationsTypeFilterBarProps {
+  isFilterOpen: boolean;
+  selectedFilter: string;
+  setIsFilterOpen: (open: boolean) => void;
+  setSelectedFilter: (value: string) => void;
+  applicationConstant: Array<{ value: string; label: string }>;
+  name: string;
+}
 
-export function ApplicationsLevelFilterBar() {
-  const {
-    isLevelFilterOpen,
-    selectedLevelFilter,
-    setIsLevelFilterOpen,
-    setSelectedFilterLevel,
-  } = useApplicationsLevelFilterStore();
+export function ApplicationsFilterBar({
+  isFilterOpen,
+  selectedFilter,
+  setIsFilterOpen,
+  setSelectedFilter,
+  applicationConstant,
+  name,
+}: ApplicationsTypeFilterBarProps) {
   return (
-    <Popover open={isLevelFilterOpen} onOpenChange={setIsLevelFilterOpen}>
+    <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
           role="combobox"
-          aria-expanded={isLevelFilterOpen}
+          aria-expanded={isFilterOpen}
           className="w-[200px] justify-between border font-normal"
         >
-          {selectedLevelFilter
-            ? applicationsLevel.find(
-                (level) => level.value === selectedLevelFilter,
-              )?.label
-            : "Level"}
+          {selectedFilter
+            ? applicationConstant.find((item) => item.value === selectedFilter)
+                ?.label
+            : name}
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Search Type..." />
+          <CommandInput placeholder={`Search ${name}...`} />
           <CommandList>
-            <CommandEmpty>No Type found.</CommandEmpty>
+            <CommandEmpty>No {name} found.</CommandEmpty>
             <CommandGroup>
-              {applicationsLevel.map((level) => (
+              {applicationConstant.map((item) => (
                 <CommandItem
-                  key={level.value}
-                  value={level.value}
+                  key={item.value}
+                  value={item.value}
                   onSelect={(currentValue) => {
-                    setSelectedFilterLevel(currentValue);
-                    setIsLevelFilterOpen(false);
+                    setSelectedFilter(currentValue);
+                    setIsFilterOpen(false);
                   }}
                 >
                   <CheckIcon
                     className={cn(
                       "mr-2 h-4 w-4",
-                      selectedLevelFilter === level.value
+                      selectedFilter === item.value
                         ? "opacity-100"
                         : "opacity-0",
                     )}
                   />
-                  {level.label}
+                  {item.label}
                 </CommandItem>
               ))}
             </CommandGroup>

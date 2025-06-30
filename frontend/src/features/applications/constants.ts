@@ -66,3 +66,22 @@ export const applicationsLevel = [
     label: "Senior",
   },
 ];
+
+export const applicationsJobType = [
+  {
+    value: "All Job Types",
+    label: "All Job Types",
+  },
+  {
+    value: "Full Time",
+    label: "Full Time",
+  },
+  {
+    value: "Part Time",
+    label: "Part Time",
+  },
+  {
+    value: "Internship",
+    label: "Internship",
+  },
+];

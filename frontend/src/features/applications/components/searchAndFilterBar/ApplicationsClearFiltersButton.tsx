@@ -3,12 +3,14 @@ import {
   useApplicationsStatusFilterStore,
   useApplicationsLevelFilterStore,
   useApplicationsTypeFilterStore,
+  useApplicationsJobTypeFilterStore,
 } from "#/applications";
 
 export function ApplicationsClearFiltersButton() {
   const { clearStatusFilter } = useApplicationsStatusFilterStore();
   const { clearLevelFilter } = useApplicationsLevelFilterStore();
   const { clearTypeFilter } = useApplicationsTypeFilterStore();
+  const { clearJobTypeFilter } = useApplicationsJobTypeFilterStore();
   return (
     <Button
       variant="ghost"
@@ -17,6 +19,7 @@ export function ApplicationsClearFiltersButton() {
         clearStatusFilter();
         clearLevelFilter();
         clearTypeFilter();
+        clearJobTypeFilter();
       }}
     >
       Clear Filters

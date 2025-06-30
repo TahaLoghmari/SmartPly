@@ -51,3 +51,38 @@ export interface ApplicationsLevelFilterState {
   setSelectedFilterLevel: (level: string) => void;
   clearLevelFilter: () => void;
 }
+
+export interface ApplicationsJobTypeFilterState {
+  isJobTypeFilterOpen: boolean;
+  selectedJobTypeFilter: string;
+  setIsJobTypeFilterOpen: (open: boolean) => void;
+  setSelectedFilterJobType: (jobType: string) => void;
+  clearJobTypeFilter: () => void;
+}
+
+export interface ApplicationCard {
+  id: string;
+  companyName: string;
+  companyEmail: string;
+  companyIcon: string;
+  position: string;
+  link: string;
+  status: string;
+  notes: string;
+  location: string;
+  salary: string;
+  frameworksOrLanguagesUsed: string;
+  contacts: string;
+  deadline: string;
+  jobDescription: string;
+  resumeUsed: string;
+  coverLetterUsed: string;
+  type: string;
+  employmentType: string;
+  level: string;
+}
+
+export interface ApplicationCardState {
+  applicationCard: ApplicationCard | null;
+  setApplicationCard: (card: ApplicationCard) => void;
+}
