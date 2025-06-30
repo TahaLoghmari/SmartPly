@@ -11,7 +11,7 @@ export function DashboardSideBarLayout() {
   const { activeState } = useDashboardSideBarState();
   return (
     <div
-      className={`fixed flex h-screen ${activeState ? "w-65" : "w-20"} flex-col border-r border-gray-200 transition-all duration-300`}
+      className={`fixed flex h-screen ${activeState ? "w-65" : "w-20"} flex-col border-r transition-all duration-300`}
     >
       <DashboardSideBarLogo />
       <DashboardSideBarHeader />

@@ -14,7 +14,7 @@ export function DashboardLayout() {
     <div className="flex w-full">
       <DashboardSideBarLayout />
       <div
-        className={` ${activeState ? "ml-65" : "ml-20"} h-screen w-full bg-[#f8fafa] transition-all duration-300`}
+        className={` ${activeState ? "ml-65" : "ml-20"} flex w-full flex-col overflow-hidden transition-all duration-300`}
       >
         <DashboardHeaderLayout />
         <ActiveComponent />

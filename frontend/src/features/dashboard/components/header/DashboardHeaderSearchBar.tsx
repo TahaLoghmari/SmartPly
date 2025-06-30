@@ -2,12 +2,12 @@ import { Search } from "lucide-react";
 
 export function DashboardHeaderSearchBar() {
   return (
-    <div className="flex w-xs items-center gap-3 rounded-md border border-gray-300 px-3 py-2 focus-within:border-gray-300 focus-within:ring-3 focus-within:ring-gray-200">
-      <Search className="h-4 w-4 text-gray-400" />
+    <div className="border-border focus-within:border-primary focus-within:ring-primary/20 flex w-xs items-center gap-3 rounded-md border px-3 py-2 focus-within:ring-1">
+      <Search className="text-muted-foreground h-4 w-4" />
       <input
         type="text"
         placeholder="Search jobs, companies or recruiters..."
-        className="flex-1 border-0 text-sm outline-none placeholder:text-gray-500 focus:border-0 focus:ring-0 focus:outline-none"
+        className="placeholder:text-muted-foreground flex-1 border-0 text-sm outline-none focus:border-0 focus:ring-0 focus:outline-none"
       />
     </div>
   );

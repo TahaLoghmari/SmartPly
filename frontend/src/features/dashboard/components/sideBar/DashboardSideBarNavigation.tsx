@@ -23,7 +23,7 @@ export function DashboardSideBarNavigation() {
     { id: "gmail", icon: Mail, label: "Gmail" },
   ] as const;
   return (
-    <div className="flex flex-1 flex-col gap-2 border-b border-gray-200 p-2">
+    <div className="flex flex-1 flex-col gap-2 border-b p-2">
       {navItems.map(({ id, icon: Icon, label }) => (
         <div
           key={id}
