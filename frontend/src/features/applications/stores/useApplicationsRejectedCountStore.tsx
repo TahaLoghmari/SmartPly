@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { type ApplicationsRejectedState } from "..";
+import { type ApplicationsRejectedState } from "#/applications";
 
 export const useApplicationsRejectedCountStore =
   create<ApplicationsRejectedState>((set) => ({

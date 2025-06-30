@@ -1,8 +1,8 @@
 import { Search } from "lucide-react";
 
-export function DashboardHeaderSearchBar() {
+export function ApplicationsSearchBar() {
   return (
-    <div className="border-border focus-within:border-primary focus-within:ring-primary/20 flex w-60 items-center gap-3 rounded-md border px-3 py-2 focus-within:ring-1">
+    <div className="border-border focus-within:border-primary focus-within:ring-primary/20 flex w-sm items-center gap-3 rounded-md border px-3 py-2 focus-within:ring-1">
       <Search className="text-muted-foreground h-4 w-4" />
       <input
         type="text"
