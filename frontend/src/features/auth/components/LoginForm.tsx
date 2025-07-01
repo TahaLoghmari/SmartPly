@@ -55,7 +55,7 @@ export function LoginForm() {
               <div className="mt-2">
                 <Link
                   to={`/email-verification/?email=${form.getValues("email")}`}
-                  className="text-[#7057b0] underline hover:text-[#9e85f4]"
+                  className="text-muted-foreground hover:text-muted-foreground/20 underline"
                 >
                   Resend Email
                 </Link>

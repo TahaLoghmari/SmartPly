@@ -12,8 +12,8 @@ export function EmailVerificationPage() {
   const email = searchParams.get("email");
 
   return (
-    <div className="flex min-h-screen w-screen flex-col items-center sm:rounded-md sm:bg-[#f0f3f5]">
-      <div className="bg-background flex w-full flex-col items-center gap-8 p-9 sm:my-20 sm:w-[550px] sm:rounded-lg sm:p-12">
+    <div className="sm:bg-secondary flex min-h-screen w-screen flex-col items-center sm:rounded-md">
+      <div className="bg-card flex w-full flex-col items-center gap-8 p-9 sm:my-20 sm:w-[550px] sm:rounded-lg sm:p-12">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           x="0px"
@@ -79,7 +79,7 @@ export function EmailVerificationPage() {
             Return to Site <MoveRight />
           </Link>
         </div>
-        <p className="text-center text-sm text-[#7c7c7c]">
+        <p className="text-muted-foreground text-center text-sm">
           Once you have verified your email, you can click on "Return to Site"
           to Log In.
         </p>
