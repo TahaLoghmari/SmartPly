@@ -32,7 +32,7 @@ export function useApplicationsFilters() {
       name: "Level",
     },
     {
-      jobTypeFilter,
+      ...jobTypeFilter,
       constant: applicationsJobTypeFilterOptionsConstant,
       name: "Job Type",
     },

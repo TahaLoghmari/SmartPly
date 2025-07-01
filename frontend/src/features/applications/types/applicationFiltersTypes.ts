@@ -1,8 +1,8 @@
 export interface ApplicationFilterStoreType {
-  isOpen: boolean;
-  selected: string;
-  setIsOpen: (open: boolean) => void;
-  setSelected: (value: string) => void;
+  isFilterOpen: boolean;
+  selectedFilter: string;
+  setIsFilterOpen: (open: boolean) => void;
+  setSelectedFilter: (value: string) => void;
   clear: () => void;
 }
 

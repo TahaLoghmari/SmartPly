@@ -3,10 +3,10 @@ import { type ApplicationFilterStoreType } from "#/applications";
 
 export function useApplicationFiltersStore(defaultValue: string) {
   return create<ApplicationFilterStoreType>((set) => ({
-    isOpen: false,
-    selected: defaultValue,
-    setIsOpen: (open) => set({ isOpen: open }),
-    setSelected: (value) => set({ selected: value }),
-    clear: () => set({ selected: defaultValue }),
+    isFilterOpen: false,
+    selectedFilter: defaultValue,
+    setIsFilterOpen: (open) => set({ isFilterOpen: open }),
+    setSelectedFilter: (value) => set({ selectedFilter: value }),
+    clear: () => set({ selectedFilter: defaultValue }),
   }));
 }

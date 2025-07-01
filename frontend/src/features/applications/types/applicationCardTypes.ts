@@ -8,10 +8,13 @@ export interface ApplicationCardType {
   status: string;
   notes: string;
   location: string;
-  salary: string;
-  frameworksOrLanguagesUsed: string;
+  startSalary: number;
+  endSalary: number;
+  technologiesUsed: string[];
   contacts: string;
-  deadline: string;
+  deadline: Date;
+  createdAt: Date;
+  updatedAt: Date;
   jobDescription: string;
   resumeUsed: string;
   coverLetterUsed: string;
@@ -27,4 +30,8 @@ export interface ApplicationCardStoreType {
 
 export interface ApplicationCardProps {
   applicationCard: ApplicationCardType;
+}
+
+export interface TechnologiesUsedProps {
+  technologies: string[];
 }
