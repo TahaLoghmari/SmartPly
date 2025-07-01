@@ -12,7 +12,8 @@ internal static class UserMappings
             Id = user.Id,
             Email = user.Email!,
             Name = user.Name!,
-            ImageUrl = user.ImageUrl!
+            ImageUrl = user.ImageUrl!,
+            GmailConnected = user.GmailConnected!
         };
     }
 }

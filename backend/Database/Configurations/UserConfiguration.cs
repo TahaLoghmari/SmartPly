@@ -15,5 +15,8 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.ImageUrl)
             .IsRequired(false)
             .HasMaxLength(500);
+        builder.Property(u => u.GmailConnected)
+            .IsRequired(false)
+            .HasDefaultValue(false);
     }
 }

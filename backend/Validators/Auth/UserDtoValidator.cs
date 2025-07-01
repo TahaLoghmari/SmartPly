@@ -15,5 +15,6 @@ public sealed class UserDtoValidator : AbstractValidator<UserDto>
             .Must(uri => Uri.TryCreate(uri, UriKind.Absolute, out _))
             .WithMessage("'{PropertyName}' must be a valid URL.")
             .When(u => !string.IsNullOrEmpty(u.ImageUrl));
+        RuleFor(u => u.GmailConnected).NotNull();
     }
 }

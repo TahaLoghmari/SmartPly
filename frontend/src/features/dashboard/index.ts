@@ -22,7 +22,6 @@ export * from "./constants/dashboardHeaderContants";
 export * from "./constants/dashboardSideBarConstants";
 
 // Header Stores
-export * from "./stores/header/useDashboardGmailStore";
 export * from "./stores/header/useDashboardNotificationsCount";
 
 // SideBar Stores

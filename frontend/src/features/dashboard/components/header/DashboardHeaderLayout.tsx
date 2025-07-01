@@ -13,7 +13,6 @@ export function DashboardHeaderLayout() {
       <DashboardHeaderTitle />
       <div className="flex items-center gap-6 px-3 py-2">
         <DashboardHeaderGmailConnectionStatus />
-        <DashboardHeaderSearchBar />
         <DashboardHeaderAddApplicationButton />
         <DashboardHeaderNotificationBell />
         <ModeToggle />

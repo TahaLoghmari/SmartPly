@@ -1,17 +1,15 @@
-import { useDashboardGmailStore } from "#/dashboard";
+import { useAuthStore } from "#/auth";
 
 export function DashboardHeaderGmailConnectionStatus() {
-  const { gmailState } = useDashboardGmailStore();
+  const { user } = useAuthStore();
   return (
     <div
-      className={`rounded-full ${gmailState === "Gmail Connected" ? "bg-[#dcfce7]" : "bg-[#fef2f2]"} px-2 py-1`}
+      className={`rounded-full ${user?.gmailConnected ? "bg-[#dcfce7]" : "bg-[#fef2f2]"} px-2 py-1`}
     >
       <p
-        className={`text-xs font-semibold ${gmailState === "Gmail Connected" ? "text-green-700" : "text-red-700"}`}
+        className={`text-xs font-semibold ${user?.gmailConnected ? "text-green-700" : "text-red-700"}`}
       >
-        {gmailState === "Gmail Connected"
-          ? "Gmail Connected"
-          : "Gmail Not Connected"}
+        {user?.gmailConnected ? "Gmail Connected" : "Gmail Not Connected"}
       </p>
     </div>
   );
