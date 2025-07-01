@@ -1,18 +1,18 @@
 import {
-  ApplicationsClearFiltersButton,
-  ApplicationsFilterBar,
-  ApplicationsSearchBar,
+  ApplicationClearFiltersButton,
+  ApplicationFilterBar,
+  ApplicationSearchBar,
   useApplicationsFilters,
 } from "#/applications";
 
-export function ApplicationsSearchAndFilterBarLayout() {
+export function ApplicationFiltersLayout() {
   const { filters } = useApplicationsFilters();
 
   return (
     <div className="bg-card text-card-foreground flex flex-wrap items-center gap-4 rounded-lg border p-4 shadow-xs">
-      <ApplicationsSearchBar />
+      <ApplicationSearchBar />
       {filters.map((filter) => (
-        <ApplicationsFilterBar
+        <ApplicationFilterBar
           key={filter.name}
           isFilterOpen={filter.isFilterOpen}
           selectedFilter={filter.selectedFilter}
@@ -22,7 +22,7 @@ export function ApplicationsSearchAndFilterBarLayout() {
           name={filter.name}
         />
       ))}
-      <ApplicationsClearFiltersButton />
+      <ApplicationClearFiltersButton />
     </div>
   );
 }

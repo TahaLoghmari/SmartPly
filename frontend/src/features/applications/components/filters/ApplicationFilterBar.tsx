@@ -1,5 +1,4 @@
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,24 +14,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { type ApplicationFilterBarProps } from "#/applications";
 
-interface ApplicationsTypeFilterBarProps {
-  isFilterOpen: boolean;
-  selectedFilter: string;
-  setIsFilterOpen: (open: boolean) => void;
-  setSelectedFilter: (value: string) => void;
-  applicationConstant: Array<{ value: string; label: string }>;
-  name: string;
-}
-
-export function ApplicationsFilterBar({
+export function ApplicationFilterBar({
   isFilterOpen,
   selectedFilter,
   setIsFilterOpen,
   setSelectedFilter,
   applicationConstant,
   name,
-}: ApplicationsTypeFilterBarProps) {
+}: ApplicationFilterBarProps) {
   return (
     <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
       <PopoverTrigger asChild>

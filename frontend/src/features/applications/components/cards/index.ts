@@ -1,1 +1,0 @@
-export { ApplicationsCardsLayout } from "./ApplicationsCardsLayout";
