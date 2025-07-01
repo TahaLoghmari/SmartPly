@@ -2,7 +2,6 @@ import { ModeToggle } from "@/components/ui/mode-toggle";
 import {
   DashboardHeaderTitle,
   DashboardHeaderGmailConnectionStatus,
-  DashboardHeaderSearchBar,
   DashboardHeaderAddApplicationButton,
   DashboardHeaderNotificationBell,
 } from "#/dashboard";
