@@ -3,7 +3,7 @@ import { type DashboardNotificationsCountStoreType } from "#/dashboard";
 
 export const useDashboardNotificationsCountStore =
   create<DashboardNotificationsCountStoreType>((set) => ({
-    notificationsCountState: 3,
+    notificationsCountState: 0,
     setNotificationsCountState: (count) =>
       set({ notificationsCountState: count }),
   }));

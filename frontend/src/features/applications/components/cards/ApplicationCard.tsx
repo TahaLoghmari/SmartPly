@@ -1,11 +1,16 @@
-import { type ApplicationCardProps, TechnologiesUsed } from "#/applications";
-import { MapPin, DollarSign, Building, Eye, SquarePen } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import {
+  type ApplicationCardProps,
+  TechnologiesUsed,
+  ViewApplicationButton,
+  EditApplicationButton,
+  ApplicationStatusToColor,
+} from "#/applications";
+import { MapPin, DollarSign, Building } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
   return (
-    <div className="bg-card text-card-foreground flex flex-col gap-3 rounded-lg border p-6 shadow-xs transition-all hover:shadow-lg">
+    <div className="bg-card hover:bg-accent text-card-foreground flex cursor-pointer flex-col gap-3 rounded-lg border p-6 shadow-xs transition-all">
       <div className="flex justify-between">
         <div className="flex flex-col gap-1">
           <p className="tracking-light text-lg font-semibold">
@@ -20,7 +25,9 @@ export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
           </p>
         </div>
         <div>
-          <p className="inline-flex items-center rounded-full border border-transparent bg-yellow-100 px-2.5 py-0.5 text-xs font-semibold text-yellow-800 transition-all">
+          <p
+            className={`inline-flex ${ApplicationStatusToColor[applicationCard.status]} items-center rounded-full border border-transparent px-2.5 py-0.5 text-xs font-semibold transition-all`}
+          >
             {applicationCard.status}
           </p>
         </div>
@@ -82,14 +89,8 @@ export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
       </div>
       <div className="mt-2 flex items-center justify-between">
         <div className="flex gap-2">
-          <Button variant="outline" className="cursor-pointer">
-            <Eye className="h-3 w-3" />
-            <p>View</p>
-          </Button>
-          <Button variant="outline" className="cursor-pointer">
-            <SquarePen className="h-3 w-3" />
-            <p>Edit</p>
-          </Button>
+          <ViewApplicationButton />
+          <EditApplicationButton />
         </div>
       </div>
     </div>

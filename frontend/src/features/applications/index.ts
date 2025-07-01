@@ -7,6 +7,8 @@ export * from "./components/ApplicationsLayout";
 export * from "./components/cards/ApplicationCard";
 export * from "./components/cards/ApplicationCardsLayout";
 export * from "./components/cards/TechnologiesUsed";
+export * from "./components/cards/ViewApplicationButton";
+export * from "./components/cards/EditApplicationButton";
 
 // Filter Components
 export * from "./components/filters/ApplicationClearFiltersButton";
