@@ -1,15 +1,16 @@
 import {
-  useDashboardSideBarState,
+  useDashboardSideBarStore,
   useDashboardActiveNavItemStore,
-  navigationComponents,
+  dashboardSideBarNavigationComponentsConstant,
   DashboardSideBarLayout,
   DashboardHeaderLayout,
 } from "#/dashboard";
 
 export function DashboardLayout() {
-  const { activeState } = useDashboardSideBarState();
-  const { activeNavItem } = useDashboardActiveNavItemStore();
-  const ActiveComponent = navigationComponents[activeNavItem];
+  const { activeState } = useDashboardSideBarStore();
+  const { activeNavItemState } = useDashboardActiveNavItemStore();
+  const ActiveComponent =
+    dashboardSideBarNavigationComponentsConstant[activeNavItemState];
   return (
     <div className="flex w-full">
       <DashboardSideBarLayout />

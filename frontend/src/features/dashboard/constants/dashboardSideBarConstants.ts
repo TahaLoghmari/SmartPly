@@ -6,17 +6,7 @@ import { NotificationsLayout } from "#/notifications";
 import { GmailLayout } from "#/gmail";
 import { SettingsLayout } from "#/settings";
 
-export const navigationTitles = {
-  applications: "Job Applications",
-  analytics: "Analytics Dashboard",
-  contacts: "Contacts & Network",
-  documents: "Documents",
-  notifications: "Notifications",
-  gmail: "Gmail",
-  settings: "Settings",
-} as const;
-
-export const navigationComponents = {
+export const dashboardSideBarNavigationComponentsConstant = {
   applications: ApplicationsLayout,
   analytics: AnalyticsLayout,
   contacts: ContactsLayout,

@@ -1,9 +1,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuthStore } from "#/auth";
-import { useDashboardSideBarState } from "#/dashboard";
+import { useDashboardSideBarStore } from "#/dashboard";
 
 export function DashboardSideBarHeader() {
-  const { activeState } = useDashboardSideBarState();
+  const { activeState } = useDashboardSideBarStore();
   const { user } = useAuthStore();
   return (
     <div

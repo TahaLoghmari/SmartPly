@@ -1,10 +1,15 @@
-import { useDashboardActiveNavItemStore, navigationTitles } from "#/dashboard";
+import {
+  useDashboardActiveNavItemStore,
+  dashboardHeaderNavigationTitlesConstant,
+} from "#/dashboard";
 
 export function DashboardHeaderTitle() {
-  const { activeNavItem } = useDashboardActiveNavItemStore();
+  const { activeNavItemState } = useDashboardActiveNavItemStore();
   return (
     <div className="flex-col">
-      <p className="text-xl font-bold">{navigationTitles[activeNavItem]}</p>
+      <p className="text-xl font-bold">
+        {dashboardHeaderNavigationTitlesConstant[activeNavItemState]}
+      </p>
       {/* Active Applications - This Week Applications */}
       <div></div>
     </div>

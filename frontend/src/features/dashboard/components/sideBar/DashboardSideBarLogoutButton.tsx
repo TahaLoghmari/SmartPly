@@ -13,10 +13,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useDashboardSideBarState } from "#/dashboard";
+import { useDashboardSideBarStore } from "#/dashboard";
 
 export function DashboardSideBarLogoutButton() {
-  const { activeState } = useDashboardSideBarState();
+  const { activeState } = useDashboardSideBarStore();
   const { user } = useAuthStore();
   const logoutMutation = useLogout();
   return (

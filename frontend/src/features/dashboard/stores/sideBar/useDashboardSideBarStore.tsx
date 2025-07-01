@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import { type DashboardSideBarState } from "..";
+import { type DashboardSideBarStoreType } from "#/dashboard";
 
-export const useDashboardSideBarState = create<DashboardSideBarState>(
+export const useDashboardSideBarStore = create<DashboardSideBarStoreType>(
   (set) => ({
     activeState: true,
     setActiveState: (state) => set({ activeState: state }),

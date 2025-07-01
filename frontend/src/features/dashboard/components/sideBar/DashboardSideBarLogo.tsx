@@ -1,8 +1,8 @@
 import { Briefcase, ChevronLeft, ChevronRight } from "lucide-react";
-import { useDashboardSideBarState } from "#/dashboard";
+import { useDashboardSideBarStore } from "#/dashboard";
 
 export function DashboardSideBarLogo() {
-  const { activeState, setActiveState } = useDashboardSideBarState();
+  const { activeState, setActiveState } = useDashboardSideBarStore();
   return (
     <div
       className={`flex items-center border-b p-2 transition-all duration-300 ${!activeState ? "justify-center" : "justify-between"}`}

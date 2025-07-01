@@ -8,12 +8,13 @@ import {
 } from "lucide-react";
 import {
   useDashboardActiveNavItemStore,
-  useDashboardSideBarState,
+  useDashboardSideBarStore,
 } from "#/dashboard";
 
 export function DashboardSideBarNavigation() {
-  const { activeNavItem, setActiveNavItem } = useDashboardActiveNavItemStore();
-  const { activeState } = useDashboardSideBarState();
+  const { activeNavItemState, setActiveNavItemState } =
+    useDashboardActiveNavItemStore();
+  const { activeState } = useDashboardSideBarStore();
   const navItems = [
     { id: "applications", icon: ClipboardList, label: "Applications" },
     { id: "analytics", icon: ChartColumn, label: "Analytics" },
@@ -29,8 +30,8 @@ export function DashboardSideBarNavigation() {
           key={id}
           className={`text-secondary-foreground flex h-10 w-full cursor-pointer items-center rounded-md px-3 text-sm font-medium transition-all duration-200 ${
             activeState ? "justify-start gap-3" : "justify-center"
-          } ${activeNavItem === id ? "bg-secondary" : "hover:bg-secondary/80"}`}
-          onClick={() => setActiveNavItem(id)}
+          } ${activeNavItemState === id ? "bg-secondary" : "hover:bg-secondary/80"}`}
+          onClick={() => setActiveNavItemState(id)}
         >
           <Icon className="h-4 w-4 flex-shrink-0" />
           {activeState && <p className="whitespace-nowrap">{label}</p>}

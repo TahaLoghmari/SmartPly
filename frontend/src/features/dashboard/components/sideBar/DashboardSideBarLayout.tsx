@@ -1,5 +1,5 @@
 import {
-  useDashboardSideBarState,
+  useDashboardSideBarStore,
   DashboardSideBarLogo,
   DashboardSideBarHeader,
   DashboardSideBarNavigation,
@@ -8,7 +8,7 @@ import {
 } from "#/dashboard";
 
 export function DashboardSideBarLayout() {
-  const { activeState } = useDashboardSideBarState();
+  const { activeState } = useDashboardSideBarStore();
   return (
     <div
       className={`fixed flex h-screen ${activeState ? "w-65" : "w-20"} flex-col border-r transition-all duration-300`}
