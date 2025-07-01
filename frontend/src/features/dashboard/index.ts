@@ -5,7 +5,6 @@ export * from "./components/header/DashboardHeaderAddApplicationButton";
 export * from "./components/header/DashboardHeaderGmailConnectionStatus";
 export * from "./components/header/DashboardHeaderLayout";
 export * from "./components/header/DashboardHeaderNotificationBell";
-export * from "./components/header/DashboardHeaderSearchBar";
 export * from "./components/header/DashboardHeaderTitle";
 
 // SideBar Components
