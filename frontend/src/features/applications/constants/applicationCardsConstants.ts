@@ -1,4 +1,7 @@
-import { type ApplicationCardType } from "#/applications";
+import {
+  type ApplicationCardType,
+  type ApplicationStatus,
+} from "#/applications";
 
 export const applicationCardsConstant: ApplicationCardType[] = [
   {
@@ -141,7 +144,8 @@ export const applicationCardsConstant: ApplicationCardType[] = [
   },
 ];
 
-export const ApplicationStatusToColor: { [key: string]: string } = {
+export const ApplicationStatusToColor: Record<ApplicationStatus, string> = {
+  "All Status": "hidden",
   Interviewing: "bg-yellow-100 text-yellow-800",
   Applied: "bg-blue-100 text-blue-800",
   Rejected: "bg-red-100 text-red-800",

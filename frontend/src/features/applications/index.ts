@@ -1,5 +1,3 @@
-import { useApplicationFiltersStore } from "./stores/useApplicationFiltersStore";
-
 // Main components
 export * from "./components/ApplicationsLayout";
 
@@ -25,26 +23,19 @@ export * from "./constants/applicationCardsConstants";
 export * from "./constants/applicationFiltersConstants";
 
 // hooks
-export * from "./hooks/useApplicationFilters";
 export * from "./hooks/useApplicationClearAllFilters";
 
-// Filter Stores
-export const useApplicationStatusFilterStore =
-  useApplicationFiltersStore("All Status");
-export const useApplicationTypeFilterStore =
-  useApplicationFiltersStore("All Types");
-export const useApplicationLevelFilterStore =
-  useApplicationFiltersStore("All Levels");
-export const useApplicationJobTypeFilterStore =
-  useApplicationFiltersStore("All Job Types");
+// Types
+export * from "./types/applicationCardTypes";
+export * from "./types/applicationFiltersTypes";
+export * from "./types/applicationStatsTypes";
+export * from "./types/applicationTypes";
+
+// Filter Store
+export * from "./stores/useApplicationFiltersStore";
 
 // Cards Store
 export * from "./stores/useApplicationCardsStore";
 
 // Stats Store
 export * from "./stores/useApplicationStatsStore";
-
-// Types
-export * from "./types/applicationCardTypes";
-export * from "./types/applicationFiltersTypes";
-export * from "./types/applicationStatsTypes";

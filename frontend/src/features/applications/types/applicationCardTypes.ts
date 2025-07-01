@@ -1,11 +1,17 @@
-// Contacts, Job Description, resumeUsed, coverLetterUsed, are shown When you click on the card
+import {
+  type ApplicationStatus,
+  type ApplicationType,
+  type ApplicationJobType,
+  type ApplicationLevel,
+} from "#/applications";
+
 export interface ApplicationCardType {
   id: string;
   companyName: string;
   companyEmail: string;
   position: string;
   link: string;
-  status: string;
+  status: ApplicationStatus;
   notes: string;
   location: string;
   startSalary: number;
@@ -18,9 +24,9 @@ export interface ApplicationCardType {
   jobDescription: string;
   resumeUsed: string;
   coverLetterUsed: string;
-  type: string;
-  jobType: string;
-  level: string;
+  type: ApplicationType;
+  jobType: ApplicationJobType;
+  level: ApplicationLevel;
 }
 
 export interface ApplicationCardStoreType {

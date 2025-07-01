@@ -1,16 +1,16 @@
-export interface ApplicationFilterStoreType {
+export interface ApplicationFilterStoreType<T> {
   isFilterOpen: boolean;
-  selectedFilter: string;
+  selectedFilter: T;
   setIsFilterOpen: (open: boolean) => void;
-  setSelectedFilter: (value: string) => void;
+  setSelectedFilter: (value: T) => void;
   clear: () => void;
 }
 
-export interface ApplicationFilterBarProps {
+export interface ApplicationFilterBarProps<T> {
   isFilterOpen: boolean;
-  selectedFilter: string;
+  selectedFilter: T;
   setIsFilterOpen: (open: boolean) => void;
-  setSelectedFilter: (value: string) => void;
-  applicationConstant: Array<{ value: string; label: string }>;
+  setSelectedFilter: (value: T) => void;
+  applicationConstant: Readonly<{ value: T; label: string }[]>;
   name: string;
 }

@@ -16,14 +16,14 @@ import {
 } from "@/components/ui/popover";
 import { type ApplicationFilterBarProps } from "#/applications";
 
-export function ApplicationFilterBar({
+export function ApplicationFilterBar<T extends string>({
   isFilterOpen,
   selectedFilter,
   setIsFilterOpen,
   setSelectedFilter,
   applicationConstant,
   name,
-}: ApplicationFilterBarProps) {
+}: ApplicationFilterBarProps<T>) {
   return (
     <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
       <PopoverTrigger asChild>
@@ -51,7 +51,7 @@ export function ApplicationFilterBar({
                   key={item.value}
                   value={item.value}
                   onSelect={(currentValue) => {
-                    setSelectedFilter(currentValue);
+                    setSelectedFilter(currentValue as T);
                     setIsFilterOpen(false);
                   }}
                 >
