@@ -97,6 +97,7 @@ public sealed class GoogleTokensProvider(UserManager<User> userManager, IConfigu
             {
                 user.Email = googleUser.Email;
                 user.UserName = googleUser.Email;
+                user.ImageUrl = googleUser.Picture;
                 await userManager.UpdateAsync(user);
             }
             return user;
@@ -111,6 +112,10 @@ public sealed class GoogleTokensProvider(UserManager<User> userManager, IConfigu
             {
                 return null;
             }
+            
+            user.ImageUrl = googleUser.Picture;
+            user.Name = googleUser.Name;
+            await userManager.UpdateAsync(user);
             return user;
         }
 
@@ -119,6 +124,7 @@ public sealed class GoogleTokensProvider(UserManager<User> userManager, IConfigu
             UserName = googleUser.Email,
             Email = googleUser.Email,
             Name = googleUser.Name,
+            ImageUrl = googleUser.Picture,
             EmailConfirmed = true
         };
 

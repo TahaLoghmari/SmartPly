@@ -11,7 +11,8 @@ internal static class UserMappings
         {
             Id = user.Id,
             Email = user.Email!,
-            Name = user.Name!
+            Name = user.Name!,
+            ImageUrl = user.ImageUrl!
         };
     }
 }

@@ -10,5 +10,10 @@ public sealed class UserDtoValidator : AbstractValidator<UserDto>
         RuleFor(u => u.Email).NotEmpty().MinimumLength(3);
         RuleFor(u => u.Name).NotEmpty().MaximumLength(10);
         RuleFor(u => u.Id).NotEmpty();
+        RuleFor(u => u.ImageUrl)
+            .MaximumLength(500)
+            .Must(uri => Uri.TryCreate(uri, UriKind.Absolute, out _))
+            .WithMessage("'{PropertyName}' must be a valid URL.")
+            .When(u => !string.IsNullOrEmpty(u.ImageUrl));
     }
 }
