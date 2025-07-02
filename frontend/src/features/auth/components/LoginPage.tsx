@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
-import { LoginForm, useGetGoogleOAuthUrl } from "../../auth";
+import { LoginForm, useGetGoogleOAuthUrl } from "#/auth";
 
 export function LoginPage() {
   const getGoogleOAuthUrlMutation = useGetGoogleOAuthUrl();

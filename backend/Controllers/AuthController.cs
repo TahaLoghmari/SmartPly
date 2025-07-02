@@ -261,7 +261,7 @@ public sealed class AuthController(
         logger.LogInformation("Google login successful for {Email}, UserId: {UserId}", 
             user.Email, user.Id);
 
-        return Redirect(configuration["Frontend:BaseUrl"]!);
+        return Redirect($"{configuration["Frontend:BaseUrl"]!}/app");
     }
 
     [HttpGet("me")]

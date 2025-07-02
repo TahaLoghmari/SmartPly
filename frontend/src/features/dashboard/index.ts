@@ -6,6 +6,7 @@ export * from "./components/header/DashboardHeaderGmailConnectionStatus";
 export * from "./components/header/DashboardHeaderLayout";
 export * from "./components/header/DashboardHeaderNotificationBell";
 export * from "./components/header/DashboardHeaderTitle";
+export * from "./components/header/DashboardHeaderConnectGmailButton";
 
 // SideBar Components
 export * from "./components/sideBar/DashboardSideBarAI";
