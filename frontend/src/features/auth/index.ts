@@ -16,6 +16,7 @@ export { useAuthOnMount } from "./hooks/useAuthOnMount";
 export { useCurrentUser } from "./hooks/useCurrentUser";
 export { useForgotPassword } from "./hooks/useForgotPassword";
 export { useGetGoogleOAuthUrl } from "./hooks/useGetGoogleOAuthUrl";
+export { useGetGoogleLinkOAuthUrl } from "./hooks/useGetGoogleLinkOAuthUrl";
 export { useLogin } from "./hooks/useLogin";
 export { useLogout } from "./hooks/useLogout";
 export { useRegister } from "./hooks/useRegister";

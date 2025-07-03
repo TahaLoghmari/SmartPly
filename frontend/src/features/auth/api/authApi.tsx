@@ -32,6 +32,10 @@ export const authApi = {
     return request<{ authorizationUrl: string }>("/auth/google/authorize");
   },
 
+  getGoogleLinkOAuthUrl() {
+    return request<{ authorizationUrl: string }>("/auth/google/link");
+  },
+
   refresh() {
     return request<string>("/auth/refresh", {
       method: "POST",

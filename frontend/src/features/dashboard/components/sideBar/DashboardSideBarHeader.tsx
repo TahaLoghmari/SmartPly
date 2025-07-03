@@ -5,7 +5,6 @@ import { useDashboardSideBarStore } from "#/dashboard";
 export function DashboardSideBarHeader() {
   const { activeState } = useDashboardSideBarStore();
   const { user } = useAuthStore();
-  console.log(user?.imageUrl);
   return (
     <div
       className={`flex items-center border-b p-2 py-4 transition-all duration-300 ${!activeState ? "justify-center" : "justify-start gap-3"}`}

@@ -4,11 +4,11 @@ import {
   AlertDialogAction,
   AlertDialogFooter,
 } from "@/components/ui/alert-dialog";
-import { useGetGoogleOAuthUrl } from "#/auth";
+import { useGetGoogleLinkOAuthUrl } from "#/auth";
 import { Spinner } from "@/components/ui/spinner";
 
 export function DashboardHeaderConnectGmailButton() {
-  const getGoogleOAuthUrlMutation = useGetGoogleOAuthUrl();
+  const getGoogleOAuthUrlMutation = useGetGoogleLinkOAuthUrl();
   return (
     <>
       <div className="flex items-center justify-between border-b p-6">
