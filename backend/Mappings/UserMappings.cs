@@ -13,6 +13,7 @@ internal static class UserMappings
             Email = user.Email!,
             Name = user.Name!,
             ImageUrl = user.ImageUrl!,
+            GoogleEmail = user.GoogleEmail!,
             GmailConnected = user.GmailConnected!
         };
     }

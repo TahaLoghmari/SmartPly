@@ -10,13 +10,15 @@ builder
     .AddAuthentication()
     .AddErrorHandling()
     .AddServices()
-    .AddLogging();
+    .AddLogging()
+    .AddSwagger();
 
 var app = builder.Build();
 
 if ( app.Environment.IsDevelopment() )
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
     await app.ApplyMigrationsAsync();
 }
 app.UseCors("AllowReactApp");

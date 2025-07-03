@@ -1,3 +1,5 @@
+using Microsoft.OpenApi.Models;
+
 namespace backend;
 using Serilog;
 using Services;
@@ -32,6 +34,21 @@ public static class DependencyInjection
                 });
         });
 
+        return builder;
+    }
+    
+    public static WebApplicationBuilder AddSwagger(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "SmartPly",
+                Description = "An ASP.NET Core Web API for your application.",
+            });
+        });
+        
         return builder;
     }
 

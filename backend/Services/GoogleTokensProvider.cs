@@ -85,17 +85,18 @@ public sealed class GoogleTokensProvider(UserManager<User> userManager, IConfigu
                 expiresAt);
     }
 
-    public async Task<User?> FindOrCreateUser(GoogleUserInfo googleUser)
+    public async Task<User?> FindOrCreateOrLinkUserUserAsync(GoogleUserInfo googleUser, string? linkAccountUserId = null)
     {
         var loginInfo = new UserLoginInfo("Google", googleUser.Id, "Google");
 
         var user = await userManager.FindByLoginAsync(loginInfo.LoginProvider, loginInfo.ProviderKey);
-
-        if (user != null)
+        
+        if (user != null) // this means a Google user already exists with this login info
         {
             if (user.Email != googleUser.Email)
             {
                 user.Email = googleUser.Email;
+                user.GoogleEmail = googleUser.Email;
                 user.UserName = googleUser.Email;
                 user.ImageUrl = googleUser.Picture;
                 user.GmailConnected = true;
@@ -106,7 +107,7 @@ public sealed class GoogleTokensProvider(UserManager<User> userManager, IConfigu
 
         user = await userManager.FindByEmailAsync(googleUser.Email);
 
-        if (user != null)
+        if (user != null) // this mean a non Google user already exists with this email
         {
             var addLoginResult = await userManager.AddLoginAsync(user, loginInfo);
             if (!addLoginResult.Succeeded)
@@ -117,14 +118,40 @@ public sealed class GoogleTokensProvider(UserManager<User> userManager, IConfigu
             user.ImageUrl = googleUser.Picture;
             user.Name = googleUser.Name;
             user.GmailConnected = true;
+            user.GoogleEmail = googleUser.Email;
             await userManager.UpdateAsync(user);
             return user;
         }
+        // reaching this means there's no existing user with this email or login info so now we either create
+        // a new user or link the login info to an existing user
+        
+        if (linkAccountUserId != null)
+        {
+            user = await userManager.FindByIdAsync(linkAccountUserId);
+            if (user is null)
+            {
+                return null; 
+            }
 
+            var linkProcessResult = await userManager.AddLoginAsync(user, loginInfo);
+            if (!linkProcessResult.Succeeded)
+            {
+                return null;
+            }
+
+            user.ImageUrl = googleUser.Picture;
+            user.Name = googleUser.Name;
+            user.GmailConnected = true;
+            user.GoogleEmail = googleUser.Email;
+            await userManager.UpdateAsync(user);
+            return user;
+        }
+        
         user = new User
         {
             UserName = googleUser.Email,
             Email = googleUser.Email,
+            GoogleEmail = googleUser.Email,
             Name = googleUser.Name,
             ImageUrl = googleUser.Picture,
             GmailConnected = true,

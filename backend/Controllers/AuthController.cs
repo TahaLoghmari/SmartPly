@@ -30,6 +30,7 @@ public sealed class AuthController(
     private readonly JwtAuthOptions _jwtAuthOptions = options.Value;
 
     [HttpPost("register")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register(
         RegisterUserDto registerUserDto,
         IValidator<RegisterUserDto> validator,
@@ -87,6 +88,7 @@ public sealed class AuthController(
         return Ok(new { message = "Registration successful" });
     }
     [HttpPost("login")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Login(
         LoginUserDto loginUserDto,
         IValidator<LoginUserDto> validator,
@@ -149,6 +151,7 @@ public sealed class AuthController(
     }
 
     [HttpPost("refresh")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Refresh( [FromServices] ProblemDetailsFactory problemDetailsFactory)
     {
         logger.LogInformation("Token refresh attempt started");
@@ -210,8 +213,51 @@ public sealed class AuthController(
 
         return Ok(new { authorizationUrl = authUrl });
     }
+    
+    [HttpGet("google/link")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    public IActionResult GoogleLinkAuthorize(
+        ProblemDetailsFactory problemDetailsFactory)
+    {
+        logger.LogInformation("Google account link authorization URL requested");
+        
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                logger.LogWarning("Get current user failed - user ID claim missing");
+                var problem = problemDetailsFactory.CreateProblemDetails(
+                    HttpContext,
+                    StatusCodes.Status401Unauthorized,
+                    title: "Unauthorized",
+                    detail: "User ID claim is missing."
+                );
+                return Unauthorized(problem);
+            }
+        }
+        
+        var clientId = configuration["Google:ClientId"];
+        var redirectUri = configuration["Google:RedirectUri"]!;
+        var scope = configuration["Google:Scopes"]!;
+        var state = $"{userId}:{Guid.NewGuid()}";
+
+        var authUrl = $"https://accounts.google.com/o/oauth2/v2/auth?" +
+                      $"client_id={clientId}&" +
+                      $"redirect_uri={Uri.EscapeDataString(redirectUri)}&" +
+                      $"scope={Uri.EscapeDataString(scope)}&" +
+                      $"response_type=code&" +
+                      $"state={state}&" +
+                      $"access_type=offline&" +
+                      $"prompt=consent";
+        
+        logger.LogInformation("Google authorization URL generated with state: {State}", state);
+
+        return Ok(new { authorizationUrl = authUrl });
+    }
 
     [HttpGet("google/callback")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GoogleCallback(
         [FromQuery] GoogleCallbackDto googleCallbackDto,
         IValidator<GoogleCallbackDto> validator,
@@ -235,9 +281,12 @@ public sealed class AuthController(
             return BadRequest(problem);
         }
 
-        var googleUser = await googleTokensProvider.GetGoogleUserInfo(tokens.IdToken);
+        string[] stateParts = googleCallbackDto!.state!.Split(':');
+        string? linkAccountUserId = stateParts.Length == 2 ? stateParts[0] : null;
+        
+        GoogleUserInfo googleUser = await googleTokensProvider.GetGoogleUserInfo(tokens.IdToken);
 
-        User? user = await googleTokensProvider.FindOrCreateUser(googleUser);
+        User? user = await googleTokensProvider.FindOrCreateOrLinkUserUserAsync(googleUser,linkAccountUserId);
         
         if ( user is null )
         {
@@ -266,6 +315,8 @@ public sealed class AuthController(
 
     [HttpGet("me")]
     [Authorize]
+    [ProducesResponseType<UserDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetCurrentUser(
         ProblemDetailsFactory problemDetailsFactory)
     {
@@ -325,6 +376,7 @@ public sealed class AuthController(
     }
     [HttpGet("confirm-email")]
     [AllowAnonymous]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ConfirmEmail(
         [FromQuery] ConfirmationDto confirmationDto,
         ProblemDetailsFactory problemDetailsFactory,
@@ -367,6 +419,7 @@ public sealed class AuthController(
     
     [AllowAnonymous]
     [HttpPost("resend-confirmation-email")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ResendConfirmationEmail( 
         ResendConfirmationEmailDto dto,
         ProblemDetailsFactory problemDetailsFactory,
@@ -400,6 +453,7 @@ public sealed class AuthController(
     }
     [HttpPost("forgot-password")]
     [AllowAnonymous]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ForgotPassword(
         ForgotPasswordDto dto,
         ProblemDetailsFactory problemDetailsFactory,
@@ -432,6 +486,7 @@ public sealed class AuthController(
     }
     [HttpGet("reset-password")]
     [AllowAnonymous]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ResetPassword(
     [FromQuery] EmailResetPasswordDto emailResetPasswordDto,
     IValidator<EmailResetPasswordDto> validator)
@@ -459,6 +514,7 @@ public sealed class AuthController(
     }
     [HttpPost("reset-password")]
     [AllowAnonymous]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ResetPassword(
     ResetPasswordDto processResetPasswordDto,
     ProblemDetailsFactory problemDetailsFactory,
