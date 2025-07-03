@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace backend.Services;
 
-public sealed class GoogleTokensProvider(UserManager<User> userManager, IConfiguration configuration)
+public sealed class GoogleTokensProvider(
+    UserManager<User> userManager,
+    IConfiguration configuration,
+    ILogger<GoogleTokensProvider> logger)
 {
     public async Task<GoogleTokenResponse?> ExchangeCodeForTokens(string code)
     {
@@ -85,7 +88,7 @@ public sealed class GoogleTokensProvider(UserManager<User> userManager, IConfigu
                 expiresAt);
     }
 
-    public async Task<User?> FindOrCreateOrLinkUserUserAsync(GoogleUserInfo googleUser, string? linkAccountUserId = null)
+    public async Task<User?> FindOrCreateUserAsync(GoogleUserInfo googleUser, string? linkAccountUserId = null)
     {
         var loginInfo = new UserLoginInfo("Google", googleUser.Id, "Google");
 
@@ -107,7 +110,7 @@ public sealed class GoogleTokensProvider(UserManager<User> userManager, IConfigu
 
         user = await userManager.FindByEmailAsync(googleUser.Email);
 
-        if (user != null) // this mean a non Google user already exists with this email
+        if (user != null) // this means a non Google user already exists with this email
         {
             var addLoginResult = await userManager.AddLoginAsync(user, loginInfo);
             if (!addLoginResult.Succeeded)
@@ -122,30 +125,8 @@ public sealed class GoogleTokensProvider(UserManager<User> userManager, IConfigu
             await userManager.UpdateAsync(user);
             return user;
         }
-        // reaching this means there's no existing user with this email or login info so now we either create
-        // a new user or link the login info to an existing user
-        
-        if (linkAccountUserId != null)
-        {
-            user = await userManager.FindByIdAsync(linkAccountUserId);
-            if (user is null)
-            {
-                return null; 
-            }
-
-            var linkProcessResult = await userManager.AddLoginAsync(user, loginInfo);
-            if (!linkProcessResult.Succeeded)
-            {
-                return null;
-            }
-
-            user.ImageUrl = googleUser.Picture;
-            user.Name = googleUser.Name;
-            user.GmailConnected = true;
-            user.GoogleEmail = googleUser.Email;
-            await userManager.UpdateAsync(user);
-            return user;
-        }
+        /* reaching this means there's no existing user with this email or login info so now we create a new
+         user */
         
         user = new User
         {
@@ -173,5 +154,37 @@ public sealed class GoogleTokensProvider(UserManager<User> userManager, IConfigu
         }
 
         return user;
+    }
+
+    public async Task<User?> LinkUserAsync(GoogleUserInfo googleUser, string linkAccountUserId )
+    {
+        var userWithThisGoogleAccount = await userManager.FindByLoginAsync("Google", googleUser.Id);
+        if ( userWithThisGoogleAccount != null)
+        {
+            logger.LogWarning("Google account is already linked to another user (UserId: {UserId})", userWithThisGoogleAccount.Id);
+            return null; 
+        }
+
+        var userToLink = await userManager.FindByIdAsync(linkAccountUserId);
+        if (userToLink is null)
+        {
+            logger.LogError("User to link not found. UserId: {UserId}", linkAccountUserId);
+            return null;
+        }
+        
+        var result = await userManager.AddLoginAsync(userToLink, new UserLoginInfo("Google", googleUser.Id, "Google"));
+        if (!result.Succeeded)
+        {
+            logger.LogError("Failed to link Google account for UserId: {UserId}. Errors: {Errors}", linkAccountUserId, string.Join(", ", result.Errors.Select(e => e.Description)));
+            await userManager.DeleteAsync(userToLink);
+            return null;
+        }
+        
+        userToLink.ImageUrl = googleUser.Picture;
+        userToLink.GmailConnected = true;
+        userToLink.GoogleEmail = googleUser.Email;
+        await userManager.UpdateAsync(userToLink);
+
+        return userToLink;
     }
 }

@@ -257,11 +257,9 @@ public sealed class AuthController(
     }
 
     [HttpGet("google/callback")]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GoogleCallback(
         [FromQuery] GoogleCallbackDto googleCallbackDto,
-        IValidator<GoogleCallbackDto> validator,
-        ProblemDetailsFactory problemDetailsFactory)
+        IValidator<GoogleCallbackDto> validator)
     {
         logger.LogInformation("Google callback received with state: {State}", googleCallbackDto.state);
         
@@ -272,13 +270,7 @@ public sealed class AuthController(
         if (tokens is null)
         {
             logger.LogError("Failed to exchange Google authorization code for tokens");
-            var problem = problemDetailsFactory.CreateProblemDetails(
-                HttpContext,
-                StatusCodes.Status400BadRequest,
-                title: "Failed to exchange authorization code",
-                detail: "Could not retrieve tokens from Google."
-            );
-            return BadRequest(problem);
+            return Redirect($"{configuration["Frontend:BaseUrl"]!}/auth?type=token_exchange&message={Uri.EscapeDataString("Failed to get tokens from Google")}");
         }
 
         string[] stateParts = googleCallbackDto!.state!.Split(':');
@@ -286,30 +278,40 @@ public sealed class AuthController(
         
         GoogleUserInfo googleUser = await googleTokensProvider.GetGoogleUserInfo(tokens.IdToken);
 
-        User? user = await googleTokensProvider.FindOrCreateOrLinkUserUserAsync(googleUser,linkAccountUserId);
-        
-        if ( user is null )
+        User? user;
+
+        if (linkAccountUserId != null)
         {
-            logger.LogError("Failed to find or create user from Google information for email: {Email}", 
-                googleUser?.Email);
-            var problem = problemDetailsFactory.CreateProblemDetails(
-                HttpContext,
-                StatusCodes.Status400BadRequest,
-                title: "User creation failed",
-                detail: "Could not create , find user with Google information or link user to google account."
-            );
-            return BadRequest(problem);
+            user = await googleTokensProvider.LinkUserAsync(googleUser,linkAccountUserId);
+            if ( user is null )
+            {
+                logger.LogError("Failed to link user from Google information for email: {Email}", 
+                    googleUser?.Email);
+                return Redirect($"{configuration["Frontend:BaseUrl"]!}/app?type=link_failed&message={Uri.EscapeDataString("Failed to link Google account")}");
+            }
+            await googleTokensProvider.StoreGoogleTokens(user, tokens);
+            logger.LogInformation("Google account linking successful for {Email}, UserId: {UserId}", 
+                user.Email, user.Id);
         }
-
-        await googleTokensProvider.StoreGoogleTokens(user, tokens);
-
-        AccessTokensDto accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, user.Email!);
+        else
+        {
+            user = await googleTokensProvider.FindOrCreateUserAsync(googleUser,linkAccountUserId);
+            if ( user is null )
+            {
+                logger.LogError("Failed to find or create user from Google information for email: {Email}", 
+                    googleUser?.Email);
+                return Redirect($"{configuration["Frontend:BaseUrl"]!}/auth?type=user_creation&message={Uri.EscapeDataString("Failed to create user account")}");
+            }
+            await googleTokensProvider.StoreGoogleTokens(user, tokens);
+            
+            AccessTokensDto accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, user.Email!);
         
-        cookieService.AddCookies(Response, accessTokens, _jwtAuthOptions);
+            cookieService.AddCookies(Response, accessTokens, _jwtAuthOptions);
+            
+            logger.LogInformation("Google login successful for {Email}, UserId: {UserId}", 
+                user.Email, user.Id);
+        }
         
-        logger.LogInformation("Google login successful for {Email}, UserId: {UserId}", 
-            user.Email, user.Id);
-
         return Redirect($"{configuration["Frontend:BaseUrl"]!}/app");
     }
 
