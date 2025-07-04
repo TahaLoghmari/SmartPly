@@ -1,0 +1,20 @@
+﻿using backend.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace backend.Database.Configuration;
+
+public class ContactConfiguration : IEntityTypeConfiguration<Contact>
+{
+    public void Configure(EntityTypeBuilder<Contact> builder)
+    {
+        builder.HasKey(c => c.Id);
+        
+        builder.Property(c => c.Name)
+            .IsRequired()
+            .HasMaxLength(100);
+        
+        builder.HasMany(c => c.Applications)
+            .WithMany(a => a.Contacts);
+    }
+}
