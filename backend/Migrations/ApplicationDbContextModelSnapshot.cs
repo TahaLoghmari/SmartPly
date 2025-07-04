@@ -21,6 +21,21 @@ namespace backend.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("ApplicationContact", b =>
+                {
+                    b.Property<Guid>("ApplicationsId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ContactsId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ApplicationsId", "ContactsId");
+
+                    b.HasIndex("ContactsId");
+
+                    b.ToTable("ApplicationContact");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -153,6 +168,127 @@ namespace backend.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("backend.Entities.Application", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CompanyEmail")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("CoverLetterId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("Deadline")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("EndSalary")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("JobDescription")
+                        .HasMaxLength(10000)
+                        .HasColumnType("character varying(10000)");
+
+                    b.Property<string>("JobType")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Level")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Link")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)");
+
+                    b.Property<string>("Location")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(5000)
+                        .HasColumnType("character varying(5000)");
+
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("ResumeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("StartSalary")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Status")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("TechnologiesUsed")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Type")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CoverLetterId");
+
+                    b.HasIndex("ResumeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Applications");
+                });
+
+            modelBuilder.Entity("backend.Entities.Contact", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Contacts");
+                });
+
+            modelBuilder.Entity("backend.Entities.CoverLetter", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CoverLetters");
+                });
+
             modelBuilder.Entity("backend.Entities.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
@@ -180,6 +316,20 @@ namespace backend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("RefreshTokens");
+                });
+
+            modelBuilder.Entity("backend.Entities.Resume", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Resumes");
                 });
 
             modelBuilder.Entity("backend.Entities.User", b =>
@@ -263,6 +413,21 @@ namespace backend.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("ApplicationContact", b =>
+                {
+                    b.HasOne("backend.Entities.Application", null)
+                        .WithMany()
+                        .HasForeignKey("ApplicationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Entities.Contact", null)
+                        .WithMany()
+                        .HasForeignKey("ContactsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -314,6 +479,29 @@ namespace backend.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("backend.Entities.Application", b =>
+                {
+                    b.HasOne("backend.Entities.CoverLetter", "CoverLetterUsed")
+                        .WithMany("Applications")
+                        .HasForeignKey("CoverLetterId");
+
+                    b.HasOne("backend.Entities.Resume", "ResumeUsed")
+                        .WithMany("Applications")
+                        .HasForeignKey("ResumeId");
+
+                    b.HasOne("backend.Entities.User", "User")
+                        .WithMany("Applications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CoverLetterUsed");
+
+                    b.Navigation("ResumeUsed");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("backend.Entities.RefreshToken", b =>
                 {
                     b.HasOne("backend.Entities.User", "User")
@@ -323,6 +511,21 @@ namespace backend.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("backend.Entities.CoverLetter", b =>
+                {
+                    b.Navigation("Applications");
+                });
+
+            modelBuilder.Entity("backend.Entities.Resume", b =>
+                {
+                    b.Navigation("Applications");
+                });
+
+            modelBuilder.Entity("backend.Entities.User", b =>
+                {
+                    b.Navigation("Applications");
                 });
 #pragma warning restore 612, 618
         }
