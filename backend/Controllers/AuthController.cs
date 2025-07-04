@@ -261,6 +261,17 @@ public sealed class AuthController(
         [FromQuery] GoogleCallbackDto googleCallbackDto,
         IValidator<GoogleCallbackDto> validator)
     {
+        string[] stateParts = googleCallbackDto!.state!.Split(':');
+        string? linkAccountUserId = stateParts.Length == 2 ? stateParts[0] : null;
+        
+        if (!string.IsNullOrEmpty(googleCallbackDto.error))
+        {
+            logger.LogWarning("Google OAuth flow was canceled or resulted in an error: {Error}", googleCallbackDto.error);
+            var errorMessage = "The Google authentication process was canceled.";
+            string redirectPath = linkAccountUserId != null ? "/app" : "/login";
+            return Redirect($"{configuration["Frontend:BaseUrl"]!}{redirectPath}?type=google_canceled&message={Uri.EscapeDataString(errorMessage)}");
+        }
+        
         logger.LogInformation("Google callback received with state: {State}", googleCallbackDto.state);
         
         await validator.ValidateAndThrowAsync(googleCallbackDto);
@@ -272,9 +283,6 @@ public sealed class AuthController(
             logger.LogError("Failed to exchange Google authorization code for tokens");
             return Redirect($"{configuration["Frontend:BaseUrl"]!}/auth?type=token_exchange&message={Uri.EscapeDataString("Failed to get tokens from Google")}");
         }
-
-        string[] stateParts = googleCallbackDto!.state!.Split(':');
-        string? linkAccountUserId = stateParts.Length == 2 ? stateParts[0] : null;
         
         GoogleUserInfo googleUser = await googleTokensProvider.GetGoogleUserInfo(tokens.IdToken);
 
