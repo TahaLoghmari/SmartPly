@@ -1,6 +1,7 @@
 export interface User {
   id: string;
   email: string;
+  googleEmail: string;
   name: string;
   imageUrl: string;
   gmailConnected: boolean;
