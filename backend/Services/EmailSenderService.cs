@@ -12,7 +12,8 @@ namespace backend.Services
 {
     public sealed class EmailSenderService(
         IOptions<EmailSettings> options,
-        UserManager<User> userManager)
+        UserManager<User> userManager,
+        ILogger<EmailSenderService> logger)
     {
         private readonly EmailSettings _emailSettings = options.Value;
 
@@ -50,13 +51,16 @@ namespace backend.Services
         }
         public async Task SendForgotPasswordEmail(string email, User user, HttpContext httpContext, IUrlHelper url)
         {
+            logger.LogInformation("Attempting to send password reset email for user {UserId} to {Email}", user.Id, email);
             var token = await userManager.GeneratePasswordResetTokenAsync(user);
+            logger.LogInformation("Generated password reset token for user {UserId}", user.Id);
 
             var passwordResetLink = url.Action("ResetPassword", "Auth",
                 new { Email = email, Token = token }, protocol: httpContext.Request.Scheme);
             
             if (passwordResetLink is null)
             {
+                logger.LogError("Password reset link generation failed for user {UserId}. The generated link was null.", user.Id);
                 var problem = new ProblemDetails
                 {
                     Status = StatusCodes.Status500InternalServerError,
@@ -66,6 +70,8 @@ namespace backend.Services
                 throw new Exception(problem.Detail);
             }
 
+            logger.LogInformation("Successfully generated password reset link for user {UserId}", user.Id);
+            
             var safeLink = HtmlEncoder.Default.Encode(passwordResetLink);
 
             var subject = "Reset Your Password";
@@ -165,16 +171,20 @@ namespace backend.Services
 
             SendEmailDto sendEmailDto = new SendEmailDto(email, subject, messageBody, true);
             await SendEmailAsync(sendEmailDto);
+            logger.LogInformation("Successfully sent password reset email to {Email} for user {UserId}", email, user.Id);
         }
         public async Task SendConfirmationEmail(string email, User user, HttpContext httpContext, IUrlHelper url)
         {
+            logger.LogInformation("Generated email confirmation token for user {UserId}", user.Id);
             var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            logger.LogInformation("Generated email confirmation token for user {UserId}", user.Id);
 
             var confirmationLink = url.Action("ConfirmEmail", "Auth",
                 new { UserId = user.Id, Token = token }, protocol: httpContext.Request.Scheme);
 
             if (confirmationLink is null)
             {
+                logger.LogError("Email confirmation link generation failed for user {UserId}. The generated link was null.", user.Id);
                 var problem = new ProblemDetails
                 {
                     Status = StatusCodes.Status500InternalServerError,
@@ -183,7 +193,8 @@ namespace backend.Services
                 };
                 throw new Exception(problem.Detail);
             }
-
+            
+            logger.LogInformation("Successfully generated email confirmation link for user {UserId}", user.Id);
             var safeLink = HtmlEncoder.Default.Encode(confirmationLink);
 
             var subject = "Welcome to SmartPly! Please Confirm Your Email";
@@ -284,6 +295,7 @@ namespace backend.Services
             SendEmailDto sendEmailDto = new SendEmailDto(email, subject, messageBody, true);
 
             await SendEmailAsync(sendEmailDto);
+            logger.LogInformation("Successfully sent confirmation email to {Email} for user {UserId}", email, user.Id);
         }
         
     }
