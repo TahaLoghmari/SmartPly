@@ -2,9 +2,20 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
 import { LoginForm, useGetGoogleOAuthUrl } from "#/auth";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
+import { useEffect } from "react";
 
 export function LoginPage() {
   const getGoogleOAuthUrlMutation = useGetGoogleOAuthUrl();
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    const message = searchParams.get("message");
+    if (message) {
+      toast.error(message);
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
   return (
     <div className="bg-background sm:bg-secondary flex min-h-screen w-screen flex-col items-center sm:rounded-md">
       <div className="bg-card flex w-full flex-col items-center gap-8 p-9 sm:my-20 sm:w-[450px] sm:rounded-lg sm:p-12">
