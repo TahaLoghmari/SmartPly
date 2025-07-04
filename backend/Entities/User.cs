@@ -8,4 +8,5 @@ public sealed class User : IdentityUser
     public string? GoogleEmail { get; set; }
     public string? ImageUrl { get; set; }
     public bool? GmailConnected { get; set; }
+    public ICollection<Application>? Applications { get; set; } = new List<Application>();
 }
