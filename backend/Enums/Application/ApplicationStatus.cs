@@ -5,10 +5,10 @@ namespace backend.Enums;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ApplicationStatus
 {
-    WishList,
-    Applied,
-    Interviewing,
-    Offer,
-    Rejected,
-    Ghosted
+    wishList,
+    applied,
+    interviewing,
+    offer,
+    rejected,
+    ghosted
 }

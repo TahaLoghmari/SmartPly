@@ -1,19 +1,21 @@
 import {
-  useApplicationCardsStore,
+  useApplicationStore,
   ApplicationCard,
-  type ApplicationCardType,
+  type ApplicationCreateResponseDto,
 } from "#/applications";
 
 export function ApplicationCardsLayout() {
-  const { applicationCardsState } = useApplicationCardsStore();
+  const { applicationCardsState } = useApplicationStore();
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
-      {applicationCardsState.map((applicationCard: ApplicationCardType) => (
-        <ApplicationCard
-          applicationCard={applicationCard}
-          key={applicationCard.id}
-        />
-      ))}
+      {applicationCardsState.map(
+        (applicationCard: ApplicationCreateResponseDto) => (
+          <ApplicationCard
+            applicationCard={applicationCard}
+            key={applicationCard.id}
+          />
+        ),
+      )}
     </div>
   );
 }

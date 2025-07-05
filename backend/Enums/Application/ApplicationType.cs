@@ -5,7 +5,7 @@ namespace backend.Enums;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ApplicationType
 {
-    Remote,
-    OnSite,
-    Hybrid
+    remote,
+    onSite,
+    hybrid
 }

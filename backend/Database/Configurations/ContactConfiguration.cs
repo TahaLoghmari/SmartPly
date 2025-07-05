@@ -13,8 +13,5 @@ public class ContactConfiguration : IEntityTypeConfiguration<Contact>
         builder.Property(c => c.Name)
             .IsRequired()
             .HasMaxLength(100);
-        
-        builder.HasMany(c => c.Applications)
-            .WithMany(a => a.Contacts);
     }
 }

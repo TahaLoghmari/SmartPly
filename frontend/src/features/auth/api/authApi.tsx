@@ -4,8 +4,8 @@ import type {
   RegisterUserDto,
   ResetPasswordDto,
   User,
-} from "../types";
-import { request } from "./client";
+} from "#/auth";
+import { request } from "@/api/client";
 
 export const authApi = {
   login(credentials: LoginUserDto) {

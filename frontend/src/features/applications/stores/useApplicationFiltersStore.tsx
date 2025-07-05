@@ -18,10 +18,10 @@ export function useApplicationFiltersStore<T>(defaultValue: T) {
 }
 
 export const useApplicationStatusFilterStore =
-  useApplicationFiltersStore<ApplicationStatus>("All Status");
+  useApplicationFiltersStore<ApplicationStatus>("allStatus");
 export const useApplicationTypeFilterStore =
-  useApplicationFiltersStore<ApplicationType>("All Types");
+  useApplicationFiltersStore<ApplicationType>("allTypes");
 export const useApplicationLevelFilterStore =
-  useApplicationFiltersStore<ApplicationLevel>("All Levels");
+  useApplicationFiltersStore<ApplicationLevel>("allLevels");
 export const useApplicationJobTypeFilterStore =
-  useApplicationFiltersStore<ApplicationJobType>("All Job Types");
+  useApplicationFiltersStore<ApplicationJobType>("allJobTypes");

@@ -1,10 +1,10 @@
 import { create } from "zustand";
 import {
-  type ApplicationCardStoreType,
+  type ApplicationStoreType,
   applicationCardsConstant,
 } from "#/applications";
 
-export const useApplicationCardsStore = create<ApplicationCardStoreType>(
+export const useApplicationStore = create<ApplicationStoreType>(
   (set) => ({
     applicationCardsState: applicationCardsConstant,
     setApplicationCardsState: (cards) => set({ applicationCardsState: cards }),

@@ -18,7 +18,7 @@ export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
           </p>
           <p className="flex items-center gap-2">
             <Building className="text-muted-foreground h-4 w-4" />
-            <p className="font-medium">{applicationCard.companyName}</p>
+            <span className="font-medium">{applicationCard.companyName}</span>
           </p>
           <p className="text-muted-foreground text-xs">
             {applicationCard.companyEmail}

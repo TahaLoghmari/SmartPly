@@ -4,32 +4,31 @@ namespace backend.Entities;
 
 public sealed class Application
 {
-    public Guid? Id { get; set; } = Guid.NewGuid();
-    public Guid ResumeId { get; set; }
-    public Guid CoverLetterId { get; set; }
-    public string UserId { get; set; }
+    public Guid Id { get; init; } = Guid.NewGuid();
+    public Guid ResumeId { get; init; }
+    public Guid? CoverLetterId { get; init; }
+    public required string UserId { get; init; }
     
-    public string? CompanyName { get; set; }
-    public string? CompanyEmail { get; set; }
-    public string? Position { get; set; }
-    public string? Link { get; set; }
-    public string? Notes { get; set; }
-    public string? Location { get; set; }
-    public int? StartSalary { get; set; }
-    public int? EndSalary { get; set; }
-    public DateTime Deadline { get; set; } 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? UpdatedAt { get; set; } 
-    public string? JobDescription { get; set; } 
+    public required string CompanyName { get; init; }
+    public string? CompanyEmail { get; init; }
+    public required string Position { get; init; }
+    public required string Link { get; init; }
+    public string? Notes { get; init; }
+    public required string Location { get; init; }
+    public required int StartSalary { get; init; }
+    public required int EndSalary { get; init; }
+    public DateTime? Deadline { get; init; } 
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; init; } 
+    public string? JobDescription { get; init; } 
     
-    public ApplicationStatus? Status { get; set; }
-    public ApplicationType? Type { get; set; }
-    public ApplicationJobType? JobType { get; set; } 
-    public ApplicationLevel? Level { get; set; } 
-    public List<string>? TechnologiesUsed { get; set; } = new List<string>();
+    public required ApplicationStatus Status { get; init; }
+    public required ApplicationType Type { get; init; }
+    public required ApplicationJobType JobType { get; init; } 
+    public required ApplicationLevel Level { get; init; } 
+    public List<string>? TechnologiesUsed { get; init; } = new List<string>();
     
-    public Resume? ResumeUsed { get; set; } 
-    public User? User { get; set; }
-    public CoverLetter? CoverLetterUsed { get; set; }
-    public ICollection<Contact>? Contacts { get; set; } = new List<Contact>();
+    public Resume? ResumeUsed { get; init; } 
+    public User? User { get; init; }
+    public CoverLetter? CoverLetterUsed { get; init; }
 }

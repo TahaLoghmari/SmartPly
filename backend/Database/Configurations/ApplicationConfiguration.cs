@@ -12,6 +12,10 @@ public class ApplicationConfiguration : IEntityTypeConfiguration<Application>
     public void Configure(EntityTypeBuilder<Application> builder)
     {
         builder.HasKey(a => a.Id);
+
+        builder.Property(a => a.UserId)
+            .HasMaxLength(50)
+            .IsRequired();
         
         builder.Property(a => a.CompanyName)
             .IsRequired()
@@ -55,9 +59,6 @@ public class ApplicationConfiguration : IEntityTypeConfiguration<Application>
                     (c1, c2) => c1.SequenceEqual(c2),
                     c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
                     c => c.ToList()));
-        
-        builder.HasMany(a => a.Contacts)
-            .WithMany(c => c.Applications);
         
         builder.HasOne(a => a.User)
             .WithMany(u => u.Applications)

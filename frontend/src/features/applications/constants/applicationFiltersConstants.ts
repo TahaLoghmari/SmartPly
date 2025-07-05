@@ -3,55 +3,59 @@ import {
   type ApplicationStatus,
   type ApplicationType,
   type ApplicationJobType,
+  type ApplicationLevelLabel,
+  type ApplicationStatusLabel,
+  type ApplicationTypeLabel,
+  type ApplicationJobTypeLabel,
 } from "#/applications";
 
 export const applicationsLevelFilterOptionsConstant: Readonly<
   {
     value: ApplicationLevel;
-    label: ApplicationLevel;
+    label: ApplicationLevelLabel;
   }[]
 > = [
-  { value: "All Levels", label: "All Levels" },
-  { value: "Junior", label: "Junior" },
-  { value: "Mid", label: "Mid" },
-  { value: "Senior", label: "Senior" },
+  { value: "allLevels", label: "All Levels" },
+  { value: "junior", label: "Junior" },
+  { value: "mid", label: "Mid" },
+  { value: "senior", label: "Senior" },
 ] as const;
 
 export const applicationsStatusFilterOptionsConstant: Readonly<
   {
     value: ApplicationStatus;
-    label: ApplicationStatus;
+    label: ApplicationStatusLabel;
   }[]
 > = [
-  { value: "All Status", label: "All Status" },
-  { value: "WishList", label: "WishList" },
-  { value: "Applied", label: "Applied" },
-  { value: "Interviewing", label: "Interviewing" },
-  { value: "Offer", label: "Offer" },
-  { value: "Rejected", label: "Rejected" },
-  { value: "Ghosted", label: "Ghosted" },
+  { value: "allStatus", label: "All Status" },
+  { value: "wishList", label: "WishList" },
+  { value: "applied", label: "Applied" },
+  { value: "interviewing", label: "Interviewing" },
+  { value: "offer", label: "Offer" },
+  { value: "rejected", label: "Rejected" },
+  { value: "ghosted", label: "Ghosted" },
 ] as const;
 
 export const applicationsTypeFilterOptionsConstant: Readonly<
   {
     value: ApplicationType;
-    label: ApplicationType;
+    label: ApplicationTypeLabel;
   }[]
 > = [
-  { value: "All Types", label: "All Types" },
-  { value: "Remote", label: "Remote" },
-  { value: "OnSite", label: "OnSite" },
-  { value: "Hybrid", label: "Hybrid" },
+  { value: "allTypes", label: "All Types" },
+  { value: "remote", label: "Remote" },
+  { value: "onSite", label: "OnSite" },
+  { value: "hybrid", label: "Hybrid" },
 ] as const;
 
 export const applicationsJobTypeFilterOptionsConstant: Readonly<
   {
     value: ApplicationJobType;
-    label: ApplicationJobType;
+    label: ApplicationJobTypeLabel;
   }[]
 > = [
-  { value: "All Job Types", label: "All Job Types" },
-  { value: "Full Time", label: "Full Time" },
-  { value: "Part Time", label: "Part Time" },
-  { value: "Internship", label: "Internship" },
+  { value: "allJobTypes", label: "All Job Types" },
+  { value: "fullTime", label: "Full Time" },
+  { value: "partTime", label: "Part Time" },
+  { value: "internship", label: "Internship" },
 ] as const;

@@ -1,16 +1,21 @@
-import { type TechnologiesUsedProps } from "#/applications";
+import { type TechnologiesUsedProps, frameworks } from "#/applications";
+import { Badge } from "@/components/ui/badge";
 
 export function TechnologiesUsed({ technologies }: TechnologiesUsedProps) {
+  const MAX_DISPLAY = 5;
   return (
     <div className="flex flex-wrap items-center gap-1">
-      {technologies.map((technology) => (
-        <div
-          key={technology}
-          className="bg-secondary text-secondary-foreground hover:bg-secondary/80 flex items-center rounded-full border border-transparent px-2.5 py-0.5 text-xs font-semibold transition-all"
-        >
-          {technology}
-        </div>
+      {technologies.slice(0, MAX_DISPLAY).map((techValue) => (
+        <Badge variant="secondary" key={techValue}>
+          {frameworks.find((f) => f.value === techValue)?.label || techValue}
+        </Badge>
       ))}
+
+      {technologies.length > MAX_DISPLAY && (
+        <Badge variant="outline">
+          +{technologies.length - MAX_DISPLAY} more
+        </Badge>
+      )}
     </div>
   );
 }

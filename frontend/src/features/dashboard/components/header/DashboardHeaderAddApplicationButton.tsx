@@ -1,10 +1,23 @@
 import { Plus } from "lucide-react";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { ApplicationCreatePage } from "#/applications";
 
 export function DashboardHeaderAddApplicationButton() {
   return (
-    <div className="text-primary-foreground bg-primary flex h-10 cursor-pointer items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-all">
-      <Plus className="h-4 w-4" />
-      <p>Add Application</p>
-    </div>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button>
+          <Plus className="h-4 w-4" />
+          <p>Add Application</p>
+        </Button>
+      </DialogTrigger>
+      <DialogContent
+        className="max-h-[90vh] overflow-auto sm:max-w-4xl"
+        aria-describedby={undefined}
+      >
+        <ApplicationCreatePage />
+      </DialogContent>
+    </Dialog>
   );
 }
