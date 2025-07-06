@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250706072301_AddedUserIdToCoverLetterAndResumeEntities")]
+    partial class AddedUserIdToCoverLetterAndResumeEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -501,7 +504,7 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Entities.CoverLetter", b =>
                 {
                     b.HasOne("backend.Entities.User", "User")
-                        .WithMany("CoverLetters")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -523,7 +526,7 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Entities.Resume", b =>
                 {
                     b.HasOne("backend.Entities.User", "User")
-                        .WithMany("Resumes")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -544,10 +547,6 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Entities.User", b =>
                 {
                     b.Navigation("Applications");
-
-                    b.Navigation("CoverLetters");
-
-                    b.Navigation("Resumes");
                 });
 #pragma warning restore 612, 618
         }

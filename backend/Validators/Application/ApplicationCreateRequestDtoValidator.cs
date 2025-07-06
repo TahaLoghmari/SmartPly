@@ -56,8 +56,8 @@ public class ApplicationCreateRequestDtoValidator : AbstractValidator<Applicatio
             .Must(list => list == null || list.All(t => !string.IsNullOrWhiteSpace(t)))
             .WithMessage("TechnologiesUsed cannot contain empty values.");
 
-        RuleFor(x => x.Deadline)
-            .GreaterThan(DateTime.UtcNow).When(x => x.Deadline.HasValue)
-            .WithMessage("Deadline must be in the future.");
+        // RuleFor(x => x.Deadline)
+        //     .GreaterThanOrEqualTo(DateTime.UtcNow).When(x => x.Deadline.HasValue)
+        //     .WithMessage("Deadline must be in the future.");
     }
 }

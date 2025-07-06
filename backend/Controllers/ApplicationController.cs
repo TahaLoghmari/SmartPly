@@ -1,4 +1,5 @@
 ﻿using System.Net.Mime;
+using System.Security.Claims;
 using backend.DTOs.Application;
 using backend.Entities;
 using backend.Mappings;
@@ -24,8 +25,6 @@ public class ApplicationController(
         [FromBody] ApplicationCreateRequestDto applicationCreateRequestDto,
         [FromServices] IValidator<ApplicationCreateRequestDto> validator)
     {
-        // Update applications Count for the ResumeId
-        // if this gets messy add Service Layer for Application
         logger.LogInformation("Starting application creation for user {UserId}", applicationCreateRequestDto.UserId);
         
         await validator.ValidateAndThrowAsync(applicationCreateRequestDto);
@@ -55,6 +54,29 @@ public class ApplicationController(
         logger.LogInformation("Application created with ID {ApplicationId}", application.Id);
         
         return CreatedAtAction(nameof(CreateApplication), application.ToApplicationResponseDto());
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<ICollection<ApplicationResponseDto>>> GetUserApplications(
+        ProblemDetailsFactory problemDetailsFactory)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId is null)
+        {
+            logger.LogWarning("Get current user failed - user ID claim missing");
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status401Unauthorized,
+                title: "Unauthorized",
+                detail: "User ID claim is missing."
+            );
+            return Unauthorized(problem);
+        }
+
+        return await dbContext.Applications
+            .Where(a => a.UserId == userId)
+            .Select(a => a.ToApplicationResponseDto())
+            .ToListAsync();
     }
     
     [HttpGet("{id}")]
