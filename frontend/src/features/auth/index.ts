@@ -8,11 +8,9 @@ export * from "./types";
 export { authApi } from "./api/authApi";
 
 // Store
-export { useAuthStore } from "./stores/useAuthStore";
 export { useForgotPasswordStore } from "./stores/useForgotPasswordStore";
 
 // Hooks
-export { useAuthOnMount } from "./hooks/useAuthOnMount";
 export { useCurrentUser } from "./hooks/useCurrentUser";
 export { useForgotPassword } from "./hooks/useForgotPassword";
 export { useGetGoogleOAuthUrl } from "./hooks/useGetGoogleOAuthUrl";

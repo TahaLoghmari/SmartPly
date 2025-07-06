@@ -1,5 +1,5 @@
 import { LogOut } from "lucide-react";
-import { useLogout, useAuthStore } from "#/auth";
+import { useLogout, useCurrentUser } from "#/auth";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -17,7 +17,7 @@ import { useDashboardSideBarStore } from "#/dashboard";
 
 export function DashboardSideBarLogoutButton() {
   const { activeState } = useDashboardSideBarStore();
-  const { user } = useAuthStore();
+  const { data: user } = useCurrentUser();
   const logoutMutation = useLogout();
   return (
     <AlertDialog>
@@ -27,7 +27,7 @@ export function DashboardSideBarLogoutButton() {
           variant="ghost"
         >
           {logoutMutation.isPending ? (
-            <Spinner className="h-8 w-auto" />
+            <Spinner className="h-8 w-auto invert dark:invert-0" />
           ) : (
             <>
               <LogOut className="h-4 w-4 flex-shrink-0" />

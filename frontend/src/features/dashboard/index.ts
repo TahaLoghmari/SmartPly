@@ -23,6 +23,7 @@ export * from "./constants/dashboardSideBarConstants";
 
 // Header Stores
 export * from "./stores/header/useDashboardNotificationsCount";
+export * from "./stores/header/useAddApplicationDialogStore";
 
 // SideBar Stores
 export * from "./stores/sideBar/useDashboardActiveNavItemStore";

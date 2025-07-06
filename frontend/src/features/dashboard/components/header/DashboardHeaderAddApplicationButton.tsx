@@ -2,12 +2,15 @@ import { Plus } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ApplicationCreatePage } from "#/applications";
+import { useAddApplicationDialogStore } from "#/dashboard";
 
 export function DashboardHeaderAddApplicationButton() {
+  const { addApplicationOpen, setAddApplicationOpen } =
+    useAddApplicationDialogStore();
   return (
-    <Dialog>
+    <Dialog open={addApplicationOpen} onOpenChange={setAddApplicationOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button className="cursor-pointer">
           <Plus className="h-4 w-4" />
           <p>Add Application</p>
         </Button>

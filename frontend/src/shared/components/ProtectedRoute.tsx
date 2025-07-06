@@ -1,5 +1,5 @@
 import { Navigate, useLocation } from "react-router-dom";
-import { useAuthStore } from "../../features/auth";
+import { useCurrentUser } from "../../features/auth";
 import { Spinner } from "@/components/ui/spinner";
 
 interface ProtectedRouteProps {
@@ -7,18 +7,18 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { isAuthenticated, isLoading } = useAuthStore();
+  const { data: user, isLoading } = useCurrentUser();
   const location = useLocation();
 
   if (isLoading) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
-        <Spinner />
+        <Spinner className="dark:invert" />
       </div>
     );
   }
 
-  if (!isAuthenticated) {
+  if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

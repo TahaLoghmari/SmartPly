@@ -74,7 +74,7 @@ export function DashboardHeaderConnectGmailButton() {
               className="flex w-full cursor-pointer items-center justify-center border transition-colors"
             >
               {getGoogleOAuthUrlMutation.isPending ? (
-                <Spinner className="h-8 w-auto" />
+                <Spinner className="h-8 w-auto invert dark:invert-0" />
               ) : (
                 <>
                   <svg

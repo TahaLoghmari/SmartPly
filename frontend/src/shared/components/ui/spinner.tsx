@@ -12,7 +12,7 @@ export function Spinner({
       animationData={loadingAnimation}
       loop
       autoplay
-      className={cn("dark:invert", className)}
+      className={cn(className)}
     />
   );
 }

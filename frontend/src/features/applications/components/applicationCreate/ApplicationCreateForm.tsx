@@ -15,11 +15,18 @@ import {
   type ApplicationCreateRequestDto,
   formSchema,
 } from "#/applications";
-import { useAuthStore } from "#/auth";
+import { useCurrentUser } from "#/auth";
+import { useAddApplicationDialogStore } from "#/dashboard";
+import { useRef, useEffect } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 export function ApplicationCreateForm() {
+  const setAddApplicationOpen = useAddApplicationDialogStore(
+    (s) => s.setAddApplicationOpen,
+  );
   const createApplicationMutation = useCreateApplication();
-  const { user } = useAuthStore();
+  // Loading is added in DashboardHeaderAddApplicationButton
+  const { data: user } = useCurrentUser();
   const form = useForm<ApplicationCreateRequestDto>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
@@ -45,14 +52,32 @@ export function ApplicationCreateForm() {
       technologiesUsed: [],
     },
   });
+  const formRef = useRef<HTMLFormElement>(null);
 
+  useEffect(() => {
+    if (createApplicationMutation.isError && formRef.current) {
+      formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [createApplicationMutation.isError]);
   async function onSubmit(credentials: ApplicationCreateRequestDto) {
-    console.log(credentials);
-    createApplicationMutation.mutate(credentials);
+    createApplicationMutation.mutate(credentials, {
+      onSuccess: () => {
+        setAddApplicationOpen(false);
+      },
+    });
   }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full space-y-8"
+        ref={formRef}
+      >
+        {createApplicationMutation.isError && (
+          <div className="bg-destructive/10 border-destructive text-destructive mb-4 rounded-md border p-3 text-sm">
+            {createApplicationMutation.error.message}
+          </div>
+        )}
         <CompanyInformation form={form} />
         <JobDetails form={form} />
         <ApplicationDetails form={form} />
@@ -64,7 +89,17 @@ export function ApplicationCreateForm() {
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button type="submit">Add Application</Button>
+          <Button
+            type="submit"
+            disabled={createApplicationMutation.isPending}
+            className="w-34"
+          >
+            {createApplicationMutation.isPending ? (
+              <Spinner className="h-8 w-auto invert dark:invert-0" />
+            ) : (
+              "Add Application"
+            )}
+          </Button>
         </DialogFooter>
       </form>
     </Form>

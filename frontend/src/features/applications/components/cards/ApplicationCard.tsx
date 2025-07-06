@@ -4,11 +4,34 @@ import {
   ViewApplicationButton,
   EditApplicationButton,
   ApplicationStatusToColor,
+  applicationsStatusFilterOptionsConstant,
+  applicationsTypeFilterOptionsConstant,
+  applicationsJobTypeFilterOptionsConstant,
+  applicationsLevelFilterOptionsConstant,
+  type ApplicationStatusLabel,
+  type ApplicationTypeLabel,
+  type ApplicationJobTypeLabel,
+  type ApplicationLevelLabel,
 } from "#/applications";
 import { MapPin, DollarSign, Building } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
+  const status: ApplicationStatusLabel =
+    applicationsStatusFilterOptionsConstant.find(
+      (a) => a.value === applicationCard.status,
+    )!.label;
+  const type: ApplicationTypeLabel = applicationsTypeFilterOptionsConstant.find(
+    (a) => a.value === applicationCard.type,
+  )!.label;
+  const jobType: ApplicationJobTypeLabel =
+    applicationsJobTypeFilterOptionsConstant.find(
+      (a) => a.value === applicationCard.jobType,
+    )!.label;
+  const level: ApplicationLevelLabel =
+    applicationsLevelFilterOptionsConstant.find(
+      (a) => a.value === applicationCard.level,
+    )!.label;
   return (
     <div className="bg-card hover:bg-accent text-card-foreground flex cursor-pointer flex-col gap-3 rounded-lg border p-6 shadow-xs transition-all">
       <div className="flex justify-between">
@@ -26,9 +49,9 @@ export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
         </div>
         <div>
           <p
-            className={`inline-flex ${ApplicationStatusToColor[applicationCard.status]} items-center rounded-full border border-transparent px-2.5 py-0.5 text-xs font-semibold transition-all`}
+            className={`inline-flex ${ApplicationStatusToColor[status]} items-center rounded-full border border-transparent px-2.5 py-0.5 text-xs font-semibold transition-all`}
           >
-            {applicationCard.status}
+            {status}
           </p>
         </div>
       </div>
@@ -45,47 +68,52 @@ export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
           </p>
         </div>
         <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-all">
-          {applicationCard.type}
+          {type}
         </div>
         <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-all">
-          {applicationCard.level}
+          {level}
         </div>
         <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-all">
-          {applicationCard.jobType}
+          {jobType}
         </div>
       </div>
 
-      <TechnologiesUsed technologies={applicationCard.technologiesUsed} />
+      <TechnologiesUsed technologies={applicationCard.technologiesUsed || []} />
 
       <div className="flex flex-col gap-1">
         <div className="flex items-center justify-between">
           <p className="text-muted-foreground text-sm">Applied:</p>
           <p className="text-xs">
-            {applicationCard.createdAt
-              .toLocaleDateString("en-GB")
-              .replace(/\//g, "-")}
+            {applicationCard.createdAt &&
+              applicationCard.createdAt
+                .toLocaleDateString("en-GB")
+                .replace(/\//g, "-")}
           </p>
         </div>
         <div className="flex items-center justify-between">
           <p className="text-muted-foreground text-sm">Last Update:</p>
-          <p className="text-xs">
-            {formatDistanceToNow(applicationCard.updatedAt, {
-              addSuffix: true,
-            })}
-          </p>
+          {applicationCard.updatedAt && (
+            <p className="text-xs">
+              {formatDistanceToNow(applicationCard.updatedAt, {
+                addSuffix: true,
+              })}
+            </p>
+          )}
         </div>
         <div className="flex items-center justify-between">
           <p className="text-muted-foreground text-sm">Deadline:</p>
-          <p className="text-xs">
-            {applicationCard.deadline
-              .toLocaleDateString("en-GB")
-              .replace(/\//g, "-")}
-          </p>
+          {applicationCard.deadline && (
+            <p className="text-xs">
+              {applicationCard.deadline
+                .toLocaleDateString("en-GB")
+                .replace(/\//g, "-")}
+            </p>
+          )}
         </div>
       </div>
       <div className="flex flex-col">
         <p className="text-muted-foreground text-sm">Notes</p>
-        <p className="line-clamp-2 text-xs">{applicationCard.notes}</p>
+        <p className="line-clamp-2 min-h-15 text-xs">{applicationCard.notes}</p>
       </div>
       <div className="mt-2 flex items-center justify-between">
         <div className="flex gap-2">

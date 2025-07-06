@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { useAuthStore } from "../../auth";
+import { useCurrentUser } from "../../auth";
 
 export function Header() {
-  const { isAuthenticated } = useAuthStore();
+  const { data: user } = useCurrentUser();
   return (
     <div className="flex items-center justify-between px-1 py-4">
       <svg
@@ -17,12 +17,12 @@ export function Header() {
       </svg>
       <div className="flex items-center gap-8">
         <Link
-          to={isAuthenticated ? "/app" : "/login"}
+          to={user ? "/app" : "/login"}
           className="cursor-pointer font-semibold"
         >
           Login
         </Link>
-        <Link to={isAuthenticated ? "/app" : "/login"}>
+        <Link to={user ? "/app" : "/login"}>
           <Button className="psm:flex hidden cursor-pointer" variant="outline">
             Try it for free
           </Button>

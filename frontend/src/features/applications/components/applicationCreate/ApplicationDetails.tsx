@@ -16,8 +16,6 @@ import {
 import { useState } from "react";
 
 export function ApplicationDetails({ form }: ApplicationCreateFormProps) {
-  // didn't use zustand cause it's only relevant to the form and not global
-  // also it doesn't work with zustand cause it's global and u are using the same instance
   const [isStatusFilterOpen, setIsStatusFilterOpen] = useState(false);
   const [isTypeFilterOpen, setIsTypeFilterOpen] = useState(false);
   const [isLevelFilterOpen, setIsLevelFilterOpen] = useState(false);

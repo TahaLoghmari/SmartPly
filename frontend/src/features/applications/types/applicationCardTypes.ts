@@ -1,11 +1,11 @@
 import {
-  type ApplicationStatusLabel,
-  type ApplicationTypeLabel,
-  type ApplicationJobTypeLabel,
-  type ApplicationLevelLabel,
+  type ApplicationStatus,
+  type ApplicationType,
+  type ApplicationJobType,
+  type ApplicationLevel,
 } from "#/applications";
 
-export interface ApplicationCreateResponseDto {
+export interface ApplicationResponseDto {
   id: string;
   resumeId: string;
   coverLetterId: string | null;
@@ -23,20 +23,20 @@ export interface ApplicationCreateResponseDto {
   createdAt: Date;
   updatedAt: Date | null;
   jobDescription: string | null;
-  status: ApplicationStatusLabel;
-  type: ApplicationTypeLabel;
-  jobType: ApplicationJobTypeLabel;
-  level: ApplicationLevelLabel;
+  status: ApplicationStatus;
+  type: ApplicationType;
+  jobType: ApplicationJobType;
+  level: ApplicationLevel;
   technologiesUsed: string[] | null;
 }
 
 export interface ApplicationStoreType {
-  applicationCardsState: ApplicationCreateResponseDto[];
-  setApplicationCardsState: (cards: ApplicationCreateResponseDto[]) => void;
+  applicationCardsState: ApplicationResponseDto[];
+  setApplicationCardsState: (cards: ApplicationResponseDto[]) => void;
 }
 
 export interface ApplicationCardProps {
-  applicationCard: ApplicationCreateResponseDto;
+  applicationCard: ApplicationResponseDto;
 }
 
 export interface TechnologiesUsedProps {

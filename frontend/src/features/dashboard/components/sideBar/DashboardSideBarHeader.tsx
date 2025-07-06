@@ -1,10 +1,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useAuthStore } from "#/auth";
+import { useCurrentUser } from "#/auth";
 import { useDashboardSideBarStore } from "#/dashboard";
 
 export function DashboardSideBarHeader() {
   const { activeState } = useDashboardSideBarStore();
-  const { user } = useAuthStore();
+  const { data: user } = useCurrentUser();
   return (
     <div
       className={`flex items-center border-b p-2 py-4 transition-all duration-300 ${!activeState ? "justify-center" : "justify-start gap-3"}`}

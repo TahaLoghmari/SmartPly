@@ -104,7 +104,7 @@ export function LoginForm() {
           disabled={!form.formState.isValid || loginMutation.isPending}
         >
           {loginMutation.isPending ? (
-            <Spinner className="h-8 w-auto" />
+            <Spinner className="h-8 w-auto invert dark:invert-0" />
           ) : (
             "Login"
           )}

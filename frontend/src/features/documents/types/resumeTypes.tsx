@@ -1,6 +1,6 @@
 export interface ResumeCreateResponseDto {
   id: string;
-  // userId: string;
+  userId: string;
   name: string;
   applicationsCount: number;
   interviewsCount: number;

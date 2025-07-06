@@ -58,9 +58,5 @@ export async function request<T>(
     throw new Error(errorMessage);
   }
 
-  const contentType = response.headers.get("content-type");
-  if (contentType && contentType.includes("application/json")) {
-    return response.json();
-  }
-  return undefined as T;
+  return response.json() as T;
 }

@@ -130,7 +130,7 @@ export function ResetPasswordForm() {
           disabled={!form.formState.isValid || resetPasswordMutation.isPending}
         >
           {resetPasswordMutation.isPending ? (
-            <Spinner className="h-8 w-auto" />
+            <Spinner className="h-8 w-auto invert dark:invert-0" />
           ) : (
             "Reset Password"
           )}

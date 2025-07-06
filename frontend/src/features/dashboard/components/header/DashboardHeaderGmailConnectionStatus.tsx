@@ -1,4 +1,4 @@
-import { useAuthStore } from "#/auth";
+import { useCurrentUser } from "#/auth";
 import { Mail, CircleAlert } from "lucide-react";
 import {
   AlertDialog,
@@ -8,7 +8,7 @@ import {
 import { DashboardHeaderConnectGmailButton } from "#/dashboard";
 
 export function DashboardHeaderGmailConnectionStatus() {
-  const { user } = useAuthStore();
+  const { data: user } = useCurrentUser();
   return (
     <AlertDialog>
       <AlertDialogTrigger

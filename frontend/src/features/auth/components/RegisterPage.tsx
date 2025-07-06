@@ -5,8 +5,8 @@ import { Spinner } from "@/components/ui/spinner";
 export function RegisterPage() {
   const getGoogleOAuthUrlMutation = useGetGoogleOAuthUrl();
   return (
-    <div className="bg-background sm:bg-secondary flex min-h-screen w-screen flex-col items-center sm:rounded-md">
-      <div className="bg-card flex w-full flex-col items-center gap-8 p-9 sm:my-20 sm:w-[450px] sm:rounded-lg sm:p-12">
+    <div className="from-background via-background to-muted flex min-h-screen w-screen flex-col items-center bg-gradient-to-br sm:rounded-md">
+      <div className="text-card-foreground border-border/50 bg-card flex w-full flex-col items-center gap-8 border p-9 shadow-2xl sm:my-20 sm:w-[450px] sm:rounded-lg sm:p-12">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 724 191"
@@ -24,7 +24,7 @@ export function RegisterPage() {
           className="w-full cursor-pointer border transition-colors"
         >
           {getGoogleOAuthUrlMutation.isPending ? (
-            <Spinner className="h-8 w-auto" />
+            <Spinner className="h-8 w-auto invert dark:invert-0" />
           ) : (
             <>
               <svg

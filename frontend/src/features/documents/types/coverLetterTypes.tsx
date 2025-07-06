@@ -1,5 +1,6 @@
 export interface CoverLetterCreateResponseDto {
   id: string;
+  userId: string;
   name: string;
 }
 

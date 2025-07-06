@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { useAuthStore } from "../../auth";
+import { useCurrentUser } from "../../auth";
 import { Spinner } from "@/components/ui/spinner";
 
 interface AuthGuardProps {
@@ -7,17 +7,17 @@ interface AuthGuardProps {
 }
 
 export function AuthGuard({ children }: AuthGuardProps) {
-  const { isAuthenticated, isLoading } = useAuthStore();
+  const { data: user, isLoading } = useCurrentUser();
 
   if (isLoading) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
-        <Spinner />
+        <Spinner className="dark:invert" />
       </div>
     );
   }
 
-  if (isAuthenticated) {
+  if (user) {
     return <Navigate to="/app" replace />;
   }
 
