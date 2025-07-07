@@ -60,7 +60,7 @@ export function Documents({ form }: ApplicationCreateFormProps) {
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
+                <PopoverContent className="w-full p-0">
                   <Command>
                     <CommandInput
                       placeholder="Search Resume..."
@@ -123,7 +123,7 @@ export function Documents({ form }: ApplicationCreateFormProps) {
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
+                <PopoverContent className="w-full p-0">
                   <Command>
                     <CommandInput
                       placeholder="Search Cover Letter..."

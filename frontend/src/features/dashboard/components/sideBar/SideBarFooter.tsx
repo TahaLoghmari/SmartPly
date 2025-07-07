@@ -2,10 +2,10 @@ import { Settings } from "lucide-react";
 import {
   useDashboardActiveNavItemStore,
   useDashboardSideBarStore,
-  DashboardSideBarLogoutButton,
+  SideBarLogoutButton,
 } from "#/dashboard";
 
-export function DashboardSideBarFooter() {
+export function SideBarFooter() {
   const { activeNavItemState, setActiveNavItemState } =
     useDashboardActiveNavItemStore();
   const { activeState } = useDashboardSideBarStore();
@@ -19,7 +19,7 @@ export function DashboardSideBarFooter() {
         {activeState && <p className="whitespace-nowrap">Settings</p>}
       </div>
 
-      <DashboardSideBarLogoutButton />
+      <SideBarLogoutButton />
     </div>
   );
 }

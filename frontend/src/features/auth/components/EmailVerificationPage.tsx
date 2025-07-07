@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { Mail } from "lucide-react";
-import { useResendConfirmationEmail } from "../../auth";
+import { useResendConfirmationEmail } from "#/auth";
 
 import { MoveLeft } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";

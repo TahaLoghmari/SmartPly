@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 
-import { useLogin, type LoginUserDto } from "../../auth";
+import { useLogin, type LoginUserDto } from "#/auth";
 
 import { Spinner } from "@/components/ui/spinner";
 

@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useDashboardSideBarStore } from "#/dashboard";
 
-export function DashboardSideBarLogoutButton() {
+export function SideBarLogoutButton() {
   const { activeState } = useDashboardSideBarStore();
   const { data: user } = useCurrentUser();
   const logoutMutation = useLogout();

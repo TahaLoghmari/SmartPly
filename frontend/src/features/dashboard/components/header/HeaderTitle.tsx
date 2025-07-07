@@ -3,7 +3,7 @@ import {
   dashboardHeaderNavigationTitlesConstant,
 } from "#/dashboard";
 
-export function DashboardHeaderTitle() {
+export function HeaderTitle() {
   const { activeNavItemState } = useDashboardActiveNavItemStore();
   return (
     <div className="flex-col">

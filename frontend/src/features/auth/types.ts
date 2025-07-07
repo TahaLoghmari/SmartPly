@@ -31,17 +31,13 @@ export interface ResetPasswordDto {
   confirmPassword: string;
 }
 
-export interface TokensDto {
-  accessToken: string;
-  refreshToken: string;
+export interface ForgotPasswordState {
+  hasClickedResetPassword: boolean;
+  email: string;
+  setResetPasswordClicked: (email: string) => void;
+  clearResetState: () => void;
 }
 
-export interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-}
-
-export interface AuthContextType extends AuthState {
-  setAuthState: React.Dispatch<React.SetStateAction<AuthState>>;
+export interface AuthGuardProps {
+  children: React.ReactNode;
 }

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   type ApplicationCreateRequestDto,
-  applicationApi,
+  createApplication,
 } from "#/applications";
 import { useCurrentUser } from "#/auth";
 
@@ -10,7 +10,7 @@ export function useCreateApplication() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (credentials: ApplicationCreateRequestDto) =>
-      applicationApi.createApplication(credentials),
+      createApplication(credentials),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["applications", user?.id] });
     },

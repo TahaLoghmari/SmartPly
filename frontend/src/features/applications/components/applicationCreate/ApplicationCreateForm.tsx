@@ -25,7 +25,6 @@ export function ApplicationCreateForm() {
     (s) => s.setAddApplicationOpen,
   );
   const createApplicationMutation = useCreateApplication();
-  // Loading is added in DashboardHeaderAddApplicationButton
   const { data: user } = useCurrentUser();
   const form = useForm<ApplicationCreateRequestDto>({
     resolver: zodResolver(formSchema),

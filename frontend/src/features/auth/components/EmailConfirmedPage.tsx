@@ -1,3 +1,4 @@
+
 export function EmailConfirmedPage() {
   return (
     <div className="from-background via-background to-muted flex min-h-screen w-screen flex-col items-center bg-gradient-to-br sm:rounded-md">

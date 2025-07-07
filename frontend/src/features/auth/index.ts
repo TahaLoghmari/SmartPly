@@ -5,31 +5,31 @@ export { authRoutes } from "./authRoutes";
 export * from "./types";
 
 // API
-export { authApi } from "./api/authApi";
+export * from "./api";
 
 // Store
-export { useForgotPasswordStore } from "./stores/useForgotPasswordStore";
+export * from "./stores/useForgotPasswordStore";
 
 // Hooks
-export { useCurrentUser } from "./hooks/useCurrentUser";
-export { useForgotPassword } from "./hooks/useForgotPassword";
-export { useGetGoogleOAuthUrl } from "./hooks/useGetGoogleOAuthUrl";
-export { useGetGoogleLinkOAuthUrl } from "./hooks/useGetGoogleLinkOAuthUrl";
-export { useLogin } from "./hooks/useLogin";
-export { useLogout } from "./hooks/useLogout";
-export { useRegister } from "./hooks/useRegister";
-export { useResendConfirmationEmail } from "./hooks/useResendConfirmationEmail";
-export { useResetPassword } from "./hooks/useResetPassword";
+export * from "./hooks/useCurrentUser";
+export * from "./hooks/useForgotPassword";
+export * from "./hooks/useGetGoogleOAuthUrl";
+export * from "./hooks/useGetGoogleLinkOAuthUrl";
+export * from "./hooks/useLogin";
+export * from "./hooks/useLogout";
+export * from "./hooks/useRegister";
+export * from "./hooks/useResendConfirmationEmail";
+export * from "./hooks/useResetPassword";
 
 // Components
-export { AuthGuard } from "./components/AuthGuard";
-export { EmailConfirmedPage } from "./components/EmailConfirmedPage";
-export { EmailVerificationPage } from "./components/EmailVerificationPage";
-export { ForgotPasswordForm } from "./components/ForgotPasswordForm";
-export { ForgotPasswordPage } from "./components/ForgotPasswordPage";
-export { LoginForm } from "./components/LoginForm";
-export { LoginPage } from "./components/LoginPage";
-export { RegisterForm } from "./components/RegisterForm";
-export { RegisterPage } from "./components/RegisterPage";
-export { ResetPasswordForm } from "./components/ResetPasswordForm";
-export { ResetPasswordPage } from "./components/ResetPasswordPage";
+export * from "./components/AuthGuard";
+export * from "./components/EmailConfirmedPage";
+export * from "./components/EmailVerificationPage";
+export * from "./components/ForgotPasswordForm";
+export * from "./components/ForgotPasswordPage";
+export * from "./components/LoginForm";
+export * from "./components/LoginPage";
+export * from "./components/RegisterForm";
+export * from "./components/RegisterPage";
+export * from "./components/ResetPasswordForm";
+export * from "./components/ResetPasswordPage";

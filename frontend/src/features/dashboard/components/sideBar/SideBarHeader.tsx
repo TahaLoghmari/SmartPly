@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCurrentUser } from "#/auth";
 import { useDashboardSideBarStore } from "#/dashboard";
 
-export function DashboardSideBarHeader() {
+export function SideBarHeader() {
   const { activeState } = useDashboardSideBarStore();
   const { data: user } = useCurrentUser();
   return (

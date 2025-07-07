@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ApplicationCreatePage } from "#/applications";
 import { useAddApplicationDialogStore } from "#/dashboard";
 
-export function DashboardHeaderAddApplicationButton() {
+export function AddApplicationButton() {
   const { addApplicationOpen, setAddApplicationOpen } =
     useAddApplicationDialogStore();
   return (

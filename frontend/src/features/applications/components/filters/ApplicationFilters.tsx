@@ -6,13 +6,13 @@ import {
   useApplicationTypeFilterStore,
   useApplicationLevelFilterStore,
   useApplicationJobTypeFilterStore,
-  applicationsStatusFilterOptionsConstant,
-  applicationsTypeFilterOptionsConstant,
-  applicationsLevelFilterOptionsConstant,
-  applicationsJobTypeFilterOptionsConstant,
+  applicationsStatusOptionsConstant,
+  applicationsTypeOptionsConstant,
+  applicationsLevelOptionsConstant,
+  applicationsJobTypeOptionsConstant,
 } from "#/applications";
 
-export function ApplicationFiltersLayout() {
+export function ApplicationFilters() {
   const {
     isFilterOpen: isStatusFilterOpen,
     setIsFilterOpen: setIsStatusFilterOpen,
@@ -48,7 +48,7 @@ export function ApplicationFiltersLayout() {
         selectedFilter={selectedStatusFilter}
         setIsFilterOpen={setIsStatusFilterOpen}
         setSelectedFilter={setSelectedStatusFilter}
-        applicationConstant={applicationsStatusFilterOptionsConstant}
+        applicationConstant={applicationsStatusOptionsConstant}
         name={"Status"}
       />
       <ApplicationFilterBar
@@ -57,7 +57,7 @@ export function ApplicationFiltersLayout() {
         selectedFilter={selectedTypeFilter}
         setIsFilterOpen={setIsTypeFilterOpen}
         setSelectedFilter={setSelectedTypeFilter}
-        applicationConstant={applicationsTypeFilterOptionsConstant}
+        applicationConstant={applicationsTypeOptionsConstant}
         name={"Type"}
       />
       <ApplicationFilterBar
@@ -66,7 +66,7 @@ export function ApplicationFiltersLayout() {
         selectedFilter={selectedLevelFilter}
         setIsFilterOpen={setIsLevelFilterOpen}
         setSelectedFilter={setSelectedLevelFilter}
-        applicationConstant={applicationsLevelFilterOptionsConstant}
+        applicationConstant={applicationsLevelOptionsConstant}
         name={"Level"}
       />
       <ApplicationFilterBar
@@ -75,7 +75,7 @@ export function ApplicationFiltersLayout() {
         selectedFilter={selectedJobTypeFilter}
         setIsFilterOpen={setIsJobTypeFilterOpen}
         setSelectedFilter={setSelectedJobTypeFilter}
-        applicationConstant={applicationsJobTypeFilterOptionsConstant}
+        applicationConstant={applicationsJobTypeOptionsConstant}
         name={"Job Type"}
       />
       <ApplicationClearFiltersButton />

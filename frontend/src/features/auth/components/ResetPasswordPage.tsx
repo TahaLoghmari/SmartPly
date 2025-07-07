@@ -1,4 +1,4 @@
-import { ResetPasswordForm } from "../../auth";
+import { ResetPasswordForm } from "#/auth";
 import { LockKeyholeOpen } from "lucide-react";
 
 export function ResetPasswordPage() {

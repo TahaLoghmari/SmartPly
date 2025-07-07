@@ -4,10 +4,10 @@ import {
   ViewApplicationButton,
   EditApplicationButton,
   ApplicationStatusToColor,
-  applicationsStatusFilterOptionsConstant,
-  applicationsTypeFilterOptionsConstant,
-  applicationsJobTypeFilterOptionsConstant,
-  applicationsLevelFilterOptionsConstant,
+  applicationsStatusOptionsConstant,
+  applicationsTypeOptionsConstant,
+  applicationsJobTypeOptionsConstant,
+  applicationsLevelOptionsConstant,
   type ApplicationStatusLabel,
   type ApplicationTypeLabel,
   type ApplicationJobTypeLabel,
@@ -17,21 +17,19 @@ import { MapPin, DollarSign, Building } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
-  const status: ApplicationStatusLabel =
-    applicationsStatusFilterOptionsConstant.find(
-      (a) => a.value === applicationCard.status,
-    )!.label;
-  const type: ApplicationTypeLabel = applicationsTypeFilterOptionsConstant.find(
+  const status: ApplicationStatusLabel = applicationsStatusOptionsConstant.find(
+    (a) => a.value === applicationCard.status,
+  )!.label;
+  const type: ApplicationTypeLabel = applicationsTypeOptionsConstant.find(
     (a) => a.value === applicationCard.type,
   )!.label;
   const jobType: ApplicationJobTypeLabel =
-    applicationsJobTypeFilterOptionsConstant.find(
+    applicationsJobTypeOptionsConstant.find(
       (a) => a.value === applicationCard.jobType,
     )!.label;
-  const level: ApplicationLevelLabel =
-    applicationsLevelFilterOptionsConstant.find(
-      (a) => a.value === applicationCard.level,
-    )!.label;
+  const level: ApplicationLevelLabel = applicationsLevelOptionsConstant.find(
+    (a) => a.value === applicationCard.level,
+  )!.label;
   return (
     <div className="bg-card hover:bg-accent text-card-foreground flex cursor-pointer flex-col gap-3 rounded-lg border p-6 shadow-xs transition-all">
       <div className="flex justify-between">

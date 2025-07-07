@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { authApi } from "#/auth";
+import { getCurrentUser } from "#/auth";
 
 export function useCurrentUser() {
   return useQuery({
     queryKey: ["currentUser"],
-    queryFn: authApi.getCurrentUser,
+    queryFn: getCurrentUser,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
     retry: (failureCount, error) => {

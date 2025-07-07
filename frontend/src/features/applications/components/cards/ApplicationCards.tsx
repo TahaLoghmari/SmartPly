@@ -6,10 +6,10 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { DashboardHeaderAddApplicationButton } from "#/dashboard";
+import { AddApplicationButton } from "#/dashboard";
 import { Link } from "react-router-dom";
 
-export function ApplicationCardsLayout() {
+export function ApplicationCards() {
   const {
     data: applicationCardsState = [],
     isLoading,
@@ -58,7 +58,7 @@ export function ApplicationCardsLayout() {
       <p className="text-sm">
         Get started by adding your first job application
       </p>
-      <DashboardHeaderAddApplicationButton />
+      <AddApplicationButton />
     </div>
   );
 }

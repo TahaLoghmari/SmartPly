@@ -1,7 +1,7 @@
 import { Briefcase, ChevronLeft, ChevronRight } from "lucide-react";
 import { useDashboardSideBarStore } from "#/dashboard";
 
-export function DashboardSideBarLogo() {
+export function SideBarLogo() {
   const { activeState, setActiveState } = useDashboardSideBarStore();
   return (
     <div

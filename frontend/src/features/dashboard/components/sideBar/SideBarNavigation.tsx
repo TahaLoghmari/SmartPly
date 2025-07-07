@@ -11,7 +11,7 @@ import {
   useDashboardSideBarStore,
 } from "#/dashboard";
 
-export function DashboardSideBarNavigation() {
+export function SideBarNavigation() {
   const { activeNavItemState, setActiveNavItemState } =
     useDashboardActiveNavItemStore();
   const { activeState } = useDashboardSideBarStore();

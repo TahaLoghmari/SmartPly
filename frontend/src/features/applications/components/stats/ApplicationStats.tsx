@@ -1,6 +1,6 @@
 import { ApplicationStatCard, useApplicationStatsStore } from "#/applications";
 
-export function ApplicationStatsLayout() {
+export function ApplicationStats() {
   const {
     wishListCount,
     appliedCount,

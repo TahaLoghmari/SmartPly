@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { useSearchParams } from "react-router-dom";
-import { useResetPassword, type ResetPasswordDto } from "../../auth";
+import { useResetPassword, type ResetPasswordDto } from "#/auth";
 
 const formSchema = z
   .object({

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { RegisterForm, useGetGoogleOAuthUrl } from "../../auth";
+import { RegisterForm, useGetGoogleOAuthUrl } from "#/auth";
 import { Spinner } from "@/components/ui/spinner";
 
 export function RegisterPage() {

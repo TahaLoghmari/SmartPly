@@ -7,7 +7,7 @@ import {
   ForgotPasswordPage,
   ResetPasswordPage,
   AuthGuard,
-} from "../auth";
+} from "#/auth";
 
 export const authRoutes: RouteObject[] = [
   {

@@ -2,7 +2,7 @@ import {
   ForgotPasswordForm,
   useForgotPassword,
   useForgotPasswordStore,
-} from "../../auth";
+} from "#/auth";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";

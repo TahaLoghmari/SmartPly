@@ -1,7 +1,7 @@
 import { Bot } from "lucide-react";
 import { useDashboardSideBarStore } from "#/dashboard";
 
-export function DashboardSideBarAI() {
+export function SideBarAI() {
   const { activeState } = useDashboardSideBarStore();
   return (
     <div className="border-border border-b p-4 transition-all duration-300">

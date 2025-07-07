@@ -1,8 +1,8 @@
 import {
   useDashboardActiveNavItemStore,
   dashboardSideBarNavigationComponentsConstant,
-  DashboardSideBarLayout,
-  DashboardHeaderLayout,
+  DashboardSideBar,
+  DashboardHeader,
 } from "#/dashboard";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useCurrentUser } from "#/auth";
 
-export function DashboardLayout() {
+export function Dashboard() {
   const { activeNavItemState } = useDashboardActiveNavItemStore();
   const { isLoading } = useCurrentUser();
   const ActiveComponent =
@@ -32,11 +32,11 @@ export function DashboardLayout() {
     );
   return (
     <div className="bg-background flex h-screen">
-      <DashboardSideBarLayout />
+      <DashboardSideBar />
       <div
         className={`flex flex-1 flex-col overflow-hidden transition-all duration-300`}
       >
-        <DashboardHeaderLayout />
+        <DashboardHeader />
         <ActiveComponent />
       </div>
     </div>

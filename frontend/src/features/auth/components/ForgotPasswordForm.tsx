@@ -17,7 +17,7 @@ import {
   useForgotPassword,
   useForgotPasswordStore,
   type ForgotPasswordDto,
-} from "../../auth";
+} from "#/auth";
 
 const formSchema = z.object({
   email: z

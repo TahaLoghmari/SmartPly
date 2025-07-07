@@ -1,10 +1,6 @@
 import { Navigate } from "react-router-dom";
-import { useCurrentUser } from "../../auth";
+import { useCurrentUser, type AuthGuardProps } from "#/auth";
 import { Spinner } from "@/components/ui/spinner";
-
-interface AuthGuardProps {
-  children: React.ReactNode;
-}
 
 export function AuthGuard({ children }: AuthGuardProps) {
   const { data: user, isLoading } = useCurrentUser();

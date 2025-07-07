@@ -1,9 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
-import { authApi } from "../../auth";
+import { getGoogleOAuthUrl } from "#/auth";
 
 export function useGetGoogleOAuthUrl() {
   return useMutation({
-    mutationFn: authApi.getGoogleOAuthUrl,
+    mutationFn: getGoogleOAuthUrl,
     onSuccess: (data) => {
       window.location.href = data.authorizationUrl;
     },

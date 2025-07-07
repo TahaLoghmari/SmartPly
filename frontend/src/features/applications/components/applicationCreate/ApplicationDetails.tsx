@@ -1,10 +1,10 @@
 import {
   type ApplicationCreateFormProps,
   ApplicationFilterBar,
-  applicationsStatusFilterOptionsConstant,
-  applicationsTypeFilterOptionsConstant,
-  applicationsLevelFilterOptionsConstant,
-  applicationsJobTypeFilterOptionsConstant,
+  applicationsStatusOptionsConstant,
+  applicationsTypeOptionsConstant,
+  applicationsLevelOptionsConstant,
+  applicationsJobTypeOptionsConstant,
 } from "#/applications";
 import {
   FormControl,
@@ -38,7 +38,7 @@ export function ApplicationDetails({ form }: ApplicationCreateFormProps) {
                   field.onChange */
                   selectedFilter={field.value}
                   setSelectedFilter={field.onChange}
-                  applicationConstant={applicationsStatusFilterOptionsConstant}
+                  applicationConstant={applicationsStatusOptionsConstant}
                   name={"Status"}
                   isFilterOpen={isStatusFilterOpen}
                   setIsFilterOpen={setIsStatusFilterOpen}
@@ -58,7 +58,7 @@ export function ApplicationDetails({ form }: ApplicationCreateFormProps) {
                 <ApplicationFilterBar
                   selectedFilter={field.value}
                   setSelectedFilter={field.onChange}
-                  applicationConstant={applicationsTypeFilterOptionsConstant}
+                  applicationConstant={applicationsTypeOptionsConstant}
                   name={"Type"}
                   isFilterOpen={isTypeFilterOpen}
                   setIsFilterOpen={setIsTypeFilterOpen}
@@ -78,7 +78,7 @@ export function ApplicationDetails({ form }: ApplicationCreateFormProps) {
                 <ApplicationFilterBar
                   selectedFilter={field.value}
                   setSelectedFilter={field.onChange}
-                  applicationConstant={applicationsLevelFilterOptionsConstant}
+                  applicationConstant={applicationsLevelOptionsConstant}
                   name={"Level"}
                   isFilterOpen={isLevelFilterOpen}
                   setIsFilterOpen={setIsLevelFilterOpen}
@@ -98,7 +98,7 @@ export function ApplicationDetails({ form }: ApplicationCreateFormProps) {
                 <ApplicationFilterBar
                   selectedFilter={field.value}
                   setSelectedFilter={field.onChange}
-                  applicationConstant={applicationsJobTypeFilterOptionsConstant}
+                  applicationConstant={applicationsJobTypeOptionsConstant}
                   name={"Job Type"}
                   isFilterOpen={isJobTypeFilterOpen}
                   setIsFilterOpen={setIsJobTypeFilterOpen}

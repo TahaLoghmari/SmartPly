@@ -1,12 +1,12 @@
 import { useCurrentUser } from "#/auth";
 import { useQuery } from "@tanstack/react-query";
-import { applicationApi } from "#/applications";
+import { getUserApplications } from "#/applications";
 
 export function useGetUserApplications() {
   const { data: user } = useCurrentUser();
   return useQuery({
     queryKey: ["applications", user?.id],
-    queryFn: () => applicationApi.getUserApplications(),
+    queryFn: () => getUserApplications(),
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
