@@ -1,2 +1,2 @@
 // components
-export { NotificationsLayout } from "./components/NotificationsLayout";
+export { Notifications } from "./components/Notifications";

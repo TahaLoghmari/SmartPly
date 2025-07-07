@@ -1,20 +1,17 @@
 import {
-  useDashboardActiveNavItemStore,
-  dashboardSideBarNavigationComponentsConstant,
   DashboardSideBar,
   DashboardHeader,
+  useSyncDashboardTitle,
 } from "#/dashboard";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Outlet } from "react-router-dom";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useCurrentUser } from "#/auth";
 
 export function Dashboard() {
-  const { activeNavItemState } = useDashboardActiveNavItemStore();
+  useSyncDashboardTitle();
   const { isLoading } = useCurrentUser();
-  const ActiveComponent =
-    dashboardSideBarNavigationComponentsConstant[activeNavItemState];
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
     const message = searchParams.get("message");
@@ -33,11 +30,12 @@ export function Dashboard() {
   return (
     <div className="bg-background flex h-screen">
       <DashboardSideBar />
+      {/*  */}
       <div
         className={`flex flex-1 flex-col overflow-hidden transition-all duration-300`}
       >
         <DashboardHeader />
-        <ActiveComponent />
+        <Outlet />
       </div>
     </div>
   );

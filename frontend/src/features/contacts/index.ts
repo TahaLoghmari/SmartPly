@@ -1,2 +1,2 @@
 // components
-export { ContactsLayout } from "./components/ContactsLayout";
+export { Contacts } from "./components/Contacts";

@@ -1,2 +1,2 @@
 // components
-export { AnalyticsLayout } from "./components/AnalyticsLayout";
+export { Analytics } from "./components/Analytics";

@@ -1,2 +1,2 @@
 // components
-export { GmailLayout } from "./components/GmailLayout";
+export { Gmail } from "./components/Gmail";

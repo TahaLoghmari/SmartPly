@@ -20,13 +20,15 @@ export * from "./components/sideBar/SideBarNavigation";
 // Constants
 export * from "./constants";
 
-// Header Stores
+// Hooks
+export * from "./hooks/useSyncDashboardTitle";
+
+// Stores
 export * from "./stores/useDashboardNotificationsCount";
 export * from "./stores/useAddApplicationDialogStore";
-
-// SideBar Stores
 export * from "./stores/useDashboardActiveNavItemStore";
 export * from "./stores/useDashboardSideBarStore";
+export * from "./stores/useDashboardTitleStore";
 
 // Types
 export * from "./types";

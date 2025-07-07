@@ -33,3 +33,9 @@ export interface DashboardSideBarStoreType {
   activeState: boolean;
   setActiveState: (state: boolean) => void;
 }
+
+export interface DashboardTitleStoreType {
+  dashboardTitleState: string;
+  setDashboardTitleState: (state: string) => void;
+}
+

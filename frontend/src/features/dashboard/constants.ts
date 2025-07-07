@@ -1,22 +1,22 @@
 import { Applications } from "#/applications";
-import { AnalyticsLayout } from "#/analytics";
-import { ContactsLayout } from "#/contacts";
-import { DocumentsLayout } from "#/documents";
-import { NotificationsLayout } from "#/notifications";
-import { GmailLayout } from "#/gmail";
-import { SettingsLayout } from "#/settings";
+import { Analytics } from "#/analytics";
+import { Contacts } from "#/contacts";
+import { Documents } from "#/documents";
+import { Notifications } from "#/notifications";
+import { Gmail } from "#/gmail";
+import { Settings } from "#/settings";
 
 export const dashboardSideBarNavigationComponentsConstant = {
   applications: Applications,
-  analytics: AnalyticsLayout,
-  contacts: ContactsLayout,
-  documents: DocumentsLayout,
-  notifications: NotificationsLayout,
-  gmail: GmailLayout,
-  settings: SettingsLayout,
+  analytics: Analytics,
+  contacts: Contacts,
+  documents: Documents,
+  notifications: Notifications,
+  gmail: Gmail,
+  settings: Settings,
 } as const;
 
-export const dashboardHeaderNavigationTitlesConstant = {
+export const dashboardNavigationTitlesConstant: Record<string, string> = {
   applications: "Job Applications",
   analytics: "Analytics Dashboard",
   contacts: "Contacts & Network",

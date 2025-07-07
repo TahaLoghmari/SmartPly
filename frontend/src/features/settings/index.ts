@@ -1,2 +1,2 @@
 // components
-export { SettingsLayout } from "./components/SettingsLayout";
+export { Settings } from "./components/Settings";

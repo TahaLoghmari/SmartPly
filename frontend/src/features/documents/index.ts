@@ -1,5 +1,5 @@
 // components
-export { DocumentsLayout } from "./components/DocumentsLayout";
+export { Documents } from "./components/Documents";
 
 // types
 export * from "./types/resumeTypes";
