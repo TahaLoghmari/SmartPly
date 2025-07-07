@@ -37,7 +37,7 @@ export function ApplicationCards() {
   }
   if (applicationCardsState.length > 0)
     return (
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {applicationCardsState.map(
           (applicationCard: ApplicationResponseDto) => (
             <ApplicationCard

@@ -189,5 +189,5 @@ export interface StatsState {
 
 export interface ApplicationStatCardProps {
   value: number;
-  label: string;
+  label: ApplicationStatusLabel;
 }

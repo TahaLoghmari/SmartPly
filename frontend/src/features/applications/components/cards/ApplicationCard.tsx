@@ -13,7 +13,14 @@ import {
   type ApplicationJobTypeLabel,
   type ApplicationLevelLabel,
 } from "#/applications";
-import { MapPin, DollarSign, Building } from "lucide-react";
+import {
+  MapPin,
+  DollarSign,
+  Building,
+  Calendar,
+  Clock,
+  CalendarClock,
+} from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
@@ -31,7 +38,7 @@ export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
     (a) => a.value === applicationCard.level,
   )!.label;
   return (
-    <div className="bg-card hover:bg-accent text-card-foreground flex cursor-pointer flex-col gap-3 rounded-lg border p-6 shadow-xs transition-all">
+    <div className="bg-card text-card-foreground border-accent flex cursor-pointer flex-col gap-3 rounded-lg border p-6 shadow-xs transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
       <div className="flex justify-between">
         <div className="flex flex-col gap-1">
           <p className="tracking-light text-lg font-semibold">
@@ -47,18 +54,22 @@ export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
         </div>
         <div>
           <p
-            className={`inline-flex ${ApplicationStatusToColor[status]} items-center rounded-full border border-transparent px-2.5 py-0.5 text-xs font-semibold transition-all`}
+            className={`inline-flex ${ApplicationStatusToColor[status]} items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-all duration-300`}
           >
             {status}
           </p>
         </div>
       </div>
-
-      <div className="grid grid-cols-2 gap-3 text-sm">
-        <div className="flex items-center gap-1">
-          <MapPin className="text-muted-foreground h-3 w-3" />
-          <p>{applicationCard.location}</p>
+      <div className="flex items-center justify-between text-sm">
+        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+          <MapPin className="h-4 w-4" />
+          <span>{applicationCard.location}</span>
         </div>
+        <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-all">
+          {type}
+        </div>
+      </div>
+      <div className="flex items-center justify-between text-sm">
         <div className="flex items-center gap-1">
           <DollarSign className="text-muted-foreground h-3 w-3" />
           <p>
@@ -66,58 +77,56 @@ export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
           </p>
         </div>
         <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-all">
-          {type}
-        </div>
-        <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-all">
           {level}
         </div>
-        <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-all">
-          {jobType}
-        </div>
+      </div>
+
+      <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-all">
+        {jobType}
       </div>
 
       <TechnologiesUsed technologies={applicationCard.technologiesUsed || []} />
 
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-sm">Applied:</p>
-          <p className="text-xs">
+      <div className="border-accent flex flex-col gap-2 border-t pt-2">
+        <div className="text-muted-foreground flex items-center gap-2 text-xs">
+          <Calendar className="h-3 w-3" />
+          <span>
+            Applied:{" "}
             {applicationCard.createdAt &&
               applicationCard.createdAt
                 .toLocaleDateString("en-GB")
                 .replace(/\//g, "-")}
-          </p>
+          </span>
         </div>
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-sm">Last Update:</p>
-          {applicationCard.updatedAt && (
-            <p className="text-xs">
-              {formatDistanceToNow(applicationCard.updatedAt, {
+        <div className="text-muted-foreground flex items-center gap-2 text-xs">
+          <Clock className="h-3 w-3" />
+          <span>
+            Last Update:{" "}
+            {applicationCard.updatedAt &&
+              formatDistanceToNow(applicationCard.updatedAt, {
                 addSuffix: true,
               })}
-            </p>
-          )}
+          </span>
         </div>
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-sm">Deadline:</p>
-          {applicationCard.deadline && (
-            <p className="text-xs">
-              {applicationCard.deadline
+        <div className="text-muted-foreground flex items-center gap-2 text-xs">
+          <CalendarClock className="h-3 w-3" />
+          <span>
+            Deadline:{" "}
+            {applicationCard.deadline &&
+              applicationCard.deadline
                 .toLocaleDateString("en-GB")
                 .replace(/\//g, "-")}
-            </p>
-          )}
+          </span>
         </div>
       </div>
-      <div className="flex flex-col">
-        <p className="text-muted-foreground text-sm">Notes</p>
-        <p className="line-clamp-2 min-h-15 text-xs">{applicationCard.notes}</p>
+      <div className="bg-accent rounded-lg p-3">
+        <p className="text-muted-foreground text-sm italic">
+          "{applicationCard.notes}"
+        </p>
       </div>
-      <div className="mt-2 flex items-center justify-between">
-        <div className="flex gap-2">
-          <ViewApplicationButton />
-          <EditApplicationButton />
-        </div>
+      <div className="mt-2 flex flex-1 items-center gap-2">
+        <ViewApplicationButton />
+        <EditApplicationButton />
       </div>
     </div>
   );

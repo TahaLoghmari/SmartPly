@@ -8,16 +8,64 @@ import {
   type ApplicationTypeLabel,
   type ApplicationJobTypeLabel,
 } from "#/applications";
+import { Heart, Send, Users, Gift, X, Ghost, CircleOff } from "lucide-react";
+
+export const ApplicationStatusToIcon: Record<
+  ApplicationStatusLabel,
+  { icon: React.ElementType; className: string; divClassName: string }
+> = {
+  "All Status": {
+    icon: CircleOff,
+    className: "hidden",
+    divClassName: "hidden",
+  },
+  Interviewing: {
+    icon: Users,
+    className: "h-5 w-5 text-yellow-500 dark:text-yellow-400",
+    divClassName: "rounded-lg bg-yellow-50 p-2 dark:bg-yellow-900/20",
+  },
+  Applied: {
+    icon: Send,
+    className: "h-5 w-5 text-blue-500 dark:text-blue-400",
+    divClassName: "rounded-lg bg-blue-50 p-2 dark:bg-blue-900/20",
+  },
+  Rejected: {
+    icon: X,
+    className: "h-5 w-5 text-red-500 dark:text-red-400",
+    divClassName: "rounded-lg bg-red-50 p-2 dark:bg-red-900/20",
+  },
+  Ghosted: {
+    icon: Ghost,
+    className: "h-5 w-5 text-gray-500 dark:text-gray-400",
+    divClassName: "rounded-lg bg-gray-50 p-2 dark:bg-gray-800/20",
+  },
+  Offer: {
+    icon: Gift,
+    className: "h-5 w-5 text-green-500 dark:text-green-400",
+    divClassName: "rounded-lg bg-green-50 p-2 dark:bg-green-900/20",
+  },
+  WishList: {
+    icon: Heart,
+    className: "h-5 w-5 text-purple-600 dark:text-purple-400",
+    divClassName: "rounded-lg bg-purple-50 p-2 dark:bg-purple-900/20",
+  },
+};
 
 export const ApplicationStatusToColor: Record<ApplicationStatusLabel, string> =
   {
     "All Status": "hidden",
-    Interviewing: "bg-yellow-100 text-yellow-800",
-    Applied: "bg-blue-100 text-blue-800",
-    Rejected: "bg-red-100 text-red-800",
-    Ghosted: "bg-gray-100 text-gray-800",
-    Offer: "bg-green-100 text-green-800",
-    WishList: "bg-purple-100 text-purple-800",
+    Interviewing:
+      "bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-800/30",
+    Applied:
+      "bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800/30",
+    Rejected:
+      "bg-red-100 text-red-800 border border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800/30",
+    Ghosted:
+      "bg-gray-100 text-gray-800 border border-gray-200 dark:bg-gray-800/20 dark:text-gray-300 dark:border-gray-700/30",
+    Offer:
+      "bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800/30",
+    WishList:
+      "bg-purple-100 text-purple-800 border border-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:border-purple-800/30",
   };
 
 export const applicationsLevelOptionsConstant: Readonly<
