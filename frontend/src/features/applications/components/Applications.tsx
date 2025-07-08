@@ -3,6 +3,7 @@ import {
   ApplicationFilters,
   ApplicationCards,
 } from "#/applications";
+import { Outlet } from "react-router-dom";
 
 export function Applications() {
   return (
@@ -10,6 +11,7 @@ export function Applications() {
       <ApplicationStats />
       <ApplicationFilters />
       <ApplicationCards />
+      <Outlet />
     </div>
   );
 }

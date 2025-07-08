@@ -122,6 +122,10 @@ export interface ApplicationCreateFormProps {
   form: UseFormReturn<ApplicationCreateRequestDto>;
 }
 
+export interface ApplicationGetRequestDto {
+  id: string;
+}
+
 export interface ApplicationResponseDto {
   id: string;
   resumeId: string;

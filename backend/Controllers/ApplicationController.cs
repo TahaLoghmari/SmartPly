@@ -80,11 +80,10 @@ public class ApplicationController(
     }
     
     [HttpGet("{id}")]
-    public async Task<ActionResult<ApplicationResponseDto>> GetApplication(
+    public async Task<ActionResult<ApplicationResponseDto>> GetUserApplication(
         [FromRoute] ApplicationGetRequestDto applicationGetRequestDto,
         ProblemDetailsFactory problemDetailsFactory)
     {
-        // In case of adding more fields , add validation
         logger.LogInformation("Retrieving application with ID {ApplicationId}", applicationGetRequestDto.id);
         
         Application? application = await dbContext.Applications

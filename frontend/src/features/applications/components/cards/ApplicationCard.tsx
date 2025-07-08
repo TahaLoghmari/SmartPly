@@ -22,6 +22,7 @@ import {
   CalendarClock,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { NavLink } from "react-router-dom";
 
 export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
   const status: ApplicationStatusLabel = applicationsStatusOptionsConstant.find(
@@ -38,7 +39,10 @@ export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
     (a) => a.value === applicationCard.level,
   )!.label;
   return (
-    <div className="bg-card text-card-foreground border-accent flex cursor-pointer flex-col gap-3 rounded-lg border p-6 shadow-xs transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
+    <NavLink
+      to={`/app/applications/${applicationCard.id}`}
+      className={`bg-card text-card-foreground border-accent flex cursor-pointer flex-col gap-3 rounded-lg border p-6 shadow-xs transition-all duration-300 hover:scale-[1.02] hover:shadow-lg`}
+    >
       <div className="flex justify-between">
         <div className="flex flex-col gap-1">
           <p className="tracking-light text-lg font-semibold">
@@ -128,6 +132,6 @@ export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
         <ViewApplicationButton />
         <EditApplicationButton />
       </div>
-    </div>
+    </NavLink>
   );
 }

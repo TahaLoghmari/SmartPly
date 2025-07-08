@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { dashboardNavigationTitlesConstant } from "#/dashboard/constants";
 import { useDashboardTitleStore } from "#/dashboard";
 
 export function useSyncDashboardTitle() {
@@ -9,7 +8,9 @@ export function useSyncDashboardTitle() {
 
   useEffect(() => {
     const section = location.pathname.split("/")[2] || "applications";
-    const title = dashboardNavigationTitlesConstant[section] || "Dashboard";
+    const capitalizedSection =
+      section.charAt(0).toUpperCase() + section.slice(1);
+    const title = capitalizedSection;
     setDashboardTitleState(title);
   }, [location.pathname, setDashboardTitleState]);
 }

@@ -17,11 +17,11 @@ export const dashboardSideBarNavigationComponentsConstant = {
 } as const;
 
 export const dashboardNavigationTitlesConstant: Record<string, string> = {
-  applications: "Job Applications",
-  analytics: "Analytics Dashboard",
-  contacts: "Contacts & Network",
-  documents: "Documents",
-  notifications: "Notifications",
-  gmail: "Gmail",
-  settings: "Settings",
+  Applications: "Job Applications",
+  Analytics: "Analytics Dashboard",
+  Contacts: "Contacts & Network",
+  Documents: "Documents",
+  Notifications: "Notifications",
+  Gmail: "Gmail",
+  Settings: "Settings",
 } as const;

@@ -1,7 +1,7 @@
 import type { RouteObject } from "react-router-dom";
 import { Dashboard } from "#/dashboard";
 import { ProtectedRoute } from "../../shared";
-import { Applications } from "#/applications";
+import { Applications, applicationRoutes } from "#/applications";
 import { Analytics } from "#/analytics";
 import { Contacts } from "#/contacts";
 import { Documents } from "#/documents";
@@ -22,10 +22,7 @@ export const dashboardRoutes: RouteObject[] = [
         index: true,
         element: <Applications />,
       },
-      {
-        path: "applications",
-        element: <Applications />,
-      },
+      ...applicationRoutes,
       {
         path: "analytics",
         element: <Analytics />,
