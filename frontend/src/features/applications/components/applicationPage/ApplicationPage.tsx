@@ -1,15 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { ArrowLeft } from "lucide-react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useGetUserApplication } from "#/applications";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  useGetUserApplication,
+  QuickInfo,
+  ApplicationPageHeader,
+  JobDescription,
+  Actions,
+  ApplicationPageDocuments,
+} from "#/applications";
 
 export function ApplicationPage() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const id: string = searchParams.get("id") || "";
-  const { data, isLoading } = useGetUserApplication({ id });
-  console.log(data);
+  const { id } = useParams();
+  const { data: applicationCard, isLoading } = useGetUserApplication({
+    id: id ?? "",
+  });
   if (isLoading) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center overflow-auto transition-all duration-300">
@@ -17,9 +24,10 @@ export function ApplicationPage() {
       </div>
     );
   }
-  return (
-    <div className="flex flex-1 flex-col items-center gap-6 overflow-auto transition-all duration-300">
-      <div className="w-[65%] p-6">
+  if (!applicationCard) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center overflow-auto transition-all duration-300">
+        <p>Application not found.</p>
         <Button
           variant="ghost"
           className="cursor-pointer"
@@ -28,36 +36,29 @@ export function ApplicationPage() {
           <ArrowLeft className="h-4 w-4" />
           <span>Back to Applications</span>
         </Button>
-        <div className="flex flex-col gap-4">
-          {/* the one on the top left with Quick Info */}
-          <div className="flex gap-4">
-            {/* the one on the top left */}
-            <div className="bg-card text-card-foreground flex-1 rounded-lg border p-6"></div>
-            {/* Quick Info */}
-            <div className="bg-card text-card-foreground rounded-lg border p-6">
-              <p className="text-2xl leading-none font-semibold tracking-tight">
-                Quick Info
-              </p>
-            </div>
+      </div>
+    );
+  }
+  return (
+    <div className="flex flex-1 flex-col items-center gap-6 overflow-auto transition-all duration-300">
+      <div className="w-[70%] p-6">
+        <Button
+          variant="ghost"
+          className="mb-2 cursor-pointer"
+          onClick={() => navigate(-1)}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          <span>Back to Applications</span>
+        </Button>
+        <div className="flex gap-4">
+          <div className="flex flex-1 flex-col gap-4">
+            <ApplicationPageHeader applicationCard={applicationCard} />
+            <JobDescription jobDescription={applicationCard.jobDescription} />
           </div>
-          {/* Job Description with Actions */}
-          <div>
-            {/* Job Description */}
-            <div></div>
-            {/* Actions */}
-            <div></div>
-          </div>
-          {/* Application TimeLine with Documents and Notes */}
-          <div>
-            {/* Application Timeline */}
-            <div></div>
-            {/* Documents and Notes */}
-            <div>
-              {/* Documents */}
-              <div></div>
-              {/* Notes */}
-              <div></div>
-            </div>
+          <div className="flex max-w-80 min-w-75 flex-col gap-4">
+            <QuickInfo applicationCard={applicationCard} />
+            <Actions applicationCard={applicationCard} />
+            <ApplicationPageDocuments applicationCard={applicationCard} />
           </div>
         </div>
       </div>
