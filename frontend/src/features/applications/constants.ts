@@ -8,48 +8,6 @@ import {
   type ApplicationTypeLabel,
   type ApplicationJobTypeLabel,
 } from "#/applications";
-import { Heart, Send, Users, Gift, X, Ghost, CircleOff } from "lucide-react";
-
-export const ApplicationStatusToIcon: Record<
-  ApplicationStatusLabel,
-  { icon: React.ElementType; className: string; divClassName: string }
-> = {
-  "All Status": {
-    icon: CircleOff,
-    className: "hidden",
-    divClassName: "hidden",
-  },
-  Interviewing: {
-    icon: Users,
-    className: "h-5 w-5 text-yellow-500 dark:text-yellow-400",
-    divClassName: "rounded-lg bg-yellow-50 p-2 dark:bg-yellow-900/20",
-  },
-  Applied: {
-    icon: Send,
-    className: "h-5 w-5 text-blue-500 dark:text-blue-400",
-    divClassName: "rounded-lg bg-blue-50 p-2 dark:bg-blue-900/20",
-  },
-  Rejected: {
-    icon: X,
-    className: "h-5 w-5 text-red-500 dark:text-red-400",
-    divClassName: "rounded-lg bg-red-50 p-2 dark:bg-red-900/20",
-  },
-  Ghosted: {
-    icon: Ghost,
-    className: "h-5 w-5 text-gray-500 dark:text-gray-400",
-    divClassName: "rounded-lg bg-gray-50 p-2 dark:bg-gray-800/20",
-  },
-  Offer: {
-    icon: Gift,
-    className: "h-5 w-5 text-green-500 dark:text-green-400",
-    divClassName: "rounded-lg bg-green-50 p-2 dark:bg-green-900/20",
-  },
-  WishList: {
-    icon: Heart,
-    className: "h-5 w-5 text-purple-600 dark:text-purple-400",
-    divClassName: "rounded-lg bg-purple-50 p-2 dark:bg-purple-900/20",
-  },
-};
 
 export const ApplicationStatusToColor: Record<ApplicationStatusLabel, string> =
   {
