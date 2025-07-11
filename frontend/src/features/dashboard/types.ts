@@ -3,9 +3,9 @@ export interface DashboardNotificationsCountStoreType {
   setNotificationsCountState: (count: number) => void;
 }
 
-export interface AddApplicationDialogStore {
-  addApplicationOpen: boolean;
-  setAddApplicationOpen: (open: boolean) => void;
+export interface DialogStore {
+  openDialog: boolean;
+  setOpenDialog: (open: boolean) => void;
 }
 
 export interface DashboardActiveNavItemStoreType {
@@ -38,4 +38,3 @@ export interface DashboardTitleStoreType {
   dashboardTitleState: string;
   setDashboardTitleState: (state: string) => void;
 }
-

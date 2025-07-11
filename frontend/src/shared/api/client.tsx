@@ -58,5 +58,9 @@ export async function request<T>(
     throw new Error(errorMessage);
   }
 
-  return response.json() as T;
+  const text = await response.text();
+  if (!text) {
+    return {} as T;
+  }
+  return JSON.parse(text) as T;
 }

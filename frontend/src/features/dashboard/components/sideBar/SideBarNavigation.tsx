@@ -26,7 +26,7 @@ export function SideBarNavigation() {
           key={id}
           to={`/app/${id}`}
           className={({ isActive }) =>
-            `text-secondary-foreground flex h-10 w-full items-center rounded-md px-3 text-sm font-medium transition-all duration-200 ${activeState ? "justify-start gap-3" : "justify-center"} ${isActive ? "bg-secondary" : "hover:bg-secondary/80"} `
+            `text-secondary-foreground flex h-10 w-full items-center rounded-md px-3 text-sm font-medium transition-all duration-300 ${activeState ? "justify-start gap-3" : "justify-center"} ${isActive ? "bg-secondary" : "hover:bg-secondary/80"} `
           }
         >
           <Icon className="h-4 w-4 flex-shrink-0" />

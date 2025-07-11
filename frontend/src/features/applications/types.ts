@@ -1,5 +1,4 @@
 import { z } from "zod";
-import type { UseFormReturn } from "react-hook-form";
 import {
   applicationsStatusOptionsConstant,
   applicationsTypeOptionsConstant,
@@ -82,7 +81,6 @@ export const formSchema = z.object({
   technologiesUsed: z
     .array(z.string().min(1, "Technology cannot be empty"))
     .optional(),
-  contacts: z.string().optional(),
   deadline: z
     .date()
     .optional()
@@ -116,11 +114,7 @@ export const formSchema = z.object({
   ),
 });
 
-export type ApplicationCreateRequestDto = z.infer<typeof formSchema>;
-
-export interface ApplicationCreateFormProps {
-  form: UseFormReturn<ApplicationCreateRequestDto>;
-}
+export type ApplicationRequestDto = z.infer<typeof formSchema>;
 
 export interface ApplicationGetRequestDto {
   id: string;
@@ -154,6 +148,16 @@ export interface ApplicationResponseDto {
 export interface ApplicationCardProps {
   applicationCard: ApplicationResponseDto;
 }
+
+export type ApplicationFormProps =
+  | {
+      mutationType: "create";
+      applicationCard?: null;
+    }
+  | {
+      mutationType: "edit";
+      applicationCard: ApplicationResponseDto;
+    };
 
 export interface TechnologiesUsedProps {
   technologies: string[];
@@ -194,4 +198,8 @@ export interface StatsState {
 export interface ApplicationStatCardProps {
   value: number;
   label: ApplicationStatusLabel;
+}
+
+export interface ApplicationPageProps {
+  applicationCard: ApplicationResponseDto;
 }

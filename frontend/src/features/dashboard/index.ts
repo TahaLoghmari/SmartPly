@@ -25,7 +25,7 @@ export * from "./hooks/useSyncDashboardTitle";
 
 // Stores
 export * from "./stores/useDashboardNotificationsCount";
-export * from "./stores/useAddApplicationDialogStore";
+export * from "./stores/useDialogStore";
 export * from "./stores/useDashboardActiveNavItemStore";
 export * from "./stores/useDashboardSideBarStore";
 export * from "./stores/useDashboardTitleStore";
