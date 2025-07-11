@@ -12,56 +12,61 @@ import {
   TechnologiesUsedFormField,
   Documents,
   useCreateApplication,
-  type ApplicationCreateRequestDto,
+  useEditApplication,
+  type ApplicationRequestDto,
+  type ApplicationFormProps,
   formSchema,
 } from "#/applications";
 import { useCurrentUser } from "#/auth";
-import { useAddApplicationDialogStore } from "#/dashboard";
+import { useDialogStore } from "#/dashboard";
 import { useRef, useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 
-export function ApplicationCreateForm() {
-  const setAddApplicationOpen = useAddApplicationDialogStore(
-    (s) => s.setAddApplicationOpen,
-  );
-  const createApplicationMutation = useCreateApplication();
+export function ApplicationForm({
+  mutationType,
+  applicationCard,
+}: ApplicationFormProps) {
+  const setApplicationFormOpen = useDialogStore((s) => s.setOpenDialog);
   const { data: user } = useCurrentUser();
-  const form = useForm<ApplicationCreateRequestDto>({
+  const manageApplicationMutation =
+    mutationType === "create"
+      ? useCreateApplication()
+      : useEditApplication({ id: applicationCard.id });
+
+  const form = useForm<ApplicationRequestDto>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
     defaultValues: {
-      resumeId: "",
-      coverLetterId: "",
+      resumeId: applicationCard?.resumeId || "",
+      coverLetterId: applicationCard?.coverLetterId || "",
       userId: user?.id,
-      companyName: "",
-      companyEmail: "",
-      position: "",
-      link: "",
-      notes: "",
-      location: "",
-      startSalary: 0,
-      endSalary: 0,
-      contacts: "",
-      deadline: undefined,
-      jobDescription: "",
-      status: "applied",
-      type: "onSite",
-      jobType: "fullTime",
-      level: "junior",
-      technologiesUsed: [],
+      companyName: applicationCard?.companyName || "",
+      companyEmail: applicationCard?.companyEmail || "",
+      position: applicationCard?.position || "",
+      link: applicationCard?.link || "",
+      notes: applicationCard?.notes || "",
+      location: applicationCard?.location || "",
+      startSalary: applicationCard?.startSalary || 0,
+      endSalary: applicationCard?.endSalary || 0,
+      deadline: applicationCard?.deadline || undefined,
+      jobDescription: applicationCard?.jobDescription || "",
+      status: applicationCard?.status || "applied",
+      type: applicationCard?.type || "onSite",
+      jobType: applicationCard?.jobType || "fullTime",
+      level: applicationCard?.level || "junior",
+      technologiesUsed: applicationCard?.technologiesUsed || [],
     },
   });
   const formRef = useRef<HTMLFormElement>(null);
-
   useEffect(() => {
-    if (createApplicationMutation.isError && formRef.current) {
+    if (manageApplicationMutation.isError && formRef.current) {
       formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  }, [createApplicationMutation.isError]);
-  async function onSubmit(credentials: ApplicationCreateRequestDto) {
-    createApplicationMutation.mutate(credentials, {
+  }, [manageApplicationMutation.isError]);
+  async function onSubmit(credentials: ApplicationRequestDto) {
+    manageApplicationMutation.mutate(credentials, {
       onSuccess: () => {
-        setAddApplicationOpen(false);
+        setApplicationFormOpen(false);
       },
     });
   }
@@ -72,9 +77,9 @@ export function ApplicationCreateForm() {
         className="w-full space-y-8"
         ref={formRef}
       >
-        {createApplicationMutation.isError && (
+        {manageApplicationMutation.isError && (
           <div className="bg-destructive/10 border-destructive text-destructive mb-4 rounded-md border p-3 text-sm">
-            {createApplicationMutation.error.message}
+            {manageApplicationMutation.error.message}
           </div>
         )}
         <CompanyInformation form={form} />
@@ -90,13 +95,15 @@ export function ApplicationCreateForm() {
           </DialogClose>
           <Button
             type="submit"
-            disabled={createApplicationMutation.isPending}
+            disabled={manageApplicationMutation.isPending}
             className="w-34"
           >
-            {createApplicationMutation.isPending ? (
+            {manageApplicationMutation.isPending ? (
               <Spinner className="h-8 w-auto invert dark:invert-0" />
-            ) : (
+            ) : mutationType === "create" ? (
               "Add Application"
+            ) : (
+              "Edit Application"
             )}
           </Button>
         </DialogFooter>

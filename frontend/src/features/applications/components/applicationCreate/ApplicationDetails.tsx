@@ -1,11 +1,12 @@
 import {
-  type ApplicationCreateFormProps,
   ApplicationFilterBar,
   applicationsStatusOptionsConstant,
   applicationsTypeOptionsConstant,
   applicationsLevelOptionsConstant,
   applicationsJobTypeOptionsConstant,
 } from "#/applications";
+import type { UseFormReturn } from "react-hook-form";
+import { type ApplicationRequestDto } from "#/applications";
 import {
   FormControl,
   FormField,
@@ -15,7 +16,11 @@ import {
 } from "@/components/ui/form";
 import { useState } from "react";
 
-export function ApplicationDetails({ form }: ApplicationCreateFormProps) {
+export function ApplicationDetails({
+  form,
+}: {
+  form: UseFormReturn<ApplicationRequestDto>;
+}) {
   const [isStatusFilterOpen, setIsStatusFilterOpen] = useState(false);
   const [isTypeFilterOpen, setIsTypeFilterOpen] = useState(false);
   const [isLevelFilterOpen, setIsLevelFilterOpen] = useState(false);

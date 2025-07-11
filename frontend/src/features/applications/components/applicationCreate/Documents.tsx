@@ -1,4 +1,5 @@
-import { type ApplicationCreateFormProps } from "#/applications";
+import { type ApplicationRequestDto } from "#/applications";
+import type { UseFormReturn } from "react-hook-form";
 import { useResumeStore, useCoverLetterStore } from "#/documents";
 import {
   FormControl,
@@ -25,7 +26,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export function Documents({ form }: ApplicationCreateFormProps) {
+export function Documents({
+  form,
+}: {
+  form: UseFormReturn<ApplicationRequestDto>;
+}) {
   const { resumesState } = useResumeStore();
   const { coverLettersState } = useCoverLetterStore();
   return (

@@ -1,4 +1,5 @@
-import { type ApplicationCreateFormProps } from "#/applications";
+import { type ApplicationRequestDto } from "#/applications";
+import type { UseFormReturn } from "react-hook-form";
 import {
   FormControl,
   FormField,
@@ -18,7 +19,11 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 
-export function JobDetails({ form }: ApplicationCreateFormProps) {
+export function JobDetails({
+  form,
+}: {
+  form: UseFormReturn<ApplicationRequestDto>;
+}) {
   return (
     <div className="space-y-4">
       <p className="text-foreground border-b pb-2 text-lg font-medium">

@@ -1,8 +1,9 @@
 import {
-  type ApplicationCreateFormProps,
   TechnologiesUsed,
   frameworks,
+  type ApplicationRequestDto,
 } from "#/applications";
+import type { UseFormReturn } from "react-hook-form";
 import { useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -29,7 +30,9 @@ import {
 
 export function TechnologiesUsedFormField({
   form,
-}: ApplicationCreateFormProps) {
+}: {
+  form: UseFormReturn<ApplicationRequestDto>;
+}) {
   const [open, setOpen] = useState(false);
   return (
     <div className="space-y-4">

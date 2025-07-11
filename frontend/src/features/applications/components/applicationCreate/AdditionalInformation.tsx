@@ -1,4 +1,5 @@
-import { type ApplicationCreateFormProps } from "#/applications";
+import { type ApplicationRequestDto } from "#/applications";
+import type { UseFormReturn } from "react-hook-form";
 import {
   FormControl,
   FormField,
@@ -8,7 +9,11 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 
-export function AdditionalInformation({ form }: ApplicationCreateFormProps) {
+export function AdditionalInformation({
+  form,
+}: {
+  form: UseFormReturn<ApplicationRequestDto>;
+}) {
   return (
     <div className="space-y-4">
       <p className="text-foreground border-b pb-2 text-lg font-medium">

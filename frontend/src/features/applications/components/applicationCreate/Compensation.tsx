@@ -6,9 +6,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { type ApplicationCreateFormProps } from "#/applications";
+import { type ApplicationRequestDto } from "#/applications";
+import type { UseFormReturn } from "react-hook-form";
 
-export function Compensation({ form }: ApplicationCreateFormProps) {
+export function Compensation({
+  form,
+}: {
+  form: UseFormReturn<ApplicationRequestDto>;
+}) {
   return (
     <div className="space-y-4">
       <p className="text-foreground border-b pb-2 text-lg font-medium">
