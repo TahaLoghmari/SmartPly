@@ -5,30 +5,30 @@ namespace backend.Entities;
 public sealed class Application
 {
     public Guid Id { get; init; } = Guid.NewGuid();
-    public Guid ResumeId { get; init; }
-    public Guid? CoverLetterId { get; init; }
+    public Guid ResumeId { get; set; }
+    public Guid? CoverLetterId { get; set; }
     public string UserId { get; init; }
     
-    public string CompanyName { get; init; }
-    public string? CompanyEmail { get; init; }
-    public string Position { get; init; }
-    public string Link { get; init; }
-    public string? Notes { get; init; }
-    public string Location { get; init; }
-    public int StartSalary { get; init; }
-    public int EndSalary { get; init; }
-    public DateTime? Deadline { get; init; } 
-    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-    public DateTime? UpdatedAt { get; init; } = DateTime.UtcNow;
-    public string? JobDescription { get; init; } 
+    public string CompanyName { get; set; }
+    public string? CompanyEmail { get; set; }
+    public string Position { get; set; }
+    public string Link { get; set; }
+    public string? Notes { get; set; }
+    public string Location { get; set; }
+    public int StartSalary { get; set; }
+    public int EndSalary { get; set; }
+    public DateTime? Deadline { get; set; } 
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;
+    public string? JobDescription { get; set; } 
     
-    public ApplicationStatus Status { get; init; }
-    public ApplicationType Type { get; init; }
-    public ApplicationJobType JobType { get; init; } 
-    public ApplicationLevel Level { get; init; } 
-    public List<string>? TechnologiesUsed { get; init; } = new List<string>();
+    public ApplicationStatus Status { get; set; }
+    public ApplicationType Type { get; set; }
+    public ApplicationJobType JobType { get; set; } 
+    public ApplicationLevel Level { get; set; } 
+    public List<string>? TechnologiesUsed { get; set; } = new List<string>();
     
-    public Resume? ResumeUsed { get; init; } 
+    public Resume? ResumeUsed { get; set; } 
     public User? User { get; init; }
-    public CoverLetter? CoverLetterUsed { get; init; }
+    public CoverLetter? CoverLetterUsed { get; set; }
 }

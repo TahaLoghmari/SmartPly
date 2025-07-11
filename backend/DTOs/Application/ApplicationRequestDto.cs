@@ -1,9 +1,8 @@
 ﻿using backend.Enums;
 namespace backend.DTOs.Application;
 
-public sealed record ApplicationResponseDto 
+public sealed record ApplicationRequestDto
 {
-    public Guid Id { get; set; }
     public Guid ResumeId { get; set; }
     public Guid? CoverLetterId { get; set; }
     public string UserId { get; init; }
@@ -17,8 +16,6 @@ public sealed record ApplicationResponseDto
     public int StartSalary { get; set; }
     public int EndSalary { get; set; }
     public DateTime? Deadline { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? UpdatedAt { get; set; } 
     public string? JobDescription { get; set; }
     public ApplicationStatus Status { get; set; }
     public ApplicationType Type { get; set; }
