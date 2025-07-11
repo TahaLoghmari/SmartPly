@@ -1,8 +1,6 @@
 import {
   type ApplicationCardProps,
   TechnologiesUsed,
-  ViewApplicationButton,
-  EditApplicationButton,
   ApplicationStatusToColor,
   applicationsStatusOptionsConstant,
   applicationsTypeOptionsConstant,
@@ -127,10 +125,6 @@ export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
         <p className="text-muted-foreground text-sm italic">
           "{applicationCard.notes}"
         </p>
-      </div>
-      <div className="mt-2 flex flex-1 items-center gap-2">
-        <ViewApplicationButton />
-        <EditApplicationButton />
       </div>
     </NavLink>
   );
