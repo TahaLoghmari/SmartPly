@@ -2,7 +2,7 @@
 using backend.DTOs.Application;
 namespace backend.Validators.Application;
 
-public class ApplicationCreateRequestDtoValidator : AbstractValidator<ApplicationCreateRequestDto>
+public class ApplicationCreateRequestDtoValidator : AbstractValidator<ApplicationRequestDto>
 {
     public ApplicationCreateRequestDtoValidator()
     {
