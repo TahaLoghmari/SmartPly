@@ -15,22 +15,22 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { type ApplicationFilterBarProps } from "#/applications";
+import { useState } from "react";
 
 export function ApplicationFilterBar<T extends string>({
-  isFilterOpen,
   selectedFilter,
-  setIsFilterOpen,
   setSelectedFilter,
   applicationConstant,
   name,
 }: ApplicationFilterBarProps<T>) {
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
           role="combobox"
-          aria-expanded={isFilterOpen}
+          aria-expanded={isOpen}
           className="w-[200px] justify-between border font-normal"
         >
           {selectedFilter
@@ -52,7 +52,7 @@ export function ApplicationFilterBar<T extends string>({
                   value={item.value}
                   onSelect={(currentValue) => {
                     setSelectedFilter(currentValue as T);
-                    setIsFilterOpen(false);
+                    setIsOpen(false);
                   }}
                 >
                   <CheckIcon
