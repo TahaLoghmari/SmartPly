@@ -61,7 +61,8 @@ public class ApplicationController(
     [HttpGet]
     [ProducesResponseType<ICollection<ApplicationResponseDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<ICollection<ApplicationResponseDto>>> GetUserApplications(
+    public async Task<ActionResult<ICollection<ApplicationResponseDto>>> GetUserApplications( 
+        [FromQuery] ApplicationQueryParameters query,
         ProblemDetailsFactory problemDetailsFactory)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -77,8 +78,20 @@ public class ApplicationController(
             return Unauthorized(problem);
         }
 
+        logger.LogInformation("Retrieving applications for user with ID {UserId}", userId); 
+
+        query.Search = query.Search?.Trim().ToLower();
+        Console.WriteLine(query.Search);
+        
         return Ok(await dbContext.Applications
+            .Where(a => query.Search == null || a.CompanyName.ToLower().Contains(query.Search) ||
+                                  a.Position.ToLower().Contains(query.Search) ||
+                                  a.JobDescription != null && a.JobDescription.ToLower().Contains(query.Search) == true)
             .Where(a => a.UserId == userId)
+            .Where(a => query.Status == null || a.Status == query.Status)
+            .Where(a => query.Level == null || a.Level == query.Level)
+            .Where(a => query.Type == null || a.Type == query.Type)
+            .Where(a => query.JobType == null || a.JobType == query.JobType)
             .Select(a => a.ToApplicationResponseDto())
             .ToListAsync());
     }
