@@ -22,8 +22,17 @@ export const editApplication = (
   });
 };
 
-export const getUserApplications = () => {
-  return request<ApplicationResponseDto[]>("/applications", {
+export const getUserApplications = (params: {
+  status?: string;
+  type?: string;
+  level?: string;
+  jobType?: string;
+  search?: string;
+}) => {
+  const query = new URLSearchParams(
+    params as Record<string, string>,
+  ).toString();
+  return request<ApplicationResponseDto[]>(`/applications?${query}`, {
     method: "GET",
   }).then((apps) =>
     apps.map((app) => ({

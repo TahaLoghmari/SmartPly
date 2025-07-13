@@ -32,7 +32,7 @@ export const applicationsLevelOptionsConstant: Readonly<
     label: ApplicationLevelLabel;
   }[]
 > = [
-  { value: "allLevels", label: "All Levels" },
+  { value: "", label: "All Levels" },
   { value: "junior", label: "Junior" },
   { value: "mid", label: "Mid" },
   { value: "senior", label: "Senior" },
@@ -44,7 +44,7 @@ export const applicationsStatusOptionsConstant: Readonly<
     label: ApplicationStatusLabel;
   }[]
 > = [
-  { value: "allStatus", label: "All Status" },
+  { value: "", label: "All Status" },
   { value: "wishList", label: "WishList" },
   { value: "applied", label: "Applied" },
   { value: "interviewing", label: "Interviewing" },
@@ -59,7 +59,7 @@ export const applicationsTypeOptionsConstant: Readonly<
     label: ApplicationTypeLabel;
   }[]
 > = [
-  { value: "allTypes", label: "All Types" },
+  { value: "", label: "All Types" },
   { value: "remote", label: "Remote" },
   { value: "onSite", label: "OnSite" },
   { value: "hybrid", label: "Hybrid" },
@@ -71,7 +71,7 @@ export const applicationsJobTypeOptionsConstant: Readonly<
     label: ApplicationJobTypeLabel;
   }[]
 > = [
-  { value: "allJobTypes", label: "All Job Types" },
+  { value: "", label: "All Job Types" },
   { value: "fullTime", label: "Full Time" },
   { value: "partTime", label: "Part Time" },
   { value: "internship", label: "Internship" },

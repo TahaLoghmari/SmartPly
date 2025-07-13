@@ -14,17 +14,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useState } from "react";
 
 export function ApplicationDetails({
   form,
 }: {
   form: UseFormReturn<ApplicationRequestDto>;
 }) {
-  const [isStatusFilterOpen, setIsStatusFilterOpen] = useState(false);
-  const [isTypeFilterOpen, setIsTypeFilterOpen] = useState(false);
-  const [isLevelFilterOpen, setIsLevelFilterOpen] = useState(false);
-  const [isJobTypeFilterOpen, setIsJobTypeFilterOpen] = useState(false);
   return (
     <div className="space-y-4">
       <p className="text-foreground border-b pb-2 text-lg font-medium">
@@ -45,8 +40,6 @@ export function ApplicationDetails({
                   setSelectedFilter={field.onChange}
                   applicationConstant={applicationsStatusOptionsConstant}
                   name={"Status"}
-                  isFilterOpen={isStatusFilterOpen}
-                  setIsFilterOpen={setIsStatusFilterOpen}
                 />
               </FormControl>
               <FormMessage />
@@ -65,8 +58,6 @@ export function ApplicationDetails({
                   setSelectedFilter={field.onChange}
                   applicationConstant={applicationsTypeOptionsConstant}
                   name={"Type"}
-                  isFilterOpen={isTypeFilterOpen}
-                  setIsFilterOpen={setIsTypeFilterOpen}
                 />
               </FormControl>
               <FormMessage />
@@ -85,8 +76,6 @@ export function ApplicationDetails({
                   setSelectedFilter={field.onChange}
                   applicationConstant={applicationsLevelOptionsConstant}
                   name={"Level"}
-                  isFilterOpen={isLevelFilterOpen}
-                  setIsFilterOpen={setIsLevelFilterOpen}
                 />
               </FormControl>
               <FormMessage />
@@ -105,8 +94,6 @@ export function ApplicationDetails({
                   setSelectedFilter={field.onChange}
                   applicationConstant={applicationsJobTypeOptionsConstant}
                   name={"Job Type"}
-                  isFilterOpen={isJobTypeFilterOpen}
-                  setIsFilterOpen={setIsJobTypeFilterOpen}
                 />
               </FormControl>
               <FormMessage />

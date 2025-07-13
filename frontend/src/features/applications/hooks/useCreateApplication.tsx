@@ -9,7 +9,9 @@ export function useCreateApplication() {
     mutationFn: (credentials: ApplicationRequestDto) =>
       createApplication(credentials),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["applications", user?.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["applications", user?.id],
+      });
     },
   });
 }

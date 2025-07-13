@@ -9,8 +9,8 @@ export function useGetUserApplication(credentials: ApplicationGetRequestDto) {
     queryKey: ["application", credentials.id],
     queryFn: () => getUserApplication(credentials),
     refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMount: false,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
     staleTime: 1000 * 60 * 5,
   });
 }

@@ -26,7 +26,7 @@ export type ApplicationJobTypeLabel =
   | "All Job Types";
 
 export type ApplicationStatus =
-  | "allStatus"
+  | ""
   | "wishList"
   | "applied"
   | "interviewing"
@@ -34,15 +34,11 @@ export type ApplicationStatus =
   | "rejected"
   | "ghosted";
 
-export type ApplicationType = "allTypes" | "remote" | "onSite" | "hybrid";
+export type ApplicationType = "" | "remote" | "onSite" | "hybrid";
 
-export type ApplicationLevel = "allLevels" | "junior" | "mid" | "senior";
+export type ApplicationLevel = "" | "junior" | "mid" | "senior";
 
-export type ApplicationJobType =
-  | "fullTime"
-  | "partTime"
-  | "internship"
-  | "allJobTypes";
+export type ApplicationJobType = "fullTime" | "partTime" | "internship" | "";
 
 export const formSchema = z.object({
   resumeId: z.string().min(1, "ResumeId is required."),
@@ -164,35 +160,22 @@ export interface TechnologiesUsedProps {
 }
 
 export interface ApplicationFilterStoreType<T> {
-  isFilterOpen: boolean;
   selectedFilter: T;
-  setIsFilterOpen: (open: boolean) => void;
   setSelectedFilter: (value: T) => void;
   clear: () => void;
 }
 
 export interface ApplicationFilterBarProps<T> {
-  isFilterOpen: boolean;
   selectedFilter: T;
-  setIsFilterOpen: (open: boolean) => void;
   setSelectedFilter: (value: T) => void;
   applicationConstant: Readonly<{ value: T; label: string }[]>;
   name: string;
 }
 
-export interface StatsState {
-  wishListCount: number;
-  appliedCount: number;
-  interviewingCount: number;
-  offerCount: number;
-  rejectedCount: number;
-  ghostedCount: number;
-  setWishListCount: (count: number) => void;
-  setAppliedCount: (count: number) => void;
-  setInterviewingCount: (count: number) => void;
-  setOfferCount: (count: number) => void;
-  setRejectedCount: (count: number) => void;
-  setGhostedCount: (count: number) => void;
+export interface ApplicationSearchBarStore {
+  search: string;
+  setSearch: (value: string) => void;
+  clear: () => void;
 }
 
 export interface ApplicationStatCardProps {

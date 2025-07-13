@@ -9,6 +9,7 @@ import {
   JobDescription,
   Actions,
   ApplicationPageDocuments,
+  Notes,
 } from "#/applications";
 
 export function ApplicationPage() {
@@ -59,6 +60,7 @@ export function ApplicationPage() {
             <QuickInfo applicationCard={applicationCard} />
             <Actions applicationCard={applicationCard} />
             <ApplicationPageDocuments applicationCard={applicationCard} />
+            <Notes applicationCard={applicationCard} />
           </div>
         </div>
       </div>

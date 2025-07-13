@@ -9,19 +9,17 @@ import {
 
 export function useApplicationFiltersStore<T>(defaultValue: T) {
   return create<ApplicationFilterStoreType<T>>((set) => ({
-    isFilterOpen: false,
     selectedFilter: defaultValue,
-    setIsFilterOpen: (open) => set({ isFilterOpen: open }),
     setSelectedFilter: (value) => set({ selectedFilter: value }),
     clear: () => set({ selectedFilter: defaultValue }),
   }));
 }
 
 export const useApplicationStatusFilterStore =
-  useApplicationFiltersStore<ApplicationStatus>("allStatus");
+  useApplicationFiltersStore<ApplicationStatus>("");
 export const useApplicationTypeFilterStore =
-  useApplicationFiltersStore<ApplicationType>("allTypes");
+  useApplicationFiltersStore<ApplicationType>("");
 export const useApplicationLevelFilterStore =
-  useApplicationFiltersStore<ApplicationLevel>("allLevels");
+  useApplicationFiltersStore<ApplicationLevel>("");
 export const useApplicationJobTypeFilterStore =
-  useApplicationFiltersStore<ApplicationJobType>("allJobTypes");
+  useApplicationFiltersStore<ApplicationJobType>("");
