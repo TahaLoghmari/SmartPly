@@ -15,6 +15,8 @@ export * from "./hooks/useCreateApplication";
 export * from "./hooks/useEditApplication";
 export * from "./hooks/useGetUserApplications";
 export * from "./hooks/useGetUserApplication";
+export * from "./hooks/useDeleteApplication";
+export * from "./hooks/useGetApplicationStats";
 
 // Types
 export * from "./types";
