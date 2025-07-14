@@ -1,7 +1,9 @@
 ﻿using System.Net.Mime;
 using System.Security.Claims;
 using backend.DTOs.Application;
+using backend.DTOs.Shared;
 using backend.Entities;
+using backend.Enums;
 using backend.Mappings;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
@@ -59,9 +61,9 @@ public class ApplicationController(
     }
 
     [HttpGet]
-    [ProducesResponseType<ICollection<ApplicationResponseDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<PaginationResult<ApplicationResponseDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<ICollection<ApplicationResponseDto>>> GetUserApplications( 
+    public async Task<ActionResult<PaginationResult<ApplicationResponseDto>>> GetUserApplications( 
         [FromQuery] ApplicationQueryParameters query,
         ProblemDetailsFactory problemDetailsFactory)
     {
@@ -82,18 +84,21 @@ public class ApplicationController(
 
         query.Search = query.Search?.Trim().ToLower();
         Console.WriteLine(query.Search);
-        
-        return Ok(await dbContext.Applications
+
+        IQueryable<ApplicationResponseDto> applicationQuery = dbContext.Applications
             .Where(a => query.Search == null || a.CompanyName.ToLower().Contains(query.Search) ||
-                                  a.Position.ToLower().Contains(query.Search) ||
-                                  a.JobDescription != null && a.JobDescription.ToLower().Contains(query.Search) == true)
+                        a.Position.ToLower().Contains(query.Search) ||
+                        a.JobDescription != null && a.JobDescription.ToLower().Contains(query.Search) == true)
             .Where(a => a.UserId == userId)
             .Where(a => query.Status == null || a.Status == query.Status)
             .Where(a => query.Level == null || a.Level == query.Level)
             .Where(a => query.Type == null || a.Type == query.Type)
             .Where(a => query.JobType == null || a.JobType == query.JobType)
-            .Select(a => a.ToApplicationResponseDto())
-            .ToListAsync());
+            .Select(a => a.ToApplicationResponseDto());
+        
+        var PaginationResult = await PaginationResult<ApplicationResponseDto>.CreateAsync(
+            applicationQuery, query.Page ?? 1, query.PageSize ?? 10);
+        return Ok(PaginationResult);
     }
     
     [HttpGet("{id}")]
@@ -320,5 +325,44 @@ public class ApplicationController(
         logger.LogInformation("Application deleted with ID {ApplicationId}", application.Id);
         
         return NoContent();
+    }
+
+    [HttpGet("stats")]
+    [ProducesResponseType<ApplicationStatsDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetApplicationStats(
+        ProblemDetailsFactory problemDetailsFactory)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId is null)
+        {
+            logger.LogWarning("Get current user failed - user ID claim missing");
+            var problem = problemDetailsFactory.CreateProblemDetails(
+                HttpContext,
+                StatusCodes.Status401Unauthorized,
+                title: "Unauthorized",
+                detail: "User ID claim is missing."
+            );
+            return Unauthorized(problem);
+        }
+
+        var stats = await dbContext.Applications
+            .Where(a => a.UserId == userId)
+            .GroupBy(a => a.Status)
+            .Select(g => new { Status = g.Key, Count = g.Count() })
+            .ToListAsync();
+
+        var result = new ApplicationStatsDto
+        {
+            TotalOffers = stats.FirstOrDefault(s => s.Status == ApplicationStatus.offer)?.Count ?? 0,
+            TotalGhosted = stats.FirstOrDefault(s => s.Status == ApplicationStatus.ghosted)?.Count ?? 0,
+            TotalInterviewing = stats.FirstOrDefault(s => s.Status == ApplicationStatus.interviewing)?.Count ?? 0,
+            TotalWishList = stats.FirstOrDefault(s => s.Status == ApplicationStatus.wishList)?.Count ?? 0,
+            TotalApplied = stats.FirstOrDefault(s => s.Status == ApplicationStatus.applied)?.Count ?? 0,
+            TotalRejected = stats.FirstOrDefault(s => s.Status == ApplicationStatus.rejected)?.Count ?? 0,
+        };
+
+        return Ok(result);
     }
 }
