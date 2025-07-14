@@ -9,4 +9,6 @@ public sealed record ApplicationQueryParameters
     public ApplicationLevel? Level { get; init; }
     public ApplicationType? Type { get; init; }
     public ApplicationJobType? JobType { get; init; }
+    public int? Page { get; init; } = 1; 
+    public int? PageSize { get; init; } = 8;
 };
