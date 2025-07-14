@@ -1,26 +1,17 @@
-import { ApplicationStatCard, useGetUserApplications } from "#/applications";
+import { ApplicationStatCard, useGetApplicationStats } from "#/applications";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const STATUSES = [
-  { key: "wishList", label: "WishList" },
-  { key: "applied", label: "Applied" },
-  { key: "interviewing", label: "Interviewing" },
-  { key: "offer", label: "Offer" },
-  { key: "ghosted", label: "Ghosted" },
-  { key: "rejected", label: "Rejected" },
+  { key: "wishList", label: "WishList", apiKey: "totalWishList" },
+  { key: "applied", label: "Applied", apiKey: "totalApplied" },
+  { key: "interviewing", label: "Interviewing", apiKey: "totalInterviewing" },
+  { key: "offer", label: "Offer", apiKey: "totalOffers" },
+  { key: "ghosted", label: "Ghosted", apiKey: "totalGhosted" },
+  { key: "rejected", label: "Rejected", apiKey: "totalRejected" },
 ] as const;
 
 export function ApplicationStats() {
-  const { data: applicationCardsState = [], isLoading } =
-    useGetUserApplications();
-
-  const statusCounts = STATUSES.reduce(
-    (acc, { key }) => {
-      acc[key] = applicationCardsState.filter((a) => a.status === key).length;
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
+  const { data: applicationStats, isLoading } = useGetApplicationStats();
 
   return (
     <div className="grid grid-cols-1 gap-4 transition-all duration-300 md:grid-cols-2 lg:grid-cols-6">
@@ -36,10 +27,10 @@ export function ApplicationStats() {
               </div>
             </div>
           ))
-        : STATUSES.map(({ key, label }) => (
+        : STATUSES.map(({ key, label, apiKey }) => (
             <ApplicationStatCard
               key={key}
-              value={statusCounts[key]}
+              value={applicationStats?.[apiKey] ?? 0}
               label={label}
             />
           ))}
