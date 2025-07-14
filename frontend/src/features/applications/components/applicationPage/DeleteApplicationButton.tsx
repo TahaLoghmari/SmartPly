@@ -11,8 +11,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  useDeleteApplication,
+  type ApplicationPageProps,
+} from "#/applications";
 
-export function DeleteApplicationButton() {
+export function DeleteApplicationButton({
+  applicationCard,
+}: ApplicationPageProps) {
+  const deleteMutation = useDeleteApplication();
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -34,7 +41,11 @@ export function DeleteApplicationButton() {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogAction
+            onClick={() => deleteMutation.mutate(applicationCard.id)}
+          >
+            Continue
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
