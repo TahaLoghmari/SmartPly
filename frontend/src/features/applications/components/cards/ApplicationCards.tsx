@@ -11,9 +11,12 @@ import { Link } from "react-router-dom";
 
 export function ApplicationCards() {
   const {
-    data: applicationCardsState = [],
+    data,
     isLoading,
     isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   } = useGetUserApplications();
   if (isLoading) {
     return (
@@ -35,18 +38,32 @@ export function ApplicationCards() {
       </div>
     );
   }
-  if (applicationCardsState.length > 0)
+
+  const allItems = data?.pages.flatMap((page) => page.items) ?? [];
+
+  if (allItems.length > 0)
     return (
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-        {applicationCardsState.map(
-          (applicationCard: ApplicationResponseDto) => (
+      <>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          {allItems.map((applicationCard: ApplicationResponseDto) => (
             <ApplicationCard
               applicationCard={applicationCard}
               key={applicationCard.id}
             />
-          ),
+          ))}
+        </div>
+        {/* When you call fetchNextPage(), TanStack Query will call your function again with the next pageParam. */}
+        {hasNextPage && (
+          <div className="mt-4 flex justify-center">
+            <Button
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
+            >
+              {isFetchingNextPage ? "Loading more..." : "Load More"}
+            </Button>
+          </div>
         )}
-      </div>
+      </>
     );
 
   return (
