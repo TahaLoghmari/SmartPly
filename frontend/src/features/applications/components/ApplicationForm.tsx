@@ -28,10 +28,16 @@ export function ApplicationForm({
 }: ApplicationFormProps) {
   const setApplicationFormOpen = useDialogStore((s) => s.setOpenDialog);
   const { data: user } = useCurrentUser();
-  const manageApplicationMutation =
+  const createMutation = useCreateApplication();
+  const editMutation = useEditApplication();
+  const isError =
+    mutationType === "create" ? createMutation.isError : editMutation.isError;
+  const isPending =
     mutationType === "create"
-      ? useCreateApplication()
-      : useEditApplication({ id: applicationCard.id });
+      ? createMutation.isPending
+      : editMutation.isPending;
+  const error =
+    mutationType === "create" ? createMutation.error : editMutation.error;
 
   const form = useForm<ApplicationRequestDto>({
     resolver: zodResolver(formSchema),
@@ -59,16 +65,23 @@ export function ApplicationForm({
   });
   const formRef = useRef<HTMLFormElement>(null);
   useEffect(() => {
-    if (manageApplicationMutation.isError && formRef.current) {
+    if (isError && formRef.current) {
       formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  }, [manageApplicationMutation.isError]);
+  }, [isError]);
   async function onSubmit(credentials: ApplicationRequestDto) {
-    manageApplicationMutation.mutate(credentials, {
-      onSuccess: () => {
-        setApplicationFormOpen(false);
-      },
-    });
+    if (mutationType === "create") {
+      createMutation.mutate(credentials, {
+        onSuccess: () => setApplicationFormOpen(false),
+      });
+    } else {
+      editMutation.mutate(
+        { id: applicationCard.id, credentials },
+        {
+          onSuccess: () => setApplicationFormOpen(false),
+        },
+      );
+    }
   }
   return (
     <Form {...form}>
@@ -77,9 +90,9 @@ export function ApplicationForm({
         className="w-full space-y-8"
         ref={formRef}
       >
-        {manageApplicationMutation.isError && (
+        {isError && (
           <div className="bg-destructive/10 border-destructive text-destructive mb-4 rounded-md border p-3 text-sm">
-            {manageApplicationMutation.error.message}
+            {error!.message}
           </div>
         )}
         <CompanyInformation form={form} />
@@ -93,12 +106,8 @@ export function ApplicationForm({
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button
-            type="submit"
-            disabled={manageApplicationMutation.isPending}
-            className="w-34"
-          >
-            {manageApplicationMutation.isPending ? (
+          <Button type="submit" disabled={isPending} className="w-34">
+            {isPending ? (
               <Spinner className="h-8 w-auto invert dark:invert-0" />
             ) : mutationType === "create" ? (
               "Add Application"
