@@ -186,3 +186,32 @@ export interface ApplicationStatCardProps {
 export interface ApplicationPageProps {
   applicationCard: ApplicationResponseDto;
 }
+
+export interface ApplicationStatsDto {
+  totalWishList: number;
+  totalApplied: number;
+  totalInterviewing: number;
+  totalOffers: number;
+  totalRejected: number;
+  totalGhosted: number;
+}
+
+export interface ApplicationQueryParameters {
+  status: ApplicationStatus;
+  type: ApplicationType;
+  level: ApplicationLevel;
+  jobType: ApplicationJobType;
+  search: string;
+  page: number;
+  pageSize: number;
+}
+
+export interface PaginationResult {
+  items: ApplicationResponseDto[];
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+}
