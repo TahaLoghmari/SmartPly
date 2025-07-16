@@ -11,7 +11,8 @@ builder
     .AddErrorHandling()
     .AddServices()
     .AddLogging()
-    .AddSwagger();
+    .AddSwagger()
+    .AddRateLimiting();
 
 var app = builder.Build();
 
@@ -33,5 +34,6 @@ app.UseExceptionHandler();
 app.MapControllers();
 
 app.UseSerilogRequestLogging();
+app.UseRateLimiter();
 
 app.Run();

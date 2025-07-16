@@ -12,11 +12,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace backend.Controllers;
 
 [ApiController]
 [Route("auth")]
+[EnableRateLimiting("fixed")]
 public sealed class AuthController(
     UserManager<User> userManager,
     IOptions<JwtAuthOptions> options,

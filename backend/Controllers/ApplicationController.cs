@@ -9,6 +9,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
@@ -16,6 +17,7 @@ namespace backend.Controllers;
 [ApiController]
 [Authorize]
 [Route("applications")]
+[EnableRateLimiting("fixed")]
 public class ApplicationController(
     ILogger<ApplicationController> logger,
     ApplicationDbContext dbContext ): ControllerBase
@@ -83,7 +85,6 @@ public class ApplicationController(
         logger.LogInformation("Retrieving applications for user with ID {UserId}", userId); 
 
         query.Search = query.Search?.Trim().ToLower();
-        Console.WriteLine(query.Search);
 
         IQueryable<ApplicationResponseDto> applicationQuery = dbContext.Applications
             .Where(a => query.Search == null || a.CompanyName.ToLower().Contains(query.Search) ||
@@ -97,7 +98,7 @@ public class ApplicationController(
             .Select(a => a.ToApplicationResponseDto());
         
         var PaginationResult = await PaginationResult<ApplicationResponseDto>.CreateAsync(
-            applicationQuery, query.Page ?? 1, query.PageSize ?? 10);
+            applicationQuery, query.Page ?? 1, query.PageSize ?? 8);
         return Ok(PaginationResult);
     }
     
