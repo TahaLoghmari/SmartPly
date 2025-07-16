@@ -14,7 +14,7 @@ export function ApplicationStats() {
   const { data: applicationStats, isLoading } = useGetApplicationStats();
 
   return (
-    <div className="grid grid-cols-1 gap-4 transition-all duration-300 md:grid-cols-2 lg:grid-cols-6">
+    <div className="grid grid-cols-1 gap-4 transition-[width,height,margin,padding] duration-300 md:grid-cols-2 lg:grid-cols-6">
       {isLoading
         ? STATUSES.map(({ key }) => (
             <div

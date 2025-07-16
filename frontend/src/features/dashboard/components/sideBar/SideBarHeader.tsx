@@ -7,7 +7,7 @@ export function SideBarHeader() {
   const { data: user } = useCurrentUser();
   return (
     <div
-      className={`flex items-center border-b p-2 py-4 transition-all duration-300 ${!activeState ? "justify-center" : "justify-start gap-3"}`}
+      className={`flex items-center border-b p-2 py-4 transition-[width,height,margin,padding] duration-300 ${!activeState ? "justify-center" : "justify-start gap-3"}`}
     >
       <Avatar className="h-10 w-10">
         <AvatarImage src={user?.imageUrl} />

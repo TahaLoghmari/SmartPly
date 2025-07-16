@@ -46,7 +46,7 @@ export function QuickInfo({ applicationCard }: ApplicationPageProps) {
         <div className="flex items-center justify-between gap-2 text-xs">
           <p>Stats:</p>
           <p
-            className={`inline-flex ${ApplicationStatusToColor[status]} items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-all duration-300`}
+            className={`inline-flex ${ApplicationStatusToColor[status]} items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-[width,height,margin,padding] duration-300`}
           >
             {status}
           </p>

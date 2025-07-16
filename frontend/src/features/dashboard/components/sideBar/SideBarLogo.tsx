@@ -5,7 +5,7 @@ export function SideBarLogo() {
   const { activeState, setActiveState } = useDashboardSideBarStore();
   return (
     <div
-      className={`flex items-center border-b p-2 transition-all duration-300 ${!activeState ? "justify-center" : "justify-between"}`}
+      className={`flex items-center border-b p-2 transition-[width,height,margin,padding] duration-300 ${!activeState ? "justify-center" : "justify-between"}`}
     >
       {activeState && (
         <div className="flex items-center gap-2">
@@ -21,7 +21,7 @@ export function SideBarLogo() {
         </div>
       )}
       <button
-        className="hover:bg-muted flex cursor-pointer items-center justify-center rounded-md p-2 transition-all duration-300"
+        className="hover:bg-muted flex cursor-pointer items-center justify-center rounded-md p-2 transition-[width,height,margin,padding] duration-300"
         onClick={() => setActiveState(!activeState)}
       >
         <div className="relative h-4 w-4">

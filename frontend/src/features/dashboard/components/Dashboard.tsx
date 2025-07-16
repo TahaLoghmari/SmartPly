@@ -32,7 +32,7 @@ export function Dashboard() {
       <DashboardSideBar />
       {/*  */}
       <div
-        className={`flex flex-1 flex-col overflow-hidden transition-all duration-300`}
+        className={`flex flex-1 flex-col overflow-hidden transition-[width,height,margin,padding] duration-300`}
       >
         <DashboardHeader />
         <Outlet />

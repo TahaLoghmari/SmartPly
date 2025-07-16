@@ -20,14 +20,14 @@ export function ApplicationPage() {
   });
   if (isLoading) {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center overflow-auto transition-all duration-300">
+      <div className="flex flex-1 flex-col items-center justify-center overflow-auto transition-[width,height,margin,padding] duration-300">
         <Spinner className="dark:invert" />
       </div>
     );
   }
   if (!applicationCard) {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center overflow-auto transition-all duration-300">
+      <div className="flex flex-1 flex-col items-center justify-center overflow-auto transition-[width,height,margin,padding] duration-300">
         <p>Application not found.</p>
         <Button
           variant="ghost"
@@ -41,7 +41,7 @@ export function ApplicationPage() {
     );
   }
   return (
-    <div className="flex flex-1 flex-col items-center gap-6 overflow-auto transition-all duration-300">
+    <div className="flex flex-1 flex-col items-center gap-6 overflow-auto transition-[width,height,margin,padding] duration-300">
       <div className="w-[70%] p-6">
         <Button
           variant="ghost"

@@ -64,7 +64,7 @@ export function ApplicationPageHeader({
           <MapPin className="h-4 w-4" />
           <span>{applicationCard.location}</span>
         </div>
-        <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-all">
+        <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-[width,height,margin,padding]">
           {type}
         </div>
       </div>
@@ -75,12 +75,12 @@ export function ApplicationPageHeader({
             {applicationCard.startSalary}k-{applicationCard.endSalary}k
           </p>
         </div>
-        <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-all">
+        <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-[width,height,margin,padding]">
           {level}
         </div>
       </div>
 
-      <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-all">
+      <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-[width,height,margin,padding]">
         {jobType}
       </div>
       <div className="flex flex-col gap-2">

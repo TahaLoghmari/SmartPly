@@ -38,7 +38,7 @@ export type ApplicationType = "" | "remote" | "onSite" | "hybrid";
 
 export type ApplicationLevel = "" | "junior" | "mid" | "senior";
 
-export type ApplicationJobType = "fullTime" | "partTime" | "internship" | "";
+export type ApplicationJobType = "" | "fullTime" | "partTime" | "internship";
 
 export const formSchema = z.object({
   resumeId: z.string().min(1, "ResumeId is required."),

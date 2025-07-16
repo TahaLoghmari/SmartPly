@@ -39,7 +39,7 @@ export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
   return (
     <NavLink
       to={`/app/applications/${applicationCard.id}`}
-      className={`bg-card text-card-foreground border-accent flex cursor-pointer flex-col gap-3 rounded-lg border p-6 shadow-xs transition-all duration-300 hover:scale-[1.02] hover:shadow-lg`}
+      className={`bg-card text-card-foreground border-accent flex cursor-pointer flex-col gap-3 rounded-lg border p-6 shadow-xs transition-[width,height,margin,padding] duration-300 hover:scale-[1.02] hover:shadow-lg`}
     >
       <div className="flex justify-between">
         <div className="flex flex-col gap-1">
@@ -56,7 +56,7 @@ export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
         </div>
         <div>
           <p
-            className={`inline-flex ${ApplicationStatusToColor[status]} items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-all duration-300`}
+            className={`inline-flex ${ApplicationStatusToColor[status]} items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-[width,height,margin,padding] duration-300`}
           >
             {status}
           </p>
@@ -67,7 +67,7 @@ export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
           <MapPin className="h-4 w-4" />
           <span>{applicationCard.location}</span>
         </div>
-        <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-all">
+        <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-[width,height,margin,padding]">
           {type}
         </div>
       </div>
@@ -78,12 +78,12 @@ export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
             {applicationCard.startSalary}k-{applicationCard.endSalary}k
           </p>
         </div>
-        <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-all">
+        <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-[width,height,margin,padding]">
           {level}
         </div>
       </div>
 
-      <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-all">
+      <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-[width,height,margin,padding]">
         {jobType}
       </div>
 

@@ -7,7 +7,7 @@ import { Outlet } from "react-router-dom";
 
 export function Applications() {
   return (
-    <div className="flex flex-1 flex-col gap-6 overflow-auto p-6 transition-all duration-300">
+    <div className="flex flex-1 flex-col gap-6 overflow-auto p-6 transition-[width,height,margin,padding] duration-300">
       <ApplicationStats />
       <ApplicationFilters />
       <ApplicationCards />

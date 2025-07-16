@@ -23,7 +23,7 @@ export function SideBarLogoutButton() {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
-          className={`flex h-10 w-full cursor-pointer items-center rounded-md px-3 py-0 text-sm font-medium text-red-600 transition-all duration-200 hover:bg-red-50 ${!activeState || logoutMutation.isPending ? "justify-center" : "justify-start gap-3"}`}
+          className={`flex h-10 w-full cursor-pointer items-center rounded-md px-3 py-0 text-sm font-medium text-red-600 transition-[width,height,margin,padding] duration-200 hover:bg-red-50 ${!activeState || logoutMutation.isPending ? "justify-center" : "justify-start gap-3"}`}
           variant="ghost"
         >
           {logoutMutation.isPending ? (

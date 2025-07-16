@@ -20,7 +20,7 @@ export function ConnectGmailButton() {
           <div></div>
         </div>
         <AlertDialogCancel asChild className="border-0 shadow-none">
-          <div className="text-muted-foreground hover:bg-muted rounded-lg p-2 transition-all duration-200">
+          <div className="text-muted-foreground hover:bg-muted rounded-lg p-2 transition-[width,height,margin,padding] duration-200">
             <X className="h-5 w-5" />
           </div>
         </AlertDialogCancel>

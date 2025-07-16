@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { AddApplicationButton } from "#/dashboard";
 import { Link } from "react-router-dom";
+import { useInView } from "react-intersection-observer";
+import { useEffect } from "react";
 
 export function ApplicationCards() {
   const {
@@ -18,6 +20,14 @@ export function ApplicationCards() {
     hasNextPage,
     isFetchingNextPage,
   } = useGetUserApplications();
+  const { ref, inView } = useInView({ rootMargin: "200px" });
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
   if (isLoading) {
     return (
       <div className="flex w-full flex-1 flex-col items-center justify-center">
@@ -53,16 +63,12 @@ export function ApplicationCards() {
           ))}
         </div>
         {/* When you call fetchNextPage(), TanStack Query will call your function again with the next pageParam. */}
-        {hasNextPage && (
-          <div className="mt-4 flex justify-center">
-            <Button
-              onClick={() => fetchNextPage()}
-              disabled={isFetchingNextPage}
-            >
-              {isFetchingNextPage ? "Loading more..." : "Load More"}
-            </Button>
+        {isFetchingNextPage && (
+          <div className="flex w-full flex-1 flex-col items-center justify-center">
+            <Spinner className="dark:invert" />
           </div>
         )}
+        {hasNextPage && <div ref={ref} style={{ height: 40 }} />}
       </>
     );
 
