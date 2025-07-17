@@ -1,7 +1,6 @@
 import {
   ApplicationClearFiltersButton,
   ApplicationFilterBar,
-  ApplicationSearchBar,
   useApplicationStatusFilterStore,
   useApplicationTypeFilterStore,
   useApplicationLevelFilterStore,
@@ -10,7 +9,9 @@ import {
   applicationsTypeOptionsConstant,
   applicationsLevelOptionsConstant,
   applicationsJobTypeOptionsConstant,
+  useApplicationSearchBarStore,
 } from "#/applications";
+import { SearchBar } from "@/components/SearchBar";
 
 export function ApplicationFilters() {
   const {
@@ -31,9 +32,14 @@ export function ApplicationFilters() {
     selectedFilter: selectedJobTypeFilter,
     setSelectedFilter: setSelectedJobTypeFilter,
   } = useApplicationJobTypeFilterStore();
+  const { search, setSearch } = useApplicationSearchBarStore();
   return (
-    <div className="bg-card text-card-foreground flex flex-wrap items-center gap-4 rounded-lg border p-4 shadow-xs">
-      <ApplicationSearchBar />
+    <div className="text-card-foreground flex flex-wrap items-center gap-4 rounded-lg">
+      <SearchBar
+        value={search}
+        onChange={setSearch}
+        placeholder="Search for roles or companies"
+      />
       <ApplicationFilterBar
         key={"Status"}
         selectedFilter={selectedStatusFilter}
