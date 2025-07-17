@@ -1,4 +1,5 @@
 using System.Threading.RateLimiting;
+using backend.Services.Shared;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
 
@@ -132,6 +133,7 @@ public static class DependencyInjection
         builder.Services.AddScoped<CookieService>();
         builder.Services.AddTransient<EmailSenderService>();
         builder.Services.AddTransient<ApplicationService>();
+        builder.Services.AddTransient<CacheService>();
         builder.Services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>("Database");
         
