@@ -2,7 +2,7 @@ using backend.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace backend.Database.Configuration;
+namespace backend.Database.Configurations;
 
 public sealed class UserConfiguration : IEntityTypeConfiguration<User>
 {

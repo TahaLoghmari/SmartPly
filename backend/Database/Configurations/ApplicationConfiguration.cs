@@ -5,13 +5,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace backend.Database.Configuration;
+namespace backend.Database.Configurations;
 
 public class ApplicationConfiguration : IEntityTypeConfiguration<Application>
 {
     public void Configure(EntityTypeBuilder<Application> builder)
     {
         builder.HasKey(a => a.Id);
+        
+        builder.HasIndex(a => a.UserId);
 
         builder.Property(a => a.UserId)
             .HasMaxLength(50)
