@@ -182,7 +182,7 @@ public sealed class AuthController(
                 title: "Unauthorized",
                 detail: "Refresh token not found or expired."
             );
-            return Problem(problem.Detail, statusCode: problem.Status, title: problem.Title);
+            return Unauthorized(problem);
         }
         
         cookieService.AddCookies(Response, tokens, _jwtAuthOptions);
