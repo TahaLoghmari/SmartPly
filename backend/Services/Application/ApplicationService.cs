@@ -5,6 +5,7 @@ using backend.DTOs.Shared;
 using backend.Entities;
 using backend.Enums;
 using backend.Mappings;
+using backend.Services.Shared;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -16,8 +17,8 @@ namespace backend.Services;
 public class ApplicationService( 
     ILogger<ApplicationService> logger,
     ApplicationDbContext dbContext,
-    ProblemDetailsFactory problemDetailsFactory,
-    IMemoryCache cache)
+    IMemoryCache cache,
+    CacheService cacheService)
 {
     public async Task<ApplicationResponseDto> CreateApplicationAsync(
         ApplicationRequestDto applicationRequestDto)
@@ -39,15 +40,7 @@ public class ApplicationService(
         
         await dbContext.SaveChangesAsync();
         
-        string userKeySet = $"UserCacheKeys_{application.UserId}";
-        if (cache.TryGetValue(userKeySet, out ConcurrentDictionary<string, byte>? userKeys))
-        {
-            foreach (var key in userKeys.Keys)
-            {
-                cache.Remove(key);
-            }
-            cache.Remove(userKeySet); 
-        }
+        cacheService.InvalidateUserApplicationCache(application.UserId);
         
         logger.LogInformation("Application created with ID {ApplicationId}", application.Id);
 
@@ -68,14 +61,18 @@ public class ApplicationService(
 
         query.Search = query.Search?.Trim().ToLower();
 
-        string cacheKey = $"UserApplications_{userId}_{query.Search}_{query.Status}_{query.Level}_{query.Type}_{query.JobType}_{query.Page}_{query.PageSize}";
-
+        string cacheKey = cacheService.GenerateApplicationsCacheKey(userId, query);
+        
         if (cache.TryGetValue(cacheKey, out PaginationResult<ApplicationResponseDto>? cachedResult))
         {
+            logger.LogDebug("Cache hit for applications query: {CacheKey}", cacheKey);
             return cachedResult;
         }
+        
+        logger.LogDebug("Cache miss for applications query: {CacheKey}", cacheKey);
 
         IQueryable<ApplicationResponseDto> applicationQuery = dbContext.Applications
+            .AsNoTracking()
             .Where(a => query.Search == null || a.CompanyName.ToLower().Contains(query.Search) ||
                         a.Position.ToLower().Contains(query.Search) ||
                         a.JobDescription != null && a.JobDescription.ToLower().Contains(query.Search) == true)
@@ -89,16 +86,7 @@ public class ApplicationService(
         var paginationResult = await PaginationResult<ApplicationResponseDto>.CreateAsync(
             applicationQuery, query.Page ?? 1, query.PageSize ?? 8);
         
-        var cacheOptions = new MemoryCacheEntryOptions()
-            .SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
-            .SetSlidingExpiration(TimeSpan.FromMinutes(5))
-            .SetPriority(CacheItemPriority.Normal);
-        
-        string userKeySet = $"UserCacheKeys_{userId}";
-        var keys = cache.GetOrCreate<ConcurrentDictionary<string, byte>>(userKeySet, entry => new ConcurrentDictionary<string, byte>());
-        keys.TryAdd(cacheKey, 0);
-        cache.Set(userKeySet, keys);
-        cache.Set(cacheKey, paginationResult, cacheOptions);
+        cacheService.CacheApplicationsResult(cacheKey, paginationResult, userId);
         
         return paginationResult;
     }
@@ -120,6 +108,7 @@ public class ApplicationService(
         }
         
         Application? application = await dbContext.Applications
+            .AsNoTracking()
             .FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
 
         if (application is null)
@@ -189,15 +178,7 @@ public class ApplicationService(
         
         await dbContext.SaveChangesAsync();
         
-        string userKeySet = $"UserCacheKeys_{userId}";
-        if (cache.TryGetValue(userKeySet, out ConcurrentDictionary<string, byte>? userKeys))
-        {
-            foreach (var key in userKeys.Keys)
-            {
-                cache.Remove(key);
-            }
-            cache.Remove(userKeySet); 
-        }
+        cacheService.InvalidateUserApplicationCache(userId);
 
         logger.LogInformation("Application edited with ID {ApplicationId}", application.Id);
     }
@@ -244,15 +225,7 @@ public class ApplicationService(
         dbContext.Applications.Remove(application);
         await dbContext.SaveChangesAsync();
         
-        string userKeySet = $"UserCacheKeys_{userId}";
-        if (cache.TryGetValue(userKeySet, out ConcurrentDictionary<string, byte>? userKeys))
-        {
-            foreach (var key in userKeys.Keys)
-            {
-                cache.Remove(key);
-            }
-            cache.Remove(userKeySet); 
-        }
+        cacheService.InvalidateUserApplicationCache(userId);
         
         logger.LogInformation("Application deleted with ID {ApplicationId}", application.Id);
     }
@@ -267,6 +240,7 @@ public class ApplicationService(
         }
 
         var stats = await dbContext.Applications
+            .AsNoTracking()
             .Where(a => a.UserId == userId)
             .GroupBy(a => a.Status)
             .Select(g => new { Status = g.Key, Count = g.Count() })
