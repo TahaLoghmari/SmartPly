@@ -12,7 +12,8 @@ builder
     .AddServices()
     .AddLogging()
     .AddSwagger()
-    .AddRateLimiting();
+    .AddRateLimiting()
+    .AddCaching();
 
 var app = builder.Build();
 
