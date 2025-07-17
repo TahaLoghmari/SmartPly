@@ -65,8 +65,8 @@ public static class DependencyInjection
                 context.ProblemDetails.Extensions.TryAdd("requestId", context.HttpContext.TraceIdentifier);
             };
         });
-
-        builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
+        
+        builder.Services.AddExceptionHandler<CustomExceptionHandler>();
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
         return builder;
@@ -131,6 +131,7 @@ public static class DependencyInjection
         builder.Services.AddTransient<TokenManagementService>();
         builder.Services.AddScoped<CookieService>();
         builder.Services.AddTransient<EmailSenderService>();
+        builder.Services.AddTransient<ApplicationService>();
         builder.Services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>("Database");
         
@@ -155,6 +156,13 @@ public static class DependencyInjection
                 options.QueueLimit = 5;
             });
         });
+
+        return builder;
+    }
+
+    public static WebApplicationBuilder AddCaching(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddMemoryCache();
 
         return builder;
     }
