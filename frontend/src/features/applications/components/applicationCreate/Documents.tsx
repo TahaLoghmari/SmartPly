@@ -1,6 +1,6 @@
 import { type ApplicationRequestDto } from "#/applications";
 import type { UseFormReturn } from "react-hook-form";
-import { useResumeStore, useCoverLetterStore } from "#/documents";
+import { useCoverLetterStore, useGetUserResumes } from "#/documents";
 import {
   FormControl,
   FormField,
@@ -31,8 +31,9 @@ export function Documents({
 }: {
   form: UseFormReturn<ApplicationRequestDto>;
 }) {
-  const { resumesState } = useResumeStore();
+  const { data: resumes } = useGetUserResumes();
   const { coverLettersState } = useCoverLetterStore();
+  const resumesState = resumes ?? [];
   return (
     <div className="space-y-4">
       <p className="text-foreground border-b pb-2 text-lg font-medium">

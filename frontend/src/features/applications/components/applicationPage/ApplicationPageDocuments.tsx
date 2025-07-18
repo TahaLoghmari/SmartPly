@@ -2,10 +2,14 @@ import { ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 // Update this later
-import { resumesConstant, coverLettersConstant } from "#/documents";
+import { useGetUserResumes, coverLettersConstant } from "#/documents";
 import { type ApplicationPageProps } from "#/applications";
 
-export function ApplicationPageDocuments({applicationCard}: ApplicationPageProps) {
+export function ApplicationPageDocuments({
+  applicationCard,
+}: ApplicationPageProps) {
+  const { data: resumes } = useGetUserResumes();
+  const resumesConstant = resumes ?? [];
   const resumeUsed = resumesConstant.find(
     (r) => r.id == applicationCard.resumeId,
   );

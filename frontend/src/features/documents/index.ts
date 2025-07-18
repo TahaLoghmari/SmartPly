@@ -1,3 +1,5 @@
+export * from "./api";
+
 // components
 export { Documents } from "./components/Documents";
 
@@ -5,10 +7,11 @@ export { Documents } from "./components/Documents";
 export * from "./types";
 
 // constants
-export * from "./constants/resumesConstant";
-export * from "./constants/coverLettersConstant";
+export * from "./constants";
 
 // stores
-export * from "./stores/useResumeStore";
 export * from "./stores/useCoverLetterStore";
 export * from "./stores/useDocumentSearchBarStore";
+
+// hooks
+export * from "./hooks/useGetUserResumes";

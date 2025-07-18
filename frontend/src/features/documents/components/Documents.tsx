@@ -7,11 +7,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SearchBar } from "@/components/SearchBar";
-import { useDocumentSearchBarStore } from "#/documents";
-import { FileText } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
+import {
+  useDocumentSearchBarStore,
+  columns,
+  useGetUserResumes,
+} from "#/documents";
+import { DataTable } from "@/components/DataTable";
 
 export function Documents() {
+  const { data: resumes } = useGetUserResumes();
   const { search, setSearch } = useDocumentSearchBarStore();
   return (
     <div className="flex flex-1 flex-col gap-6 overflow-auto p-6 transition-[width,height,margin,padding] duration-300">
@@ -40,7 +44,7 @@ export function Documents() {
           </div>
         </div>
         <TabsContent value="resume" className="flex flex-col overflow-x-auto">
-          
+          <DataTable columns={columns} data={resumes ?? []} />
         </TabsContent>
       </Tabs>
     </div>
