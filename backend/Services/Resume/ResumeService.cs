@@ -49,6 +49,7 @@ public class ResumeService(
 
         query.Search = query.Search?.Trim().ToLower();
         string cacheKey = cacheService.GenerateResumesCacheKey(userId, query);
+        logger.LogInformation("Fetching resumes with name containing '{Search}' ", query.Search);
 
         if (cache.TryGetValue(cacheKey, out ICollection<ResumeResponseDto>? cachedResult))
         {
@@ -57,7 +58,7 @@ public class ResumeService(
         }
 
         logger.LogDebug("Cache miss for resumes query: {CacheKey}", cacheKey);
-
+        
         ICollection<ResumeResponseDto> result = await dbContext.Resumes
             .AsNoTracking()
             .Where(r => r.UserId == userId)

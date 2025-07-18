@@ -3,7 +3,7 @@ export interface ResumeCreateResponseDto {
   userId: string;
   name: string;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt: Date | null;
   resumeUrl: string;
 }
 
