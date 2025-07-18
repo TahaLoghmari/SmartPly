@@ -9,10 +9,6 @@ public class ApplicationCreateRequestDtoValidator : AbstractValidator<Applicatio
         RuleFor(x => x.ResumeId)
             .NotEmpty().WithMessage("ResumeId is required.");
 
-        RuleFor(x => x.UserId)
-            .NotEmpty().WithMessage("UserId is required.")
-            .MaximumLength(100).WithMessage("UserId must be at most 50 characters.");
-
         RuleFor(x => x.CompanyName)
             .NotEmpty().WithMessage("CompanyName is required.")
             .MaximumLength(100).WithMessage("CompanyName must be at most 100 characters.");
@@ -56,8 +52,8 @@ public class ApplicationCreateRequestDtoValidator : AbstractValidator<Applicatio
             .Must(list => list == null || list.All(t => !string.IsNullOrWhiteSpace(t)))
             .WithMessage("TechnologiesUsed cannot contain empty values.");
 
-        // RuleFor(x => x.Deadline)
-        //     .GreaterThanOrEqualTo(DateTime.UtcNow).When(x => x.Deadline.HasValue)
-        //     .WithMessage("Deadline must be in the future.");
+        RuleFor(x => x.Deadline)
+            .GreaterThanOrEqualTo(DateTime.UtcNow).When(x => x.Deadline.HasValue)
+            .WithMessage("Deadline must be in the future.");
     }
 }

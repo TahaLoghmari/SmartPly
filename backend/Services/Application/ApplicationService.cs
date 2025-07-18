@@ -21,22 +21,17 @@ public class ApplicationService(
     CacheService cacheService)
 {
     public async Task<ApplicationResponseDto> CreateApplicationAsync(
-        ApplicationRequestDto applicationRequestDto)
+        ApplicationRequestDto applicationRequestDto, string userId)
     {
-        Application application = applicationRequestDto.ToApplication();
+        if (userId is null)
+        {
+            logger.LogWarning("Get current user failed - user ID claim missing");
+            throw new UnauthorizedException("User ID claim is missing.");
+        }
+        
+        Application application = applicationRequestDto.ToApplication(userId);
         
         dbContext.Applications.Add(application);
-        
-        Resume? resume = await dbContext.Resumes
-            .FirstOrDefaultAsync(r => r.Id == applicationRequestDto.ResumeId && r.UserId == applicationRequestDto.UserId);
-        
-        if (resume is null)
-        {
-            logger.LogWarning("Create application failed - resume not found for Id: {ResumeId}", applicationRequestDto.ResumeId);
-            throw new NotFoundException($"No Resume found with ID '{applicationRequestDto.ResumeId}'.");
-        }
-
-        resume.ApplicationsCount++;
         
         await dbContext.SaveChangesAsync();
         
@@ -133,13 +128,13 @@ public class ApplicationService(
             throw new BadRequestException("The provided application ID is invalid.");
         }
         
-        logger.LogInformation("Starting application editing for user {UserId}", applicationEditRequestDto.UserId);
-
         if (userId is null)
         {
             logger.LogWarning("Get current user failed - user ID claim missing");
             throw new UnauthorizedException("User ID claim is missing.");
         }
+        
+        logger.LogInformation("Starting application editing for user {UserId}", userId);
         
         Application? application = await dbContext.Applications.FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
 
@@ -148,30 +143,6 @@ public class ApplicationService(
             logger.LogWarning("Get current application failed - application not found for Id: {applicationId}", id);
             throw new NotFoundException($"No Application found with ID '{id}'.");
         }
-        
-        Resume? oldResume = await dbContext.Resumes
-            .FirstOrDefaultAsync(r => r.Id == application.ResumeId && r.UserId == application.UserId);
-        
-        if (oldResume is null)
-        {
-            logger.LogWarning("Editing application failed - resume not found for Id: {ResumeId}", application.ResumeId);
-            throw new NotFoundException($"No Resume found with ID '{application.ResumeId}'.");
-        }
-
-        oldResume.ApplicationsCount--;
-        logger.LogInformation("Decremented ApplicationsCount for old ResumeId: {OldResumeId}, NewCount: {ApplicationsCount}", oldResume.Id, oldResume.ApplicationsCount);
-        
-        Resume? newResume = await dbContext.Resumes
-            .FirstOrDefaultAsync(r => r.Id == applicationEditRequestDto.ResumeId && r.UserId == applicationEditRequestDto.UserId);
-        
-        if (newResume is null)
-        {
-            logger.LogWarning("Editing application failed - resume not found for Id: {ResumeId}", applicationEditRequestDto.ResumeId);
-            throw new NotFoundException($"No Resume found with ID '{applicationEditRequestDto.ResumeId}'.");
-        }
-        
-        newResume.ApplicationsCount++;
-        logger.LogInformation("Incremented ApplicationsCount for new ResumeId: {NewResumeId}, NewCount: {ApplicationsCount}", newResume.Id, newResume.ApplicationsCount);
         
         application.UpdateFromDto(applicationEditRequestDto);
         logger.LogInformation("Updated application entity from DTO. ApplicationId: {ApplicationId}", application.Id);
@@ -209,18 +180,6 @@ public class ApplicationService(
             logger.LogWarning("Get current application failed - application not found for Id: {applicationId}", id);
             throw new NotFoundException($"No Application found with ID '{id}'.");
         }
-        
-        Resume? resume = await dbContext.Resumes
-            .FirstOrDefaultAsync(r => r.Id == application.ResumeId && r.UserId == application.UserId);
-        
-        if (resume is null)
-        {
-            logger.LogWarning("Create application failed - resume not found for Id: {ResumeId}", application.ResumeId);
-            throw new NotFoundException($"No Resume found with ID '{application.ResumeId}'.");
-        }
-
-        resume.ApplicationsCount--;
-        logger.LogInformation("Decremented ApplicationsCount for ResumeId: {ResumeId}, NewCount: {ApplicationsCount}", resume.Id, resume.ApplicationsCount);
         
         dbContext.Applications.Remove(application);
         await dbContext.SaveChangesAsync();

@@ -8,13 +8,13 @@ public class ResumeConfiguration : IEntityTypeConfiguration<Resume>
 {
     public void Configure(EntityTypeBuilder<Resume> builder)
     {
+        builder.HasIndex(r => r.UserId);
+        
         builder.HasKey(r => r.Id);
         
-        builder.Property(r => r.ApplicationsCount)
-            .IsRequired();
-
-        builder.Property(r => r.InterviewsCount)
-            .IsRequired();
+        builder.Property(r => r.resumeUrl)
+            .IsRequired()
+            .HasMaxLength(512);
         
         builder.HasMany(r => r.Applications)
             .WithOne(a => a.ResumeUsed)

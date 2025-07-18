@@ -1,5 +1,6 @@
 using backend;
 using backend.Extensions;
+using backend.Services.Shared;
 using Serilog;
 
 
@@ -13,7 +14,8 @@ builder
     .AddLogging()
     .AddSwagger()
     .AddRateLimiting()
-    .AddCaching();
+    .AddCaching()
+    .AddSupabase();
 
 var app = builder.Build();
 
@@ -36,5 +38,7 @@ app.MapControllers();
 
 app.UseSerilogRequestLogging();
 app.UseRateLimiter();
+var supabaseService = app.Services.GetRequiredService<SupabaseService>();
+await supabaseService.InitializeAsync();
 
 app.Run();

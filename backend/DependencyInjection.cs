@@ -73,6 +73,12 @@ public static class DependencyInjection
         return builder;
     }
 
+    public static WebApplicationBuilder AddSupabase(this WebApplicationBuilder builder)
+    {
+        builder.Services.Configure<SupabaseSettings>(builder.Configuration.GetSection("Supabase"));
+        builder.Services.AddSingleton<SupabaseService>();
+        return builder;
+    }
     public static WebApplicationBuilder AddAuthentication(this WebApplicationBuilder builder)
     {
         builder.Services.AddIdentity<User, IdentityRole>()
@@ -134,6 +140,7 @@ public static class DependencyInjection
         builder.Services.AddTransient<EmailSenderService>();
         builder.Services.AddTransient<ApplicationService>();
         builder.Services.AddTransient<CacheService>();
+        builder.Services.AddScoped<ResumeService>();
         builder.Services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>("Database");
         

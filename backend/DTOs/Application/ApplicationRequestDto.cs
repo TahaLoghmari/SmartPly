@@ -5,7 +5,6 @@ public sealed record ApplicationRequestDto
 {
     public Guid ResumeId { get; set; }
     public Guid? CoverLetterId { get; set; }
-    public string UserId { get; init; }
     
     public string CompanyName { get; set; }
     public string? CompanyEmail { get; set; }

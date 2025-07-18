@@ -7,13 +7,13 @@ namespace backend.Mappings;
 internal static class ApplicationMappings
 {
     public static Application ToApplication(
-        this ApplicationRequestDto applicationRequestDto)
+        this ApplicationRequestDto applicationRequestDto, string userId)
     {
         return new Application
         {
             ResumeId = applicationRequestDto.ResumeId,
             CoverLetterId = applicationRequestDto.CoverLetterId,
-            UserId = applicationRequestDto.UserId,
+            UserId = userId,
             CompanyName = applicationRequestDto.CompanyName,
             CompanyEmail = applicationRequestDto.CompanyEmail,
             Position = applicationRequestDto.Position,

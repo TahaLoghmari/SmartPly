@@ -29,11 +29,13 @@ public class ApplicationController(
         [FromBody] ApplicationRequestDto applicationRequestDto,
         [FromServices] IValidator<ApplicationRequestDto> validator)
     {
-        logger.LogInformation("Starting application creation for user {UserId}", applicationRequestDto.UserId);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        
+        logger.LogInformation("Starting application creation for user {UserId}", userId);
         
         await validator.ValidateAndThrowAsync(applicationRequestDto);
 
-        ApplicationResponseDto application = await applicationService.CreateApplicationAsync(applicationRequestDto);
+        ApplicationResponseDto application = await applicationService.CreateApplicationAsync(applicationRequestDto,userId);
         
         return CreatedAtAction(nameof(GetUserApplication), new { id = application.Id }, application);
     }
