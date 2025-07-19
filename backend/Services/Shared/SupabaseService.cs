@@ -7,8 +7,8 @@ namespace backend.Services.Shared;
 
 public class SupabaseService
 {
-    private readonly Supabase.Client _client;
-    private readonly string _supabaseUrl;
+    public readonly Supabase.Client _client;
+    public readonly string _supabaseUrl;
 
     public SupabaseService(IOptions<SupabaseSettings> options)
     {
@@ -52,5 +52,11 @@ public class SupabaseService
                 ContentType  = file.ContentType
             });
         return $"{_supabaseUrl}/storage/v1/object/public/resumes/{objectPath}";
+    }
+
+    public async Task<byte[]> DownloadFileAsync(string resumeUrl)
+    {
+        var objectPath = resumeUrl.Replace($"{_supabaseUrl}/storage/v1/object/public/resumes/", "");
+        return await _client.Storage.From("resumes").Download(objectPath, (TransformOptions?)null, (EventHandler<float>?)null);
     }
 }

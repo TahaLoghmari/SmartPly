@@ -1,9 +1,7 @@
 ﻿using System.Security.Claims;
-using backend.DTOs;
 using backend.DTOs.Resume;
-using backend.DTOs.Shared;
-using backend.Entities;
 using backend.Services;
+using backend.Services.Shared;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +15,8 @@ namespace backend.Controllers;
 [EnableRateLimiting("fixed")]
 public class ResumeController(
     ILogger<ResumeController> logger,
-    ResumeService resumeService) : ControllerBase
+    ResumeService resumeService,
+    SupabaseService supabaseService) : ControllerBase
 {
     [HttpPost]
     [Consumes("multipart/form-data")]
@@ -82,5 +81,15 @@ public class ResumeController(
         await resumeService.DeleteResume(id, userId);
 
         return NoContent();
+    }
+    [HttpGet("{id}/download")]
+    public async Task<IActionResult> DownloadResume(Guid id)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var resume = await resumeService.GetUserResume(id, userId);
+
+        var bytes = await supabaseService.DownloadFileAsync(resume.ResumeUrl);
+        
+        return File(bytes, "application/pdf", $"{resume.Name}.pdf"); 
     }
 }
