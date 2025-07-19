@@ -15,6 +15,7 @@ export const getUserResumes = (search?: string) => {
       ...resume,
       createdAt: new Date(resume.createdAt),
       updatedAt: resume.updatedAt ? new Date(resume.updatedAt) : null,
+      size: +(resume.size / (1024 * 1024)).toFixed(2),
     })),
   );
 };

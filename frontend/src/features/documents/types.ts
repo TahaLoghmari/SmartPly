@@ -5,6 +5,7 @@ export interface ResumeCreateResponseDto {
   createdAt: Date;
   updatedAt: Date | null;
   resumeUrl: string;
+  size: number;
 }
 
 export interface CoverLetterCreateResponseDto {

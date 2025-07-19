@@ -2,6 +2,7 @@ export * from "./api";
 
 // components
 export { Documents } from "./components/Documents";
+export * from "./components/Actions";
 
 // types
 export * from "./types";
