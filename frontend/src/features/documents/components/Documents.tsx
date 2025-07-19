@@ -1,11 +1,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
 import { SearchBar } from "@/components/SearchBar";
 import {
   useDocumentSearchBarStore,
@@ -26,7 +26,7 @@ export function Documents() {
             <TabsTrigger value="coverLetter">Cover Letters</TabsTrigger>
           </TabsList>
           <div className="my-4 flex flex-col-reverse items-center gap-4 sm:max-w-2xl sm:flex-row">
-            <Select>
+            {/* <Select>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="All" />
               </SelectTrigger>
@@ -35,7 +35,7 @@ export function Documents() {
                 <SelectItem value="generated">Generated</SelectItem>
                 <SelectItem value="uploaded">Uploaded</SelectItem>
               </SelectContent>
-            </Select>
+            </Select> */}
             <SearchBar
               value={search}
               onChange={setSearch}
