@@ -12,9 +12,13 @@ public class ResumeConfiguration : IEntityTypeConfiguration<Resume>
         
         builder.HasKey(r => r.Id);
         
-        builder.Property(r => r.resumeUrl)
+        builder.Property(r => r.ResumeUrl)
             .IsRequired()
             .HasMaxLength(512);
+        
+        builder.Property(r => r.Size)
+            .IsRequired()
+            .HasMaxLength(32);
         
         builder.HasMany(r => r.Applications)
             .WithOne(a => a.ResumeUsed)
