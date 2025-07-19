@@ -19,3 +19,9 @@ export const getUserResumes = (search?: string) => {
     })),
   );
 };
+
+export const deleteResume = (id: string) => {
+  return request<void>(`/resumes/${id}`, {
+    method: "DELETE",
+  });
+};

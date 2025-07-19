@@ -16,3 +16,4 @@ export * from "./stores/useDocumentSearchBarStore";
 
 // hooks
 export * from "./hooks/useGetUserResumes";
+export * from "./hooks/useDeleteResume";
