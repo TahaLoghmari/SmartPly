@@ -20,7 +20,7 @@ public class ResumeController(
 {
     [HttpPost]
     [Consumes("multipart/form-data")]
-    public async Task<ActionResult<ResumeResponseDto>> CreateResume(
+    public async Task<ActionResult<ResumeResponseDto>> UploadResume(
         [FromForm] ResumeRequestDto resumeRequestDto,
         [FromServices] IValidator<ResumeRequestDto> validator)
     {
