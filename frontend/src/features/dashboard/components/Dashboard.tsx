@@ -1,7 +1,6 @@
 import {
   DashboardSideBar,
   DashboardHeader,
-  useSyncDashboardTitle,
 } from "#/dashboard";
 import { useSearchParams, Outlet } from "react-router-dom";
 import { toast } from "sonner";
@@ -10,7 +9,6 @@ import { Spinner } from "@/components/ui/spinner";
 import { useCurrentUser } from "#/auth";
 
 export function Dashboard() {
-  useSyncDashboardTitle();
   const { isLoading } = useCurrentUser();
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {

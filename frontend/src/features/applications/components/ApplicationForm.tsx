@@ -18,7 +18,7 @@ import {
   formSchema,
 } from "#/applications";
 import { useCurrentUser } from "#/auth";
-import { useDialogStore } from "#/dashboard";
+import { useDialogStore } from "@/index";
 import { useRef, useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 

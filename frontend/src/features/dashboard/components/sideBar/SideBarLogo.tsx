@@ -5,7 +5,7 @@ export function SideBarLogo() {
   const { activeState, setActiveState } = useDashboardSideBarStore();
   return (
     <div
-      className={`flex items-center border-b p-2 transition-[width,height,margin,padding] duration-300 ${!activeState ? "justify-center" : "justify-between"}`}
+      className={`flex items-center p-2.5 transition-[width,height,margin,padding] duration-300 ${!activeState ? "justify-center" : "justify-between"}`}
     >
       {activeState && (
         <div className="flex items-center gap-2">

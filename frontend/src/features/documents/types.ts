@@ -1,4 +1,4 @@
-export interface ResumeCreateResponseDto {
+export interface ResumeResponseDto {
   id: string;
   userId: string;
   name: string;
@@ -6,6 +6,11 @@ export interface ResumeCreateResponseDto {
   updatedAt: Date | null;
   resumeUrl: string;
   size: number;
+}
+
+export interface ResumeRequestDto {
+  name: string;
+  file: File;
 }
 
 export interface CoverLetterCreateResponseDto {

@@ -1,5 +1,5 @@
 import { request } from "@/api/client";
-import type { ResumeCreateResponseDto } from "#/documents";
+import type { ResumeResponseDto, ResumeRequestDto } from "#/documents";
 
 export const getUserResumes = (search?: string) => {
   const params = new URLSearchParams();
@@ -8,7 +8,7 @@ export const getUserResumes = (search?: string) => {
   const query = params.toString();
   const url = query ? `/resumes?${query}` : "/resumes";
 
-  return request<ResumeCreateResponseDto[]>(url, {
+  return request<ResumeResponseDto[]>(url, {
     method: "GET",
   }).then((resumes) =>
     resumes.map((resume) => ({
@@ -18,6 +18,16 @@ export const getUserResumes = (search?: string) => {
       size: +(resume.size / (1024 * 1024)).toFixed(2),
     })),
   );
+};
+
+export const uploadResume = (credentials: ResumeRequestDto) => {
+  const formData = new FormData();
+  formData.append("name", credentials.name);
+  formData.append("file", credentials.file);
+  return request<ResumeResponseDto>("/resumes", {
+    method: "POST",
+    body: formData,
+  });
 };
 
 export const deleteResume = (id: string) => {

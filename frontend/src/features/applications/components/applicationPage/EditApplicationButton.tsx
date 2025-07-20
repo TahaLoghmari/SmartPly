@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { SquarePen } from "lucide-react";
 import { ApplicationForm, type ApplicationPageProps } from "#/applications";
-import { useDialogStore } from "#/dashboard";
+import { useDialogStore } from "@/index";
 import { Button } from "@/components/ui/button";
 
 export function EditApplicationButton({

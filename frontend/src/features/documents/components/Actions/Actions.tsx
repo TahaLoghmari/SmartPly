@@ -2,10 +2,10 @@ import {
   ViewAction,
   DeleteAction,
   DownloadAction,
-  type ResumeCreateResponseDto,
+  type ResumeResponseDto,
 } from "#/documents";
 
-export function Actions(data: ResumeCreateResponseDto) {
+export function Actions(data: ResumeResponseDto) {
   return (
     <div className="flex items-center justify-start gap-2">
       <ViewAction url={data.resumeUrl} />

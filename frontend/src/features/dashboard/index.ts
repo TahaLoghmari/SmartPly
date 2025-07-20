@@ -1,11 +1,10 @@
 // Main Components
 export * from "./components/Dashboard";
 // Header Components
-export * from "./components/header/AddApplicationButton";
+export * from "../applications/components/applicationCreate/AddApplicationButton";
 export * from "./components/header/GmailConnectionStatus";
 export * from "./components/header/DashboardHeader";
 export * from "./components/header/NotificationBell";
-export * from "./components/header/HeaderTitle";
 export * from "./components/header/ConnectGmailButton";
 
 // SideBar Components
@@ -20,15 +19,10 @@ export * from "./components/sideBar/SideBarNavigation";
 // Constants
 export * from "./constants";
 
-// Hooks
-export * from "./hooks/useSyncDashboardTitle";
-
 // Stores
 export * from "./stores/useDashboardNotificationsCount";
-export * from "./stores/useDialogStore";
 export * from "./stores/useDashboardActiveNavItemStore";
 export * from "./stores/useDashboardSideBarStore";
-export * from "./stores/useDashboardTitleStore";
 
 // Types
 export * from "./types";

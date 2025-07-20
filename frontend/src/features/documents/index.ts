@@ -1,8 +1,9 @@
 export * from "./api";
 
 // components
-export { Documents } from "./components/Documents";
+export * from "./components/Documents";
 export * from "./components/Actions";
+export * from "./components/UploadResumeButton";
 
 // types
 export * from "./types";
@@ -17,3 +18,4 @@ export * from "./stores/useDocumentSearchBarStore";
 // hooks
 export * from "./hooks/useGetUserResumes";
 export * from "./hooks/useDeleteResume";
+export * from "./hooks/useUploadResume";

@@ -1,6 +1,6 @@
 import type {
   CoverLetterCreateResponseDto,
-  ResumeCreateResponseDto,
+  ResumeResponseDto,
 } from "#/documents";
 import { Checkbox } from "@/components/ui/checkbox";
 import { type ColumnDef } from "@tanstack/react-table";
@@ -16,7 +16,7 @@ export const coverLettersConstant: CoverLetterCreateResponseDto[] = [
   },
 ];
 
-export const columns: ColumnDef<ResumeCreateResponseDto>[] = [
+export const columns: ColumnDef<ResumeResponseDto>[] = [
   {
     id: "select",
     header: "",

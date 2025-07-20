@@ -1,52 +1,54 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
 import { SearchBar } from "@/components/SearchBar";
 import {
   useDocumentSearchBarStore,
   columns,
   useGetUserResumes,
+  UploadResumeButton,
 } from "#/documents";
 import { DataTable } from "@/components/DataTable";
+import { useState } from "react";
 
 export function Documents() {
   const { data: resumes } = useGetUserResumes();
+  const [tab, setTab] = useState("resume");
   const { search, setSearch } = useDocumentSearchBarStore();
   return (
-    <div className="flex flex-1 flex-col gap-6 overflow-auto p-6 transition-[width,height,margin,padding] duration-300">
-      <Tabs defaultValue="resume" className="flex-1 rounded-md">
-        <div className="flex flex-col items-start justify-between gap-x-4 sm:flex-row sm:items-center">
-          <TabsList className="flex gap-x-2">
-            <TabsTrigger value="resume">Resumes</TabsTrigger>
-            <TabsTrigger value="coverLetter">Cover Letters</TabsTrigger>
-          </TabsList>
-          <div className="my-4 flex flex-col-reverse items-center gap-4 sm:max-w-2xl sm:flex-row">
-            {/* <Select>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="All" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="generated">Generated</SelectItem>
-                <SelectItem value="uploaded">Uploaded</SelectItem>
-              </SelectContent>
-            </Select> */}
-            <SearchBar
-              value={search}
-              onChange={setSearch}
-              placeholder="Search by name"
-            />
+    <div className="flex-1 overflow-auto transition-[width,height,margin,padding] duration-300">
+      <div className="flex w-full flex-col gap-6 p-6 px-20">
+        <div className="flex items-center justify-between">
+          <div className="mb-5 flex flex-col">
+            <p className="text-3xl font-bold tracking-tight">My Documents</p>
+            <p className="text-muted-foreground mt-1">
+              Manage and tailor all of your job search documents here!
+            </p>
           </div>
+          {tab === "resume" && <UploadResumeButton />}
         </div>
-        <TabsContent value="resume" className="flex flex-col overflow-x-auto">
-          <DataTable columns={columns} data={resumes ?? []} />
-        </TabsContent>
-      </Tabs>
+        <Tabs
+          defaultValue="resume"
+          className="flex-1 rounded-md"
+          value={tab}
+          onValueChange={setTab}
+        >
+          <div className="flex flex-col items-start justify-between gap-x-4 sm:flex-row sm:items-center">
+            <TabsList className="flex gap-x-2">
+              <TabsTrigger value="resume">Resumes</TabsTrigger>
+              <TabsTrigger value="coverLetter">Cover Letters</TabsTrigger>
+            </TabsList>
+            <div className="my-4 flex flex-col-reverse items-center gap-4 sm:max-w-2xl sm:flex-row">
+              <SearchBar
+                value={search}
+                onChange={setSearch}
+                placeholder="Search by name"
+              />
+            </div>
+          </div>
+          <TabsContent value="resume" className="flex flex-col overflow-x-auto">
+            <DataTable columns={columns} data={resumes ?? []} />
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 }

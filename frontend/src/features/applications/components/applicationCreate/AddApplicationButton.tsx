@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogContent,
 } from "@/components/ui/dialog";
-import { useDialogStore } from "#/dashboard";
+import { useDialogStore } from "@/index";
 import { ApplicationForm } from "#/applications";
 
 export function AddApplicationButton() {

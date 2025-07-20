@@ -7,10 +7,15 @@ export async function request<T>(
   endpoint: string,
   options: RequestInit = {},
 ): Promise<T> {
-  const headers: HeadersInit = {
-    "Content-Type": "application/json",
-    ...(options.headers || {}),
-  };
+  let headers: Record<string, string> = {};
+
+  if (!(options.body instanceof FormData)) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  if (options.headers) {
+    Object.assign(headers, options.headers);
+  }
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers,
