@@ -7,17 +7,17 @@ import {
   DialogFooter,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useDialogStore } from "@/index";
 import { Upload, FileText, ImagePlus } from "lucide-react";
 import { useUploadResume } from "#/documents";
 import { useState } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 export function UploadResumeButton() {
-  const { openDialog, setOpenDialog } = useDialogStore();
+  const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const uploadResumeMutation = useUploadResume();
   return (
-    <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="cursor-pointer">
           <Upload className="h-4 w-4" />
@@ -61,14 +61,22 @@ export function UploadResumeButton() {
             disabled={!file}
             onClick={() => {
               if (!file) return;
-              uploadResumeMutation.mutate({
-                name: file.name.replace(/\.[^/.]+$/, ""),
-                file: file,
-              });
-              setOpenDialog(false);
+              uploadResumeMutation.mutate(
+                {
+                  name: file.name.replace(/\.[^/.]+$/, ""),
+                  file: file,
+                },
+                {
+                  onSuccess: () => setOpen(false),
+                },
+              );
             }}
           >
-            Upload
+            {uploadResumeMutation.isPending ? (
+              <Spinner className="h-8 w-auto invert dark:invert-0" />
+            ) : (
+              "Upload"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

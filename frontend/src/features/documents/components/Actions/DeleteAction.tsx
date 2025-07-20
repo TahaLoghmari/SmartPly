@@ -10,11 +10,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useDeleteResume } from "#/documents";
+import { Spinner } from "@/components/ui/spinner";
+import { useState } from "react";
 
 export function DeleteAction({ resumeId }: { resumeId: string }) {
   const deleteResumeMutation = useDeleteResume();
+  const [open, setOpen] = useState(false);
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -36,9 +39,17 @@ export function DeleteAction({ resumeId }: { resumeId: string }) {
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            onClick={() => deleteResumeMutation.mutate(resumeId)}
+            onClick={() =>
+              deleteResumeMutation.mutate(resumeId, {
+                onSuccess: () => setOpen(false),
+              })
+            }
           >
-            Delete
+            {deleteResumeMutation.isPending ? (
+              <Spinner className="h-8 w-auto invert dark:invert-0" />
+            ) : (
+              "Delete"
+            )}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

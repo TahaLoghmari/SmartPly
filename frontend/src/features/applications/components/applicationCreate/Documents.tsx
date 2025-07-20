@@ -25,13 +25,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Spinner } from "@/components/ui/spinner";
 
 export function Documents({
   form,
 }: {
   form: UseFormReturn<ApplicationRequestDto>;
 }) {
-  const { data: resumes } = useGetUserResumes();
+  const { data: resumes, isLoading } = useGetUserResumes();
   const { coverLettersState } = useCoverLetterStore();
   const resumesState = resumes ?? [];
   return (
@@ -46,59 +47,63 @@ export function Documents({
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Resume *</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "w-full justify-between",
-                        !field.value && "text-muted-foreground",
-                      )}
-                    >
-                      {field.value
-                        ? resumesState.find(
-                            (resume) => resume.id === field.value,
-                          )?.name
-                        : "Select Resume"}
-                      <ChevronsUpDown className="opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
-                  <Command>
-                    <CommandInput
-                      placeholder="Search Resume..."
-                      className="h-9"
-                    />
-                    <CommandList>
-                      <CommandEmpty>No Resumes found.</CommandEmpty>
-                      <CommandGroup>
-                        {resumesState.map((resume) => (
-                          <CommandItem
-                            value={resume.name}
-                            key={resume.id}
-                            onSelect={() => {
-                              form.setValue("resumeId", resume.id);
-                            }}
-                          >
-                            {resume.name}
-                            <Check
-                              className={cn(
-                                "ml-auto",
-                                resume.id === field.value
-                                  ? "opacity-100"
-                                  : "opacity-0",
-                              )}
-                            />
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
+              {!isLoading ? (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "w-full justify-between",
+                          !field.value && "text-muted-foreground",
+                        )}
+                      >
+                        {field.value
+                          ? resumesState.find(
+                              (resume) => resume.id === field.value,
+                            )?.name
+                          : "Select Resume"}
+                        <ChevronsUpDown className="opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full p-0">
+                    <Command>
+                      <CommandInput
+                        placeholder="Search Resume..."
+                        className="h-9"
+                      />
+                      <CommandList>
+                        <CommandEmpty>No Resumes found.</CommandEmpty>
+                        <CommandGroup>
+                          {resumesState.map((resume) => (
+                            <CommandItem
+                              value={resume.name}
+                              key={resume.id}
+                              onSelect={() => {
+                                form.setValue("resumeId", resume.id);
+                              }}
+                            >
+                              {resume.name}
+                              <Check
+                                className={cn(
+                                  "ml-auto",
+                                  resume.id === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0",
+                                )}
+                              />
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              ) : (
+                <Spinner className="h-8 dark:invert" />
+              )}
               <FormMessage />
             </FormItem>
           )}

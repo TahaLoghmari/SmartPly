@@ -24,6 +24,7 @@ export * from "./types";
 // Store
 export * from "./stores/useApplicationFiltersStore";
 export * from "./stores/useApplicationSearchBarStore";
+export * from "./stores/useManageApplicationStore";
 
 // api
 export * from "./api";

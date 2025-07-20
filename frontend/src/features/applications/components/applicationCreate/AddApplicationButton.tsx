@@ -7,11 +7,11 @@ import {
   DialogTitle,
   DialogContent,
 } from "@/components/ui/dialog";
-import { useDialogStore } from "@/index";
+import { useManageApplicationStore } from "#/applications";
 import { ApplicationForm } from "#/applications";
 
 export function AddApplicationButton() {
-  const { openDialog, setOpenDialog } = useDialogStore();
+  const { openDialog, setOpenDialog } = useManageApplicationStore();
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>

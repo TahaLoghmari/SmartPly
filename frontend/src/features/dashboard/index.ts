@@ -8,7 +8,6 @@ export * from "./components/header/NotificationBell";
 export * from "./components/header/ConnectGmailButton";
 
 // SideBar Components
-export * from "./components/sideBar/SideBarAI";
 export * from "./components/sideBar/SideBarFooter";
 export * from "./components/sideBar/SideBarHeader";
 export * from "./components/sideBar/DashboardSideBar";

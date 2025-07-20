@@ -1,5 +1,9 @@
 import { request } from "@/api/client";
-import type { ResumeResponseDto, ResumeRequestDto } from "#/documents";
+import type {
+  ResumeResponseDto,
+  ResumeRequestDto,
+  BulkDeleteRequestDto,
+} from "#/documents";
 
 export const getUserResumes = (search?: string) => {
   const params = new URLSearchParams();
@@ -33,5 +37,12 @@ export const uploadResume = (credentials: ResumeRequestDto) => {
 export const deleteResume = (id: string) => {
   return request<void>(`/resumes/${id}`, {
     method: "DELETE",
+  });
+};
+
+export const bulkDeleteResumes = (credentials: BulkDeleteRequestDto) => {
+  return request<void>(`/resumes/bulk-delete`, {
+    method: "POST",
+    body: JSON.stringify(credentials),
   });
 };

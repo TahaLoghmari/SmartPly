@@ -215,3 +215,8 @@ export interface PaginationResult {
   hasPreviousPage: boolean;
   hasNextPage: boolean;
 }
+
+export interface ManageApplicationStore {
+  openDialog: boolean;
+  setOpenDialog: (open: boolean) => void;
+}

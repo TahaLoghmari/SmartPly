@@ -14,8 +14,10 @@ export * from "./constants";
 // stores
 export * from "./stores/useCoverLetterStore";
 export * from "./stores/useDocumentSearchBarStore";
+export * from "./stores/useSelectedDocumentStore";
 
 // hooks
 export * from "./hooks/useGetUserResumes";
 export * from "./hooks/useDeleteResume";
 export * from "./hooks/useUploadResume";
+export * from "./hooks/useBulkDeleteResumes";

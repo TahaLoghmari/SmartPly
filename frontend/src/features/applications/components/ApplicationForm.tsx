@@ -18,7 +18,7 @@ import {
   formSchema,
 } from "#/applications";
 import { useCurrentUser } from "#/auth";
-import { useDialogStore } from "@/index";
+import { useManageApplicationStore } from "#/applications";
 import { useRef, useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -26,7 +26,9 @@ export function ApplicationForm({
   mutationType,
   applicationCard,
 }: ApplicationFormProps) {
-  const setApplicationFormOpen = useDialogStore((s) => s.setOpenDialog);
+  const setApplicationFormOpen = useManageApplicationStore(
+    (s) => s.setOpenDialog,
+  );
   const { data: user } = useCurrentUser();
   const createMutation = useCreateApplication();
   const editMutation = useEditApplication();

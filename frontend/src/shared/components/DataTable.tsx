@@ -13,6 +13,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useSelectedDocumentsStore } from "#/documents";
+import { useEffect } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -23,12 +25,16 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const setSelected = useSelectedDocumentsStore((s) => s.setSelected);
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     enableRowSelection: true,
   });
+  useEffect(() => {
+    setSelected(table.getSelectedRowModel().rows);
+  }, [table, table.getState().rowSelection]);
 
   return (
     <div className="rounded-md border">

@@ -3,7 +3,6 @@ import {
   SideBarLogo,
   SideBarHeader,
   SideBarNavigation,
-  SideBarAI,
   SideBarFooter,
 } from "#/dashboard";
 
@@ -16,7 +15,6 @@ export function DashboardSideBar() {
       <SideBarLogo />
       <SideBarHeader />
       <SideBarNavigation />
-      <SideBarAI />
       <SideBarFooter />
     </div>
   );

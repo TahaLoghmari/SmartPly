@@ -7,13 +7,13 @@ import {
 } from "@/components/ui/dialog";
 import { SquarePen } from "lucide-react";
 import { ApplicationForm, type ApplicationPageProps } from "#/applications";
-import { useDialogStore } from "@/index";
+import { useManageApplicationStore } from "#/applications";
 import { Button } from "@/components/ui/button";
 
 export function EditApplicationButton({
   applicationCard,
 }: ApplicationPageProps) {
-  const { openDialog, setOpenDialog } = useDialogStore();
+  const { openDialog, setOpenDialog } = useManageApplicationStore();
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>

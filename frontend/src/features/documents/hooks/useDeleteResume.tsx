@@ -8,7 +8,7 @@ export function useDeleteResume() {
   return useMutation({
     mutationFn: (id: string) => deleteResume(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["resumes", user?.id] });
+      queryClient.refetchQueries({ queryKey: ["resumes", user?.id] });
     },
   });
 }
