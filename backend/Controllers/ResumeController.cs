@@ -82,6 +82,21 @@ public class ResumeController(
 
         return NoContent();
     }
+    
+    [HttpPost("bulk-delete")]
+    public async Task<IActionResult> BulkDeleteResumes(
+        [FromBody] BulkDeleteRequestDto request,
+        [FromServices] IValidator<BulkDeleteRequestDto> validator)
+    {
+        await validator.ValidateAndThrowAsync(request);
+        
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        
+        await resumeService.BulkDeleteResumes(request.ResumeIds, userId);
+        
+        return NoContent();
+    }
+    
     [HttpGet("{id}/download")]
     public async Task<IActionResult> DownloadResume(Guid id)
     {

@@ -59,4 +59,10 @@ public class SupabaseService
         var objectPath = resumeUrl.Replace($"{_supabaseUrl}/storage/v1/object/public/resumes/", "");
         return await _client.Storage.From("resumes").Download(objectPath, (TransformOptions?)null, (EventHandler<float>?)null);
     }
+    
+    public async Task DeleteFileAsync(string resumeUrl)
+    {
+        var objectPath = resumeUrl.Replace($"{_supabaseUrl}/storage/v1/object/public/resumes/", "");
+        await _client.Storage.From("resumes").Remove(new List<string> { objectPath });
+    }
 }

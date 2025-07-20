@@ -148,9 +148,38 @@ public class ResumeService(
             throw new NotFoundException($"No Resume found with ID '{id}'.");
         }
 
+        await supabaseService.DeleteFileAsync(resume.ResumeUrl);
+        
         dbContext.Resumes.Remove(resume);
         await dbContext.SaveChangesAsync();
         cacheService.InvalidateUserResumeCache(userId);
         logger.LogInformation("Resume deleted with ID {ResumeId}", resume.Id);
+    }
+    
+    public async Task BulkDeleteResumes(List<Guid> resumeIds, string userId)
+    {
+        if (userId is null)
+        {
+            logger.LogWarning("User ID claim missing");
+            throw new UnauthorizedException("User ID claim is missing.");
+        }
+        
+        var resumes = await dbContext.Resumes
+            .Where(r => resumeIds.Contains(r.Id) && r.UserId == userId)
+            .ToListAsync();
+
+        if (resumes.Count == 0)
+        {
+            logger.LogWarning("No resumes found for bulk delete with IDs: {ResumeIds}", string.Join(", ", resumeIds));
+            throw new NotFoundException("No resumes found for the provided IDs.");
+        }
+
+        foreach (var resume in resumes)
+        {
+            await supabaseService.DeleteFileAsync(resume.ResumeUrl);
+        }
+        dbContext.Resumes.RemoveRange(resumes);
+        await dbContext.SaveChangesAsync();
+        cacheService.InvalidateUserResumeCache(userId);
     }
 }
