@@ -6,14 +6,18 @@ export * from "./components/header/GmailConnectionStatus";
 export * from "./components/header/DashboardHeader";
 export * from "./components/header/NotificationBell";
 export * from "./components/header/ConnectGmailButton";
+export * from "./components/header/SiteHeader";
 
 // SideBar Components
 export * from "./components/sideBar/SideBarFooter";
 export * from "./components/sideBar/SideBarHeader";
-export * from "./components/sideBar/DashboardSideBar";
+export * from "./components/sideBar/AppSideBar";
 export * from "./components/sideBar/SideBarLogo";
 export * from "./components/sideBar/SideBarLogoutButton";
 export * from "./components/sideBar/SideBarNavigation";
+export * from "./components/sideBar/NavMain";
+export * from "./components/sideBar/NavSecondary";
+export * from "./components/sideBar/NavUser";
 
 // Constants
 export * from "./constants";

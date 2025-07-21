@@ -1,12 +1,13 @@
-import {
-  DashboardSideBar,
-  DashboardHeader,
-} from "#/dashboard";
+import { AppSidebar, SiteHeader } from "#/dashboard";
 import { useSearchParams, Outlet } from "react-router-dom";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useCurrentUser } from "#/auth";
+import {
+  SidebarInset,
+  SidebarProvider,
+} from "@/components/ui/sidebar";
 
 export function Dashboard() {
   const { isLoading } = useCurrentUser();
@@ -26,15 +27,19 @@ export function Dashboard() {
       </div>
     );
   return (
-    <div className="bg-background flex h-screen">
-      <DashboardSideBar />
-      {/*  */}
-      <div
-        className={`flex flex-1 flex-col overflow-hidden transition-[width,height,margin,padding] duration-300`}
-      >
-        <DashboardHeader />
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 72)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        } as React.CSSProperties
+      }
+    >
+      <AppSidebar variant="inset" />
+      <SidebarInset>
+        <SiteHeader />
         <Outlet />
-      </div>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
