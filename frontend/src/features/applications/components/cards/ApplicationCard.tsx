@@ -1,6 +1,7 @@
 import {
   type ApplicationCardProps,
   applicationsStatusOptionsConstant,
+  steps,
 } from "#/applications";
 import { Heart, BriefcaseBusiness } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -20,13 +21,6 @@ import {
 import React from "react";
 
 export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
-  const steps = [
-    { label: "WishList", date: "7/10/25", status: "complete" },
-    { label: "Applied", date: "7/10/25", status: "complete" },
-    { label: "Screen", date: "12/10/25", status: "complete" },
-    { label: "Interview", date: "7/10/25", status: "upcoming" },
-    { label: "Offer", date: "7/10/25", status: "upcoming" },
-  ];
   return (
     <NavLink
       to={`/app/applications/${applicationCard.id}`}

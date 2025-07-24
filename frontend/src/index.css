@@ -137,7 +137,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--muted);
+  background: var(--muted-foreground);
   border-radius: 10px;
 }
 
@@ -147,7 +147,7 @@
 
 @supports (scrollbar-color: auto) {
   * {
-    scrollbar-width: thin;
-    scrollbar-color: var(--muted) var(--background);
+    scrollbar-width: auto;
+    scrollbar-color: var(--muted-foreground) var(--background);
   }
 }

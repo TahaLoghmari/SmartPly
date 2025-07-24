@@ -72,6 +72,14 @@ export const applicationsJobTypeOptionsConstant: Readonly<
   { value: "internship", label: "Internship" },
 ] as const;
 
+export const steps = [
+  { label: "WishList", date: "7/10/25", status: "complete" },
+  { label: "Applied", date: "7/10/25", status: "complete" },
+  { label: "Screen", date: "12/10/25", status: "complete" },
+  { label: "Interview", date: "7/10/25", status: "upcoming" },
+  { label: "Offer", date: "7/10/25", status: "upcoming" },
+] as const ;
+
 export const frameworks: Readonly<{ value: string; label: string }[]> = [
   // Programming Languages
   { value: "javascript", label: "JavaScript" },
