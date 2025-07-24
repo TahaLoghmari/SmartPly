@@ -188,33 +188,4 @@ public class ApplicationService(
         
         logger.LogInformation("Application deleted with ID {ApplicationId}", application.Id);
     }
-
-    public async Task<ApplicationStatsDto> GetApplicationStats(
-        string? userId)
-    {
-        if (userId is null)
-        {
-            logger.LogWarning("Get current user failed - user ID claim missing");
-            throw new UnauthorizedException("User ID claim is missing.");
-        }
-
-        var stats = await dbContext.Applications
-            .AsNoTracking()
-            .Where(a => a.UserId == userId)
-            .GroupBy(a => a.Status)
-            .Select(g => new { Status = g.Key, Count = g.Count() })
-            .ToListAsync();
-
-        var result = new ApplicationStatsDto
-        {
-            TotalOffers = stats.FirstOrDefault(s => s.Status == ApplicationStatus.offer)?.Count ?? 0,
-            TotalGhosted = stats.FirstOrDefault(s => s.Status == ApplicationStatus.ghosted)?.Count ?? 0,
-            TotalInterviewing = stats.FirstOrDefault(s => s.Status == ApplicationStatus.interviewing)?.Count ?? 0,
-            TotalWishList = stats.FirstOrDefault(s => s.Status == ApplicationStatus.wishList)?.Count ?? 0,
-            TotalApplied = stats.FirstOrDefault(s => s.Status == ApplicationStatus.applied)?.Count ?? 0,
-            TotalRejected = stats.FirstOrDefault(s => s.Status == ApplicationStatus.rejected)?.Count ?? 0,
-        };
-
-        return result;
-    }
 }

@@ -12,7 +12,6 @@ public sealed class CacheService(
 {
     private const string USER_APPLICATIONS_PREFIX = "UserApplications_";
     private const string USER_CACHE_KEYS_PREFIX = "UserCacheKeys_";
-    private const string APPLICATION_STATS_PREFIX = "ApplicationStats_";
     private const string USER_RESUMES_PREFIX = "UserResumes_";
     
     public string GenerateApplicationsCacheKey(string userId, ApplicationQueryParameters query)
@@ -53,20 +52,6 @@ public sealed class CacheService(
         logger.LogDebug("Cached resume results with key: {CacheKey}", cacheKey);
     }
 
-    public void CacheApplicationStats(string cacheKey, ApplicationStatsDto stats, string userId)
-    {
-        var cacheOptions = new MemoryCacheEntryOptions()
-            .SetAbsoluteExpiration(TimeSpan.FromMinutes(5))
-            .SetSlidingExpiration(TimeSpan.FromMinutes(2))
-            .SetPriority(CacheItemPriority.Normal);
-        
-        TrackCacheKey(userId, cacheKey);
-
-        cache.Set(cacheKey, stats, cacheOptions);
-        
-        logger.LogDebug("Cached application stats with key: {CacheKey}", cacheKey);
-    }
-
     public void TrackCacheKey(string userId, string cacheKey)
     {
         string userKeySet = $"{USER_CACHE_KEYS_PREFIX}{userId}";
@@ -90,8 +75,7 @@ public sealed class CacheService(
         }
 
         var keysToRemove = userKeys.Keys
-            .Where(key => key.StartsWith(USER_APPLICATIONS_PREFIX) || 
-                         key.StartsWith(APPLICATION_STATS_PREFIX))
+            .Where(key => key.StartsWith(USER_APPLICATIONS_PREFIX))
             .ToList();
 
         foreach (var key in keysToRemove)

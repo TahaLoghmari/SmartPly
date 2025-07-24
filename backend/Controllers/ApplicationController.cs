@@ -87,14 +87,4 @@ public class ApplicationController(
 
         return NoContent();
     }
-
-    [HttpGet("stats")]
-    public async Task<IActionResult> GetApplicationStats()
-    {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        var result = await applicationService.GetApplicationStats(userId);
-
-        return Ok(result);
-    }
 }

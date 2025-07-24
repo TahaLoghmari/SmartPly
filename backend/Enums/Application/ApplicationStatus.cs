@@ -7,7 +7,7 @@ public enum ApplicationStatus
 {
     wishList,
     applied,
-    interviewing,
+    interview,
     offer,
     rejected,
     ghosted
