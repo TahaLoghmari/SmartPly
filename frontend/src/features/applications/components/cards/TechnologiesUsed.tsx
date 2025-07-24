@@ -1,10 +1,13 @@
 import { type TechnologiesUsedProps, frameworks } from "#/applications";
 import { Badge } from "@/components/ui/badge";
 
-export function TechnologiesUsed({ technologies }: TechnologiesUsedProps) {
+export function TechnologiesUsed({
+  technologies,
+  className,
+}: TechnologiesUsedProps) {
   const MAX_DISPLAY = 5;
   return (
-    <div className="flex min-h-15 flex-wrap items-center gap-1">
+    <div className={`flex flex-wrap items-center gap-1 ${className ?? ""}`}>
       {technologies.slice(0, MAX_DISPLAY).map((techValue) => (
         <Badge variant="secondary" key={techValue}>
           {frameworks.find((f) => f.value === techValue)?.label || techValue}

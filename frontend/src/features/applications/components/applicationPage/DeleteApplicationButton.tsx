@@ -25,7 +25,7 @@ export function DeleteApplicationButton({
       <AlertDialogTrigger asChild>
         <Button
           variant="outline"
-          className="text-destructive/80 border-destructive/20 hover:text-destructive hover:bg-destructive/5 dark:border-destructive/80 dark:hover:bg-destructive/5 cursor-pointer"
+          className="text-destructive/80 border-destructive/80 hover:text-destructive hover:bg-destructive/5 dark:border-destructive/80 dark:hover:bg-destructive/5 flex w-23 cursor-pointer items-center"
         >
           <Trash2 className="h-4 w-4" />
           Delete

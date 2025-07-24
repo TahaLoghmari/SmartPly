@@ -20,9 +20,6 @@ export function useEditApplication() {
       queryClient.invalidateQueries({
         queryKey: ["applications", user?.id],
       });
-      queryClient.invalidateQueries({
-        queryKey: ["applicationStats", user?.id],
-      });
     },
   });
 }

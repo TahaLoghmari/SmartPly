@@ -17,7 +17,10 @@ export function EditApplicationButton({
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="cursor-pointer">
+        <Button
+          variant="outline"
+          className="border-primary flex w-23 cursor-pointer items-center"
+        >
           <SquarePen className="h-4 w-4" />
           Edit
         </Button>

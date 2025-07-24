@@ -7,38 +7,32 @@ import {
 } from "#/applications";
 
 export type ApplicationStatusLabel =
-  | "All Status"
   | "WishList"
   | "Applied"
-  | "Interviewing"
+  | "Interview"
   | "Offer"
   | "Rejected"
   | "Ghosted";
 
-export type ApplicationTypeLabel = "All Types" | "Remote" | "OnSite" | "Hybrid";
+export type ApplicationTypeLabel = "Remote" | "OnSite" | "Hybrid";
 
-export type ApplicationLevelLabel = "All Levels" | "Junior" | "Mid" | "Senior";
+export type ApplicationLevelLabel = "Junior" | "Mid" | "Senior";
 
-export type ApplicationJobTypeLabel =
-  | "Full Time"
-  | "Part Time"
-  | "Internship"
-  | "All Job Types";
+export type ApplicationJobTypeLabel = "Full Time" | "Part Time" | "Internship";
 
 export type ApplicationStatus =
-  | ""
   | "wishList"
   | "applied"
-  | "interviewing"
+  | "interview"
   | "offer"
   | "rejected"
   | "ghosted";
 
-export type ApplicationType = "" | "remote" | "onSite" | "hybrid";
+export type ApplicationType = "remote" | "onSite" | "hybrid";
 
-export type ApplicationLevel = "" | "junior" | "mid" | "senior";
+export type ApplicationLevel = "junior" | "mid" | "senior";
 
-export type ApplicationJobType = "" | "fullTime" | "partTime" | "internship";
+export type ApplicationJobType = "fullTime" | "partTime" | "internship";
 
 export const formSchema = z.object({
   resumeId: z.string().min(1, "ResumeId is required."),
@@ -157,6 +151,7 @@ export type ApplicationFormProps =
 
 export interface TechnologiesUsedProps {
   technologies: string[];
+  className?: string; 
 }
 
 export interface ApplicationFilterStoreType<T> {
@@ -185,15 +180,6 @@ export interface ApplicationStatCardProps {
 
 export interface ApplicationPageProps {
   applicationCard: ApplicationResponseDto;
-}
-
-export interface ApplicationStatsDto {
-  totalWishList: number;
-  totalApplied: number;
-  totalInterviewing: number;
-  totalOffers: number;
-  totalRejected: number;
-  totalGhosted: number;
 }
 
 export interface ApplicationQueryParameters {

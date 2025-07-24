@@ -55,7 +55,7 @@ export function TechnologiesUsedFormField({
                       className="w-full justify-between"
                     >
                       {field.value && field.value.length > 0 ? (
-                        <TechnologiesUsed technologies={field.value} />
+                        <TechnologiesUsed technologies={field.value} className="min-h-15"/>
                       ) : (
                         "Add framework..."
                       )}

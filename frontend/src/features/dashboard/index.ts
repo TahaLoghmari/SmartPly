@@ -11,7 +11,7 @@ export * from "./components/header/SiteHeader";
 // SideBar Components
 export * from "./components/sideBar/SideBarFooter";
 export * from "./components/sideBar/SideBarHeader";
-export * from "./components/sideBar/AppSideBar";
+export * from "./components/sideBar/AppSidebar";
 export * from "./components/sideBar/SideBarLogo";
 export * from "./components/sideBar/SideBarLogoutButton";
 export * from "./components/sideBar/SideBarNavigation";

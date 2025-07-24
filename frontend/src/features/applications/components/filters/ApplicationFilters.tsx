@@ -34,7 +34,7 @@ export function ApplicationFilters() {
   } = useApplicationJobTypeFilterStore();
   const { search, setSearch } = useApplicationSearchBarStore();
   return (
-    <div className="text-card-foreground flex flex-wrap items-center gap-4 rounded-lg">
+    <div className="text-card-foreground mb-4 flex flex-wrap items-center gap-4 rounded-lg">
       <SearchBar
         value={search}
         onChange={setSearch}

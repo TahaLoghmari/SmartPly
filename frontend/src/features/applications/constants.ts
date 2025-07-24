@@ -11,8 +11,7 @@ import {
 
 export const ApplicationStatusToColor: Record<ApplicationStatusLabel, string> =
   {
-    "All Status": "hidden",
-    Interviewing:
+    Interview:
       "bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-800/30",
     Applied:
       "bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800/30",
@@ -32,7 +31,6 @@ export const applicationsLevelOptionsConstant: Readonly<
     label: ApplicationLevelLabel;
   }[]
 > = [
-  { value: "", label: "All Levels" },
   { value: "junior", label: "Junior" },
   { value: "mid", label: "Mid" },
   { value: "senior", label: "Senior" },
@@ -44,10 +42,9 @@ export const applicationsStatusOptionsConstant: Readonly<
     label: ApplicationStatusLabel;
   }[]
 > = [
-  { value: "", label: "All Status" },
   { value: "wishList", label: "WishList" },
   { value: "applied", label: "Applied" },
-  { value: "interviewing", label: "Interviewing" },
+  { value: "interview", label: "Interview" },
   { value: "offer", label: "Offer" },
   { value: "rejected", label: "Rejected" },
   { value: "ghosted", label: "Ghosted" },
@@ -59,7 +56,6 @@ export const applicationsTypeOptionsConstant: Readonly<
     label: ApplicationTypeLabel;
   }[]
 > = [
-  { value: "", label: "All Types" },
   { value: "remote", label: "Remote" },
   { value: "onSite", label: "OnSite" },
   { value: "hybrid", label: "Hybrid" },
@@ -71,7 +67,6 @@ export const applicationsJobTypeOptionsConstant: Readonly<
     label: ApplicationJobTypeLabel;
   }[]
 > = [
-  { value: "", label: "All Job Types" },
   { value: "fullTime", label: "Full Time" },
   { value: "partTime", label: "Part Time" },
   { value: "internship", label: "Internship" },

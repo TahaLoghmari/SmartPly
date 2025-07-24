@@ -3,7 +3,6 @@ import type {
   ApplicationRequestDto,
   ApplicationResponseDto,
   ApplicationGetRequestDto,
-  ApplicationStatsDto,
   PaginationResult,
   ApplicationQueryParameters,
 } from "#/applications";
@@ -63,8 +62,3 @@ export const getUserApplication = (credentials: ApplicationGetRequestDto) => {
   }));
 };
 
-export const getApplicationStats = () => {
-  return request<ApplicationStatsDto>(`/applications/stats`, {
-    method: "GET",
-  });
-};

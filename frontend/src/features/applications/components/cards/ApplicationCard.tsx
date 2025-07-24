@@ -1,131 +1,92 @@
 import {
   type ApplicationCardProps,
-  TechnologiesUsed,
-  ApplicationStatusToColor,
   applicationsStatusOptionsConstant,
-  applicationsTypeOptionsConstant,
-  applicationsJobTypeOptionsConstant,
-  applicationsLevelOptionsConstant,
-  type ApplicationStatusLabel,
-  type ApplicationTypeLabel,
-  type ApplicationJobTypeLabel,
-  type ApplicationLevelLabel,
 } from "#/applications";
-import {
-  MapPin,
-  DollarSign,
-  Building,
-  Calendar,
-  Clock,
-  CalendarClock,
-} from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { Heart, BriefcaseBusiness } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faLocationDot,
+  faBuilding,
+  faCircle,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import React from "react";
 
 export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
-  const status: ApplicationStatusLabel = applicationsStatusOptionsConstant.find(
-    (a) => a.value === applicationCard.status,
-  )!.label;
-  const type: ApplicationTypeLabel = applicationsTypeOptionsConstant.find(
-    (a) => a.value === applicationCard.type,
-  )!.label;
-  const jobType: ApplicationJobTypeLabel =
-    applicationsJobTypeOptionsConstant.find(
-      (a) => a.value === applicationCard.jobType,
-    )!.label;
-  const level: ApplicationLevelLabel = applicationsLevelOptionsConstant.find(
-    (a) => a.value === applicationCard.level,
-  )!.label;
+  const steps = [
+    { label: "WishList", date: "7/10/25", status: "complete" },
+    { label: "Applied", date: "7/10/25", status: "complete" },
+    { label: "Screen", date: "12/10/25", status: "complete" },
+    { label: "Interview", date: "7/10/25", status: "upcoming" },
+    { label: "Offer", date: "7/10/25", status: "upcoming" },
+  ];
   return (
     <NavLink
       to={`/app/applications/${applicationCard.id}`}
-      className={`bg-card text-card-foreground border-accent flex cursor-pointer flex-col gap-3 rounded-lg border p-6 shadow-xs transition-[width,height,margin,padding] duration-300 hover:scale-[1.02] hover:shadow-lg`}
+      className={`bg-card flex items-center gap-6 rounded-lg border p-4 shadow-xs hover:bg-[var(--accent-light)]`}
     >
-      <div className="flex justify-between">
-        <div className="flex flex-col gap-1">
-          <p className="tracking-light text-lg font-semibold">
+      <Heart className="text-muted-foreground h-4 w-4" />
+      <div className="flex flex-1 items-center gap-4">
+        <div className="rounded-sm bg-gradient-to-r from-gray-500 to-gray-400 p-3 text-white">
+          <BriefcaseBusiness className="h-8 w-8" />
+        </div>
+        <div className="flex flex-1 flex-col justify-center gap-1">
+          <p className="text-base leading-5 font-medium">
             {applicationCard.position}
           </p>
-          <p className="flex items-center gap-2">
-            <Building className="text-muted-foreground h-4 w-4" />
-            <span className="font-medium">{applicationCard.companyName}</span>
-          </p>
-          <p className="text-muted-foreground text-xs">
-            {applicationCard.companyEmail}
-          </p>
-        </div>
-        <div>
-          <p
-            className={`inline-flex ${ApplicationStatusToColor[status]} items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-[width,height,margin,padding] duration-300`}
-          >
-            {status}
-          </p>
+          <div className="text-muted-foreground flex items-center gap-1 truncate text-sm leading-5">
+            <FontAwesomeIcon icon={faBuilding} />
+            <p>{applicationCard.companyName}</p>
+          </div>
+          <div className="text-muted-foreground flex items-center gap-1 truncate text-sm leading-5">
+            <FontAwesomeIcon icon={faLocationDot} className="h-4 w-4" />
+            <p>{applicationCard.location}</p>
+          </div>
         </div>
       </div>
-      <div className="flex items-center justify-between text-sm">
-        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-          <MapPin className="h-4 w-4" />
-          <span>{applicationCard.location}</span>
-        </div>
-        <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-[width,height,margin,padding]">
-          {type}
-        </div>
-      </div>
-      <div className="flex items-center justify-between text-sm">
-        <div className="flex items-center gap-1">
-          <DollarSign className="text-muted-foreground h-3 w-3" />
-          <p>
-            {applicationCard.startSalary}k-{applicationCard.endSalary}k
-          </p>
-        </div>
-        <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-[width,height,margin,padding]">
-          {level}
-        </div>
-      </div>
+      <div className="flex flex-1">
+        {steps.map((step, index) => (
+          <React.Fragment key={index}>
+            <div className="flex h-full flex-shrink-0 flex-col items-center gap-2">
+              <p className="text-xs font-normal">{step.label}</p>
+              <div
+                className={` ${step.status === "complete" ? "text-muted-foreground" : "text-card"} bg-accent flex size-[22px] items-center justify-center rounded-full`}
+              >
+                <FontAwesomeIcon icon={faCircle} className="h-4 w-4" />
+              </div>
 
-      <div className="text-foreground flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-[width,height,margin,padding]">
-        {jobType}
+              <p className="flex h-4 min-w-11 items-center justify-center text-xs">
+                {step.status === "complete" ? step.date : ""}
+              </p>
+            </div>
+            {step.label != "Offer" && (
+              <div className="bg-accent -mx-3.5 flex flex-1 grow items-center self-center py-0.5"></div>
+            )}
+          </React.Fragment>
+        ))}
       </div>
-
-      <TechnologiesUsed technologies={applicationCard.technologiesUsed || []} />
-
-      <div className="border-accent flex flex-col gap-2 border-t pt-2">
-        <div className="text-muted-foreground flex items-center gap-2 text-xs">
-          <Calendar className="h-3 w-3" />
-          <span>
-            Applied:{" "}
-            {applicationCard.createdAt &&
-              applicationCard.createdAt
-                .toLocaleDateString("en-GB")
-                .replace(/\//g, "-")}
-          </span>
-        </div>
-        <div className="text-muted-foreground flex items-center gap-2 text-xs">
-          <Clock className="h-3 w-3" />
-          <span>
-            Last Update:{" "}
-            {applicationCard.updatedAt &&
-              formatDistanceToNow(applicationCard.updatedAt, {
-                addSuffix: true,
-              })}
-          </span>
-        </div>
-        <div className="text-muted-foreground flex items-center gap-2 text-xs">
-          <CalendarClock className="h-3 w-3" />
-          <span>
-            Deadline:{" "}
-            {applicationCard.deadline &&
-              applicationCard.deadline
-                .toLocaleDateString("en-GB")
-                .replace(/\//g, "-")}
-          </span>
-        </div>
-      </div>
-      <div className="bg-accent rounded-lg p-3">
-        <p className="text-muted-foreground text-sm italic">
-          "{applicationCard.notes}"
-        </p>
-      </div>
+      <Select>
+        <SelectTrigger className="w-[120px]">
+          <SelectValue
+            placeholder="Status"
+            className="text-primary placeholder:text-primary text-sm"
+          />
+        </SelectTrigger>
+        <SelectContent>
+          {applicationsStatusOptionsConstant.map((status) => (
+            <SelectItem key={status.value} value={status.value}>
+              {status.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </NavLink>
   );
 }

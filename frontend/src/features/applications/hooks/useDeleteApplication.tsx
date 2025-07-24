@@ -12,9 +12,6 @@ export function useDeleteApplication() {
     onSuccess: (_data, id) => {
       queryClient.invalidateQueries({ queryKey: ["applications", user?.id] });
       queryClient.invalidateQueries({ queryKey: ["application", id] });
-      queryClient.invalidateQueries({
-        queryKey: ["applicationStats", user?.id],
-      });
       navigate("/app/applications");
     },
   });

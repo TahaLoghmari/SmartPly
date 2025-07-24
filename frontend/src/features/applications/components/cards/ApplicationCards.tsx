@@ -4,22 +4,16 @@ import {
   type ApplicationResponseDto,
 } from "#/applications";
 import { Spinner } from "@/components/ui/spinner";
-import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { AddApplicationButton } from "#/dashboard";
-import { Link } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
+import { CopyCheck } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 export function ApplicationCards() {
-  const {
-    data,
-    isLoading,
-    isError,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useGetUserApplications();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useGetUserApplications();
   const { ref, inView } = useInView({ rootMargin: "200px" });
 
   useEffect(() => {
@@ -28,33 +22,20 @@ export function ApplicationCards() {
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  if (isLoading) {
-    return (
-      <div className="flex w-full flex-1 flex-col items-center justify-center">
-        <Spinner className="dark:invert" />
-      </div>
-    );
-  }
-  if (isError) {
-    return (
-      <div className="text-muted-foreground flex w-full flex-1 flex-col items-center justify-center gap-7">
-        <div className="flex flex-col items-center justify-center gap-2">
-          <p className="text-primary text-4xl font-medium">An Error Occured</p>
-          <p className="text-sm">Please refresh the page</p>
-        </div>
-        <Button>
-          <Link to="/">Back to Home</Link>
-        </Button>
-      </div>
-    );
-  }
-
   const allItems = data?.pages.flatMap((page) => page.items) ?? [];
 
   if (allItems.length > 0)
     return (
       <>
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+        <div className="text-muted-foreground mb-4 flex items-center gap-2 text-sm font-bold">
+          <CopyCheck className="h-4 w-4" />
+          <p>Manage Jobs</p>
+          <Separator
+            orientation="vertical"
+            className="mx-2 data-[orientation=vertical]:h-4"
+          />
+        </div>
+        <div className="grid grid-cols-1 gap-6">
           {allItems.map((applicationCard: ApplicationResponseDto) => (
             <ApplicationCard
               applicationCard={applicationCard}

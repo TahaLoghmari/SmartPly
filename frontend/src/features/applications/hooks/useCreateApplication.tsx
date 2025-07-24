@@ -12,9 +12,6 @@ export function useCreateApplication() {
       queryClient.invalidateQueries({
         queryKey: ["applications", user?.id],
       });
-      queryClient.invalidateQueries({
-        queryKey: ["applicationStats", user?.id],
-      });
     },
   });
 }

@@ -25,10 +25,15 @@ export function Compensation({
           name="startSalary"
           render={({ field }) => (
             <FormItem className="flex flex-col gap-2">
-              <FormLabel>Yearly Starting Salary (k) *</FormLabel>
+              <FormLabel className="flex items-center gap-1">
+                Salary{" "}
+                <span className="bg-accent text-accent-foreground rounded-full p-1.5 px-3 text-xs font-normal">
+                  /yr
+                </span>
+              </FormLabel>
               <FormControl>
                 <Input
-                  placeholder="e.g. 150"
+                  placeholder="Min. Salary"
                   type="number"
                   className="shadow-none"
                   {...field}
@@ -43,10 +48,10 @@ export function Compensation({
           name="endSalary"
           render={({ field }) => (
             <FormItem className="flex flex-col gap-2">
-              <FormLabel>Yearly Maximum Salary (k) *</FormLabel>
+              <FormLabel className="min-h-7"></FormLabel>
               <FormControl>
                 <Input
-                  placeholder="e.g. 200"
+                  placeholder="Max. Salary"
                   type="number"
                   className="shadow-none"
                   {...field}
