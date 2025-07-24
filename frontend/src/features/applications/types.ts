@@ -151,7 +151,7 @@ export type ApplicationFormProps =
 
 export interface TechnologiesUsedProps {
   technologies: string[];
-  className?: string; 
+  className?: string;
 }
 
 export interface ApplicationFilterStoreType<T> {
@@ -171,6 +171,11 @@ export interface ApplicationSearchBarStore {
   search: string;
   setSearch: (value: string) => void;
   clear: () => void;
+}
+
+export interface ApplicationPageNavigationStore {
+  navigationPage: string;
+  setNavigationPage: (page: string) => void;
 }
 
 export interface ApplicationStatCardProps {

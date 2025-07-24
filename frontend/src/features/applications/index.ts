@@ -23,6 +23,7 @@ export * from "./types";
 export * from "./stores/useApplicationFiltersStore";
 export * from "./stores/useApplicationSearchBarStore";
 export * from "./stores/useManageApplicationStore";
+export * from "./stores/useApplicationPageNavigationStore";
 
 // api
 export * from "./api";
