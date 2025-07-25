@@ -2,9 +2,9 @@
 using backend.DTOs.Application;
 namespace backend.Validators.Application;
 
-public class ApplicationCreateRequestDtoValidator : AbstractValidator<ApplicationRequestDto>
+public class ApplicationRequestDtoValidator : AbstractValidator<ApplicationRequestDto>
 {
-    public ApplicationCreateRequestDtoValidator()
+    public ApplicationRequestDtoValidator()
     {
         RuleFor(x => x.ResumeId)
             .NotEmpty().WithMessage("ResumeId is required.");
@@ -55,5 +55,25 @@ public class ApplicationCreateRequestDtoValidator : AbstractValidator<Applicatio
         RuleFor(x => x.Deadline)
             .GreaterThanOrEqualTo(DateTime.UtcNow).When(x => x.Deadline.HasValue)
             .WithMessage("Deadline must be in the future.");
+        
+        RuleFor(a => a)
+            .Must(a => !a.WishListDate.HasValue || !a.AppliedDate.HasValue || a.WishListDate < a.AppliedDate)
+            .WithMessage("WishListDate must be less than AppliedDate.");
+
+        RuleFor(a => a)
+            .Must(a => !a.AppliedDate.HasValue || !a.InterviewDate.HasValue || a.AppliedDate < a.InterviewDate)
+            .WithMessage("AppliedDate must be less than InterviewDate.");
+
+        RuleFor(a => a)
+            .Must(a => !a.InterviewDate.HasValue || !a.OfferDate.HasValue || a.InterviewDate < a.OfferDate)
+            .WithMessage("InterviewDate must be less than OfferDate.");
+
+        RuleFor(a => a)
+            .Must(a => !a.OfferDate.HasValue || !a.RejectedDate.HasValue || a.OfferDate <= a.RejectedDate)
+            .WithMessage("OfferDate must be less than or equal to RejectedDate.");
+        
+        RuleFor(a => a)
+            .Must(a => !a.OfferDate.HasValue || !a.GhostedDate.HasValue || a.OfferDate < a.GhostedDate)
+            .WithMessage("OfferDate must be less than or equal to RejectedDate.");
     }
 }

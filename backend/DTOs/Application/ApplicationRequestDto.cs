@@ -15,6 +15,12 @@ public sealed record ApplicationRequestDto
     public int StartSalary { get; set; }
     public int EndSalary { get; set; }
     public DateTime? Deadline { get; set; }
+    public DateTime? WishListDate { get; set; }
+    public DateTime? AppliedDate { get; set; }
+    public DateTime? InterviewDate { get; set; }
+    public DateTime? OfferDate { get; set; }
+    public DateTime? RejectedDate { get; set; }
+    public DateTime? GhostedDate { get; set; }
     public string? JobDescription { get; set; }
     public ApplicationStatus Status { get; set; }
     public ApplicationType Type { get; set; }

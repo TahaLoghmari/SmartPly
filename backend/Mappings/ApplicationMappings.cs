@@ -1,6 +1,7 @@
 ﻿using backend.DTOs;
 using backend.DTOs.Application;
 using backend.Entities;
+using backend.Enums;
 
 namespace backend.Mappings;
 
@@ -9,7 +10,7 @@ internal static class ApplicationMappings
     public static Application ToApplication(
         this ApplicationRequestDto applicationRequestDto, string userId)
     {
-        return new Application
+        Application application = new Application
         {
             ResumeId = applicationRequestDto.ResumeId,
             CoverLetterId = applicationRequestDto.CoverLetterId,
@@ -30,6 +31,29 @@ internal static class ApplicationMappings
             Notes = applicationRequestDto.Notes,
             JobDescription = applicationRequestDto.JobDescription,
         };
+        switch (application.Status)
+        {
+            case ApplicationStatus.wishList:
+                application.WishListDate = DateTime.UtcNow;
+                break;
+            case ApplicationStatus.applied:
+                application.AppliedDate = DateTime.UtcNow;
+                break;
+            case ApplicationStatus.interview:
+                application.InterviewDate = DateTime.UtcNow;
+                break;
+            case ApplicationStatus.offer:
+                application.OfferDate = DateTime.UtcNow;
+                break;
+            case ApplicationStatus.rejected:
+                application.RejectedDate = DateTime.UtcNow;
+                break;
+            case ApplicationStatus.ghosted:
+                application.GhostedDate = DateTime.UtcNow;
+                break;
+        }
+
+        return application;
     }
 
     public static ApplicationResponseDto ToApplicationResponseDto(this Application application)
@@ -56,7 +80,13 @@ internal static class ApplicationMappings
             Type = application.Type,
             JobType = application.JobType,
             Level = application.Level,
-            TechnologiesUsed = application.TechnologiesUsed?.ToList()
+            TechnologiesUsed = application.TechnologiesUsed?.ToList(),
+            WishListDate = application.WishListDate,
+            AppliedDate = application.AppliedDate,
+            InterviewDate = application.InterviewDate,
+            OfferDate = application.OfferDate,
+            RejectedDate = application.RejectedDate,
+            GhostedDate = application.GhostedDate,
         };
     }
     public static void UpdateFromDto(this Application application, ApplicationRequestDto dto)
@@ -79,5 +109,11 @@ internal static class ApplicationMappings
         application.Level = dto.Level;
         application.TechnologiesUsed = dto.TechnologiesUsed?.ToList() ?? new List<string>();
         application.UpdatedAt = DateTime.UtcNow;
+        application.WishListDate = dto.WishListDate;
+        application.AppliedDate = dto.AppliedDate;
+        application.InterviewDate = dto.InterviewDate;
+        application.OfferDate = dto.OfferDate;
+        application.RejectedDate = dto.RejectedDate;
+        application.GhostedDate = dto.GhostedDate;
     }
 }
