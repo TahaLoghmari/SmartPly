@@ -28,8 +28,8 @@ export function ApplicationPageStatus() {
       </Select>
       <div className="flex flex-col">
         {steps.map((step, index) => (
-          <div key={index} className="-mt-1 flex flex-col">
-            <div className="flex items-center gap-2">
+          <div key={index} className="flex flex-col">
+            <div className="-mt-1 flex items-center gap-2">
               <div
                 className={`${step.status === "complete" ? "outline-accent outline-2" : ""} border-muted-foreground bg-background flex size-4 items-center justify-center rounded-full border`}
               >
@@ -52,7 +52,7 @@ export function ApplicationPageStatus() {
                 <path d="M120-120v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm584-528 56-56-56-56-56 56 56 56Z" />
               </svg>
             </div>
-            {step.label != "Offer" && (
+            {step.label != "Rejected" && (
               <div className="bg-muted-foreground -mt-1 ml-[7.5px] h-7 w-px"></div>
             )}
           </div>

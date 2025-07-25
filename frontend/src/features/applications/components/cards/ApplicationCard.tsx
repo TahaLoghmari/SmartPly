@@ -1,16 +1,14 @@
 import {
   type ApplicationCardProps,
   applicationsStatusOptionsConstant,
+  statusToDateKey,
   steps,
+  statusToValue,
 } from "#/applications";
 import { Heart, BriefcaseBusiness } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faLocationDot,
-  faBuilding,
-  faCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLocationDot, faBuilding } from "@fortawesome/free-solid-svg-icons";
 import {
   Select,
   SelectContent,
@@ -21,6 +19,17 @@ import {
 import React from "react";
 
 export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
+  const applicationStatus =
+    applicationCard.status[0].toUpperCase() + applicationCard.status.slice(1);
+  const lastStatus =
+    applicationCard.status === "rejected" ||
+    applicationCard.status === "ghosted"
+      ? {
+          label: applicationStatus,
+        }
+      : { label: "Offer" };
+
+  const stepsWithLastStatus = [...steps, lastStatus];
   return (
     <NavLink
       to={`/app/applications/${applicationCard.id}`}
@@ -45,29 +54,46 @@ export function ApplicationCard({ applicationCard }: ApplicationCardProps) {
           </div>
         </div>
       </div>
-      <div className="flex flex-1">
-        {steps.map((step, index) => (
-          <React.Fragment key={index}>
-            <div className="flex h-full flex-shrink-0 flex-col items-center gap-2">
-              <p className="text-xs font-normal">{step.label}</p>
-              <div
-                className={` ${step.status === "complete" ? "text-muted-foreground" : "text-card"} bg-accent flex size-[22px] items-center justify-center rounded-full`}
-              >
-                <FontAwesomeIcon icon={faCircle} className="h-4 w-4" />
+      <div className="flex flex-1 items-center">
+        {stepsWithLastStatus.map((step, index) => {
+          const applicationStatusDate =
+            applicationCard[
+              statusToDateKey[step.label[0].toLowerCase() + step.label.slice(1)]
+            ];
+          return (
+            <React.Fragment key={index}>
+              <div className="flex h-full min-w-[53px] flex-col items-center gap-2">
+                <p className="text-xs font-normal">{step.label}</p>
+                <div
+                  className={` ${statusToValue[step.label] <= statusToValue[applicationStatus] ? "outline-accent outline-2" : ""} bg-background border-muted-foreground flex size-5 items-center justify-center rounded-full border`}
+                >
+                  <div
+                    className={`${statusToValue[step.label] <= statusToValue[applicationStatus] ? "bg-muted-foreground size-2 rounded-full" : ""} `}
+                  ></div>
+                </div>
+                <p className="flex h-4 min-w-11 items-center justify-center text-xs">
+                  {applicationStatusDate
+                    ? applicationStatusDate instanceof Date
+                      ? (() => {
+                          const d = applicationStatusDate;
+                          const day = d.getDate();
+                          const month = d.getMonth() + 1;
+                          const year = d.getFullYear() % 100;
+                          return `${day}/${month}/${year}`;
+                        })()
+                      : applicationStatusDate.toString()
+                    : ""}
+                </p>
               </div>
-
-              <p className="flex h-4 min-w-11 items-center justify-center text-xs">
-                {step.status === "complete" ? step.date : ""}
-              </p>
-            </div>
-            {step.label != "Offer" && (
-              <div className="bg-accent -mx-3.5 flex flex-1 grow items-center self-center py-0.5"></div>
-            )}
-          </React.Fragment>
-        ))}
+              {step.label != lastStatus.label && (
+                <div className="bg-muted-foreground z-0 -mx-[17px] h-px w-full rounded text-center text-xs leading-none"></div>
+              )}
+            </React.Fragment>
+          );
+        })}
       </div>
       <Select>
-        <SelectTrigger className="w-[120px]">
+        <SelectTrigger className="w-[120px] cursor-pointer">
           <SelectValue
             placeholder="Status"
             className="text-primary placeholder:text-primary text-sm"

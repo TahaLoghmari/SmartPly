@@ -47,6 +47,12 @@ export const getUserApplications = (params: ApplicationQueryParameters) => {
       createdAt: new Date(app.createdAt),
       updatedAt: app.updatedAt ? new Date(app.updatedAt) : null,
       deadline: app.deadline ? new Date(app.deadline) : null,
+      wishListDate: app.wishListDate ? new Date(app.wishListDate) : null,
+      appliedDate: app.appliedDate ? new Date(app.appliedDate) : null,
+      interviewDate: app.interviewDate ? new Date(app.interviewDate) : null,
+      offerDate: app.offerDate ? new Date(app.offerDate) : null,
+      rejectedDate: app.rejectedDate ? new Date(app.rejectedDate) : null,
+      ghostedDate: app.ghostedDate ? new Date(app.ghostedDate) : null,
     })),
   }));
 };
@@ -59,6 +65,11 @@ export const getUserApplication = (credentials: ApplicationGetRequestDto) => {
     createdAt: new Date(app.createdAt),
     updatedAt: app.updatedAt ? new Date(app.updatedAt) : null,
     deadline: app.deadline ? new Date(app.deadline) : null,
+    wishListDate: app.wishListDate ? new Date(app.wishListDate) : null,
+    appliedDate: app.appliedDate ? new Date(app.appliedDate) : null,
+    interviewDate: app.interviewDate ? new Date(app.interviewDate) : null,
+    offerDate: app.offerDate ? new Date(app.offerDate) : null,
+    rejectedDate: app.rejectedDate ? new Date(app.rejectedDate) : null,
+    ghostedDate: app.ghostedDate ? new Date(app.ghostedDate) : null,
   }));
 };
-

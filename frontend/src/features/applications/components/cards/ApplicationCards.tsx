@@ -24,6 +24,8 @@ export function ApplicationCards() {
 
   const allItems = data?.pages.flatMap((page) => page.items) ?? [];
 
+  console.log(allItems);
+
   if (allItems.length > 0)
     return (
       <>

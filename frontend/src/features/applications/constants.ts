@@ -7,6 +7,7 @@ import {
   type ApplicationStatusLabel,
   type ApplicationTypeLabel,
   type ApplicationJobTypeLabel,
+  type ApplicationRequestDto,
 } from "#/applications";
 
 export const ApplicationStatusToColor: Record<ApplicationStatusLabel, string> =
@@ -73,12 +74,28 @@ export const applicationsJobTypeOptionsConstant: Readonly<
 ] as const;
 
 export const steps = [
-  { label: "WishList", date: "7/10/25", status: "complete" },
-  { label: "Applied", date: "7/10/25", status: "complete" },
-  { label: "Screen", date: "12/10/25", status: "complete" },
-  { label: "Interview", date: "7/10/25", status: "upcoming" },
-  { label: "Offer", date: "7/10/25", status: "upcoming" },
-] as const ;
+  { label: "WishList" },
+  { label: "Applied" },
+  { label: "Interview" },
+] as const;
+
+export const statusToDateKey: Record<string, keyof ApplicationRequestDto> = {
+  wishList: "wishListDate",
+  applied: "appliedDate",
+  interview: "interviewDate",
+  offer: "offerDate",
+  rejected: "rejectedDate",
+  ghost: "offerDate",
+};
+
+export const statusToValue: Record<string, number> = {
+  WishList: 0,
+  Applied: 1,
+  Interview: 2,
+  Offer: 3,
+  Ghosted: 3,
+  Rejected: 4,
+};
 
 export const frameworks: Readonly<{ value: string; label: string }[]> = [
   // Programming Languages

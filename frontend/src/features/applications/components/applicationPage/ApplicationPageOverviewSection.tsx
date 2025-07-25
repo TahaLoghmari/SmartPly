@@ -114,7 +114,7 @@ export function ApplicationPageOverviewSection({
           <div className="prose max-w-none text-sm">
             {applicationCard.jobDescription &&
             applicationCard.jobDescription.length > 0 ? (
-              <ReactMarkdown>applicationCard.jobDescription</ReactMarkdown>
+              <ReactMarkdown>{applicationCard.jobDescription}</ReactMarkdown>
             ) : (
               <p className="text-muted-foreground">-</p>
             )}
