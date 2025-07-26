@@ -5,7 +5,7 @@ import {
 } from "#/applications";
 import { Spinner } from "@/components/ui/spinner";
 import { Plus } from "lucide-react";
-import { AddApplicationButton } from "#/dashboard";
+import { AddApplicationButton } from "#/applications";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
 import { CopyCheck } from "lucide-react";

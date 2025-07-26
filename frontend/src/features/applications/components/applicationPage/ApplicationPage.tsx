@@ -61,7 +61,7 @@ export function ApplicationPage() {
           <>
             <ApplicationPageHeader applicationCard={applicationCard} />
             <div className="flex flex-1">
-              <div className="flex flex-col">
+              <div className="flex flex-1 flex-col">
                 <ApplicationPageTabs />
                 {navigationPage === "Overview" ? (
                   <ApplicationPageOverviewSection

@@ -1,7 +1,6 @@
 // Main Components
 export * from "./components/Dashboard";
 // Header Components
-export * from "../applications/components/applicationCreate/AddApplicationButton";
 export * from "./components/header/GmailConnectionStatus";
 export * from "./components/header/DashboardHeader";
 export * from "./components/header/NotificationBell";

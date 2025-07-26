@@ -73,11 +73,7 @@ export const applicationsJobTypeOptionsConstant: Readonly<
   { value: "internship", label: "Internship" },
 ] as const;
 
-export const steps = [
-  { label: "WishList" },
-  { label: "Applied" },
-  { label: "Interview" },
-] as const;
+export const steps = ["WishList", "Applied", "Interview"] as const;
 
 export const statusToDateKey: Record<string, keyof ApplicationRequestDto> = {
   wishList: "wishListDate",
@@ -85,7 +81,7 @@ export const statusToDateKey: Record<string, keyof ApplicationRequestDto> = {
   interview: "interviewDate",
   offer: "offerDate",
   rejected: "rejectedDate",
-  ghost: "offerDate",
+  ghosted: "ghostedDate",
 };
 
 export const statusToValue: Record<string, number> = {
@@ -93,8 +89,8 @@ export const statusToValue: Record<string, number> = {
   Applied: 1,
   Interview: 2,
   Offer: 3,
-  Ghosted: 3,
-  Rejected: 4,
+  Ghosted: 4,
+  Rejected: 5,
 };
 
 export const frameworks: Readonly<{ value: string; label: string }[]> = [

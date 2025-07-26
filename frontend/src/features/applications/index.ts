@@ -1,9 +1,9 @@
 export * from "./components/Applications";
-export * from "./components/ApplicationForm";
-export * from "./components/applicationCreate";
+export * from "./components/ApplicationCards";
+export * from "./components/applicationForm";
 export * from "./components/applicationPage";
-export * from "./components/cards";
-export * from "./components/filters";
+export * from "./components/applicationCard";
+export * from "./components/applicationFilters";
 
 // Constants
 export * from "./constants";
@@ -15,6 +15,7 @@ export * from "./hooks/useEditApplication";
 export * from "./hooks/useGetUserApplications";
 export * from "./hooks/useGetUserApplication";
 export * from "./hooks/useDeleteApplication";
+export * from "./hooks/usePatchApplication";
 
 // Types
 export * from "./types";

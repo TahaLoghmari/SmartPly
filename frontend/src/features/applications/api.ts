@@ -24,6 +24,13 @@ export const editApplication = (
   });
 };
 
+export const patchApplication = (id: string, patch: unknown) => {
+  return request<void>(`/applications/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+};
+
 export const deleteApplication = (id: string) => {
   return request<void>(`/applications/${id}`, {
     method: "DELETE",

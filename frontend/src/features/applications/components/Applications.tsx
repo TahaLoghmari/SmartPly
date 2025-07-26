@@ -3,7 +3,7 @@ import {
   ApplicationCards,
   useGetUserApplications,
 } from "#/applications";
-import { AddApplicationButton } from "#/dashboard";
+import { AddApplicationButton } from "#/applications";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { Link, Outlet } from "react-router-dom";

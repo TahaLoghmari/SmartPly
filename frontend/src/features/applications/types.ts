@@ -118,6 +118,7 @@ export const formSchema = z
         interviewDate,
         offerDate,
         rejectedDate,
+        ghostedDate,
       } = data;
       if (wishListDate && appliedDate && !(wishListDate < appliedDate))
         return false;
@@ -127,6 +128,7 @@ export const formSchema = z
         return false;
       if (offerDate && rejectedDate && !(offerDate <= rejectedDate))
         return false;
+      if (offerDate && ghostedDate && !(offerDate <= ghostedDate)) return false;
 
       return true;
     },
@@ -139,6 +141,7 @@ export const formSchema = z
         "interviewDate",
         "offerDate",
         "rejectedDate",
+        "ghostedDate",
       ],
     },
   );
