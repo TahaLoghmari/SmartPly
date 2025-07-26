@@ -8,6 +8,7 @@ using backend.Mappings;
 using backend.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.RateLimiting;
@@ -76,6 +77,20 @@ public class ApplicationController(
 
         return NoContent();
     }
+
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> PatchApplication(
+        [FromRoute] Guid id,
+        [FromBody] JsonPatchDocument<ApplicationRequestDto> patchDoc,
+        [FromServices] IValidator<ApplicationRequestDto> validator)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        
+        await applicationService.PatchApplication(id, userId, patchDoc,validator,ModelState);
+
+        return NoContent();
+    }
+
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteApplication(

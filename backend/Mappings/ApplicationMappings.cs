@@ -55,6 +55,36 @@ internal static class ApplicationMappings
 
         return application;
     }
+    
+    public static ApplicationRequestDto ToApplicationRequestDto(this Application application)
+    {
+        return new ApplicationRequestDto
+        {
+            ResumeId = application.ResumeId,
+            CoverLetterId = application.CoverLetterId,
+            CompanyName = application.CompanyName,
+            CompanyEmail = application.CompanyEmail,
+            Position = application.Position,
+            Link = application.Link,
+            Notes = application.Notes,
+            Location = application.Location,
+            StartSalary = application.StartSalary,
+            EndSalary = application.EndSalary,
+            Deadline = application.Deadline,
+            JobDescription = application.JobDescription,
+            Status = application.Status,
+            Type = application.Type,
+            JobType = application.JobType,
+            Level = application.Level,
+            TechnologiesUsed = application.TechnologiesUsed?.ToList(),
+            WishListDate = application.WishListDate,
+            AppliedDate = application.AppliedDate,
+            InterviewDate = application.InterviewDate,
+            OfferDate = application.OfferDate,
+            RejectedDate = application.RejectedDate,
+            GhostedDate = application.GhostedDate
+        };
+    }
 
     public static ApplicationResponseDto ToApplicationResponseDto(this Application application)
     {

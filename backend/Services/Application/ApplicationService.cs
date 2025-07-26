@@ -7,8 +7,10 @@ using backend.Enums;
 using backend.Mappings;
 using backend.Services.Shared;
 using FluentValidation;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -152,6 +154,58 @@ public class ApplicationService(
         cacheService.InvalidateUserApplicationCache(userId);
 
         logger.LogInformation("Application edited with ID {ApplicationId}", application.Id);
+    }
+    
+    public async Task PatchApplication(
+        Guid id,
+        string? userId,
+        JsonPatchDocument<ApplicationRequestDto> patchDoc,
+        IValidator<ApplicationRequestDto> validator,
+        ModelStateDictionary modelState)
+    {
+        if (id == Guid.Empty)
+        {
+            logger.LogWarning("Invalid application id provided.");
+            throw new BadRequestException("The provided application ID is invalid.");
+        }
+        
+        if (userId is null)
+        {
+            logger.LogWarning("Get current user failed - user ID claim missing");
+            throw new UnauthorizedException("User ID claim is missing.");
+        }
+        
+        logger.LogInformation("Starting application patching for user {UserId}", userId);
+        
+        Application? application = await dbContext.Applications.FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
+
+        if (application is null)
+        {
+            logger.LogWarning("Get current application failed - application not found for Id: {applicationId}", id);
+            throw new NotFoundException($"No Application found with ID '{id}'.");
+        }
+        
+        ApplicationRequestDto applicationDto = application.ToApplicationRequestDto();
+        
+        patchDoc.ApplyTo(applicationDto, modelState);
+        
+        if (!modelState.IsValid)
+        {
+            var errors = modelState
+                .SelectMany(x => x.Value.Errors)
+                .Select(x => x.ErrorMessage);
+            throw new BadRequestException($"Invalid patch operations: {string.Join(", ", errors)}");
+        }
+        
+        await validator.ValidateAndThrowAsync(applicationDto);
+        
+        application.UpdateFromDto(applicationDto);
+        
+        await dbContext.SaveChangesAsync();
+        
+        cacheService.InvalidateUserApplicationCache(userId);
+        
+        logger.LogInformation("Application patched with ID {ApplicationId}", application.Id);
     }
     
     public async Task DeleteApplication(

@@ -21,7 +21,7 @@ public static class DependencyInjection
 {
     public static WebApplicationBuilder AddControllers(this WebApplicationBuilder builder)
     {
-        builder.Services.AddControllers();
+        builder.Services.AddControllers().AddNewtonsoftJson();
 
         builder.Services.AddOpenApi();
 
@@ -36,7 +36,7 @@ public static class DependencyInjection
                           .AllowCredentials();
                 });
         });
-
+        
         return builder;
     }
     
