@@ -57,23 +57,23 @@ public class ApplicationRequestDtoValidator : AbstractValidator<ApplicationReque
             .WithMessage("Deadline must be in the future.");
         
         RuleFor(a => a)
-            .Must(a => !a.WishListDate.HasValue || !a.AppliedDate.HasValue || a.WishListDate < a.AppliedDate)
+            .Must(a => !a.WishListDate.HasValue || !a.AppliedDate.HasValue || a.WishListDate.Value.ToUniversalTime() <= a.AppliedDate.Value.ToUniversalTime())
             .WithMessage("WishListDate must be less than AppliedDate.");
 
         RuleFor(a => a)
-            .Must(a => !a.AppliedDate.HasValue || !a.InterviewDate.HasValue || a.AppliedDate < a.InterviewDate)
+            .Must(a => !a.AppliedDate.HasValue || !a.InterviewDate.HasValue || a.AppliedDate.Value.ToUniversalTime() <= a.InterviewDate.Value.ToUniversalTime())
             .WithMessage("AppliedDate must be less than InterviewDate.");
 
         RuleFor(a => a)
-            .Must(a => !a.InterviewDate.HasValue || !a.OfferDate.HasValue || a.InterviewDate < a.OfferDate)
+            .Must(a => !a.InterviewDate.HasValue || !a.OfferDate.HasValue || a.InterviewDate.Value.ToUniversalTime() <= a.OfferDate.Value.ToUniversalTime())
             .WithMessage("InterviewDate must be less than OfferDate.");
 
         RuleFor(a => a)
-            .Must(a => !a.OfferDate.HasValue || !a.RejectedDate.HasValue || a.OfferDate <= a.RejectedDate)
+            .Must(a => !a.OfferDate.HasValue || !a.RejectedDate.HasValue || a.OfferDate.Value.ToUniversalTime() <= a.RejectedDate.Value.ToUniversalTime())
             .WithMessage("OfferDate must be less than or equal to RejectedDate.");
         
         RuleFor(a => a)
-            .Must(a => !a.OfferDate.HasValue || !a.GhostedDate.HasValue || a.OfferDate < a.GhostedDate)
+            .Must(a => !a.OfferDate.HasValue || !a.GhostedDate.HasValue || a.OfferDate.Value.ToUniversalTime() <= a.GhostedDate.Value.ToUniversalTime())
             .WithMessage("OfferDate must be less than or equal to RejectedDate.");
     }
 }

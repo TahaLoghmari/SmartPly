@@ -2,6 +2,7 @@ using System.Threading.RateLimiting;
 using backend.Services.Shared;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
 
 namespace backend;
 using Serilog;
@@ -21,7 +22,11 @@ public static class DependencyInjection
 {
     public static WebApplicationBuilder AddControllers(this WebApplicationBuilder builder)
     {
-        builder.Services.AddControllers().AddNewtonsoftJson();
+        builder.Services.AddControllers()
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.Converters.Add(new StringEnumConverter());
+            });
 
         builder.Services.AddOpenApi();
 
