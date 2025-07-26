@@ -11,5 +11,5 @@ public enum ApplicationStatus
     interview,
     offer,
     rejected,
-    ghosted
+    ghosted,
 }
