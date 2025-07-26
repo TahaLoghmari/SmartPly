@@ -256,3 +256,9 @@ export interface ManageApplicationStore {
   openDialog: boolean;
   setOpenDialog: (open: boolean) => void;
 }
+
+export interface JsonPatchOp {
+  op: "add" | "remove" | "replace" | "move" | "copy" | "test";
+  path: string;
+  value?: any;
+}

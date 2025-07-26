@@ -10,7 +10,11 @@ export async function request<T>(
   let headers: Record<string, string> = {};
 
   if (!(options.body instanceof FormData)) {
-    headers["Content-Type"] = "application/json";
+    if (options.method === "PATCH") {
+      headers["Content-Type"] = "application/json-patch+json";
+    } else {
+      headers["Content-Type"] = "application/json";
+    }
   }
 
   if (options.headers) {
