@@ -12,6 +12,8 @@ public sealed record ApplicationRequestDto
     public string Link { get; set; }
     public string? Notes { get; set; }
     public string Location { get; set; }
+    public string? JobDescription { get; set; }
+    public bool IsLiked { get; set; }
     public int StartSalary { get; set; }
     public int EndSalary { get; set; }
     public DateTime? Deadline { get; set; }
@@ -21,7 +23,6 @@ public sealed record ApplicationRequestDto
     public DateTime? OfferDate { get; set; }
     public DateTime? RejectedDate { get; set; }
     public DateTime? GhostedDate { get; set; }
-    public string? JobDescription { get; set; }
     public ApplicationStatus Status { get; set; }
     public ApplicationType Type { get; set; }
     public ApplicationJobType JobType { get; set; }

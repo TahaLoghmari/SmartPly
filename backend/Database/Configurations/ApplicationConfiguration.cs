@@ -76,5 +76,9 @@ public class ApplicationConfiguration : IEntityTypeConfiguration<Application>
             .WithMany(cl => cl.Applications)
             .HasForeignKey(a => a.CoverLetterId)
             .IsRequired(false);
+        
+        builder.Property(a => a.IsLiked)
+            .IsRequired()
+            .HasDefaultValue(false);
     }
 }

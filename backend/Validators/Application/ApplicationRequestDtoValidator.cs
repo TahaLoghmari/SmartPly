@@ -12,6 +12,9 @@ public class ApplicationRequestDtoValidator : AbstractValidator<ApplicationReque
         RuleFor(x => x.CompanyName)
             .NotEmpty().WithMessage("CompanyName is required.")
             .MaximumLength(100).WithMessage("CompanyName must be at most 100 characters.");
+        
+        RuleFor(x => x.IsLiked)
+            .NotNull().WithMessage("IsLiked is required.");
 
         RuleFor(x => x.CompanyEmail)
             .EmailAddress().When(x => !string.IsNullOrWhiteSpace(x.CompanyEmail))

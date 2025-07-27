@@ -78,8 +78,8 @@ public class ApplicationService(
             .Where(a => query.Level == null || a.Level == query.Level)
             .Where(a => query.Type == null || a.Type == query.Type)
             .Where(a => query.JobType == null || a.JobType == query.JobType)
-            .Select(a => a.ToApplicationResponseDto())
-            .OrderBy(a => a.CreatedAt);
+            .OrderBy(a => a.CreatedAt)
+            .Select(a => a.ToApplicationResponseDto());
         
         var paginationResult = await PaginationResult<ApplicationResponseDto>.CreateAsync(
             applicationQuery, query.Page ?? 1, query.PageSize ?? 8);

@@ -30,6 +30,7 @@ internal static class ApplicationMappings
             TechnologiesUsed = applicationRequestDto.TechnologiesUsed?.ToList() ?? new List<string>(),
             Notes = applicationRequestDto.Notes,
             JobDescription = applicationRequestDto.JobDescription,
+            IsLiked = applicationRequestDto.IsLiked,
         };
         switch (application.Status)
         {
@@ -82,7 +83,8 @@ internal static class ApplicationMappings
             InterviewDate = application.InterviewDate,
             OfferDate = application.OfferDate,
             RejectedDate = application.RejectedDate,
-            GhostedDate = application.GhostedDate
+            GhostedDate = application.GhostedDate,
+            IsLiked = application.IsLiked,
         };
     }
 
@@ -117,6 +119,7 @@ internal static class ApplicationMappings
             OfferDate = application.OfferDate,
             RejectedDate = application.RejectedDate,
             GhostedDate = application.GhostedDate,
+            IsLiked = application.IsLiked,
         };
     }
     public static void UpdateFromDto(this Application application, ApplicationRequestDto dto)
@@ -145,5 +148,6 @@ internal static class ApplicationMappings
         application.OfferDate = dto.OfferDate;
         application.RejectedDate = dto.RejectedDate;
         application.GhostedDate = dto.GhostedDate;
+        application.IsLiked = dto.IsLiked;
     }
 }

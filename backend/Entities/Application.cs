@@ -15,8 +15,10 @@ public sealed class Application
     public string Link { get; set; }
     public string? Notes { get; set; }
     public string Location { get; set; }
+    public string? JobDescription { get; set; } 
     public int StartSalary { get; set; }
     public int EndSalary { get; set; }
+    public bool IsLiked { get; set; }
     public DateTime? Deadline { get; set; } 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;
@@ -26,7 +28,6 @@ public sealed class Application
     public DateTime? OfferDate { get; set; }
     public DateTime? RejectedDate { get; set; }
     public DateTime? GhostedDate { get; set; }
-    public string? JobDescription { get; set; } 
     
     public ApplicationStatus Status { get; set; }
     public ApplicationType Type { get; set; }
