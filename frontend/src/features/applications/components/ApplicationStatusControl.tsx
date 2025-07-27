@@ -14,7 +14,7 @@ import {
   type JsonPatchOp,
 } from "#/applications";
 
-export function ApplicationCardStatusControl({
+export function ApplicationStatusControl({
   applicationCard,
 }: {
   applicationCard: ApplicationResponseDto;

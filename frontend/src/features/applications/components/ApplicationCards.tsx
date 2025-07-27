@@ -24,8 +24,6 @@ export function ApplicationCards() {
 
   const allItems = data?.pages.flatMap((page) => page.items) ?? [];
 
-  console.log(allItems);
-
   if (allItems.length > 0)
     return (
       <>
@@ -56,7 +54,7 @@ export function ApplicationCards() {
     );
 
   return (
-    <div className="text-muted-foreground flex w-full flex-1 flex-col items-center justify-center gap-4">
+    <div className="text-muted-foreground mt-26 flex w-full flex-1 flex-col items-center justify-center gap-4">
       <div className="bg-muted flex h-16 w-16 items-center justify-center rounded-full">
         <Plus className="h-8 w-8" />
       </div>

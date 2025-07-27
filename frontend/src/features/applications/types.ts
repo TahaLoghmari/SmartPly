@@ -69,6 +69,7 @@ export const formSchema = z
       .max(100, "Location must be at most 100 characters."),
     startSalary: z.coerce.number().min(1).max(1000),
     endSalary: z.coerce.number().min(1).max(1000),
+    isLiked: z.boolean(),
     technologiesUsed: z
       .array(z.string().min(1, "Technology cannot be empty"))
       .optional(),
@@ -164,8 +165,10 @@ export interface ApplicationResponseDto {
   link: string;
   notes: string | null;
   location: string;
+  jobDescription: string | null;
   startSalary: number;
   endSalary: number;
+  isLiked: boolean;
   deadline: Date | null;
   createdAt: Date;
   updatedAt: Date | null;
@@ -175,7 +178,6 @@ export interface ApplicationResponseDto {
   offerDate: Date | null;
   rejectedDate: Date | null;
   ghostedDate: Date | null;
-  jobDescription: string | null;
   status: ApplicationStatus;
   type: ApplicationType;
   jobType: ApplicationJobType;

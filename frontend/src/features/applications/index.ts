@@ -1,5 +1,8 @@
+// Individual Components
 export * from "./components/Applications";
 export * from "./components/ApplicationCards";
+export * from "./components/ApplicationStatusControl";
+// Folder Components
 export * from "./components/applicationForm";
 export * from "./components/applicationPage";
 export * from "./components/applicationCard";

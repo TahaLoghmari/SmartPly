@@ -6,3 +6,4 @@ export * from "./ApplicationPageTabs";
 export * from "./ApplicationPageOverviewSection";
 export * from "./ApplicationPageDocumentsSection";
 export * from "./ApplicationPageStatus";
+export * from "./ApplicationPageStatusDisplay";

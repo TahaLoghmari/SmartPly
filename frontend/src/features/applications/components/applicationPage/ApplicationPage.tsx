@@ -71,9 +71,8 @@ export function ApplicationPage() {
                   <ApplicationPageDocumentsSection />
                 )}
               </div>
-              {/* the right part */}
               <div className="flex w-1/3 flex-col gap-6 border-x px-8 py-6">
-                <ApplicationPageStatus />
+                <ApplicationPageStatus applicationCard={applicationCard} />
                 <div className="flex w-full flex-col gap-2">
                   <p className="font-medium">Notes</p>
                   <div className="bg-accent text-accent-foreground rounded-md p-4 text-xs break-words">
