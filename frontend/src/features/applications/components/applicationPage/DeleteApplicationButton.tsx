@@ -11,15 +11,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import {
-  useDeleteApplication,
-  type ApplicationPageProps,
-} from "#/applications";
 
 export function DeleteApplicationButton({
-  applicationCard,
-}: ApplicationPageProps) {
-  const deleteMutation = useDeleteApplication();
+  onDelete,
+  isLoading,
+}: {
+  onDelete: () => void;
+  isLoading: boolean;
+}) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -27,8 +26,14 @@ export function DeleteApplicationButton({
           variant="outline"
           className="text-destructive/80 border-destructive/80 hover:text-destructive hover:bg-destructive/5 dark:border-destructive/80 dark:hover:bg-destructive/5 flex w-23 cursor-pointer items-center"
         >
-          <Trash2 className="h-4 w-4" />
-          Delete
+          {isLoading ? (
+            <span className="border-destructive inline-block h-3 w-3 animate-spin rounded-full border-2 border-solid border-t-transparent"></span>
+          ) : (
+            <>
+              <Trash2 className="h-4 w-4" />
+              Delete
+            </>
+          )}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
@@ -41,11 +46,7 @@ export function DeleteApplicationButton({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={() => deleteMutation.mutate(applicationCard.id)}
-          >
-            Continue
-          </AlertDialogAction>
+          <AlertDialogAction onClick={onDelete}>Continue</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

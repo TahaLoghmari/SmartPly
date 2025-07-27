@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using backend.DTOs.Resume;
+using backend.DTOs.Shared;
 using backend.Services;
 using backend.Services.Shared;
 using FluentValidation;
@@ -92,7 +93,7 @@ public class ResumeController(
         
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         
-        await resumeService.BulkDeleteResumes(request.ResumeIds, userId);
+        await resumeService.BulkDeleteResumes(request.Ids, userId);
         
         return NoContent();
     }

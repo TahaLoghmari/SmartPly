@@ -16,8 +16,10 @@ import {
 
 export function ApplicationStatusControl({
   applicationCard,
+  className = "",
 }: {
   applicationCard: ApplicationResponseDto;
+  className?: string;
 }) {
   const patchApplicationMutation = usePatchApplication();
 
@@ -61,7 +63,7 @@ export function ApplicationStatusControl({
         });
       }}
     >
-      <SelectTrigger className="w-[120px] cursor-pointer">
+      <SelectTrigger className={`cursor-pointer ${className}`}>
         <SelectValue
           placeholder="Status"
           className="text-primary placeholder:text-primary text-sm"

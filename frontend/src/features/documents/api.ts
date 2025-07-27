@@ -1,9 +1,6 @@
 import { request } from "@/api/client";
-import type {
-  ResumeResponseDto,
-  ResumeRequestDto,
-  BulkDeleteRequestDto,
-} from "#/documents";
+import type { ResumeResponseDto, ResumeRequestDto } from "#/documents";
+import type { BulkDeleteRequestDto } from "@/types";
 
 export const getUserResumes = (search?: string) => {
   const params = new URLSearchParams();

@@ -262,6 +262,16 @@ export interface ManageApplicationStore {
   setOpenDialog: (open: boolean) => void;
 }
 
+export interface ApplicationManageJobsStore {
+  isSelecting: boolean;
+  selectedApplications: string[];
+  setIsSelecting: (isSelecting: boolean) => void;
+  setSelectedApplications: (selectedApplications: string[]) => void;
+  addApplication: (id: string) => void;
+  removeApplication: (id: string) => void;
+  clearSelectedApplications: () => void;
+}
+
 export interface JsonPatchOp {
   op: "add" | "remove" | "replace" | "move" | "copy" | "test";
   path: string;

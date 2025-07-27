@@ -1,5 +1,6 @@
 import {
   ApplicationCard,
+  ApplicationManageJobs,
   useGetUserApplications,
   type ApplicationResponseDto,
 } from "#/applications";
@@ -8,8 +9,6 @@ import { Plus } from "lucide-react";
 import { AddApplicationButton } from "#/applications";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
-import { CopyCheck } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 
 export function ApplicationCards() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -27,14 +26,7 @@ export function ApplicationCards() {
   if (allItems.length > 0)
     return (
       <>
-        <div className="text-muted-foreground mb-4 flex items-center gap-2 text-sm font-bold">
-          <CopyCheck className="h-4 w-4" />
-          <p>Manage Jobs</p>
-          <Separator
-            orientation="vertical"
-            className="mx-2 data-[orientation=vertical]:h-4"
-          />
-        </div>
+        <ApplicationManageJobs />
         <div className="grid grid-cols-1 gap-6">
           {allItems.map((applicationCard: ApplicationResponseDto) => (
             <ApplicationCard

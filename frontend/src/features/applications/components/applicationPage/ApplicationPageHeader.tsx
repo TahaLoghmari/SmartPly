@@ -3,6 +3,7 @@ import {
   EditApplicationButton,
   DeleteApplicationButton,
   type ApplicationResponseDto,
+  useDeleteApplication,
 } from "#/applications";
 
 export function ApplicationPageHeader({
@@ -10,6 +11,7 @@ export function ApplicationPageHeader({
 }: {
   applicationCard: ApplicationResponseDto;
 }) {
+  const deleteMutation = useDeleteApplication();
   return (
     <div className="flex items-center justify-between border-b px-8 py-6">
       <div className="flex flex-1 items-center gap-4">
@@ -30,7 +32,10 @@ export function ApplicationPageHeader({
       </div>
       <div className="mr-6 flex items-center gap-4">
         <EditApplicationButton applicationCard={applicationCard} />
-        <DeleteApplicationButton applicationCard={applicationCard} />
+        <DeleteApplicationButton
+          onDelete={() => deleteMutation.mutate(applicationCard.id)}
+          isLoading={deleteMutation.isPending}
+        />
       </div>
     </div>
   );

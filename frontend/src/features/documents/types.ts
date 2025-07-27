@@ -13,10 +13,6 @@ export interface ResumeRequestDto {
   file: File;
 }
 
-export interface BulkDeleteRequestDto {
-  resumeIds: string[];
-}
-
 export interface CoverLetterCreateResponseDto {
   id: string;
   userId: string;

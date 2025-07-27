@@ -29,7 +29,7 @@ export function Applications() {
           </div>
         )}
         {isError && (
-          <div className="text-muted-foreground flex w-full flex-1 flex-col items-center justify-center gap-7">
+          <div className="text-muted-foreground mt-26 flex w-full flex-1 flex-col items-center justify-center gap-7">
             <div className="flex flex-col items-center justify-center gap-2">
               <p className="text-primary text-4xl font-medium">
                 An Error Occured

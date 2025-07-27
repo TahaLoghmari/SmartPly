@@ -102,4 +102,18 @@ public class ApplicationController(
 
         return NoContent();
     }
+    
+    [HttpPost("bulk-delete")]
+    public async Task<IActionResult> BulkDeleteApplications(
+        [FromBody] BulkDeleteRequestDto request,
+        [FromServices] IValidator<BulkDeleteRequestDto> validator)
+    {
+        await validator.ValidateAndThrowAsync(request);
+        
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        
+        await applicationService.BulkDeleteApplications(request.Ids, userId);
+
+        return NoContent();
+    }
 }

@@ -6,6 +6,7 @@ import type {
   PaginationResult,
   ApplicationQueryParameters,
 } from "#/applications";
+import type { BulkDeleteRequestDto } from "@/types";
 
 export const createApplication = (credentials: ApplicationRequestDto) => {
   return request<ApplicationResponseDto>("/applications", {
@@ -34,6 +35,13 @@ export const patchApplication = (id: string, patch: unknown) => {
 export const deleteApplication = (id: string) => {
   return request<void>(`/applications/${id}`, {
     method: "DELETE",
+  });
+};
+
+export const bulkdDeleteApplication = (credentials: BulkDeleteRequestDto) => {
+  return request<void>(`/applications/bulk-delete`, {
+    method: "POST",
+    body: JSON.stringify(credentials),
   });
 };
 

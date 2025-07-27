@@ -243,4 +243,29 @@ public class ApplicationService(
         
         logger.LogInformation("Application deleted with ID {ApplicationId}", application.Id);
     }
+
+    public async Task BulkDeleteApplications(
+        List<Guid> applicationIds,
+        string? userId)
+    {
+        if (userId is null)
+        {
+            logger.LogWarning("Get current user failed - user ID claim missing");
+            throw new UnauthorizedException("User ID claim is missing.");
+        }
+        
+        var applications = await dbContext.Applications
+            .Where(a => applicationIds.Contains(a.Id) && a.UserId == userId)
+            .ToListAsync();
+        if (applications.Count == 0)
+        {
+            logger.LogWarning("No applications found for bulk delete with IDs: {ApplicationIds}", string.Join(", ", applicationIds));
+            throw new NotFoundException("No applications found for the provided IDs.");
+        }
+
+        logger.LogInformation("Bulk deleting applications with IDs: {ApplicationIds}", string.Join(", ", applicationIds));
+        dbContext.Applications.RemoveRange(applications);
+        await dbContext.SaveChangesAsync();
+        cacheService.InvalidateUserApplicationCache(userId);
+    }
 }
