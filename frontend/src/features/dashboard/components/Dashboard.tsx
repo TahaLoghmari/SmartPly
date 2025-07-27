@@ -1,4 +1,4 @@
-import { AppSidebar, SiteHeader } from "#/dashboard";
+import { AppSidebar, SideBarLogoutButton, SiteHeader } from "#/dashboard";
 import { useSearchParams, Outlet } from "react-router-dom";
 import { toast } from "sonner";
 import { useEffect } from "react";
@@ -39,6 +39,7 @@ export function Dashboard() {
       <SidebarInset>
         <SiteHeader />
         <Outlet />
+        <SideBarLogoutButton/>
       </SidebarInset>
     </SidebarProvider>
   );

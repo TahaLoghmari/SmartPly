@@ -22,6 +22,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useLogoutDialogStore } from "#/dashboard";
 
 export function NavUser({
   user,
@@ -33,7 +34,7 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
-
+  const { setIsOpen } = useLogoutDialogStore();
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -96,7 +97,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setIsOpen(true)}>
               <IconLogout />
               Log out
             </DropdownMenuItem>

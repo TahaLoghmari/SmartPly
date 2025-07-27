@@ -8,7 +8,6 @@ export * from "./components/header/ConnectGmailButton";
 export * from "./components/header/SiteHeader";
 
 // SideBar Components
-export * from "./components/sideBar/SideBarFooter";
 export * from "./components/sideBar/SideBarHeader";
 export * from "./components/sideBar/AppSidebar";
 export * from "./components/sideBar/SideBarLogo";
@@ -25,6 +24,7 @@ export * from "./constants";
 export * from "./stores/useDashboardNotificationsCount";
 export * from "./stores/useDashboardActiveNavItemStore";
 export * from "./stores/useDashboardSideBarStore";
+export * from "./stores/useLogoutDialogStore";
 
 // Types
 export * from "./types";

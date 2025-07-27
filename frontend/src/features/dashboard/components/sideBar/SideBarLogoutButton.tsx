@@ -1,7 +1,4 @@
-import { LogOut } from "lucide-react";
 import { useLogout, useCurrentUser } from "#/auth";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,31 +8,15 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useDashboardSideBarStore } from "#/dashboard";
+import { useLogoutDialogStore } from "#/dashboard";
 
 export function SideBarLogoutButton() {
-  const { activeState } = useDashboardSideBarStore();
   const { data: user } = useCurrentUser();
+  const { isOpen, setIsOpen } = useLogoutDialogStore();
   const logoutMutation = useLogout();
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button
-          className={`flex h-10 w-full cursor-pointer items-center rounded-md px-3 py-0 text-sm font-medium text-red-600 transition-[width,height,margin,padding] duration-200 hover:bg-red-50 ${!activeState || logoutMutation.isPending ? "justify-center" : "justify-start gap-3"}`}
-          variant="ghost"
-        >
-          {logoutMutation.isPending ? (
-            <Spinner className="h-8 w-auto invert dark:invert-0" />
-          ) : (
-            <>
-              <LogOut className="h-4 w-4 flex-shrink-0" />
-              {activeState && <p className="whitespace-nowrap">Logout</p>}
-            </>
-          )}
-        </Button>
-      </AlertDialogTrigger>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure you want to log out?</AlertDialogTitle>

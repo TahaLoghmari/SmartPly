@@ -13,6 +13,7 @@ import {
   type ApplicationResponseDto,
   type JsonPatchOp,
 } from "#/applications";
+import { useEffect, useState } from "react";
 
 export function ApplicationStatusControl({
   applicationCard,
@@ -22,10 +23,27 @@ export function ApplicationStatusControl({
   className?: string;
 }) {
   const patchApplicationMutation = usePatchApplication();
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (patchApplicationMutation.isSuccess && !patchApplicationMutation.isError)
+      setOpen(false);
+  }, [patchApplicationMutation.isPending]);
 
   const stepsWithLastStatus = [...steps, "Offer", "Rejected", "Ghosted"];
+
   return (
     <Select
+      open={open}
+      onOpenChange={(nextOpen) => {
+        if (
+          patchApplicationMutation.isSuccess &&
+          !nextOpen &&
+          !patchApplicationMutation.isError
+        )
+          setOpen(nextOpen);
+        if (nextOpen) setOpen(nextOpen);
+      }}
       defaultValue={applicationCard.status}
       onValueChange={(newStatus) => {
         const newStatus_UpperCase =

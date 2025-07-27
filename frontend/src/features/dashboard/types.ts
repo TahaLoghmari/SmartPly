@@ -33,3 +33,8 @@ export interface DashboardTitleStoreType {
   dashboardTitleState: string;
   setDashboardTitleState: (state: string) => void;
 }
+
+export interface LogoutDialogStoreType {
+  isOpen: boolean;
+  setIsOpen: (state: boolean) => void;
+}
