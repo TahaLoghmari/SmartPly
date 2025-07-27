@@ -33,7 +33,7 @@ export function ApplicationCardStatusDisplay({
             <div className="flex h-full min-w-[53px] flex-col items-center gap-2">
               <p className="text-xs font-normal">{step}</p>
               <div
-                className={` ${statusToValue[step] <= statusToValue[applicationStatus] ? "outline-accent outline-2" : ""} bg-background border-muted-foreground flex size-5 items-center justify-center rounded-full border`}
+                className={` ${statusToValue[step] <= statusToValue[applicationStatus] ? "outline-input outline-2" : ""} bg-background border-muted-foreground flex size-5 items-center justify-center rounded-full border`}
               >
                 <div
                   className={`${statusToValue[step] <= statusToValue[applicationStatus] ? "bg-muted-foreground size-2 rounded-full" : ""} `}

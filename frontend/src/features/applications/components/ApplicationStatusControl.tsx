@@ -13,7 +13,6 @@ import {
   type ApplicationResponseDto,
   type JsonPatchOp,
 } from "#/applications";
-import { useEffect, useState } from "react";
 
 export function ApplicationStatusControl({
   applicationCard,
@@ -23,63 +22,46 @@ export function ApplicationStatusControl({
   className?: string;
 }) {
   const patchApplicationMutation = usePatchApplication();
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (patchApplicationMutation.isSuccess && !patchApplicationMutation.isError)
-      setOpen(false);
-  }, [patchApplicationMutation.isPending]);
 
   const stepsWithLastStatus = [...steps, "Offer", "Rejected", "Ghosted"];
 
+  const handleValueChange = (newStatus: string) => {
+    const newStatus_UpperCase = newStatus[0].toUpperCase() + newStatus.slice(1);
+    const patchRequest: JsonPatchOp[] = [
+      {
+        op: "replace",
+        path: "/status",
+        value: newStatus,
+      },
+      ...stepsWithLastStatus
+        .filter(
+          (step) => statusToValue[step] > statusToValue[newStatus_UpperCase],
+        )
+        .map((step) => ({
+          op: "replace" as const,
+          path: `/${step[0].toLowerCase() + step.slice(1)}Date`,
+          value: null,
+        })),
+      ...stepsWithLastStatus
+        .filter(
+          (step) => statusToValue[step] <= statusToValue[newStatus_UpperCase],
+        )
+        .map((step) => ({
+          op: "replace" as const,
+          path: `/${step[0].toLowerCase() + step.slice(1)}Date`,
+          value: new Date().toISOString(),
+        })),
+    ];
+    patchApplicationMutation.mutate({
+      id: applicationCard.id,
+      patch: patchRequest,
+    });
+  };
+
   return (
     <Select
-      open={open}
-      onOpenChange={(nextOpen) => {
-        if (
-          patchApplicationMutation.isSuccess &&
-          !nextOpen &&
-          !patchApplicationMutation.isError
-        )
-          setOpen(nextOpen);
-        if (nextOpen) setOpen(nextOpen);
-      }}
       defaultValue={applicationCard.status}
-      onValueChange={(newStatus) => {
-        const newStatus_UpperCase =
-          newStatus[0].toUpperCase() + newStatus.slice(1);
-        const patchRequest: JsonPatchOp[] = [
-          {
-            op: "replace",
-            path: "/status",
-            value: newStatus,
-          },
-          ...stepsWithLastStatus
-            .filter(
-              (step) =>
-                statusToValue[step] > statusToValue[newStatus_UpperCase],
-            )
-            .map((step) => ({
-              op: "replace" as const,
-              path: `/${step[0].toLowerCase() + step.slice(1)}Date`,
-              value: null,
-            })),
-          ...stepsWithLastStatus
-            .filter(
-              (step) =>
-                statusToValue[step] <= statusToValue[newStatus_UpperCase],
-            )
-            .map((step) => ({
-              op: "replace" as const,
-              path: `/${step[0].toLowerCase() + step.slice(1)}Date`,
-              value: new Date().toISOString(),
-            })),
-        ];
-        patchApplicationMutation.mutate({
-          id: applicationCard.id,
-          patch: patchRequest,
-        });
-      }}
+      onValueChange={handleValueChange}
     >
       <SelectTrigger className={`cursor-pointer ${className}`}>
         <SelectValue
