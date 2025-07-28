@@ -1,9 +1,9 @@
 import {
-  ApplicationFilters,
-  ApplicationCards,
+  ApplicationsButtonAdd,
+  ApplicationsFilters,
+  ApplicationsCards,
   useGetUserApplications,
 } from "#/applications";
-import { AddApplicationButton } from "#/applications";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { Link, Outlet } from "react-router-dom";
@@ -20,9 +20,9 @@ export function Applications() {
           <p className="text-muted-foreground pt-2 pl-1 text-base font-bold uppercase">
             {data?.pages?.[0].totalCount} TOTAL JOBS
           </p>
-          <AddApplicationButton />
+          <ApplicationsButtonAdd />
         </div>
-        <ApplicationFilters />
+        <ApplicationsFilters />
         {isLoading && (
           <div className="flex w-full flex-1 flex-col items-center justify-center">
             <Spinner className="dark:invert" />
@@ -41,7 +41,7 @@ export function Applications() {
             </Button>
           </div>
         )}
-        {!isError && !isLoading && <ApplicationCards />}
+        {!isError && !isLoading && <ApplicationsCards />}
         <Outlet />
       </div>
     </div>

@@ -10,22 +10,6 @@ import {
   type ApplicationRequestDto,
 } from "#/applications";
 
-export const ApplicationStatusToColor: Record<ApplicationStatusLabel, string> =
-  {
-    Interview:
-      "bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-800/30",
-    Applied:
-      "bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800/30",
-    Rejected:
-      "bg-red-100 text-red-800 border border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800/30",
-    Ghosted:
-      "bg-gray-100 text-gray-800 border border-gray-200 dark:bg-gray-800/20 dark:text-gray-300 dark:border-gray-700/30",
-    Offer:
-      "bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800/30",
-    WishList:
-      "bg-purple-100 text-purple-800 border border-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:border-purple-800/30",
-  };
-
 export const applicationsLevelOptionsConstant: Readonly<
   {
     value: ApplicationLevel;

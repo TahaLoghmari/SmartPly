@@ -11,3 +11,9 @@ export interface ProblemDetails {
   traceId: string;
   type?: string;
 }
+
+export interface JsonPatchOp {
+  op: "add" | "remove" | "replace" | "move" | "copy" | "test";
+  path: string;
+  value?: any;
+}

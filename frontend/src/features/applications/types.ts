@@ -34,7 +34,7 @@ export type ApplicationLevel = "junior" | "mid" | "senior";
 
 export type ApplicationJobType = "fullTime" | "partTime" | "internship";
 
-export const formSchema = z
+export const ApplicationRequestformSchema = z
   .object({
     resumeId: z.string().min(1, "ResumeId is required."),
     coverLetterId: z.string().optional(),
@@ -147,7 +147,9 @@ export const formSchema = z
     },
   );
 
-export type ApplicationRequestDto = z.infer<typeof formSchema>;
+export type ApplicationRequestDto = z.infer<
+  typeof ApplicationRequestformSchema
+>;
 
 export interface ApplicationGetRequestDto {
   id: string;
@@ -204,14 +206,14 @@ export interface TechnologiesUsedProps {
   className?: string;
 }
 
-export interface ApplicationFilterStoreType<T> {
-  selectedFilter: T;
+export interface ApplicationFilterStore<T> {
+  selectedFilter: T | "";
   setSelectedFilter: (value: T) => void;
   clear: () => void;
 }
 
 export interface ApplicationFilterBarProps<T> {
-  selectedFilter: T;
+  selectedFilter: T | "";
   setSelectedFilter: (value: T) => void;
   applicationConstant: Readonly<{ value: T; label: string }[]>;
   name: string;
@@ -270,10 +272,4 @@ export interface ApplicationManageJobsStore {
   addApplication: (id: string) => void;
   removeApplication: (id: string) => void;
   clearSelectedApplications: () => void;
-}
-
-export interface JsonPatchOp {
-  op: "add" | "remove" | "replace" | "move" | "copy" | "test";
-  path: string;
-  value?: any;
 }
