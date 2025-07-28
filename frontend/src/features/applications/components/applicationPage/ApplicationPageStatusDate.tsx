@@ -17,27 +17,19 @@ export function ApplicationPageStatusDate({
   step: string;
   id: string;
 }) {
-  const [date, setDate] = useState<Date | undefined>(
-    applicationStatusDate instanceof Date
-      ? new Date(
-          applicationStatusDate.getFullYear(),
-          applicationStatusDate.getMonth(),
-          applicationStatusDate.getDate(),
-        )
-      : undefined,
-  );
+  const [open, setOpen] = useState<boolean>(false);
   const patchApplicationMutation = usePatchApplication();
   return (
     <>
       <p className="flex items-center font-medium">
         {step}
         <span className="text-muted-foreground ml-2 flex items-center text-xs font-normal">
-          {date
-            ? `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear() % 100}`
+          {applicationStatusDate
+            ? `${applicationStatusDate.getDate()}/${applicationStatusDate.getMonth() + 1}/${applicationStatusDate.getFullYear() % 100}`
             : ""}
         </span>
       </p>
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -52,8 +44,12 @@ export function ApplicationPageStatusDate({
           <Calendar
             mode="single"
             required
-            defaultMonth={date ? date : new Date()}
-            selected={date ? date : new Date()}
+            defaultMonth={
+              applicationStatusDate ? applicationStatusDate : new Date()
+            }
+            selected={
+              applicationStatusDate ? applicationStatusDate : new Date()
+            }
             onSelect={(selectedDate) => {
               if (!selectedDate) return;
               const patchRequest: JsonPatchOp[] = [
@@ -66,7 +62,9 @@ export function ApplicationPageStatusDate({
               patchApplicationMutation.mutate(
                 { id, patch: patchRequest },
                 {
-                  onSuccess: () => setDate(selectedDate),
+                  onSuccess: () => {
+                    setOpen(false);
+                  },
                   onError: (error) => handleApiError(error),
                 },
               );
