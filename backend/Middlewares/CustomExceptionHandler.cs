@@ -39,7 +39,7 @@ public sealed class CustomExceptionHandler(
             case ValidationException validation:
                 httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
                 problemDetails.Title = "Validation Failed";
-                problemDetails.Detail = validation.Message;
+                problemDetails.Detail = "One or more validation errors occurred.";
                 problemDetails.Status = StatusCodes.Status400BadRequest;
                 problemDetails.Extensions["errors"] = validation.Errors
                     .GroupBy(e => e.PropertyName)

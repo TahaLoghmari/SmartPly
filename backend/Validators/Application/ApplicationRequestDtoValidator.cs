@@ -54,29 +54,30 @@ public class ApplicationRequestDtoValidator : AbstractValidator<ApplicationReque
         RuleFor(x => x.TechnologiesUsed)
             .Must(list => list == null || list.All(t => !string.IsNullOrWhiteSpace(t)))
             .WithMessage("TechnologiesUsed cannot contain empty values.");
-
-        RuleFor(x => x.Deadline)
-            .GreaterThanOrEqualTo(DateTime.UtcNow).When(x => x.Deadline.HasValue)
-            .WithMessage("Deadline must be in the future.");
         
         RuleFor(a => a)
             .Must(a => !a.WishListDate.HasValue || !a.AppliedDate.HasValue || a.WishListDate.Value.ToUniversalTime() <= a.AppliedDate.Value.ToUniversalTime())
-            .WithMessage("WishListDate must be less than AppliedDate.");
+            .WithMessage("WishListDate must be less than AppliedDate.")
+            .WithName("WishListDate");
 
         RuleFor(a => a)
             .Must(a => !a.AppliedDate.HasValue || !a.InterviewDate.HasValue || a.AppliedDate.Value.ToUniversalTime() <= a.InterviewDate.Value.ToUniversalTime())
-            .WithMessage("AppliedDate must be less than InterviewDate.");
+            .WithMessage("AppliedDate must be less than InterviewDate.")
+            .WithName("AppliedDate");
 
         RuleFor(a => a)
             .Must(a => !a.InterviewDate.HasValue || !a.OfferDate.HasValue || a.InterviewDate.Value.ToUniversalTime() <= a.OfferDate.Value.ToUniversalTime())
-            .WithMessage("InterviewDate must be less than OfferDate.");
+            .WithMessage("InterviewDate must be less than OfferDate.")
+            .WithName("InterviewDate");
 
         RuleFor(a => a)
             .Must(a => !a.OfferDate.HasValue || !a.RejectedDate.HasValue || a.OfferDate.Value.ToUniversalTime() <= a.RejectedDate.Value.ToUniversalTime())
-            .WithMessage("OfferDate must be less than or equal to RejectedDate.");
+            .WithMessage("OfferDate must be less than or equal to RejectedDate.")
+            .WithName("OfferDate");
         
         RuleFor(a => a)
             .Must(a => !a.OfferDate.HasValue || !a.GhostedDate.HasValue || a.OfferDate.Value.ToUniversalTime() <= a.GhostedDate.Value.ToUniversalTime())
-            .WithMessage("OfferDate must be less than or equal to RejectedDate.");
+            .WithMessage("OfferDate must be less than or equal to RejectedDate.")
+            .WithName("OfferDate");
     }
 }
