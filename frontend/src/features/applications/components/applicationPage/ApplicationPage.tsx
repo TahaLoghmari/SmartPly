@@ -13,6 +13,8 @@ import {
 } from "#/applications";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useState } from "react";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { DialogDescription, DialogTitle } from "@/components/ui/dialog";
 
 export function ApplicationPage() {
   const { navigationPage } = useApplicationPageNavigationStore();
@@ -35,6 +37,12 @@ export function ApplicationPage() {
   return (
     <Sheet open={open} onOpenChange={handleClose}>
       <SheetContent className="gap-0 overflow-y-auto sm:max-w-7xl">
+        <VisuallyHidden>
+          <DialogTitle>Application Details</DialogTitle>
+          <DialogDescription>
+            Detailed information about your application.
+          </DialogDescription>
+        </VisuallyHidden>
         {isLoading && (
           <div className="flex flex-1 flex-col items-center justify-center overflow-auto transition-[width,height,margin,padding] duration-300">
             <Spinner className="dark:invert" />

@@ -1,3 +1,5 @@
+import type { ProblemDetails } from "@/types";
+
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
@@ -45,26 +47,19 @@ export async function request<T>(
         return request(endpoint, options);
       } else {
         isRefreshing = false;
-        throw new Error("Session expired");
+        let problemDetails: ProblemDetails = await response.json();
+        throw problemDetails;
       }
     } catch (error) {
       isRefreshing = false;
-      throw new Error("Session expired");
+      let problemDetails: ProblemDetails = await response.json();
+      throw problemDetails;
     }
   }
 
   if (!response.ok) {
-    let errorMessage = "An error occurred";
-    try {
-      const textError = await response.text();
-      const parsedError = JSON.parse(textError);
-      const errorTitle = parsedError.title;
-      const errorDetail = parsedError.detail;
-      errorMessage = `${errorTitle}: ${errorDetail}`;
-    } catch {
-      errorMessage = `Server error (${response.status})`;
-    }
-    throw new Error(errorMessage);
+    let problemDetails: ProblemDetails = await response.json();
+    throw problemDetails;
   }
 
   const text = await response.text();
