@@ -148,6 +148,11 @@
   background: var(--muted-foreground);
 }
 
+.dark input[type="number"]::-webkit-inner-spin-button,
+.dark input[type="number"]::-webkit-outer-spin-button {
+  filter: invert(1);
+}
+
 @supports (scrollbar-color: auto) {
   * {
     scrollbar-width: auto;
