@@ -30,30 +30,14 @@ internal static class ApplicationMappings
             TechnologiesUsed = applicationRequestDto.TechnologiesUsed?.ToList() ?? new List<string>(),
             Notes = applicationRequestDto.Notes,
             JobDescription = applicationRequestDto.JobDescription,
+            WishListDate = applicationRequestDto.WishListDate,
+            AppliedDate = applicationRequestDto.AppliedDate,
+            InterviewDate = applicationRequestDto.InterviewDate,
+            OfferDate = applicationRequestDto.OfferDate,
+            RejectedDate = applicationRequestDto.RejectedDate,
+            GhostedDate = applicationRequestDto.GhostedDate,
             IsLiked = applicationRequestDto.IsLiked,
         };
-        switch (application.Status)
-        {
-            case ApplicationStatus.wishList:
-                application.WishListDate = DateTime.UtcNow;
-                break;
-            case ApplicationStatus.applied:
-                application.AppliedDate = DateTime.UtcNow;
-                break;
-            case ApplicationStatus.interview:
-                application.InterviewDate = DateTime.UtcNow;
-                break;
-            case ApplicationStatus.offer:
-                application.OfferDate = DateTime.UtcNow;
-                break;
-            case ApplicationStatus.rejected:
-                application.RejectedDate = DateTime.UtcNow;
-                break;
-            case ApplicationStatus.ghosted:
-                application.GhostedDate = DateTime.UtcNow;
-                break;
-        }
-
         return application;
     }
     
