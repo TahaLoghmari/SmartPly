@@ -73,12 +73,7 @@ export const ApplicationRequestformSchema = z
     technologiesUsed: z
       .array(z.string().min(1, "Technology cannot be empty"))
       .optional(),
-    deadline: z
-      .date()
-      .optional()
-      .refine((val) => !val || val >= new Date(), {
-        message: "Deadline must be in the future.",
-      }),
+    deadline: z.date().optional(),
     jobDescription: z.string().optional(),
     status: z.enum(
       applicationsStatusOptionsConstant.map((o) => o.value) as [
