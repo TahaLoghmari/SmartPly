@@ -16,11 +16,15 @@ import {
   type ApplicationRequestDto,
   type ApplicationFormProps,
   ApplicationRequestformSchema,
+  useManageApplicationStore,
+  statusToValue,
+  steps,
+  statusToDateKey,
 } from "#/applications";
 import { useCurrentUser } from "#/auth";
-import { useManageApplicationStore } from "#/applications";
 import { useRef, useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
+import { handleApiError } from "@/index";
 
 export function ApplicationsForm({
   mutationType,
@@ -29,6 +33,7 @@ export function ApplicationsForm({
   const setApplicationFormOpen = useManageApplicationStore(
     (s) => s.setOpenDialog,
   );
+  const allSteps = [...steps, "Offer", "Ghosted", "Rejected"];
   const { data: user } = useCurrentUser();
   const createMutation = useCreateApplication();
   const editMutation = useEditApplication();
@@ -38,8 +43,6 @@ export function ApplicationsForm({
     mutationType === "create"
       ? createMutation.isPending
       : editMutation.isPending;
-  const error =
-    mutationType === "create" ? createMutation.error : editMutation.error;
 
   const form = useForm<ApplicationRequestDto>({
     resolver: zodResolver(ApplicationRequestformSchema),
@@ -59,6 +62,12 @@ export function ApplicationsForm({
       startSalary: applicationCard?.startSalary || undefined,
       endSalary: applicationCard?.endSalary || undefined,
       deadline: applicationCard?.deadline || undefined,
+      wishListDate: applicationCard?.wishListDate || undefined,
+      appliedDate: applicationCard?.appliedDate || undefined,
+      interviewDate: applicationCard?.interviewDate || undefined,
+      offerDate: applicationCard?.offerDate || undefined,
+      rejectedDate: applicationCard?.rejectedDate || undefined,
+      ghostedDate: applicationCard?.ghostedDate || undefined,
       status: applicationCard?.status || "applied",
       type: applicationCard?.type || "onSite",
       jobType: applicationCard?.jobType || "fullTime",
@@ -73,15 +82,33 @@ export function ApplicationsForm({
     }
   }, [isError]);
   async function onSubmit(credentials: ApplicationRequestDto) {
+    allSteps.map((step) => {
+      const step_lowerCase = step[0].toLowerCase() + step.slice(1);
+
+      if (
+        statusToValue[step] <=
+        statusToValue[
+          credentials.status[0].toUpperCase() + credentials.status.slice(1)
+        ]
+      ) {
+        (credentials as any)[statusToDateKey[step_lowerCase]] = (
+          credentials as any
+        )[statusToDateKey[step_lowerCase]]
+          ? (credentials as any)[statusToDateKey[step_lowerCase]]
+          : new Date().toISOString();
+      } else (credentials as any)[statusToDateKey[step_lowerCase]] = null;
+    });
     if (mutationType === "create") {
       createMutation.mutate(credentials, {
         onSuccess: () => setApplicationFormOpen(false),
+        onError: (error) => handleApiError(error),
       });
     } else {
       editMutation.mutate(
         { id: applicationCard.id, credentials },
         {
           onSuccess: () => setApplicationFormOpen(false),
+          onError: (error) => handleApiError(error),
         },
       );
     }
@@ -93,11 +120,6 @@ export function ApplicationsForm({
         className="w-full space-y-8"
         ref={formRef}
       >
-        {isError && (
-          <div className="bg-destructive/10 border-destructive text-destructive mb-4 rounded-md border p-3 text-sm">
-            {error!.message}
-          </div>
-        )}
         <ApplicationsFormCompanyInformation form={form} />
         <ApplicationsFormJobDetails form={form} />
         <ApplicationsFormDetails form={form} />

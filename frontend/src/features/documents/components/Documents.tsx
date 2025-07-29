@@ -12,6 +12,7 @@ import { DataTable } from "@/components/DataTable";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { handleApiError } from "@/index";
 
 export function Documents() {
   const { data: resumes } = useGetUserResumes();
@@ -21,7 +22,12 @@ export function Documents() {
   const bulkDeleteResumesMutation = useBulkDeleteResumes();
   const deleteSelectedRows = () => {
     const resumeIds = selected.map((row) => row.original.id);
-    bulkDeleteResumesMutation.mutate({ resumeIds: resumeIds });
+    bulkDeleteResumesMutation.mutate(
+      { Ids: resumeIds },
+      {
+        onError: (error) => handleApiError(error),
+      },
+    );
   };
   return (
     <div className="flex-1 overflow-auto transition-[width,height,margin,padding] duration-300">

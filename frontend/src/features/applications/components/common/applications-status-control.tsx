@@ -13,6 +13,7 @@ import {
   type ApplicationResponseDto,
 } from "#/applications";
 import { type JsonPatchOp } from "@/types";
+import { handleApiError } from "@/index";
 
 export function ApplicationsStatusControl({
   applicationCard,
@@ -52,10 +53,15 @@ export function ApplicationsStatusControl({
           value: new Date().toISOString(),
         })),
     ];
-    patchApplicationMutation.mutate({
-      id: applicationCard.id,
-      patch: patchRequest,
-    });
+    patchApplicationMutation.mutate(
+      {
+        id: applicationCard.id,
+        patch: patchRequest,
+      },
+      {
+        onError: (error) => handleApiError(error),
+      },
+    );
   };
 
   return (

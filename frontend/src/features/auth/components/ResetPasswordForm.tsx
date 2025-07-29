@@ -25,6 +25,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { handleApiError } from "@/index";
 
 export function ResetPasswordForm() {
   const resetPasswordMutation = useResetPassword();
@@ -48,7 +49,9 @@ export function ResetPasswordForm() {
       confirmPassword: formData.confirmPassword,
       token: token || "",
     };
-    resetPasswordMutation.mutate(dto);
+    resetPasswordMutation.mutate(dto, {
+      onError: (error) => handleApiError(error),
+    });
   }
   return (
     <div className="flex flex-col gap-6">
@@ -63,11 +66,6 @@ export function ResetPasswordForm() {
               onSubmit={form.handleSubmit(onSubmit)}
               className="w-full space-y-6"
             >
-              {resetPasswordMutation.isError && (
-                <div className="bg-destructive/10 border-destructive text-destructive mb-4 rounded-md border p-3 text-sm">
-                  {resetPasswordMutation.error.message}
-                </div>
-              )}
               <FormField
                 control={form.control}
                 name="email"

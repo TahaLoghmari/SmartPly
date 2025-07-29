@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { handleApiError } from "@/index";
 
 export function ForgotPasswordPage() {
   const { hasClickedResetPassword, email } = useForgotPasswordStore();
@@ -69,7 +70,12 @@ export function ForgotPasswordPage() {
                       className="mb-2 w-full cursor-pointer"
                       disabled={forgotPasswordMutation.isPending}
                       onClick={() => {
-                        forgotPasswordMutation.mutate({ email });
+                        forgotPasswordMutation.mutate(
+                          { email },
+                          {
+                            onError: (error) => handleApiError(error),
+                          },
+                        );
                         toast.success("Please check your inbox!");
                       }}
                     >

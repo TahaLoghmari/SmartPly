@@ -1,7 +1,7 @@
-import type { RouteObject } from "react-router-dom";
+import { Navigate, type RouteObject } from "react-router-dom";
 import { Dashboard } from "#/dashboard";
 import { ProtectedRoute } from "../../shared";
-import { Applications, applicationRoutes } from "#/applications";
+import { applicationRoutes } from "#/applications";
 import { Analytics } from "#/analytics";
 import { Contacts } from "#/contacts";
 import { Documents } from "#/documents";
@@ -20,7 +20,7 @@ export const dashboardRoutes: RouteObject[] = [
     children: [
       {
         index: true,
-        element: <Applications />,
+        element: <Navigate to="applications" replace />,
       },
       ...applicationRoutes,
       {

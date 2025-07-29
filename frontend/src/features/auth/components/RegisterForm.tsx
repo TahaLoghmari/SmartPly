@@ -28,6 +28,7 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
+import { handleApiError } from "@/index";
 
 export function RegisterForm({
   className,
@@ -51,6 +52,7 @@ export function RegisterForm({
       onSuccess: () => {
         navigate(`/email-verification/?email=${credentials.email}`);
       },
+      onError: (error) => handleApiError(error),
     });
   };
   return (
@@ -63,18 +65,15 @@ export function RegisterForm({
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              {registerMutation.isError && (
-                <div className="bg-destructive/10 border-destructive text-destructive mb-4 rounded-md border p-3 text-sm">
-                  {registerMutation.error.message}
-                </div>
-              )}
               <div className="grid gap-6">
                 <div className="flex flex-col gap-4">
                   <Button
                     variant="outline"
                     className="w-full"
                     onClick={() => {
-                      getGoogleOAuthUrlMutation.mutate();
+                      getGoogleOAuthUrlMutation.mutate(undefined, {
+                        onError: (error) => handleApiError(error),
+                      });
                     }}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

@@ -5,6 +5,7 @@ import {
   type ApplicationResponseDto,
   useDeleteApplication,
 } from "#/applications";
+import { handleApiError } from "@/index";
 
 export function ApplicationsPageHeader({
   applicationCard,
@@ -33,7 +34,11 @@ export function ApplicationsPageHeader({
       <div className="mr-6 flex items-center gap-4">
         <ApplicationsButtonEdit applicationCard={applicationCard} />
         <ApplicationsButtonDelete
-          onDelete={() => deleteMutation.mutate(applicationCard.id)}
+          onDelete={() =>
+            deleteMutation.mutate(applicationCard.id, {
+              onError: (error) => handleApiError(error),
+            })
+          }
           isLoading={deleteMutation.isPending}
         />
       </div>

@@ -29,6 +29,7 @@ import { toast } from "sonner";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { handleApiError } from "@/index";
 
 export function LoginForm({
   className,
@@ -49,8 +50,9 @@ export function LoginForm({
     loginMutation.mutate(credentials);
   }
   const isEmailNotVerified =
-    loginMutation.error?.message?.startsWith("Email not Verified");
-  const errorMessage = loginMutation.error?.message;
+    loginMutation.error?.title?.startsWith("Email not Verified");
+
+  // this is for google signin/signup failing
   useEffect(() => {
     const message = searchParams.get("message");
     if (message) {
@@ -70,7 +72,10 @@ export function LoginForm({
             <form onSubmit={form.handleSubmit(onSubmit)}>
               {loginMutation.isError && (
                 <div className="bg-destructive/10 border-destructive text-destructive mb-4 rounded-md border p-3 text-sm">
-                  <div>{errorMessage}</div>
+                  <div className="flex flex-col gap-1">
+                    <p>{loginMutation.error?.title}</p>
+                    <p>{loginMutation.error?.detail}</p>
+                  </div>
                   {isEmailNotVerified && (
                     <div className="mt-2">
                       <Link
@@ -89,7 +94,9 @@ export function LoginForm({
                     variant="outline"
                     className="w-full"
                     onClick={() => {
-                      getGoogleOAuthUrlMutation.mutate();
+                      getGoogleOAuthUrlMutation.mutate(undefined, {
+                        onError: (error) => handleApiError(error),
+                      });
                     }}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

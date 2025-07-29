@@ -36,7 +36,7 @@ export function ApplicationsPage() {
   };
   return (
     <Sheet open={open} onOpenChange={handleClose}>
-      <SheetContent className="gap-0 overflow-y-auto sm:max-w-7xl">
+      <SheetContent className="gap-0 overflow-y-auto focus:outline-none sm:max-w-7xl">
         <VisuallyHidden>
           <DialogTitle>Application Details</DialogTitle>
           <DialogDescription>
@@ -82,7 +82,7 @@ export function ApplicationsPage() {
                 <div className="flex w-full flex-col gap-2">
                   <p className="font-medium">Notes</p>
                   <div className="bg-accent text-accent-foreground rounded-md p-4 text-xs break-words">
-                    {applicationCard.notes}
+                    {applicationCard.notes || '"N/A"'}
                   </div>
                 </div>
               </div>

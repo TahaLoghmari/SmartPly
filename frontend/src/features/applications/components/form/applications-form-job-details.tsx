@@ -109,12 +109,11 @@ export function ApplicationsFormJobDetails({
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
+                    required
+                    defaultMonth={field.value}
                     selected={field.value}
                     onSelect={field.onChange}
-                    disabled={(date) =>
-                      date < new Date(new Date().setHours(0, 0, 0, 0))
-                    }
-                    captionLayout="dropdown"
+                    className="rounded-lg border shadow-sm"
                   />
                 </PopoverContent>
               </Popover>

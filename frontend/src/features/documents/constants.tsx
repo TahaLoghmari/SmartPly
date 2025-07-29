@@ -11,7 +11,7 @@ import { Actions } from "#/documents";
 export const coverLettersConstant: CoverLetterCreateResponseDto[] = [
   {
     id: "e2b1c2d3-4f5a-6789-b0c1-2d3e4f5a6789",
-    userId: "e03f666f-4603-4732-91cd-9e5e9f506e4c",
+    userId: "9275e9bb-0670-4e89-b2b7-44e33cd1f62d",
     name: "Frontend Position Cover Letter",
   },
 ];

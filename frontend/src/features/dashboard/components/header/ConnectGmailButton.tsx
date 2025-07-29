@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useGetGoogleLinkOAuthUrl } from "#/auth";
 import { Spinner } from "@/components/ui/spinner";
+import { handleApiError } from "@/index";
 
 export function ConnectGmailButton() {
   const getGoogleOAuthUrlMutation = useGetGoogleLinkOAuthUrl();
@@ -69,7 +70,9 @@ export function ConnectGmailButton() {
           <AlertDialogAction asChild>
             <button
               onClick={() => {
-                getGoogleOAuthUrlMutation.mutate();
+                getGoogleOAuthUrlMutation.mutate(undefined, {
+                  onError: (error) => handleApiError(error),
+                });
               }}
               className="flex w-full cursor-pointer items-center justify-center border transition-colors"
             >
