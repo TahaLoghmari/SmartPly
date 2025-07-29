@@ -7,6 +7,7 @@ import {
   useBulkDeleteApplications,
 } from "#/applications";
 import { Checkbox } from "@/components/ui/checkbox";
+import { handleApiError } from "@/index";
 
 export function ApplicationsManageJobs() {
   const bulkDeleteApplicationsMutation = useBulkDeleteApplications();
@@ -73,6 +74,7 @@ export function ApplicationsManageJobs() {
                       clearSelectedApplications();
                       setIsSelecting(false);
                     },
+                    onError: (error) => handleApiError(error),
                   },
                 )
               }
