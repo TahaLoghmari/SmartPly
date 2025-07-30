@@ -1,5 +1,4 @@
-import { type ApplicationRequestDto } from "#/applications";
-import type { UseFormReturn } from "react-hook-form";
+import { type ApplicationFormContentProps } from "#/applications";
 import {
   FormControl,
   FormField,
@@ -21,9 +20,7 @@ import { format } from "date-fns";
 
 export function ApplicationsFormJobDetails({
   form,
-}: {
-  form: UseFormReturn<ApplicationRequestDto>;
-}) {
+}: ApplicationFormContentProps) {
   return (
     <div className="space-y-4">
       <p className="text-foreground border-b pb-2 text-lg font-medium">

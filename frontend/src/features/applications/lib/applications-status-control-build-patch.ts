@@ -1,11 +1,11 @@
-import { type JsonPatchOp } from "@/types";
+import { type JsonPatchDto } from "@/types";
 import { capitalize, uncapitalize, statusToValue, steps } from "#/applications";
 import { type ApplicationResponseDto } from "#/applications";
 
 export function ApplicationStatusControlBuildPatch(
   applicationCard: ApplicationResponseDto,
   newStatus: string,
-): JsonPatchOp[] {
+): JsonPatchDto[] {
   const stepsWithLastStatus = [...steps, "Offer", "Rejected", "Ghosted"];
   const newStatus_UpperCase = capitalize(newStatus);
 

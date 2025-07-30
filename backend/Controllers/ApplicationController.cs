@@ -42,14 +42,14 @@ public class ApplicationController(
     }
 
     [HttpGet]
-    public async Task<ActionResult<PaginationResult<ApplicationResponseDto>>> GetUserApplications( 
+    public async Task<ActionResult<PaginationResultDto<ApplicationResponseDto>>> GetUserApplications( 
         [FromQuery] ApplicationQueryParameters query)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        PaginationResult<ApplicationResponseDto> paginationResult = await applicationService.GetUserApplications(query, userId);
+        PaginationResultDto<ApplicationResponseDto> paginationResultDto = await applicationService.GetUserApplications(query, userId);
         
-        return Ok(paginationResult);
+        return Ok(paginationResultDto);
     }
     
     [HttpGet("{id}")]

@@ -1,22 +1,16 @@
-import {
-  usePatchApplication,
-  type ApplicationResponseDto,
-} from "#/applications";
+import { usePatchApplication, type ApplicationCardProps } from "#/applications";
 import { Spinner } from "@/components/ui/spinner";
-import { type JsonPatchOp } from "@/types";
+import { type JsonPatchDto } from "@/types";
 
 export function ApplicationsButtonLike({
   applicationCard,
-}: {
-  applicationCard: ApplicationResponseDto;
-}) {
-
+}: ApplicationCardProps) {
   const patchApplicationMutation = usePatchApplication();
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     e.preventDefault();
-    const patchRequest: JsonPatchOp[] = [
+    const patchRequest: JsonPatchDto[] = [
       {
         op: "replace",
         path: "/isLiked",
@@ -28,7 +22,7 @@ export function ApplicationsButtonLike({
       patch: patchRequest,
     });
   };
-  
+
   return patchApplicationMutation.isPending ? (
     <Spinner className="h-auto w-6 invert" />
   ) : (

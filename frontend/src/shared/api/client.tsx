@@ -1,4 +1,4 @@
-import type { ProblemDetails } from "@/types";
+import type { ProblemDetailsDto } from "@/types";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
@@ -47,18 +47,18 @@ export async function request<T>(
         return request(endpoint, options);
       } else {
         isRefreshing = false;
-        let problemDetails: ProblemDetails = await response.json();
+        let problemDetails: ProblemDetailsDto = await response.json();
         throw problemDetails;
       }
     } catch (error) {
       isRefreshing = false;
-      let problemDetails: ProblemDetails = await response.json();
+      let problemDetails: ProblemDetailsDto = await response.json();
       throw problemDetails;
     }
   }
 
   if (!response.ok) {
-    let problemDetails: ProblemDetails = await response.json();
+    let problemDetails: ProblemDetailsDto = await response.json();
     throw problemDetails;
   }
 

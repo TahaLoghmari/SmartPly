@@ -11,14 +11,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import type { ApplicationsButtonDeleteProps } from "#/applications";
 
 export function ApplicationsButtonDelete({
   onDelete,
   isLoading,
-}: {
-  onDelete: () => void;
-  isLoading: boolean;
-}) {
+}: ApplicationsButtonDeleteProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>

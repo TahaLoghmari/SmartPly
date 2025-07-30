@@ -1,12 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
 import { resetPassword, type ResetPasswordDto } from "#/auth";
 import { useNavigate } from "react-router-dom";
-import { handleApiError } from "@/index";
+import { handleApiError, type ProblemDetailsDto } from "@/index";
 
 export function useResetPassword() {
   const navigate = useNavigate();
-  return useMutation({
-    mutationFn: (credentials: ResetPasswordDto) => resetPassword(credentials),
+  return useMutation<string, ProblemDetailsDto, ResetPasswordDto>({
+    mutationFn: resetPassword,
     onSuccess: () => navigate("/login"),
     onError: handleApiError,
   });

@@ -1,7 +1,10 @@
-import { type ApplicationRequestDto } from "#/applications";
+import {
+  type ApplicationRequestDto,
+  type ApplicationResponseDto,
+} from "#/applications";
 
-export function ApplicationsFormGetDefaultValues(
-  card: any,
+export function ApplicationsFormDefaultValues(
+  card: ApplicationResponseDto | undefined,
   userId: string,
 ): ApplicationRequestDto {
   return {
@@ -16,8 +19,8 @@ export function ApplicationsFormGetDefaultValues(
     location: card?.location || "",
     jobDescription: card?.jobDescription || "",
     isLiked: false,
-    startSalary: card?.startSalary,
-    endSalary: card?.endSalary,
+    startSalary: card?.startSalary || 0,
+    endSalary: card?.endSalary || 0,
     deadline: card?.deadline,
     status: card?.status || "applied",
     type: card?.type || "onSite",

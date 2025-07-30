@@ -1,9 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import { resendConfirmationEmail } from "#/auth";
-import { handleApiError } from "@/index";
+import { handleApiError, type ProblemDetailsDto } from "@/index";
 
 export function useResendConfirmationEmail() {
-  return useMutation({
+  return useMutation<string, ProblemDetailsDto, string>({
     mutationFn: async (email: string) => {
       return resendConfirmationEmail(email);
     },

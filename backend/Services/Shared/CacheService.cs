@@ -24,7 +24,7 @@ public sealed class CacheService(
         return $"{USER_RESUMES_PREFIX}{userId}_{query.Search}";
     }
     
-    public void CacheApplicationsResult(string cacheKey, PaginationResult<ApplicationResponseDto> result, string userId)
+    public void CacheApplicationsResult(string cacheKey, PaginationResultDto<ApplicationResponseDto> resultDto, string userId)
     {
         var cacheOptions = new MemoryCacheEntryOptions()
             .SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
@@ -33,7 +33,7 @@ public sealed class CacheService(
 
         TrackCacheKey(userId, cacheKey);
 
-        cache.Set(cacheKey, result, cacheOptions);
+        cache.Set(cacheKey, resultDto, cacheOptions);
         
         logger.LogDebug("Cached application results with key: {CacheKey}", cacheKey);
     }

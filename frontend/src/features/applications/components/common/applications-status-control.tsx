@@ -9,16 +9,13 @@ import {
   applicationsStatusOptionsConstant,
   usePatchApplication,
   ApplicationStatusControlBuildPatch,
-  type ApplicationResponseDto,
+  type ApplicationsStatusControlProps,
 } from "#/applications";
 
 export function ApplicationsStatusControl({
   applicationCard,
   className = "",
-}: {
-  applicationCard: ApplicationResponseDto;
-  className?: string;
-}) {
+}: ApplicationsStatusControlProps) {
   const patchApplicationMutation = usePatchApplication();
 
   const handleValueChange = (newStatus: string) => {

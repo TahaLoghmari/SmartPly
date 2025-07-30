@@ -1,4 +1,7 @@
-import { usePatchApplication } from "#/applications";
+import {
+  usePatchApplication,
+  type ApplicationsPageStatusDateProps,
+} from "#/applications";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -6,17 +9,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useState } from "react";
-import { type JsonPatchOp } from "@/types";
+import { type JsonPatchDto } from "@/types";
 
 export function ApplicationsPageStatusDate({
   applicationStatusDate,
   step,
   id,
-}: {
-  applicationStatusDate: Date | undefined;
-  step: string;
-  id: string;
-}) {
+}: ApplicationsPageStatusDateProps) {
   const [open, setOpen] = useState<boolean>(false);
   const patchApplicationMutation = usePatchApplication();
   return (
@@ -52,7 +51,7 @@ export function ApplicationsPageStatusDate({
             }
             onSelect={(selectedDate) => {
               if (!selectedDate) return;
-              const patchRequest: JsonPatchOp[] = [
+              const patchRequest: JsonPatchDto[] = [
                 {
                   op: "replace",
                   path: `/${step[0].toLowerCase() + step.slice(1)}Date`,

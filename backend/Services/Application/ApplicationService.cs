@@ -44,7 +44,7 @@ public class ApplicationService(
         return (application.ToApplicationResponseDto());
     }
     
-    public async Task<PaginationResult<ApplicationResponseDto>> GetUserApplications( 
+    public async Task<PaginationResultDto<ApplicationResponseDto>> GetUserApplications( 
         ApplicationQueryParameters query,
         string? userId)
     {
@@ -60,7 +60,7 @@ public class ApplicationService(
 
         string cacheKey = cacheService.GenerateApplicationsCacheKey(userId, query);
         
-        if (cache.TryGetValue(cacheKey, out PaginationResult<ApplicationResponseDto>? cachedResult))
+        if (cache.TryGetValue(cacheKey, out PaginationResultDto<ApplicationResponseDto>? cachedResult))
         {
             logger.LogDebug("Cache hit for applications query: {CacheKey}", cacheKey);
             return cachedResult;
@@ -81,7 +81,7 @@ public class ApplicationService(
             .OrderBy(a => a.CreatedAt)
             .Select(a => a.ToApplicationResponseDto());
         
-        var paginationResult = await PaginationResult<ApplicationResponseDto>.CreateAsync(
+        var paginationResult = await PaginationResultDto<ApplicationResponseDto>.CreateAsync(
             applicationQuery, query.Page ?? 1, query.PageSize ?? 8);
         
         cacheService.CacheApplicationsResult(cacheKey, paginationResult, userId);

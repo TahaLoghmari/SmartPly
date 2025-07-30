@@ -5,14 +5,12 @@ import {
   statusToDateKey,
   statusToValue,
   uncapitalize,
-  type ApplicationResponseDto,
+  type ApplicationCardProps,
 } from "#/applications";
 
 export function ApplicationsPageStatusDisplay({
   applicationCard,
-}: {
-  applicationCard: ApplicationResponseDto;
-}) {
+}: ApplicationCardProps) {
   const applicationStatus = capitalize(applicationCard.status);
   const stepsWithLastStatus = getStepsWithLastStatus(applicationCard.status);
   return (

@@ -1,5 +1,7 @@
 export * from "./api";
 
+export * from "./lib";
+
 // components
 export * from "./components/Documents";
 export * from "./components/Actions";
@@ -7,9 +9,6 @@ export * from "./components/UploadResumeButton";
 
 // types
 export * from "./types";
-
-// constants
-export * from "./constants";
 
 // stores
 export * from "./stores/useCoverLetterStore";

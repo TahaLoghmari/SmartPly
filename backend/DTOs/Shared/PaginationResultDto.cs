@@ -2,7 +2,7 @@
 
 namespace backend.DTOs.Shared;
 
-public sealed record PaginationResult<T> : ICollectionResponse<T>
+public sealed record PaginationResultDto<T> : ICollectionResponse<T>
 {
     public List<T> Items { get; set; }
     public int Page { get; set; }
@@ -11,7 +11,7 @@ public sealed record PaginationResult<T> : ICollectionResponse<T>
     public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
     public bool HasPreviousPage => Page > 1;
     public bool HasNextPage => Page < TotalPages;
-    public static async Task<PaginationResult<T>> CreateAsync(
+    public static async Task<PaginationResultDto<T>> CreateAsync(
         IQueryable<T> query, int page, int pageSize)
     {
         var totalCount = await query.CountAsync();
@@ -20,7 +20,7 @@ public sealed record PaginationResult<T> : ICollectionResponse<T>
             .Take(pageSize)
             .ToListAsync();
 
-        return new PaginationResult<T>
+        return new PaginationResultDto<T>
         {
             Items = items,
             Page = page,

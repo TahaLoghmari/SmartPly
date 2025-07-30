@@ -1,14 +1,12 @@
 import {
   ApplicationsStatusControl,
   ApplicationsPageStatusDisplay,
-  type ApplicationResponseDto,
+  type ApplicationCardProps,
 } from "#/applications";
 
 export function ApplicationsPageStatus({
   applicationCard,
-}: {
-  applicationCard: ApplicationResponseDto;
-}) {
+}: ApplicationCardProps) {
   return (
     <div className="bg-card flex w-full flex-col gap-6 rounded-lg border p-4 shadow-xs">
       <p className="font-medium">Application Status</p>

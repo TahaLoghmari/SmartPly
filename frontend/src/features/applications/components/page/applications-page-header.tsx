@@ -2,15 +2,13 @@ import { BriefcaseBusiness } from "lucide-react";
 import {
   ApplicationsButtonEdit,
   ApplicationsButtonDelete,
-  type ApplicationResponseDto,
   useDeleteApplication,
+  type ApplicationCardProps,
 } from "#/applications";
 
 export function ApplicationsPageHeader({
   applicationCard,
-}: {
-  applicationCard: ApplicationResponseDto;
-}) {
+}: ApplicationCardProps) {
   const deleteMutation = useDeleteApplication();
   return (
     <div className="flex items-center justify-between border-b px-8 py-6">

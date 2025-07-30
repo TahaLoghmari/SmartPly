@@ -1,12 +1,12 @@
-import type {
-  CoverLetterCreateResponseDto,
-  ResumeResponseDto,
+import {
+  Actions,
+  type CoverLetterCreateResponseDto,
+  type ResumeResponseDto,
 } from "#/documents";
 import { Checkbox } from "@/components/ui/checkbox";
 import { type ColumnDef } from "@tanstack/react-table";
 import { formatDistanceToNow } from "date-fns";
 import { FileText } from "lucide-react";
-import { Actions } from "#/documents";
 
 export const coverLettersConstant: CoverLetterCreateResponseDto[] = [
   {

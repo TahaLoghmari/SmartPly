@@ -1,5 +1,4 @@
-import { type ApplicationRequestDto } from "#/applications";
-import type { UseFormReturn } from "react-hook-form";
+import { type ApplicationFormContentProps } from "#/applications";
 import { useCoverLetterStore, useGetUserResumes } from "#/documents";
 import {
   FormControl,
@@ -29,9 +28,7 @@ import { Spinner } from "@/components/ui/spinner";
 
 export function ApplicationsFormDocuments({
   form,
-}: {
-  form: UseFormReturn<ApplicationRequestDto>;
-}) {
+}: ApplicationFormContentProps) {
   const { data: resumes, isLoading } = useGetUserResumes();
   const { coverLettersState } = useCoverLetterStore();
   const resumesState = resumes ?? [];

@@ -15,7 +15,7 @@ import {
   ApplicationsFormTechnologies,
   ApplicationsFormDocuments,
   ApplicationsFormHandleStatusChange,
-  ApplicationsFormGetDefaultValues,
+  ApplicationsFormDefaultValues,
   ApplicationsFormRequestSchema,
   useManageApplicationStore,
   type ApplicationFormProps,
@@ -40,7 +40,7 @@ export function ApplicationsForm({
   const form = useForm<ApplicationRequestDto>({
     resolver: zodResolver(ApplicationsFormRequestSchema),
     mode: "onChange",
-    defaultValues: ApplicationsFormGetDefaultValues(applicationCard, user!.id),
+    defaultValues: ApplicationsFormDefaultValues(applicationCard, user!.id),
   });
 
   const formRef = useRef<HTMLFormElement>(null);

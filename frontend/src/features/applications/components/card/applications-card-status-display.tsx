@@ -5,23 +5,22 @@ import {
   getStepsWithLastStatus,
   statusToDateKey,
   statusToValue,
-  type ApplicationResponseDto,
   formatDate,
+  type ApplicationCardProps,
 } from "#/applications";
 
 export function ApplicationsCardStatusDisplay({
   applicationCard,
-}: {
-  applicationCard: ApplicationResponseDto;
-}) {
+}: ApplicationCardProps) {
   const applicationStatus = capitalize(applicationCard.status);
   const stepsWithLastStatus = getStepsWithLastStatus(applicationCard.status);
 
   return (
     <div className="flex flex-1 items-center">
       {stepsWithLastStatus.map((step, index) => {
-        const applicationStatusDate =
-          applicationCard[statusToDateKey[uncapitalize(step)]];
+        const applicationStatusDate: Date = applicationCard[
+          statusToDateKey[uncapitalize(step)]
+        ] as Date;
         const isLast = index === stepsWithLastStatus.length - 1;
         return (
           <React.Fragment key={`${applicationCard.id}-${index}`}>

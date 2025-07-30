@@ -5,17 +5,15 @@ import {
   ApplicationsTechnologiesUsed,
   type ApplicationJobTypeLabel,
   type ApplicationLevelLabel,
-  type ApplicationResponseDto,
   type ApplicationTypeLabel,
+  type ApplicationCardProps,
 } from "#/applications";
 import { formatDistanceToNow } from "date-fns";
 import ReactMarkdown from "react-markdown";
 
 export function ApplicationsPageOverview({
   applicationCard,
-}: {
-  applicationCard: ApplicationResponseDto;
-}) {
+}: ApplicationCardProps) {
   const type: ApplicationTypeLabel = applicationsTypeOptionsConstant.find(
     (a) => a.value === applicationCard.type,
   )!.label;

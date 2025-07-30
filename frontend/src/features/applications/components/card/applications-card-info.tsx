@@ -1,13 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faBuilding } from "@fortawesome/free-solid-svg-icons";
 import { BriefcaseBusiness } from "lucide-react";
-import { type ApplicationResponseDto } from "#/applications";
+import { type ApplicationCardProps } from "#/applications";
 
 export function ApplicationsCardInfo({
   applicationCard,
-}: {
-  applicationCard: ApplicationResponseDto;
-}) {
+}: ApplicationCardProps) {
   return (
     <div className="flex flex-1 items-center gap-4">
       <div className="rounded-sm bg-gradient-to-r from-gray-500 to-gray-400 p-3 text-white">

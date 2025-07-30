@@ -17,8 +17,7 @@ export * from "./components/sideBar/NavMain";
 export * from "./components/sideBar/NavSecondary";
 export * from "./components/sideBar/NavUser";
 
-// Constants
-export * from "./constants";
+export * from "./lib";
 
 // Stores
 export * from "./stores/useDashboardNotificationsCount";

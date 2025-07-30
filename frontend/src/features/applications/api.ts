@@ -3,10 +3,9 @@ import type {
   ApplicationRequestDto,
   ApplicationResponseDto,
   ApplicationGetRequestDto,
-  PaginationResult,
-  ApplicationQueryParameters,
+  ApplicationQueryParametersDto,
 } from "#/applications";
-import type { BulkDeleteRequestDto } from "@/types";
+import type { BulkDeleteRequestDto, PaginationResultDto } from "@/types";
 
 export const createApplication = (credentials: ApplicationRequestDto) => {
   return request<ApplicationResponseDto>("/applications", {
@@ -45,7 +44,7 @@ export const bulkdDeleteApplication = (credentials: BulkDeleteRequestDto) => {
   });
 };
 
-export const getUserApplications = (params: ApplicationQueryParameters) => {
+export const getUserApplications = (params: ApplicationQueryParametersDto) => {
   const queryObj: Record<string, string> = {};
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== null) {
@@ -53,21 +52,26 @@ export const getUserApplications = (params: ApplicationQueryParameters) => {
     }
   });
   const query = new URLSearchParams(queryObj).toString();
-  return request<PaginationResult>(`/applications?${query}`, {
-    method: "GET",
-  }).then((result) => ({
+  return request<PaginationResultDto<ApplicationResponseDto>>(
+    `/applications?${query}`,
+    {
+      method: "GET",
+    },
+  ).then((result) => ({
     ...result,
     items: result.items.map((app) => ({
       ...app,
       createdAt: new Date(app.createdAt),
-      updatedAt: app.updatedAt ? new Date(app.updatedAt) : null,
-      deadline: app.deadline ? new Date(app.deadline) : null,
-      wishListDate: app.wishListDate ? new Date(app.wishListDate) : null,
-      appliedDate: app.appliedDate ? new Date(app.appliedDate) : null,
-      interviewDate: app.interviewDate ? new Date(app.interviewDate) : null,
-      offerDate: app.offerDate ? new Date(app.offerDate) : null,
-      rejectedDate: app.rejectedDate ? new Date(app.rejectedDate) : null,
-      ghostedDate: app.ghostedDate ? new Date(app.ghostedDate) : null,
+      updatedAt: app.updatedAt ? new Date(app.updatedAt) : undefined,
+      deadline: app.deadline ? new Date(app.deadline) : undefined,
+      wishListDate: app.wishListDate ? new Date(app.wishListDate) : undefined,
+      appliedDate: app.appliedDate ? new Date(app.appliedDate) : undefined,
+      interviewDate: app.interviewDate
+        ? new Date(app.interviewDate)
+        : undefined,
+      offerDate: app.offerDate ? new Date(app.offerDate) : undefined,
+      rejectedDate: app.rejectedDate ? new Date(app.rejectedDate) : undefined,
+      ghostedDate: app.ghostedDate ? new Date(app.ghostedDate) : undefined,
     })),
   }));
 };
@@ -78,13 +82,13 @@ export const getUserApplication = (credentials: ApplicationGetRequestDto) => {
   }).then((app) => ({
     ...app,
     createdAt: new Date(app.createdAt),
-    updatedAt: app.updatedAt ? new Date(app.updatedAt) : null,
-    deadline: app.deadline ? new Date(app.deadline) : null,
-    wishListDate: app.wishListDate ? new Date(app.wishListDate) : null,
-    appliedDate: app.appliedDate ? new Date(app.appliedDate) : null,
-    interviewDate: app.interviewDate ? new Date(app.interviewDate) : null,
-    offerDate: app.offerDate ? new Date(app.offerDate) : null,
-    rejectedDate: app.rejectedDate ? new Date(app.rejectedDate) : null,
-    ghostedDate: app.ghostedDate ? new Date(app.ghostedDate) : null,
+    updatedAt: app.updatedAt ? new Date(app.updatedAt) : undefined,
+    deadline: app.deadline ? new Date(app.deadline) : undefined,
+    wishListDate: app.wishListDate ? new Date(app.wishListDate) : undefined,
+    appliedDate: app.appliedDate ? new Date(app.appliedDate) : undefined,
+    interviewDate: app.interviewDate ? new Date(app.interviewDate) : undefined,
+    offerDate: app.offerDate ? new Date(app.offerDate) : undefined,
+    rejectedDate: app.rejectedDate ? new Date(app.rejectedDate) : undefined,
+    ghostedDate: app.ghostedDate ? new Date(app.ghostedDate) : undefined,
   }));
 };

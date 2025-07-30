@@ -16,22 +16,15 @@ import { Link } from "react-router-dom";
 import {
   useForgotPassword,
   useForgotPasswordStore,
+  forgotPasswordFormSchema,
   type ForgotPasswordDto,
 } from "#/auth";
-
-const formSchema = z.object({
-  email: z
-    .string()
-    .min(1, { message: "Email is required." })
-    .email({ message: "Invalid email format." })
-    .max(256, { message: "Email must be at most 256 characters." }),
-});
 
 export function ForgotPasswordForm() {
   const forgotPasswordMutation = useForgotPassword();
   const { setResetPasswordClicked } = useForgotPasswordStore();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof forgotPasswordFormSchema>>({
+    resolver: zodResolver(forgotPasswordFormSchema),
     mode: "onChange",
     defaultValues: {
       email: "",

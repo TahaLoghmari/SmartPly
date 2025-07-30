@@ -6,14 +6,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { type ApplicationRequestDto } from "#/applications";
-import type { UseFormReturn } from "react-hook-form";
+import { type ApplicationFormContentProps } from "#/applications";
 
 export function ApplicationsFormCompensation({
   form,
-}: {
-  form: UseFormReturn<ApplicationRequestDto>;
-}) {
+}: ApplicationFormContentProps) {
   return (
     <div className="space-y-4">
       <p className="text-foreground border-b pb-2 text-lg font-medium">

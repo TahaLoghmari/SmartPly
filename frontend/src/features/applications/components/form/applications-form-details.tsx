@@ -4,9 +4,8 @@ import {
   applicationsTypeOptionsConstant,
   applicationsLevelOptionsConstant,
   applicationsJobTypeOptionsConstant,
+  type ApplicationFormContentProps,
 } from "#/applications";
-import type { UseFormReturn } from "react-hook-form";
-import { type ApplicationRequestDto } from "#/applications";
 import {
   FormControl,
   FormField,
@@ -15,11 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-export function ApplicationsFormDetails({
-  form,
-}: {
-  form: UseFormReturn<ApplicationRequestDto>;
-}) {
+export function ApplicationsFormDetails({ form }: ApplicationFormContentProps) {
   return (
     <div className="space-y-4">
       <p className="text-foreground border-b pb-2 text-lg font-medium">

@@ -1,14 +1,21 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { type ApplicationRequestDto, createApplication } from "#/applications";
+import {
+  type ApplicationRequestDto,
+  type ApplicationResponseDto,
+  createApplication,
+} from "#/applications";
 import { useCurrentUser } from "#/auth";
-import { handleApiError } from "@/index";
+import { handleApiError, type ProblemDetailsDto } from "@/index";
 
 export function useCreateApplication() {
   const { data: user } = useCurrentUser();
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (credentials: ApplicationRequestDto) =>
-      createApplication(credentials),
+  return useMutation<
+    ApplicationResponseDto,
+    ProblemDetailsDto,
+    ApplicationRequestDto
+  >({
+    mutationFn: createApplication,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["applications", user?.id],

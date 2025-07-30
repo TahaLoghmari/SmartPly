@@ -14,7 +14,7 @@ export function getStepsWithLastStatus(status: string) {
     : [...steps, "Offer"];
 }
 
-export function formatDate(date: unknown) {
+export function formatDate(date: Date) {
   if (date instanceof Date) {
     const day = date.getDate();
     const month = date.getMonth() + 1;

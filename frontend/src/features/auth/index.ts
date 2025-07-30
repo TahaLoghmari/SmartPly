@@ -33,3 +33,5 @@ export * from "./components/RegisterForm";
 export * from "./components/RegisterPage";
 export * from "./components/ResetPasswordForm";
 export * from "./components/ResetPasswordPage";
+
+export * from "./lib";
