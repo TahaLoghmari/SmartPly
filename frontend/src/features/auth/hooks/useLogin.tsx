@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { type LoginUserDto, login } from "#/auth";
 import { type ProblemDetails } from "@/types";
+import { handleApiError } from "@/index";
 
 export function useLogin() {
   const navigate = useNavigate();
@@ -12,5 +13,6 @@ export function useLogin() {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       navigate("/app");
     },
+    onError: handleApiError,
   });
 }

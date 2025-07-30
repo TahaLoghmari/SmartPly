@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { patchApplication } from "#/applications";
 import { useCurrentUser } from "#/auth";
 import { type JsonPatchOp } from "@/types";
+import { handleApiError } from "@/index";
 
 export function usePatchApplication() {
   const queryClient = useQueryClient();
@@ -17,5 +18,6 @@ export function usePatchApplication() {
         queryKey: ["applications", user?.id],
       });
     },
+    onError: handleApiError,
   });
 }

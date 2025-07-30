@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { type ApplicationRequestDto, editApplication } from "#/applications";
 import { useCurrentUser } from "#/auth";
+import { handleApiError } from "@/index";
 
 export function useEditApplication() {
   const queryClient = useQueryClient();
@@ -21,5 +22,6 @@ export function useEditApplication() {
         queryKey: ["applications", user?.id],
       });
     },
+    onError: handleApiError,
   });
 }

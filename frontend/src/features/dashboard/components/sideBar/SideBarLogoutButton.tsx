@@ -10,7 +10,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useLogoutDialogStore } from "#/dashboard";
-import { handleApiError } from "@/index";
 
 export function SideBarLogoutButton() {
   const { data: user } = useCurrentUser();
@@ -27,13 +26,7 @@ export function SideBarLogoutButton() {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={() =>
-              logoutMutation.mutate(undefined, {
-                onError: (error) => handleApiError(error),
-              })
-            }
-          >
+          <AlertDialogAction onClick={() => logoutMutation.mutate()}>
             Logout
           </AlertDialogAction>
         </AlertDialogFooter>

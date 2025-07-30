@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { type ApplicationRequestDto, createApplication } from "#/applications";
 import { useCurrentUser } from "#/auth";
+import { handleApiError } from "@/index";
 
 export function useCreateApplication() {
   const { data: user } = useCurrentUser();
@@ -13,5 +14,6 @@ export function useCreateApplication() {
         queryKey: ["applications", user?.id],
       });
     },
+    onError: handleApiError,
   });
 }

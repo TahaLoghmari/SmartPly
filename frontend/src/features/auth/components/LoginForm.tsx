@@ -29,7 +29,6 @@ import { toast } from "sonner";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { handleApiError } from "@/index";
 
 export function LoginForm({
   className,
@@ -94,9 +93,7 @@ export function LoginForm({
                     variant="outline"
                     className="w-full"
                     onClick={() => {
-                      getGoogleOAuthUrlMutation.mutate(undefined, {
-                        onError: (error) => handleApiError(error),
-                      });
+                      getGoogleOAuthUrlMutation.mutate();
                     }}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

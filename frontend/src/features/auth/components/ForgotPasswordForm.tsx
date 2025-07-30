@@ -18,7 +18,6 @@ import {
   useForgotPasswordStore,
   type ForgotPasswordDto,
 } from "#/auth";
-import { handleApiError } from "@/index";
 
 const formSchema = z.object({
   email: z
@@ -43,7 +42,6 @@ export function ForgotPasswordForm() {
       onSuccess: () => {
         setResetPasswordClicked(credentials.email);
       },
-      onError: (error) => handleApiError(error),
     });
   }
   return (

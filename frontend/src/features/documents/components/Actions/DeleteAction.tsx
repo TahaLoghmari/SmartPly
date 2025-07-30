@@ -12,7 +12,6 @@ import {
 import { useDeleteResume } from "#/documents";
 import { Spinner } from "@/components/ui/spinner";
 import { useState } from "react";
-import { handleApiError } from "@/index";
 
 export function DeleteAction({ resumeId }: { resumeId: string }) {
   const deleteResumeMutation = useDeleteResume();
@@ -43,7 +42,6 @@ export function DeleteAction({ resumeId }: { resumeId: string }) {
             onClick={() =>
               deleteResumeMutation.mutate(resumeId, {
                 onSuccess: () => setOpen(false),
-                onError: (error) => handleApiError(error),
               })
             }
           >

@@ -25,7 +25,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { handleApiError } from "@/index";
 
 export function ResetPasswordForm() {
   const resetPasswordMutation = useResetPassword();
@@ -49,9 +48,7 @@ export function ResetPasswordForm() {
       confirmPassword: formData.confirmPassword,
       token: token || "",
     };
-    resetPasswordMutation.mutate(dto, {
-      onError: (error) => handleApiError(error),
-    });
+    resetPasswordMutation.mutate(dto);
   }
   return (
     <div className="flex flex-col gap-6">

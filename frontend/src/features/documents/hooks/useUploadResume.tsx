@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { type ResumeRequestDto, uploadResume } from "#/documents";
 import { useCurrentUser } from "#/auth";
+import { handleApiError } from "@/index";
 
 export function useUploadResume() {
   const { data: user } = useCurrentUser();
@@ -12,5 +13,6 @@ export function useUploadResume() {
         queryKey: ["resumes", user?.id],
       });
     },
+    onError: handleApiError,
   });
 }

@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/card";
 import { MoveLeft } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
-import { handleApiError } from "@/index";
 
 export function EmailVerificationPage() {
   const resendConfirmationEmailMutation = useResendConfirmationEmail();
@@ -62,9 +61,7 @@ export function EmailVerificationPage() {
                     className="w-full cursor-pointer p-6"
                     onClick={() => {
                       if (email) {
-                        resendConfirmationEmailMutation.mutate(email, {
-                          onError: (error) => handleApiError(error),
-                        });
+                        resendConfirmationEmailMutation.mutate(email);
                       }
                     }}
                     disabled={resendConfirmationEmailMutation.isPending}

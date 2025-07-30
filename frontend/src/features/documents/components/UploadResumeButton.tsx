@@ -11,7 +11,6 @@ import { Upload, FileText, ImagePlus } from "lucide-react";
 import { useUploadResume } from "#/documents";
 import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
-import { handleApiError } from "@/index";
 
 export function UploadResumeButton() {
   const [open, setOpen] = useState(false);
@@ -69,7 +68,6 @@ export function UploadResumeButton() {
                 },
                 {
                   onSuccess: () => setOpen(false),
-                  onError: (error) => handleApiError(error),
                 },
               );
             }}

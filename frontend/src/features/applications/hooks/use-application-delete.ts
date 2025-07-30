@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteApplication } from "#/applications";
 import { useCurrentUser } from "#/auth";
 import { useNavigate } from "react-router-dom";
+import { handleApiError } from "@/index";
 
 export function useDeleteApplication() {
   const queryClient = useQueryClient();
@@ -13,5 +14,6 @@ export function useDeleteApplication() {
       queryClient.invalidateQueries({ queryKey: ["applications", user?.id] });
       navigate("/app/applications");
     },
+    onError: handleApiError,
   });
 }

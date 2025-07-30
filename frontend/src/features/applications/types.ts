@@ -34,7 +34,7 @@ export type ApplicationLevel = "junior" | "mid" | "senior";
 
 export type ApplicationJobType = "fullTime" | "partTime" | "internship";
 
-export const ApplicationRequestformSchema = z
+export const ApplicationsFormRequestSchema = z
   .object({
     resumeId: z.string().min(1, "ResumeId is required."),
     coverLetterId: z.string().optional(),
@@ -116,11 +116,11 @@ export const ApplicationRequestformSchema = z
         rejectedDate,
         ghostedDate,
       } = data;
-      if (wishListDate && appliedDate && !(wishListDate < appliedDate))
+      if (wishListDate && appliedDate && !(wishListDate <= appliedDate))
         return false;
-      if (appliedDate && interviewDate && !(appliedDate < interviewDate))
+      if (appliedDate && interviewDate && !(appliedDate <= interviewDate))
         return false;
-      if (interviewDate && offerDate && !(interviewDate < offerDate))
+      if (interviewDate && offerDate && !(interviewDate <= offerDate))
         return false;
       if (offerDate && rejectedDate && !(offerDate <= rejectedDate))
         return false;
@@ -143,7 +143,7 @@ export const ApplicationRequestformSchema = z
   );
 
 export type ApplicationRequestDto = z.infer<
-  typeof ApplicationRequestformSchema
+  typeof ApplicationsFormRequestSchema
 >;
 
 export interface ApplicationGetRequestDto {

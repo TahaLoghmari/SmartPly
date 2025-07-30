@@ -5,7 +5,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { handleApiError } from "@/hooks/useHandleApiError";
 import { useState } from "react";
 import { type JsonPatchOp } from "@/types";
 
@@ -66,7 +65,6 @@ export function ApplicationsPageStatusDate({
                   onSuccess: () => {
                     setOpen(false);
                   },
-                  onError: (error) => handleApiError(error),
                 },
               );
             }}

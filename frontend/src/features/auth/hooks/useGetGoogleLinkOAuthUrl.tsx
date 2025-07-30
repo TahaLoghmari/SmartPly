@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { getGoogleLinkOAuthUrl } from "#/auth";
+import { handleApiError } from "@/index";
 
 export function useGetGoogleLinkOAuthUrl() {
   return useMutation({
@@ -7,8 +8,6 @@ export function useGetGoogleLinkOAuthUrl() {
     onSuccess: (data) => {
       window.location.href = data.authorizationUrl;
     },
-    onError: (error) => {
-      console.error("Failed to get Google Link OAuth URL:", error);
-    },
+    onError: handleApiError,
   });
 }
