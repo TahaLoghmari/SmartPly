@@ -1,8 +1,10 @@
 import {
-  type ApplicationRequestDto,
   statusToValue,
   steps,
   statusToDateKey,
+  capitalize,
+  uncapitalize,
+  type ApplicationRequestDto,
   type ApplicationResponseDto,
 } from "#/applications";
 
@@ -17,14 +19,9 @@ export const ApplicationsFormHandleStatusChange = ({
 }: ApplicationsFormHandleStatusChangeProps) => {
   const allSteps = [...steps, "Offer", "Ghosted", "Rejected"];
   allSteps.map((step) => {
-    const step_lowerCase = step[0].toLowerCase() + step.slice(1);
+    const step_lowerCase = uncapitalize(step);
     const field = statusToDateKey[step_lowerCase];
-    if (
-      statusToValue[step] <=
-      statusToValue[
-        credentials.status[0].toUpperCase() + credentials.status.slice(1)
-      ]
-    ) {
+    if (statusToValue[step] <= statusToValue[capitalize(credentials.status)]) {
       // If the date is already set and is in the past or now, keep it.
       // Otherwise, set it to the current date.
       if (
@@ -35,7 +32,7 @@ export const ApplicationsFormHandleStatusChange = ({
         (credentials as any)[field] = (applicationCard as any)[field];
       } else {
         // Set to now
-        (credentials as any)[field] = new Date();
+        (credentials as any)[field] = new Date().toISOString();
       }
     } else (credentials as any)[field] = null;
   });

@@ -1,8 +1,10 @@
 import {
   ApplicationsPageStatusDate,
+  capitalize,
+  getStepsWithLastStatus,
   statusToDateKey,
   statusToValue,
-  steps,
+  uncapitalize,
   type ApplicationResponseDto,
 } from "#/applications";
 
@@ -11,23 +13,15 @@ export function ApplicationsPageStatusDisplay({
 }: {
   applicationCard: ApplicationResponseDto;
 }) {
-  const applicationStatus =
-    applicationCard.status[0].toUpperCase() + applicationCard.status.slice(1);
-
-  const lastStatus =
-    applicationCard.status === "rejected" ||
-    applicationCard.status === "ghosted"
-      ? ["Offer", applicationStatus]
-      : ["Offer"];
-
-  const stepsWithLastStatus = [...steps, ...lastStatus];
+  const applicationStatus = capitalize(applicationCard.status);
+  const stepsWithLastStatus = getStepsWithLastStatus(applicationCard.status);
   return (
     <div className="flex flex-col">
       {stepsWithLastStatus.map((step, index) => {
-        const status_lower_case = step[0].toLowerCase() + step.slice(1);
-
         const applicationStatusDate =
-          applicationCard[statusToDateKey[status_lower_case]];
+          applicationCard[statusToDateKey[uncapitalize(step)]];
+
+        const isLast = index === stepsWithLastStatus.length - 1;
 
         return (
           <div key={`${applicationCard.id}-${index}`}>
@@ -49,7 +43,7 @@ export function ApplicationsPageStatusDisplay({
                 id={applicationCard.id}
               />
             </div>
-            {step != lastStatus[lastStatus.length - 1] && (
+            {!isLast && (
               <div className="bg-muted-foreground -mt-1 ml-[7.5px] h-7 w-px"></div>
             )}
           </div>

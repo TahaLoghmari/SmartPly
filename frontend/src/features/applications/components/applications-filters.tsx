@@ -32,7 +32,9 @@ export function ApplicationsFilters() {
     selectedFilter: selectedJobTypeFilter,
     setSelectedFilter: setSelectedJobTypeFilter,
   } = useApplicationJobTypeFilterStore();
+
   const { search, setSearch } = useApplicationSearchBarStore();
+  
   return (
     <div className="text-card-foreground mb-4 flex flex-wrap items-center gap-4 rounded-lg">
       <SearchBar

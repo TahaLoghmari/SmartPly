@@ -7,12 +7,10 @@ import {
 } from "@/components/ui/select";
 import {
   applicationsStatusOptionsConstant,
-  statusToValue,
-  steps,
   usePatchApplication,
+  ApplicationStatusControlBuildPatch,
   type ApplicationResponseDto,
 } from "#/applications";
-import { type JsonPatchOp } from "@/types";
 
 export function ApplicationsStatusControl({
   applicationCard,
@@ -23,35 +21,11 @@ export function ApplicationsStatusControl({
 }) {
   const patchApplicationMutation = usePatchApplication();
 
-  const stepsWithLastStatus = [...steps, "Offer", "Rejected", "Ghosted"];
-
   const handleValueChange = (newStatus: string) => {
-    const newStatus_UpperCase = newStatus[0].toUpperCase() + newStatus.slice(1);
-    const patchRequest: JsonPatchOp[] = [
-      {
-        op: "replace",
-        path: "/status",
-        value: newStatus,
-      },
-      ...stepsWithLastStatus
-        .filter(
-          (step) => statusToValue[step] > statusToValue[newStatus_UpperCase],
-        )
-        .map((step) => ({
-          op: "replace" as const,
-          path: `/${step[0].toLowerCase() + step.slice(1)}Date`,
-          value: null,
-        })),
-      ...stepsWithLastStatus
-        .filter(
-          (step) => statusToValue[step] <= statusToValue[newStatus_UpperCase],
-        )
-        .map((step) => ({
-          op: "replace" as const,
-          path: `/${step[0].toLowerCase() + step.slice(1)}Date`,
-          value: new Date().toISOString(),
-        })),
-    ];
+    const patchRequest = ApplicationStatusControlBuildPatch(
+      applicationCard,
+      newStatus,
+    );
     patchApplicationMutation.mutate({
       id: applicationCard.id,
       patch: patchRequest,
@@ -59,10 +33,7 @@ export function ApplicationsStatusControl({
   };
 
   return (
-    <Select
-      defaultValue={applicationCard.status}
-      onValueChange={handleValueChange}
-    >
+    <Select value={applicationCard.status} onValueChange={handleValueChange}>
       <SelectTrigger className={`cursor-pointer ${className}`}>
         <SelectValue
           placeholder="Status"

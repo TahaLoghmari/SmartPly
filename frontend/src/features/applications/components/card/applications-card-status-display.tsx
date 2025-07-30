@@ -1,9 +1,12 @@
 import React from "react";
 import {
+  capitalize,
+  uncapitalize,
+  getStepsWithLastStatus,
   statusToDateKey,
   statusToValue,
-  steps,
   type ApplicationResponseDto,
+  formatDate,
 } from "#/applications";
 
 export function ApplicationsCardStatusDisplay({
@@ -11,23 +14,15 @@ export function ApplicationsCardStatusDisplay({
 }: {
   applicationCard: ApplicationResponseDto;
 }) {
-  const applicationStatus =
-    applicationCard.status[0].toUpperCase() + applicationCard.status.slice(1);
+  const applicationStatus = capitalize(applicationCard.status);
+  const stepsWithLastStatus = getStepsWithLastStatus(applicationCard.status);
 
-  const lastStatus =
-    applicationCard.status === "rejected" ||
-    applicationCard.status === "ghosted"
-      ? ["Offer", applicationStatus]
-      : ["Offer"];
-
-  const stepsWithLastStatus = [...steps, ...lastStatus];
   return (
     <div className="flex flex-1 items-center">
       {stepsWithLastStatus.map((step, index) => {
         const applicationStatusDate =
-          applicationCard[
-            statusToDateKey[step[0].toLowerCase() + step.slice(1)]
-          ];
+          applicationCard[statusToDateKey[uncapitalize(step)]];
+        const isLast = index === stepsWithLastStatus.length - 1;
         return (
           <React.Fragment key={`${applicationCard.id}-${index}`}>
             <div className="flex h-full min-w-[53px] flex-col items-center gap-2">
@@ -40,20 +35,10 @@ export function ApplicationsCardStatusDisplay({
                 ></div>
               </div>
               <p className="flex h-4 min-w-11 items-center justify-center text-xs">
-                {applicationStatusDate
-                  ? applicationStatusDate instanceof Date
-                    ? (() => {
-                        const d = applicationStatusDate;
-                        const day = d.getDate();
-                        const month = d.getMonth() + 1;
-                        const year = d.getFullYear() % 100;
-                        return `${day}/${month}/${year}`;
-                      })()
-                    : applicationStatusDate.toString()
-                  : ""}
+                {formatDate(applicationStatusDate)}
               </p>
             </div>
-            {step != lastStatus[lastStatus.length - 1] && (
+            {!isLast && (
               <div className="bg-muted-foreground z-0 -mx-[17px] h-px w-full rounded text-center text-xs leading-none"></div>
             )}
           </React.Fragment>

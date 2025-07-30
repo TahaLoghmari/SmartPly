@@ -10,26 +10,30 @@ export function ApplicationsButtonLike({
 }: {
   applicationCard: ApplicationResponseDto;
 }) {
+
   const patchApplicationMutation = usePatchApplication();
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const patchRequest: JsonPatchOp[] = [
+      {
+        op: "replace",
+        path: "/isLiked",
+        value: !applicationCard.isLiked,
+      },
+    ];
+    patchApplicationMutation.mutate({
+      id: applicationCard.id,
+      patch: patchRequest,
+    });
+  };
+  
   return patchApplicationMutation.isPending ? (
     <Spinner className="h-auto w-6 invert" />
   ) : (
     <button
-      onClick={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        const patchRequest: JsonPatchOp[] = [
-          {
-            op: "replace",
-            path: "/isLiked",
-            value: !applicationCard.isLiked,
-          },
-        ];
-        patchApplicationMutation.mutate({
-          id: applicationCard.id,
-          patch: patchRequest,
-        });
-      }}
+      onClick={handleClick}
       className={`${!applicationCard.isLiked ? "text-muted-foreground" : "text-primary"} hover:ring-ring/50 hover:border-ring text-muted-foreground hover:text-primary flex w-6 cursor-pointer items-center justify-center rounded p-1 transition-colors duration-200 hover:border hover:ring-[2px]`}
     >
       {!applicationCard.isLiked ? (

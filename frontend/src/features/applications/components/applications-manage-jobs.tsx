@@ -18,7 +18,9 @@ export function ApplicationsManageJobs() {
     setSelectedApplications,
   } = useApplicationManageJobsStore();
   const { data } = useGetUserApplications();
+
   const allItems = data?.pages.flatMap((page) => page.items) ?? [];
+  
   return (
     <div
       className="text-muted-foreground mb-4 flex h-[35px] cursor-pointer items-center gap-2 text-sm font-bold"

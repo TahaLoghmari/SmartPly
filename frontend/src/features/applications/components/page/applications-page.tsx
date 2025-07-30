@@ -17,10 +17,11 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { DialogDescription, DialogTitle } from "@/components/ui/dialog";
 
 export function ApplicationsPage() {
-  const { navigationPage } = useApplicationPageNavigationStore();
-  const [open, setOpen] = useState(true);
-  const navigate = useNavigate();
   const { id } = useParams();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(true);
+
+  const { navigationPage } = useApplicationPageNavigationStore();
   const {
     data: applicationCard,
     isLoading,
@@ -28,12 +29,14 @@ export function ApplicationsPage() {
   } = useGetUserApplication({
     id: id ?? "",
   });
+
   const handleClose = (isOpen: boolean) => {
     setOpen(isOpen);
     if (!isOpen) {
       navigate("/app/applications");
     }
   };
+  
   return (
     <Sheet open={open} onOpenChange={handleClose}>
       <SheetContent className="gap-0 overflow-y-auto focus:outline-none sm:max-w-7xl">

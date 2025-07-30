@@ -13,6 +13,7 @@ import { useEffect } from "react";
 export function ApplicationsCards() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useGetUserApplications();
+    
   const { ref, inView } = useInView({ rootMargin: "200px" });
 
   useEffect(() => {
