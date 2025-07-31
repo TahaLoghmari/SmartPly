@@ -6,9 +6,6 @@ public class ApplicationRequestDtoValidator : AbstractValidator<ApplicationReque
 {
     public ApplicationRequestDtoValidator()
     {
-        RuleFor(x => x.ResumeId)
-            .NotEmpty().WithMessage("ResumeId is required.");
-
         RuleFor(x => x.CompanyName)
             .NotEmpty().WithMessage("CompanyName is required.")
             .MaximumLength(100).WithMessage("CompanyName must be at most 100 characters.");
