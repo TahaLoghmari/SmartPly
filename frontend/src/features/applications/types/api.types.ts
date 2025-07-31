@@ -6,6 +6,7 @@ import {
   type ApplicationStatus,
   type ApplicationType,
 } from "#/applications";
+import type { JsonPatchDto } from "@/index";
 
 export type ApplicationRequestDto = z.infer<
   typeof ApplicationsFormRequestSchema
@@ -54,4 +55,14 @@ export interface ApplicationQueryParametersDto {
   search: string;
   page: number;
   pageSize: number;
+}
+
+export interface ApplicationPatchRequestDto {
+  id: string;
+  patch: JsonPatchDto[];
+}
+
+export interface ApplicationEditRequestDto {
+  id: string;
+  data: ApplicationRequestDto;
 }

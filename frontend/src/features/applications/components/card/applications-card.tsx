@@ -3,7 +3,7 @@ import {
   type ApplicationCardProps,
   ApplicationsStatusControl,
   ApplicationsCardStatusDisplay,
-  ApplicationsButtonLike,
+  LikeApplicationButton,
   useApplicationManageJobsStore,
 } from "#/applications";
 import { NavLink } from "react-router-dom";
@@ -37,7 +37,7 @@ export function ApplicationsCard({ applicationCard }: ApplicationCardProps) {
           />
         </div>
       ) : (
-        <ApplicationsButtonLike applicationCard={applicationCard} />
+        <LikeApplicationButton applicationCard={applicationCard} />
       )}
 
       <ApplicationsCardInfo applicationCard={applicationCard} />

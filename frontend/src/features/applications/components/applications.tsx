@@ -1,5 +1,5 @@
 import {
-  ApplicationsButtonAdd,
+  AddApplicationButton,
   ApplicationsFilters,
   ApplicationsCards,
   useGetUserApplications,
@@ -20,7 +20,7 @@ export function Applications() {
           <p className="text-muted-foreground pt-2 pl-1 text-base font-bold uppercase">
             {data?.pages?.[0].totalCount} TOTAL JOBS
           </p>
-          <ApplicationsButtonAdd />
+          <AddApplicationButton />
         </div>
         <ApplicationsFilters />
         {isLoading && (

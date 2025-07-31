@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import type { ApplicationsButtonDeleteProps } from "#/applications";
 
-export function ApplicationsButtonDelete({
+export function DeleteApplicationButton({
   onDelete,
   isLoading,
 }: ApplicationsButtonDeleteProps) {

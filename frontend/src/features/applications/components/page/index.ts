@@ -6,3 +6,5 @@ export * from "./applications-page-documents";
 export * from "./applications-page-status";
 export * from "./applications-page-status-display";
 export * from "./applications-page-status-date";
+export * from "./applications-page-documents-resume";
+export * from "./applications-page-documents-resume-list";

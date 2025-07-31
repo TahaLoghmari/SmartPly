@@ -2,7 +2,7 @@ import { usePatchApplication, type ApplicationCardProps } from "#/applications";
 import { Spinner } from "@/components/ui/spinner";
 import { type JsonPatchDto } from "@/types";
 
-export function ApplicationsButtonLike({
+export function LikeApplicationButton({
   applicationCard,
 }: ApplicationCardProps) {
   const patchApplicationMutation = usePatchApplication();

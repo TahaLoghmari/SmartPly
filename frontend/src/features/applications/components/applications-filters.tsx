@@ -1,5 +1,5 @@
 import {
-  ApplicationsButtonClearFilters,
+  ClearApplicationFiltersButton,
   ApplicationsFilterbar,
   useApplicationStatusFilterStore,
   useApplicationTypeFilterStore,
@@ -34,13 +34,14 @@ export function ApplicationsFilters() {
   } = useApplicationJobTypeFilterStore();
 
   const { search, setSearch } = useApplicationSearchBarStore();
-  
+
   return (
     <div className="text-card-foreground mb-4 flex flex-wrap items-center gap-4 rounded-lg">
       <SearchBar
         value={search}
         onChange={setSearch}
         placeholder="Search for roles or companies"
+        className="w-sm"
       />
       <ApplicationsFilterbar
         key={"Status"}
@@ -70,7 +71,7 @@ export function ApplicationsFilters() {
         applicationConstant={applicationsJobTypeOptionsConstant}
         name={"Job Type"}
       />
-      <ApplicationsButtonClearFilters />
+      <ClearApplicationFiltersButton />
     </div>
   );
 }

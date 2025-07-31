@@ -1,3 +1,2 @@
-export * from "../button/applications-button-clear-filters";
+export * from "../button/clear-application-filters-button";
 export * from "./applications-filterbar";
-

@@ -2,7 +2,7 @@ import { type JsonPatchDto } from "@/types";
 import { capitalize, uncapitalize, statusToValue, steps } from "#/applications";
 import { type ApplicationResponseDto } from "#/applications";
 
-export function ApplicationStatusControlBuildPatch(
+export function ApplicationsStatusControlBuildPatch(
   applicationCard: ApplicationResponseDto,
   newStatus: string,
 ): JsonPatchDto[] {

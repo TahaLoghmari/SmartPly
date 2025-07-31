@@ -66,6 +66,7 @@ export function Documents() {
                 value={search}
                 onChange={setSearch}
                 placeholder="Search by name"
+                className="w-sm"
               />
             </div>
           </div>

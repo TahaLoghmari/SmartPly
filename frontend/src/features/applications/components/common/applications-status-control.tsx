@@ -8,7 +8,7 @@ import {
 import {
   applicationsStatusOptionsConstant,
   usePatchApplication,
-  ApplicationStatusControlBuildPatch,
+  ApplicationsStatusControlBuildPatch,
   type ApplicationsStatusControlProps,
 } from "#/applications";
 
@@ -19,7 +19,7 @@ export function ApplicationsStatusControl({
   const patchApplicationMutation = usePatchApplication();
 
   const handleValueChange = (newStatus: string) => {
-    const patchRequest = ApplicationStatusControlBuildPatch(
+    const patchRequest = ApplicationsStatusControlBuildPatch(
       applicationCard,
       newStatus,
     );

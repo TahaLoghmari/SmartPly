@@ -10,7 +10,7 @@ import {
 import { useManageApplicationStore } from "#/applications";
 import { ApplicationsForm } from "#/applications";
 
-export function ApplicationsButtonAdd() {
+export function AddApplicationButton() {
   const { openDialog, setOpenDialog } = useManageApplicationStore();
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>

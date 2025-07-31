@@ -10,7 +10,7 @@ import { ApplicationsForm, type ApplicationCardProps } from "#/applications";
 import { useManageApplicationStore } from "#/applications";
 import { Button } from "@/components/ui/button";
 
-export function ApplicationsButtonEdit({
+export function EditApplicationButton({
   applicationCard,
 }: ApplicationCardProps) {
   const { openDialog, setOpenDialog } = useManageApplicationStore();

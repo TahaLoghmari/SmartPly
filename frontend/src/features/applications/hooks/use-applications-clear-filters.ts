@@ -5,7 +5,7 @@ import {
   useApplicationJobTypeFilterStore,
 } from "#/applications";
 
-export function useApplicationClearAllFilters() {
+export function useApplicationClearFilters() {
   const { clear: clearStatusFilter } = useApplicationStatusFilterStore();
   const { clear: clearLevelFilter } = useApplicationLevelFilterStore();
   const { clear: clearTypeFilter } = useApplicationTypeFilterStore();

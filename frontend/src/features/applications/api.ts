@@ -4,6 +4,8 @@ import type {
   ApplicationResponseDto,
   ApplicationGetRequestDto,
   ApplicationQueryParametersDto,
+  ApplicationPatchRequestDto,
+  ApplicationEditRequestDto,
 } from "#/applications";
 import type { BulkDeleteRequestDto, PaginationResultDto } from "@/types";
 
@@ -14,20 +16,17 @@ export const createApplication = (credentials: ApplicationRequestDto) => {
   });
 };
 
-export const editApplication = (
-  id: string,
-  credentials: ApplicationRequestDto,
-) => {
-  return request<void>(`/applications/${id}`, {
+export const editApplication = (credentials: ApplicationEditRequestDto) => {
+  return request<void>(`/applications/${credentials.id}`, {
     method: "PUT",
-    body: JSON.stringify(credentials),
+    body: JSON.stringify(credentials.data),
   });
 };
 
-export const patchApplication = (id: string, patch: unknown) => {
-  return request<void>(`/applications/${id}`, {
+export const patchApplication = (credentials: ApplicationPatchRequestDto) => {
+  return request<void>(`/applications/${credentials.id}`, {
     method: "PATCH",
-    body: JSON.stringify(patch),
+    body: JSON.stringify(credentials.patch),
   });
 };
 

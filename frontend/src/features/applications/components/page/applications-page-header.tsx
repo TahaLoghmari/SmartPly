@@ -1,7 +1,7 @@
 import { BriefcaseBusiness } from "lucide-react";
 import {
-  ApplicationsButtonEdit,
-  ApplicationsButtonDelete,
+  EditApplicationButton,
+  DeleteApplicationButton,
   useDeleteApplication,
   type ApplicationCardProps,
 } from "#/applications";
@@ -29,8 +29,8 @@ export function ApplicationsPageHeader({
         </div>
       </div>
       <div className="mr-6 flex items-center gap-4">
-        <ApplicationsButtonEdit applicationCard={applicationCard} />
-        <ApplicationsButtonDelete
+        <EditApplicationButton applicationCard={applicationCard} />
+        <DeleteApplicationButton
           onDelete={() => deleteMutation.mutate(applicationCard.id)}
           isLoading={deleteMutation.isPending}
         />

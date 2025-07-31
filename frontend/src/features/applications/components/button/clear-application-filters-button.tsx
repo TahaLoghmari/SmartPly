@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { useApplicationClearAllFilters } from "#/applications";
+import { useApplicationClearFilters } from "#/applications";
 
-export function ApplicationsButtonClearFilters() {
-  const clearAll = useApplicationClearAllFilters();
+export function ClearApplicationFiltersButton() {
+  const clearAll = useApplicationClearFilters();
   return (
     <Button
       variant="ghost"

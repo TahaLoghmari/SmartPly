@@ -17,6 +17,7 @@ export * from "./stores/useSelectedDocumentStore";
 
 // hooks
 export * from "./hooks/useGetUserResumes";
+export * from "./hooks/useGetUserResume";
 export * from "./hooks/useDeleteResume";
 export * from "./hooks/useUploadResume";
 export * from "./hooks/useBulkDeleteResumes";

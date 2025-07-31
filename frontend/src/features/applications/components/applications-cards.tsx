@@ -6,14 +6,14 @@ import {
 } from "#/applications";
 import { Spinner } from "@/components/ui/spinner";
 import { Plus } from "lucide-react";
-import { ApplicationsButtonAdd } from "#/applications";
+import { AddApplicationButton } from "#/applications";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
 
 export function ApplicationsCards() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useGetUserApplications();
-    
+
   const { ref, inView } = useInView({ rootMargin: "200px" });
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export function ApplicationsCards() {
       <p className="text-sm">
         Get started by adding your first job application
       </p>
-      <ApplicationsButtonAdd />
+      <AddApplicationButton />
     </div>
   );
 }

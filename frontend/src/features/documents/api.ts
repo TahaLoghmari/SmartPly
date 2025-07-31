@@ -1,5 +1,9 @@
 import { request } from "@/api/client";
-import type { ResumeResponseDto, ResumeRequestDto } from "#/documents";
+import type {
+  ResumeResponseDto,
+  ResumeRequestDto,
+  ResumeGetRequestDto,
+} from "#/documents";
 import type { BulkDeleteRequestDto } from "@/types";
 
 export const getUserResumes = (search?: string) => {
@@ -19,6 +23,12 @@ export const getUserResumes = (search?: string) => {
       size: +(resume.size / (1024 * 1024)).toFixed(2),
     })),
   );
+};
+
+export const getUserResume = (credentials: ResumeGetRequestDto) => {
+  return request<ResumeResponseDto>(`/resumes/${credentials.id}`, {
+    method: "GET",
+  });
 };
 
 export const uploadResume = (credentials: ResumeRequestDto) => {

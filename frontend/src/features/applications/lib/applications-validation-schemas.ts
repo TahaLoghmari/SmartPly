@@ -8,8 +8,6 @@ import {
 
 export const ApplicationsFormRequestSchema = z
   .object({
-    resumeId: z.string().min(1, "ResumeId is required."),
-    coverLetterId: z.string().optional(),
     userId: z
       .string()
       .min(1, "UserId is required.")

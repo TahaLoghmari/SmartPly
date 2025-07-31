@@ -4,9 +4,7 @@ import { handleApiError, type ProblemDetailsDto } from "@/index";
 
 export function useResendConfirmationEmail() {
   return useMutation<string, ProblemDetailsDto, string>({
-    mutationFn: async (email: string) => {
-      return resendConfirmationEmail(email);
-    },
+    mutationFn: resendConfirmationEmail,
     onError: handleApiError,
   });
 }

@@ -1,7 +1,7 @@
 import { CopyCheck, X } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import {
-  ApplicationsButtonDelete,
+  DeleteApplicationButton,
   useApplicationManageJobsStore,
   useGetUserApplications,
   useBulkDeleteApplications,
@@ -20,7 +20,7 @@ export function ApplicationsManageJobs() {
   const { data } = useGetUserApplications();
 
   const allItems = data?.pages.flatMap((page) => page.items) ?? [];
-  
+
   return (
     <div
       className="text-muted-foreground mb-4 flex h-[35px] cursor-pointer items-center gap-2 text-sm font-bold"
@@ -64,7 +64,7 @@ export function ApplicationsManageJobs() {
       {isSelecting && (
         <div className="flex items-center gap-3">
           {selectedApplications.length > 0 && (
-            <ApplicationsButtonDelete
+            <DeleteApplicationButton
               onDelete={() =>
                 bulkDeleteApplicationsMutation.mutate(
                   {

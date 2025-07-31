@@ -1,5 +1,6 @@
+import { ResumePreview } from "#/documents";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { FileText, ExternalLink } from "lucide-react";
+import { FileText } from "lucide-react";
 
 export function ViewAction({ url }: { url: string }) {
   return (
@@ -37,21 +38,7 @@ export function ViewAction({ url }: { url: string }) {
             </p>
           </div>
         </div>
-        <div className="relative flex w-full flex-1">
-          <iframe
-            src={`${url}#toolbar=0&navpanes=0`}
-            title="Resume Preview"
-            className="w-full flex-1 border-0"
-          />
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="absolute top-4 right-8 z-10 flex h-10 w-10 items-center justify-center rounded-lg bg-black text-white transition-colors hover:bg-gray-800"
-          >
-            <ExternalLink className="h-4 w-4" />
-          </a>
-        </div>
+        <ResumePreview url={url} />
       </DialogContent>
     </Dialog>
   );

@@ -13,6 +13,10 @@ export interface ResumeRequestDto {
   file: File;
 }
 
+export interface ResumeGetRequestDto {
+  id: string;
+}
+
 export interface CoverLetterCreateResponseDto {
   id: string;
   userId: string;

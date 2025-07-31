@@ -36,7 +36,7 @@ export function ApplicationsPage() {
       navigate("/app/applications");
     }
   };
-  
+
   return (
     <Sheet open={open} onOpenChange={handleClose}>
       <SheetContent className="gap-0 overflow-y-auto focus:outline-none sm:max-w-7xl">
@@ -77,7 +77,9 @@ export function ApplicationsPage() {
                 {navigationPage === "Overview" ? (
                   <ApplicationsPageOverview applicationCard={applicationCard} />
                 ) : (
-                  <ApplicationsPageDocuments />
+                  <ApplicationsPageDocuments
+                    applicationCard={applicationCard}
+                  />
                 )}
               </div>
               <div className="flex w-1/3 flex-col gap-6 border-x px-8 py-6">

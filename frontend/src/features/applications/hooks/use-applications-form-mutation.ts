@@ -21,7 +21,7 @@ export function useApplicationsFormMutation(
     if (type === "create") {
       create.mutate(credentials, { onSuccess });
     } else {
-      edit.mutate({ id: editId!, credentials }, { onSuccess });
+      edit.mutate({ id: editId!, data: credentials }, { onSuccess });
     }
   };
 
