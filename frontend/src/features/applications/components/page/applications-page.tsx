@@ -12,7 +12,7 @@ import {
   ApplicationsPageStatus,
 } from "#/applications";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { DialogDescription, DialogTitle } from "@/components/ui/dialog";
 
@@ -29,13 +29,24 @@ export function ApplicationsPage() {
   } = useGetUserApplication({
     id: id ?? "",
   });
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleClose = (isOpen: boolean) => {
     setOpen(isOpen);
     if (!isOpen) {
-      navigate("/app/applications");
+      closeTimeoutRef.current = setTimeout(() => {
+        navigate("/app/applications");
+      }, 500);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <Sheet open={open} onOpenChange={handleClose}>
