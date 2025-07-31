@@ -12,6 +12,8 @@ export const ApplicationsFormRequestSchema = z
       .string()
       .min(1, "UserId is required.")
       .max(100, "UserId must be at most 100 characters."),
+    resumeId: z.string().optional(),
+    coverLetterId: z.string().optional(),
     companyName: z
       .string()
       .min(1, "Company name is required.")
