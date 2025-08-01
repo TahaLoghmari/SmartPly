@@ -23,12 +23,14 @@ import {
   useLogin,
   type LoginUserDto,
   loginFormSchema,
+  LoginFormDefaults,
 } from "#/auth";
 import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { handleApiError } from "@/index";
 
 export function LoginForm({
   className,
@@ -37,19 +39,20 @@ export function LoginForm({
   const getGoogleOAuthUrlMutation = useGetGoogleOAuthUrl();
   const [searchParams, setSearchParams] = useSearchParams();
   const loginMutation = useLogin();
+
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     mode: "onChange",
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues: LoginFormDefaults(),
   });
+
   async function onSubmit(credentials: LoginUserDto) {
-    loginMutation.mutate(credentials);
+    loginMutation.mutate(credentials, {
+      onError: (error) =>
+        // this is for the toast error when email is not verified 
+        handleApiError({ apiError: error, email: form.getValues("email") }),
+    });
   }
-  const isEmailNotVerified =
-    loginMutation.error?.title?.startsWith("Email not Verified");
 
   // this is for google signin/signup failing
   useEffect(() => {
@@ -59,6 +62,7 @@ export function LoginForm({
       setSearchParams({}, { replace: true });
     }
   }, [searchParams, setSearchParams]);
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -69,30 +73,14 @@ export function LoginForm({
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              {loginMutation.isError && (
-                <div className="bg-destructive/10 border-destructive text-destructive mb-4 rounded-md border p-3 text-sm">
-                  <div className="flex flex-col gap-1">
-                    <p>{loginMutation.error?.title}</p>
-                    <p>{loginMutation.error?.detail}</p>
-                  </div>
-                  {isEmailNotVerified && (
-                    <div className="mt-2">
-                      <Link
-                        to={`/email-verification/?email=${form.getValues("email")}`}
-                        className="text-muted-foreground hover:text-muted-foreground/20 underline"
-                      >
-                        Resend Email
-                      </Link>
-                    </div>
-                  )}
-                </div>
-              )}
               <div className="grid gap-6">
                 <div className="flex flex-col gap-4">
                   <Button
+                    type="button"
                     variant="outline"
                     className="w-full"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       getGoogleOAuthUrlMutation.mutate();
                     }}
                   >

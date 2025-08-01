@@ -11,6 +11,6 @@ export function useDeleteResume() {
     onSuccess: () => {
       queryClient.refetchQueries({ queryKey: ["resumes", user?.id] });
     },
-    onError: handleApiError,
+    onError: (error) => handleApiError({ apiError: error }),
   });
 }

@@ -12,6 +12,6 @@ export function useLogout() {
       queryClient.removeQueries({ queryKey: ["currentUser"] });
       navigate("/login");
     },
-    onError: handleApiError,
+    onError: (error) => handleApiError({ apiError: error }),
   });
 }

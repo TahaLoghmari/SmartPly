@@ -23,6 +23,7 @@ import {
   useRegister,
   type RegisterUserDto,
   registerFormSchema,
+  RegisterFormDefaults,
 } from "#/auth";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -36,16 +37,13 @@ export function RegisterForm({
   const getGoogleOAuthUrlMutation = useGetGoogleOAuthUrl();
   const registerMutation = useRegister();
   const navigate = useNavigate();
+  
   const form = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
     mode: "onChange",
-    defaultValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
-      name: "",
-    },
+    defaultValues: RegisterFormDefaults(),
   });
+
   const onSubmit = async (credentials: RegisterUserDto) => {
     registerMutation.mutate(credentials, {
       onSuccess: () => {

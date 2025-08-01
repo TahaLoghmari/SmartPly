@@ -20,6 +20,6 @@ export function usePatchApplication() {
         queryKey: ["applications", user?.id],
       });
     },
-    onError: handleApiError,
+    onError: (error) => handleApiError({ apiError: error }),
   });
 }

@@ -19,6 +19,6 @@ export function useEditApplication() {
         queryKey: ["applications", user?.id],
       });
     },
-    onError: handleApiError,
+    onError: (error) => handleApiError({ apiError: error }),
   });
 }

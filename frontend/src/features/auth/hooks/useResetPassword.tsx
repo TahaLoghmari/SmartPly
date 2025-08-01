@@ -8,6 +8,6 @@ export function useResetPassword() {
   return useMutation<void, ProblemDetailsDto, ResetPasswordDto>({
     mutationFn: resetPassword,
     onSuccess: () => navigate("/login"),
-    onError: handleApiError,
+    onError: (error) => handleApiError({ apiError: error }),
   });
 }

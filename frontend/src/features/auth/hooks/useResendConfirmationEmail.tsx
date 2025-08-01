@@ -3,8 +3,8 @@ import { resendConfirmationEmail } from "#/auth";
 import { handleApiError, type ProblemDetailsDto } from "@/index";
 
 export function useResendConfirmationEmail() {
-  return useMutation<string, ProblemDetailsDto, string>({
+  return useMutation<void, ProblemDetailsDto, string>({
     mutationFn: resendConfirmationEmail,
-    onError: handleApiError,
+    onError: (error) => handleApiError({ apiError: error }),
   });
 }

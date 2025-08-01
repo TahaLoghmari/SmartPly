@@ -15,6 +15,6 @@ export function useBulkDeleteApplications() {
       queryClient.invalidateQueries({ queryKey: ["applications", user?.id] });
       navigate("/app/applications");
     },
-    onError: handleApiError,
+    onError: (error) => handleApiError({ apiError: error }),
   });
 }

@@ -38,6 +38,10 @@ export interface ForgotPasswordState {
   clearResetState: () => void;
 }
 
+export interface GoogleAuthResponseDto {
+  authorizationUrl: string;
+}
+
 export interface AuthGuardProps {
   children: React.ReactNode;
 }

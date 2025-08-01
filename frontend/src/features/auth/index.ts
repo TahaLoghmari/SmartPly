@@ -23,15 +23,15 @@ export * from "./hooks/useResetPassword";
 
 // Components
 export * from "./components/AuthGuard";
-export * from "./components/EmailConfirmedPage";
-export * from "./components/EmailVerificationPage";
-export * from "./components/ForgotPasswordForm";
-export * from "./components/ForgotPasswordPage";
-export * from "./components/LoginForm";
-export * from "./components/LoginPage";
-export * from "./components/RegisterForm";
-export * from "./components/RegisterPage";
-export * from "./components/ResetPasswordForm";
-export * from "./components/ResetPasswordPage";
+export * from "./components/EmailVerification/EmailConfirmedPage";
+export * from "./components/EmailVerification/EmailVerificationPage";
+export * from "./components/ResetPassword/ForgotPasswordForm";
+export * from "./components/ResetPassword/ForgotPasswordPage";
+export * from "./components/Login/LoginForm";
+export * from "./components/Login/LoginPage";
+export * from "./components/Register/RegisterForm";
+export * from "./components/Register/RegisterPage";
+export * from "./components/ResetPassword/ResetPasswordForm";
+export * from "./components/ResetPassword/ResetPasswordPage";
 
 export * from "./lib";

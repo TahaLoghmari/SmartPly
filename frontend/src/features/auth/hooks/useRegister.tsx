@@ -4,11 +4,11 @@ import { handleApiError, type ProblemDetailsDto } from "@/index";
 
 export function useRegister() {
   const queryClient = useQueryClient();
-  return useMutation<string, ProblemDetailsDto, RegisterUserDto>({
+  return useMutation<void, ProblemDetailsDto, RegisterUserDto>({
     mutationFn: register,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     },
-    onError: handleApiError,
+    onError: (error) => handleApiError({ apiError: error }),
   });
 }

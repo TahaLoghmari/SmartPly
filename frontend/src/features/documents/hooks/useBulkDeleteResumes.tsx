@@ -12,6 +12,6 @@ export function useBulkDeleteResumes() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["resumes", user?.id] });
     },
-    onError: handleApiError,
+    onError: (error) => handleApiError({ apiError: error }),
   });
 }

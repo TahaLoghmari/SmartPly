@@ -1,5 +1,6 @@
 import type {
   ForgotPasswordDto,
+  GoogleAuthResponseDto,
   LoginUserDto,
   RegisterUserDto,
   ResetPasswordDto,
@@ -8,14 +9,14 @@ import type {
 import { request } from "@/api/client";
 
 export const login = (credentials: LoginUserDto) => {
-  return request<string>("/auth/login", {
+  return request<void>("/auth/login", {
     method: "POST",
     body: JSON.stringify(credentials),
   });
 };
 
 export const register = (credentials: RegisterUserDto) => {
-  return request<string>("/auth/register", {
+  return request<void>("/auth/register", {
     method: "POST",
     body: JSON.stringify(credentials),
   });
@@ -28,15 +29,15 @@ export const logout = () => {
 };
 
 export const getGoogleOAuthUrl = () => {
-  return request<{ authorizationUrl: string }>("/auth/google/authorize");
+  return request<GoogleAuthResponseDto>("/auth/google/authorize");
 };
 
 export const getGoogleLinkOAuthUrl = () => {
-  return request<{ authorizationUrl: string }>("/auth/google/link");
+  return request<GoogleAuthResponseDto>("/auth/google/link");
 };
 
 export const refresh = () => {
-  return request<string>("/auth/refresh", {
+  return request<void>("/auth/refresh", {
     method: "POST",
   });
 };
@@ -46,14 +47,14 @@ export const getCurrentUser = () => {
 };
 
 export const resendConfirmationEmail = (email: string) => {
-  return request<string>("/auth/resend-confirmation-email", {
+  return request<void>("/auth/resend-confirmation-email", {
     method: "POST",
     body: JSON.stringify({ email }),
   });
 };
 
 export const forgotPassword = (credentials: ForgotPasswordDto) => {
-  return request<string>("/auth/forgot-password", {
+  return request<void>("/auth/forgot-password", {
     method: "POST",
     body: JSON.stringify(credentials),
   });

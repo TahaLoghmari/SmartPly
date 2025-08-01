@@ -17,6 +17,6 @@ export function useUploadResume() {
         queryKey: ["resumes", user?.id],
       });
     },
-    onError: handleApiError,
+    onError: (error) => handleApiError({ apiError: error }),
   });
 }
