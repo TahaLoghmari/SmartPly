@@ -189,15 +189,24 @@ public class AuthService(
         JwtAuthOptions jwtAuthOptions,
         HttpResponse response)
     {
+        logger.LogInformation("GoogleCallback invoked with state: {State}, code: {Code}, error: {Error}", state, code, error);
+        
         if (!string.IsNullOrEmpty(error))
-            return (null, error);
+        {
+            logger.LogWarning("Google authentication canceled by user. Error: {Error}", error);
+            return (null, "The Google authentication process was canceled.");
+        }
 
         var stateParts = state?.Split(':');
         string? linkAccountUserId = stateParts?.Length == 2 ? stateParts[0] : null;
 
         GoogleTokenResponse? googleTokens = await googleTokensProvider.ExchangeCodeForTokens(code);
+        
         if (googleTokens is null)
-            return (null, "Failed to get tokens from Google");
+        {
+            logger.LogError("Failed to get tokens from Google for code: {Code}", code);
+            return (null, "Failed to exchange Google authorization code for tokens");
+        }
 
         GoogleUserInfo googleUser = await googleTokensProvider.GetGoogleUserInfo(googleTokens.IdToken);
 
@@ -206,20 +215,36 @@ public class AuthService(
 
         if (linkAccountUserId != null)
         {
+            logger.LogInformation("Attempting to link Google account for UserId: {UserId}", linkAccountUserId);
+            
             user = await googleTokensProvider.LinkUserAsync(googleUser, linkAccountUserId);
-            if (user == null)
+            if (user is null)
+            {
+                logger.LogError("Failed to link Google account for UserId: {UserId}", linkAccountUserId);
                 return (null, "Failed to link Google account");
+            }
+            
             await googleTokensProvider.StoreGoogleTokens(user, googleTokens);
+            logger.LogInformation("Google account linked and tokens stored for UserId: {UserId}", user.Id);
         }
         else
         {
+            logger.LogInformation("Attempting to find or create user for Google account: {GoogleEmail}", googleUser.Email);
             user = await googleTokensProvider.FindOrCreateUserAsync(googleUser, null);
-            if (user == null)
+            
+            if (user is null)
+            {
+                logger.LogError("Failed to create user account for Google email: {GoogleEmail}", googleUser.Email);
                 return (null, "Failed to create user account");
+            }
+            
             await googleTokensProvider.StoreGoogleTokens(user, googleTokens);
             accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, user.Email!);
             cookieService.AddCookies(response, accessTokens, jwtAuthOptions);
+            logger.LogInformation("User created and tokens stored for UserId: {UserId}, Email: {Email}", user.Id, user.Email);
         }
+        
+        logger.LogInformation("GoogleCallback completed successfully for UserId: {UserId}", user?.Id);
 
         return (user, null);
     }
@@ -265,14 +290,14 @@ public class AuthService(
         logger.LogInformation("Logout successful");
     }
 
-    public async Task ConfirmEmail(string userId, string token)
+    public async Task<bool> ConfirmEmail(string userId, string token)
     {
         var user = await userManager.FindByIdAsync(userId);
         if (user is null)
         {
             logger.LogWarning("Email confirmation failed - user not found for UserId: {UserId}", 
                 userId);
-            throw new BadRequestException("the UserId is invalid.", "User does not exist");
+            return false;
         }
         var result = await userManager.ConfirmEmailAsync(user, token);
         
@@ -280,20 +305,12 @@ public class AuthService(
         {
             logger.LogWarning("Email confirmation failed for UserId: {UserId}. Errors: {Errors}", 
                 userId, string.Join(", ", result.Errors.Select(e => $"{e.Code}: {e.Description}")));
-        
-            throw new BadRequestException(
-                "Email confirmation failed due to invalid token or user ID.",
-                "Email confirmation failed",
-                result.Errors
-                    .GroupBy(e => e.Code)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Select(e => e.Description).ToArray()
-                    )
-            );
+            return false;
         }
         
         logger.LogInformation("Email confirmation successful for UserId: {UserId}", userId);
+
+        return true;
     }
 
     public async Task ResendConfirmationEmail(

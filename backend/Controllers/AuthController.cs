@@ -60,7 +60,7 @@ public sealed class AuthController(
     {
         string authUrl = authService.GoogleAuthorize();
 
-        return Ok(new { authorizationUrl = authUrl });
+        return Ok(new GoogleAuthResponseDto { AuthorizationUrl = authUrl });
     }
     
     [HttpGet("google/link")]
@@ -131,12 +131,13 @@ public sealed class AuthController(
     {
         await validator.ValidateAndThrowAsync(confirmationDto);
 
-        await authService.ConfirmEmail(confirmationDto.UserId,
+        bool success = await authService.ConfirmEmail(confirmationDto.UserId,
             confirmationDto.Token);
         
         var frontendUrl = configuration["Frontend:BaseUrl"];
         
-        return Redirect($"{frontendUrl}/email-confirmed");
+        return success ? Redirect($"{frontendUrl}/email-confirmed?status=success") 
+                       : Redirect($"{frontendUrl}/email-confirmed?status=failure");
     }
     
     [AllowAnonymous]
