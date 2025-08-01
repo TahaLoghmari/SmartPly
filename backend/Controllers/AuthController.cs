@@ -1,15 +1,11 @@
 using backend.DTOs;
-using backend.DTOs.Auth;
-using backend.DTOs.Email;
 using backend.Entities;
-using backend.Mappings;
 using backend.Services;
 using backend.Settings;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using Microsoft.AspNetCore.RateLimiting;
@@ -20,13 +16,8 @@ namespace backend.Controllers;
 [Route("auth")]
 [EnableRateLimiting("fixed")]
 public sealed class AuthController(
-    UserManager<User> userManager,
     IOptions<JwtAuthOptions> options,
     IConfiguration configuration,
-    TokenManagementService tokenManagementService,
-    CookieService cookieService,
-    EmailSenderService emailSenderService,
-    ILogger<AuthController> logger,
     AuthService authService) : ControllerBase
 {
     private readonly JwtAuthOptions _jwtAuthOptions = options.Value;

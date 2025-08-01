@@ -1,7 +1,6 @@
 using backend.DTOs;
-using backend.DTOs.Auth;
-using backend.DTOs.Email;
 using backend.Entities;
+using backend.Exceptions;
 using backend.Mappings;
 using backend.Settings;
 using Microsoft.AspNetCore.Identity;

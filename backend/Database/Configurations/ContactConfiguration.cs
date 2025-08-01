@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace backend.Database.Configurations;
+namespace backend.Database;
 
 public class ContactConfiguration : IEntityTypeConfiguration<Contact>
 {

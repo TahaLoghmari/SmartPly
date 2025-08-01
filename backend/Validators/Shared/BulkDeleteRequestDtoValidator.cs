@@ -1,8 +1,7 @@
-﻿using backend.DTOs.Resume;
-using backend.DTOs.Shared;
+﻿using backend.DTOs;
 using FluentValidation;
 
-namespace backend.Validators.Resume;
+namespace backend.Validators;
 
 public class BulkDeleteRequestDtoValidator : AbstractValidator<BulkDeleteRequestDto>
 {

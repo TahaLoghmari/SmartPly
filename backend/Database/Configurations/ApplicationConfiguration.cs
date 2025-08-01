@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace backend.Database.Configurations;
+namespace backend.Database;
 
 public class ApplicationConfiguration : IEntityTypeConfiguration<Application>
 {

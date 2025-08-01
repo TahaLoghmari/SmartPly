@@ -1,5 +1,6 @@
 ﻿using backend.Enums;
-namespace backend.DTOs.Application;
+
+namespace backend.DTOs;
 
 public sealed record ApplicationRequestDto
 {

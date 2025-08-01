@@ -1,6 +1,7 @@
-﻿using backend.DTOs.Auth;
+﻿using backend.DTOs;
 using FluentValidation;
 
+namespace backend.Validators;
 public class ResetPasswordDtoValidator : AbstractValidator<ResetPasswordDto>
 {
     public ResetPasswordDtoValidator()

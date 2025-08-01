@@ -1,4 +1,4 @@
-﻿using System;
+﻿namespace backend.Exceptions;
 
 public class NotFoundException : Exception
 {

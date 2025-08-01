@@ -1,4 +1,4 @@
-﻿using backend.DTOs.Resume;
+﻿using backend.DTOs;
 using backend.Entities;
 
 namespace backend.Mappings;

@@ -1,4 +1,4 @@
-﻿namespace backend.DTOs.Shared;
+﻿namespace backend.DTOs;
 
 public record BulkDeleteRequestDto
 {

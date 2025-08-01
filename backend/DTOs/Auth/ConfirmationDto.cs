@@ -1,4 +1,4 @@
-namespace backend.DTOs.Email;
+namespace backend.DTOs;
 
 public record ConfirmationDto
 {

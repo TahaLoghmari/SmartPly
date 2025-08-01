@@ -1,10 +1,8 @@
 ﻿using System.Collections.Concurrent;
-using backend.DTOs.Application;
-using backend.DTOs.Resume;
-using backend.DTOs.Shared;
+using backend.DTOs;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace backend.Services.Shared;
+namespace backend.Services;
 
 //For each user, there is a cache entry with a key like UserCacheKeys_123.
 // The value for this key is a ConcurrentDictionary<string, byte>.

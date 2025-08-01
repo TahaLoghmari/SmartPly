@@ -1,5 +1,4 @@
 using System.Threading.RateLimiting;
-using backend.Services.Shared;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;

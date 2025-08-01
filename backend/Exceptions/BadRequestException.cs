@@ -1,4 +1,5 @@
-﻿public class BadRequestException : Exception
+﻿namespace backend.Exceptions;
+public class BadRequestException : Exception
 {
     public string Title { get; }
     public object? Errors { get; }

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using Supabase.Storage;
 
 
-namespace backend.Services.Shared;
+namespace backend.Services;
 
 public class SupabaseService
 {

@@ -1,6 +1,6 @@
-﻿using FluentValidation;
-using backend.DTOs.Application;
-namespace backend.Validators.Application;
+﻿using backend.DTOs;
+using FluentValidation;
+namespace backend.Validators;
 
 public class ApplicationRequestDtoValidator : AbstractValidator<ApplicationRequestDto>
 {

@@ -1,8 +1,6 @@
 ﻿using System.Security.Claims;
-using backend.DTOs.Resume;
-using backend.DTOs.Shared;
+using backend.DTOs;
 using backend.Services;
-using backend.Services.Shared;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

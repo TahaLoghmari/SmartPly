@@ -1,7 +1,7 @@
 using System.Net.Mail; 
 using System.Net;
 using System.Text.Encodings.Web;
-using backend.DTOs.Email;
+using backend.DTOs;
 using backend.Entities;
 using backend.Settings;
 using Microsoft.AspNetCore.Identity;

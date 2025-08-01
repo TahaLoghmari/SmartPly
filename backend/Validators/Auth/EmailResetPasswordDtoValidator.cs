@@ -1,6 +1,7 @@
 ﻿using backend.DTOs;
 using FluentValidation;
 
+namespace backend.Validators;
 public sealed class EmailResetPasswordDtoValidator : AbstractValidator<EmailResetPasswordDto>
 {
     public EmailResetPasswordDtoValidator()

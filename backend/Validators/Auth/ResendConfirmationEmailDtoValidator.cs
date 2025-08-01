@@ -1,6 +1,7 @@
+using backend.DTOs;
 using FluentValidation;
-using backend.DTOs.Email;
 
+namespace backend.Validators;
 public class ResendConfirmationEmailDtoValidator : AbstractValidator<ResendConfirmationEmailDto>
 {
     public ResendConfirmationEmailDtoValidator()

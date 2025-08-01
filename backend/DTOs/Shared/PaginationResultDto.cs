@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace backend.DTOs.Shared;
+namespace backend.DTOs;
 
 public sealed record PaginationResultDto<T> : ICollectionResponse<T>
 {

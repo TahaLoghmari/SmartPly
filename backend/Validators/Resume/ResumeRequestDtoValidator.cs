@@ -1,8 +1,7 @@
-﻿using backend.DTOs.Resume;
+﻿using backend.DTOs;
 using FluentValidation;
-using Microsoft.AspNetCore.Http;
 
-namespace backend.Validators.Resume;
+namespace backend.Validators;
 
 public class ResumeRequestDtoValidator : AbstractValidator<ResumeRequestDto>
 {

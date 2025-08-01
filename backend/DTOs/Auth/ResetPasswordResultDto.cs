@@ -1,4 +1,4 @@
-namespace backend.DTOs.Auth;
+namespace backend.DTOs;
 
 public record ResetPasswordResultDto
 {

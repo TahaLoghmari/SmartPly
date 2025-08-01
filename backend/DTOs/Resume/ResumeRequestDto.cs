@@ -1,4 +1,4 @@
-﻿namespace backend.DTOs.Resume;
+﻿namespace backend.DTOs;
 
 public class ResumeRequestDto
 {

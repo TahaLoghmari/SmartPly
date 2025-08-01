@@ -1,8 +1,7 @@
-﻿using backend.DTOs.Resume;
-using backend.DTOs.Shared;
+﻿using backend.DTOs;
 using backend.Entities;
+using backend.Exceptions;
 using backend.Mappings;
-using backend.Services.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
