@@ -55,7 +55,7 @@ namespace backend.Services
             var token = await userManager.GeneratePasswordResetTokenAsync(user);
             logger.LogInformation("Generated password reset token for user {UserId}", user.Id);
 
-            var passwordResetLink = url.Action("ResetPassword", "Auth",
+            var passwordResetLink = url.Action("GetResetPasswordPage", "Auth",
                 new { Email = email, Token = token }, protocol: httpContext.Request.Scheme);
             
             if (passwordResetLink is null)

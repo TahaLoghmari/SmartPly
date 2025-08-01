@@ -60,7 +60,7 @@ export const forgotPassword = (credentials: ForgotPasswordDto) => {
 };
 
 export const resetPassword = (credentials: ResetPasswordDto) => {
-  return request<string>("/auth/reset-password", {
+  return request<void>("/auth/reset-password", {
     method: "POST",
     body: JSON.stringify(credentials),
   });

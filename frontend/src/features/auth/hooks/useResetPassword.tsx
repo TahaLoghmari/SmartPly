@@ -5,7 +5,7 @@ import { handleApiError, type ProblemDetailsDto } from "@/index";
 
 export function useResetPassword() {
   const navigate = useNavigate();
-  return useMutation<string, ProblemDetailsDto, ResetPasswordDto>({
+  return useMutation<void, ProblemDetailsDto, ResetPasswordDto>({
     mutationFn: resetPassword,
     onSuccess: () => navigate("/login"),
     onError: handleApiError,

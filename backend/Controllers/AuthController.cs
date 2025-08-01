@@ -180,7 +180,7 @@ public sealed class AuthController(
     {
         await validator.ValidateAndThrowAsync(emailResetPasswordDto);
 
-        var result = authService.GetResetPasswordPage(emailResetPasswordDto);
+        ResetPasswordResultDto result = authService.GetResetPasswordPage(emailResetPasswordDto);
         
         var frontendUrl = configuration["Frontend:BaseUrl"];
         
@@ -196,7 +196,6 @@ public sealed class AuthController(
 
         await authService.ProcessResetPassword(processResetPasswordDto);
         
-        var frontendUrl = configuration["Frontend:BaseUrl"];
-        return Redirect($"{frontendUrl}/reset-password");
+        return NoContent();
     }
 }

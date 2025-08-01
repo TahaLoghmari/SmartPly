@@ -276,23 +276,25 @@ public class AuthService(
             throw new BadRequestException("the UserId is invalid.", "User does not exist");
         }
         var result = await userManager.ConfirmEmailAsync(user, token);
-        if (result.Succeeded)
-        {
-            logger.LogInformation("Email confirmation successful for UserId: {UserId}", userId);
-        }
-        logger.LogWarning("Email confirmation failed for UserId: {UserId}. Errors: {Errors}", 
-            userId, string.Join(", ", result.Errors.Select(e => $"{e.Code}: {e.Description}")));
         
-        throw new BadRequestException(
-            "Email confirmation failed due to invalid token or user ID.",
-            "Email confirmation failed",
-            result.Errors
-                .GroupBy(e => e.Code)
-                .ToDictionary(
-                    g => g.Key,
-                    g => g.Select(e => e.Description).ToArray()
-                )
-        );
+        if (!result.Succeeded)
+        {
+            logger.LogWarning("Email confirmation failed for UserId: {UserId}. Errors: {Errors}", 
+                userId, string.Join(", ", result.Errors.Select(e => $"{e.Code}: {e.Description}")));
+        
+            throw new BadRequestException(
+                "Email confirmation failed due to invalid token or user ID.",
+                "Email confirmation failed",
+                result.Errors
+                    .GroupBy(e => e.Code)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.Description).ToArray()
+                    )
+            );
+        }
+        
+        logger.LogInformation("Email confirmation successful for UserId: {UserId}", userId);
     }
 
     public async Task ResendConfirmationEmail(
