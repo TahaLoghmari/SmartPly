@@ -144,6 +144,7 @@ public static class DependencyInjection
         builder.Services.AddScoped<CookieService>();
         builder.Services.AddTransient<EmailSenderService>();
         builder.Services.AddTransient<ApplicationService>();
+        builder.Services.AddTransient<AuthService>();
         builder.Services.AddTransient<CacheService>();
         builder.Services.AddScoped<ResumeService>();
         builder.Services.AddHealthChecks()

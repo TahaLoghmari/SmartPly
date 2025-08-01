@@ -18,23 +18,26 @@ public sealed class CustomExceptionHandler(
         {
             case NotFoundException notFound:
                 httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-                problemDetails.Title = "Not Found";
+                problemDetails.Title = notFound.Title;
                 problemDetails.Detail = notFound.Message;
                 problemDetails.Status = StatusCodes.Status404NotFound;
+                if (notFound.Errors != null) problemDetails.Extensions["errors"] = notFound.Errors;
                 break;
 
             case BadRequestException badRequest:
                 httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-                problemDetails.Title = "Bad Request";
+                problemDetails.Title = badRequest.Title;
                 problemDetails.Detail = badRequest.Message;
                 problemDetails.Status = StatusCodes.Status400BadRequest;
+                if ( badRequest.Errors != null ) problemDetails.Extensions["errors"] = badRequest.Errors;
                 break;
 
             case UnauthorizedException unauthorized:
                 httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                problemDetails.Title = "Unauthorized";
+                problemDetails.Title = unauthorized.Title;
                 problemDetails.Detail = unauthorized.Message;
                 problemDetails.Status = StatusCodes.Status401Unauthorized;
+                if ( unauthorized.Errors != null ) problemDetails.Extensions["errors"] = unauthorized.Errors;
                 break;
             case ValidationException validation:
                 httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;

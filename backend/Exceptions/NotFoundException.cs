@@ -2,5 +2,12 @@
 
 public class NotFoundException : Exception
 {
-    public NotFoundException(string message) : base(message) { }
+    public string Title { get; }
+    public object? Errors { get; }
+    public NotFoundException(string message, string? title = null, object? errors = null)
+        : base(message)
+    {
+        Title = title ?? "Not Found";
+        Errors = errors ?? null;
+    }
 }

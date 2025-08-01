@@ -6,6 +6,14 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace backend.Services.Shared;
 
+//For each user, there is a cache entry with a key like UserCacheKeys_123.
+// The value for this key is a ConcurrentDictionary<string, byte>.
+// The dictionary's keys are all the cache keys (e.g. UserApplications_123_search_status_level_type_jobtype_page_pagesize) that reference the actual cached data.
+// The actual data is stored in the cache under those cache keys.
+// The dictionary only tracks which cache keys exist for that user; it does not store the data itself.
+//To retrieve the actual cached data, you only need the specific cacheKey and can directly use cache.TryGetValue(cacheKey, out ...).
+// Accessing the user key set (UserCacheKeys_123) is only necessary if you want to enumerate or invalidate all cache entries for a user, not for reading a single cached value
+
 public sealed class CacheService(
     IMemoryCache cache,
     ILogger<ApplicationService> logger)
