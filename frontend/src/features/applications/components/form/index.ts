@@ -1,8 +1,8 @@
-export * from "./applications-form-company-information";
-export * from "./applications-form-job-details";
-export * from "./applications-form-details";
-export * from "./applications-form-compensation";
-export * from "./applications-form-technologies";
-export * from "./applications-form-additional-information";
-export * from "./applications-form-documents";
-export * from "./applications-form";
+export { default as ApplicationFormCompanyInformation } from "./FormCompanyInformation";
+export { default as ApplicationFormJobDetails } from "./FormJobDetails";
+export { default as ApplicationFormDetails } from "./FormDetails";
+export { default as ApplicationFormCompensation } from "./FormCompensation";
+export { default as ApplicationFormTechnologies } from "./FormTechnologies";
+export { default as ApplicationFormAdditionalInformation } from "./FormAdditionalInformation";
+export { default as ApplicationFormDocuments } from "./FormDocuments";
+export { default as ApplicationForm } from "./Form";

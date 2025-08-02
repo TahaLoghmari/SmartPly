@@ -11,7 +11,7 @@ import {
 import { MoveLeft } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 
-export function EmailVerificationPage() {
+export default function EmailVerificationPage() {
   const resendConfirmationEmailMutation = useResendConfirmationEmail();
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email");

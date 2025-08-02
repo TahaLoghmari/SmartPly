@@ -30,7 +30,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
-export function RegisterForm({
+export default function RegisterForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {

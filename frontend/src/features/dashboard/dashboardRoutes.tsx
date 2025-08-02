@@ -1,6 +1,6 @@
 import { Navigate, type RouteObject } from "react-router-dom";
 import { Dashboard } from "#/dashboard";
-import { ProtectedRoute } from "../../shared";
+import { UserGuard } from "#/auth";
 import { applicationRoutes } from "#/applications";
 import { Analytics } from "#/analytics";
 import { Contacts } from "#/contacts";
@@ -13,9 +13,9 @@ export const dashboardRoutes: RouteObject[] = [
   {
     path: "app",
     element: (
-      <ProtectedRoute>
+      <UserGuard>
         <Dashboard />
-      </ProtectedRoute>
+      </UserGuard>
     ),
     children: [
       {

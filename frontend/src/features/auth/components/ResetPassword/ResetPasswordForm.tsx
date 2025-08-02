@@ -27,7 +27,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export function ResetPasswordForm() {
+export default function ResetPasswordForm() {
   const resetPasswordMutation = useResetPassword();
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");

@@ -1,3 +1,3 @@
-export * from "./applications-card";
-export * from "./applications-card-status-display";
-export * from "./applications-card-info";
+export { default as ApplicationCard } from "./Card";
+export { default as ApplicationCardStatus } from "./CardStatus";
+export { default as ApplicationCardInfo } from "./CardInfo";

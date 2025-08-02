@@ -1,2 +1,1 @@
-export * from "../button/clear-application-filters-button";
-export * from "./applications-filterbar";
+export { default as ApplicationFilterbar } from "./Filterbar";

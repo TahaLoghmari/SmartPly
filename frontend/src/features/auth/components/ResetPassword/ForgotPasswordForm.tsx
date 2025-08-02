@@ -20,7 +20,7 @@ import {
   ForgotPasswordDefautls,
 } from "#/auth";
 
-export function ForgotPasswordForm() {
+export default function ForgotPasswordForm() {
   const navigate = useNavigate();
   const forgotPasswordMutation = useForgotPassword();
   const form = useForm<z.infer<typeof forgotPasswordFormSchema>>({

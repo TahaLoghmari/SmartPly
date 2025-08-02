@@ -15,7 +15,7 @@ export interface ApplicationPageNavigationStore {
   setNavigationPage: (page: string) => void;
 }
 
-export interface ManageApplicationStore {
+export interface ApplicationFormDialogStore {
   openDialog: boolean;
   setOpenDialog: (open: boolean) => void;
 }

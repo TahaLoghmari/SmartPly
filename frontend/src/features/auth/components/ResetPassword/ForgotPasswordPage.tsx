@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export function ForgotPasswordPage() {
+export default function ForgotPasswordPage() {
   const forgotPasswordMutation = useForgotPassword();
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email");
