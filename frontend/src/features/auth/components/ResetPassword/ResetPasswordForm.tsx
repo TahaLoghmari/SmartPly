@@ -17,6 +17,7 @@ import {
   useResetPassword,
   type ResetPasswordDto,
   resetPasswordFormSchema,
+  ResetPasswordDefaults,
 } from "#/auth";
 import {
   Card,
@@ -35,11 +36,7 @@ export function ResetPasswordForm() {
   const form = useForm<z.infer<typeof resetPasswordFormSchema>>({
     resolver: zodResolver(resetPasswordFormSchema),
     mode: "onChange",
-    defaultValues: {
-      email: email || "",
-      password: "",
-      confirmPassword: "",
-    },
+    defaultValues: ResetPasswordDefaults(email),
   });
   async function onSubmit(formData: z.infer<typeof resetPasswordFormSchema>) {
     const dto: ResetPasswordDto = {

@@ -13,3 +13,17 @@ export function LoginFormDefaults() {
     password: "",
   };
 }
+
+export function ResetPasswordDefaults(email: string | null) {
+  return {
+    email: email || "",
+    password: "",
+    confirmPassword: "",
+  };
+}
+
+export function ForgotPasswordDefautls() {
+  return {
+    email: "",
+  };
+}

@@ -7,9 +7,6 @@ export * from "./types";
 // API
 export * from "./api";
 
-// Store
-export * from "./stores/useForgotPasswordStore";
-
 // Hooks
 export * from "./hooks/useCurrentUser";
 export * from "./hooks/useForgotPassword";

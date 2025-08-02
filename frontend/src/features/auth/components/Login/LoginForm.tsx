@@ -49,12 +49,12 @@ export function LoginForm({
   async function onSubmit(credentials: LoginUserDto) {
     loginMutation.mutate(credentials, {
       onError: (error) =>
-        // this is for the toast error when email is not verified 
+        // this is for the toast error when email is not verified
         handleApiError({ apiError: error, email: form.getValues("email") }),
     });
   }
 
-  // this is for google signin/signup failing
+  // this is for google signin/signup failing or any error when the redirection is comming from the backend with an error
   useEffect(() => {
     const message = searchParams.get("message");
     if (message) {

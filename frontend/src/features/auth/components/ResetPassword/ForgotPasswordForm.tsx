@@ -12,28 +12,26 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   useForgotPassword,
-  useForgotPasswordStore,
   forgotPasswordFormSchema,
   type ForgotPasswordDto,
+  ForgotPasswordDefautls,
 } from "#/auth";
 
 export function ForgotPasswordForm() {
+  const navigate = useNavigate();
   const forgotPasswordMutation = useForgotPassword();
-  const { setResetPasswordClicked } = useForgotPasswordStore();
   const form = useForm<z.infer<typeof forgotPasswordFormSchema>>({
     resolver: zodResolver(forgotPasswordFormSchema),
     mode: "onChange",
-    defaultValues: {
-      email: "",
-    },
+    defaultValues: ForgotPasswordDefautls(),
   });
   async function onSubmit(credentials: ForgotPasswordDto) {
     forgotPasswordMutation.mutate(credentials, {
       onSuccess: () => {
-        setResetPasswordClicked(credentials.email);
+        navigate(`/forgot-password?email=${credentials.email}`);
       },
     });
   }

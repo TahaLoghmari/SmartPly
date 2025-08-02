@@ -1,11 +1,7 @@
-import {
-  ForgotPasswordForm,
-  useForgotPassword,
-  useForgotPasswordStore,
-} from "#/auth";
+import { ForgotPasswordForm, useForgotPassword } from "#/auth";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import {
   Card,
@@ -14,18 +10,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useEffect } from "react";
 
 export function ForgotPasswordPage() {
-  const { hasClickedResetPassword, email, clearResetState } =
-    useForgotPasswordStore();
   const forgotPasswordMutation = useForgotPassword();
-
-  useEffect(() => {
-    return () => {
-      clearResetState();
-    };
-  }, [clearResetState]);
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get("email");
 
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
@@ -41,7 +30,7 @@ export function ForgotPasswordPage() {
         </svg>
         <div className="flex flex-col gap-6">
           <Card>
-            {!hasClickedResetPassword ? (
+            {!email ? (
               <>
                 <CardHeader className="text-center">
                   <CardTitle className="text-xl">
