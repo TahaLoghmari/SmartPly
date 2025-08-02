@@ -1,5 +1,10 @@
 import { useCurrentUser } from "#/auth";
-import { getNavigationData, NavMain, NavSecondary, NavUser } from "#/dashboard";
+import {
+  getNavigationData,
+  DashboardSidebarNavMain,
+  DashboardSidebarNavSecondary,
+  DashboardSidebarNavUser,
+} from "#/dashboard";
 import {
   Sidebar,
   SidebarContent,
@@ -10,7 +15,9 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export default function DashboardSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
   const { data: user } = useCurrentUser();
   const navigationData = getNavigationData(user!);
   return (
@@ -36,11 +43,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={navigationData.navMain} />
-        <NavSecondary items={navigationData.navSecondary} className="mt-auto" />
+        <DashboardSidebarNavMain items={navigationData.navMain} />
+        <DashboardSidebarNavSecondary
+          items={navigationData.navSecondary}
+          className="mt-auto"
+        />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={navigationData.user} />
+        <DashboardSidebarNavUser user={navigationData.user} />
       </SidebarFooter>
     </Sidebar>
   );

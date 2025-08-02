@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import { type DashboardNotificationsCountStoreType } from "#/dashboard";
+import { type DashboardNotificationsCountStore } from "#/dashboard";
 
 export const useDashboardNotificationsCountStore =
-  create<DashboardNotificationsCountStoreType>((set) => ({
+  create<DashboardNotificationsCountStore>((set) => ({
     notificationsCountState: 0,
     setNotificationsCountState: (count) =>
       set({ notificationsCountState: count }),

@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useLogoutDialogStore } from "#/dashboard";
 
-export function NavUser({
+export default function SidebarNavUser({
   user,
 }: {
   user: {

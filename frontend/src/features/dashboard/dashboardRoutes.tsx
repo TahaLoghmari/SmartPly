@@ -9,7 +9,7 @@ import { Gmail } from "#/gmail";
 import { Notifications } from "#/notifications";
 import { Settings } from "#/settings";
 
-export const dashboardRoutes: RouteObject[] = [
+const dashboardRoutes: RouteObject[] = [
   {
     path: "app",
     element: (
@@ -50,3 +50,5 @@ export const dashboardRoutes: RouteObject[] = [
     ],
   },
 ];
+
+export default dashboardRoutes;

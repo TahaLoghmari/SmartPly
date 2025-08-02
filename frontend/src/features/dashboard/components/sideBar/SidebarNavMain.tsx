@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/sidebar";
 import { NavLink } from "react-router-dom";
 
-export function NavMain({
+export default function SidebarNavMain({
   items,
 }: {
   items: {

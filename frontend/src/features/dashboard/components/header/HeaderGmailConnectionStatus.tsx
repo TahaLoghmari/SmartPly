@@ -5,9 +5,9 @@ import {
   AlertDialogContent,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { ConnectGmailButton } from "#/dashboard";
+import { DashboardHeaderConnectGmailButton } from "#/dashboard";
 
-export function GmailConnectionStatus() {
+export default function HeaderGmailConnectionStatus() {
   const { data: user } = useCurrentUser();
   return (
     <AlertDialog>
@@ -31,7 +31,7 @@ export function GmailConnectionStatus() {
         )}
       </AlertDialogTrigger>
       <AlertDialogContent className="w-112 p-0">
-        <ConnectGmailButton />
+        <DashboardHeaderConnectGmailButton />
       </AlertDialogContent>
     </AlertDialog>
   );

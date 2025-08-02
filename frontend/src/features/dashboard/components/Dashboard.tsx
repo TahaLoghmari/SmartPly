@@ -1,17 +1,20 @@
-import { AppSidebar, SideBarLogoutButton, SiteHeader } from "#/dashboard";
+import {
+  DashboardSidebar,
+  DashboardSidebarLogoutButton,
+  DashboardHeader,
+} from "#/dashboard";
 import { useSearchParams, Outlet } from "react-router-dom";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useCurrentUser } from "#/auth";
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export function Dashboard() {
   const { isLoading } = useCurrentUser();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  // this is for google signin/signup failing or any error when the redirection is comming from the backend with an error
   useEffect(() => {
     const message = searchParams.get("message");
     if (message) {
@@ -26,6 +29,7 @@ export function Dashboard() {
         <Spinner className="dark:invert" />
       </div>
     );
+
   return (
     <SidebarProvider
       style={
@@ -35,11 +39,11 @@ export function Dashboard() {
         } as React.CSSProperties
       }
     >
-      <AppSidebar variant="inset" />
+      <DashboardSidebar variant="inset" />
       <SidebarInset>
-        <SiteHeader />
+        <DashboardHeader />
         <Outlet />
-        <SideBarLogoutButton/>
+        <DashboardSidebarLogoutButton />
       </SidebarInset>
     </SidebarProvider>
   );
