@@ -170,11 +170,17 @@ public sealed class AuthController(
     [FromQuery] EmailResetPasswordDto emailResetPasswordDto,
     IValidator<EmailResetPasswordDto> validator)
     {
-        await validator.ValidateAndThrowAsync(emailResetPasswordDto);
+        var frontendUrl = configuration["Frontend:BaseUrl"];
+        
+        var validationResult = await validator.ValidateAsync(emailResetPasswordDto);
+        if (!validationResult.IsValid)
+        {
+            return Redirect($"{frontendUrl}/login?type=reset_password_error&" +
+                            $"message={Uri.EscapeDataString("Unable to reset password. Please try again.")}");
+        }
 
         ResetPasswordResultDto result = authService.GetResetPasswordPage(emailResetPasswordDto);
         
-        var frontendUrl = configuration["Frontend:BaseUrl"];
         
         return Redirect($"{frontendUrl}/reset-password?token={result.Token}&email={result.Email}");
     }
