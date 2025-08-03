@@ -1,11 +1,12 @@
 import { request } from "@/client";
-import type {
-  ApplicationRequestDto,
-  ApplicationResponseDto,
-  ApplicationGetRequestDto,
-  ApplicationQueryParametersDto,
-  ApplicationPatchRequestDto,
-  ApplicationEditRequestDto,
+import {
+  type ApplicationRequestDto,
+  type ApplicationResponseDto,
+  type ApplicationGetRequestDto,
+  type ApplicationQueryParametersDto,
+  type ApplicationPatchRequestDto,
+  type ApplicationEditRequestDto,
+  mapApplicationDates,
 } from "#/applications";
 import type { BulkDeleteRequestDto, PaginationResultDto } from "@/types";
 
@@ -58,36 +59,12 @@ export const getUserApplications = (params: ApplicationQueryParametersDto) => {
     },
   ).then((result) => ({
     ...result,
-    items: result.items.map((app) => ({
-      ...app,
-      createdAt: new Date(app.createdAt),
-      updatedAt: app.updatedAt ? new Date(app.updatedAt) : undefined,
-      deadline: app.deadline ? new Date(app.deadline) : undefined,
-      wishListDate: app.wishListDate ? new Date(app.wishListDate) : undefined,
-      appliedDate: app.appliedDate ? new Date(app.appliedDate) : undefined,
-      interviewDate: app.interviewDate
-        ? new Date(app.interviewDate)
-        : undefined,
-      offerDate: app.offerDate ? new Date(app.offerDate) : undefined,
-      rejectedDate: app.rejectedDate ? new Date(app.rejectedDate) : undefined,
-      ghostedDate: app.ghostedDate ? new Date(app.ghostedDate) : undefined,
-    })),
+    items: result.items.map(mapApplicationDates),
   }));
 };
 
 export const getUserApplication = (credentials: ApplicationGetRequestDto) => {
   return request<ApplicationResponseDto>(`/applications/${credentials.id}`, {
     method: "GET",
-  }).then((app) => ({
-    ...app,
-    createdAt: new Date(app.createdAt),
-    updatedAt: app.updatedAt ? new Date(app.updatedAt) : undefined,
-    deadline: app.deadline ? new Date(app.deadline) : undefined,
-    wishListDate: app.wishListDate ? new Date(app.wishListDate) : undefined,
-    appliedDate: app.appliedDate ? new Date(app.appliedDate) : undefined,
-    interviewDate: app.interviewDate ? new Date(app.interviewDate) : undefined,
-    offerDate: app.offerDate ? new Date(app.offerDate) : undefined,
-    rejectedDate: app.rejectedDate ? new Date(app.rejectedDate) : undefined,
-    ghostedDate: app.ghostedDate ? new Date(app.ghostedDate) : undefined,
-  }));
+  }).then(mapApplicationDates);
 };

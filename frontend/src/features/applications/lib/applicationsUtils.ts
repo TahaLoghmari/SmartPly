@@ -98,3 +98,16 @@ export function formatDate(date: Date) {
   }
   return typeof date === "string" ? date : "";
 }
+
+export const mapApplicationDates = (app: ApplicationResponseDto) => ({
+  ...app,
+  createdAt: new Date(app.createdAt),
+  updatedAt: app.updatedAt ? new Date(app.updatedAt) : undefined,
+  deadline: app.deadline ? new Date(app.deadline) : undefined,
+  wishListDate: app.wishListDate ? new Date(app.wishListDate) : undefined,
+  appliedDate: app.appliedDate ? new Date(app.appliedDate) : undefined,
+  interviewDate: app.interviewDate ? new Date(app.interviewDate) : undefined,
+  offerDate: app.offerDate ? new Date(app.offerDate) : undefined,
+  rejectedDate: app.rejectedDate ? new Date(app.rejectedDate) : undefined,
+  ghostedDate: app.ghostedDate ? new Date(app.ghostedDate) : undefined,
+});
