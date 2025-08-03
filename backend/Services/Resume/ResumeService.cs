@@ -22,7 +22,7 @@ public class ResumeService(
             throw new UnauthorizedException("User ID claim is missing.");
         }
 
-        string resumeUrl = await supabaseService.UploadFileAsync(dto.File);
+        string resumeUrl = await supabaseService.UploadFileAsync(dto.File,"resume","resumes");
         
         Resume resume = dto.ToResume(userId,resumeUrl);
         
@@ -87,7 +87,6 @@ public class ResumeService(
         var resume = await dbContext.Resumes
             .AsNoTracking()
             .FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
-
         if (resume is null)
         {
             logger.LogWarning("Resume not found for Id: {ResumeId}", id);
@@ -147,7 +146,7 @@ public class ResumeService(
             throw new NotFoundException($"No Resume found with ID '{id}'.");
         }
 
-        await supabaseService.DeleteFileAsync(resume.ResumeUrl);
+        await supabaseService.DeleteFileAsync(resume.Url,"resumes");
         
         dbContext.Resumes.Remove(resume);
         await dbContext.SaveChangesAsync();
@@ -166,19 +165,26 @@ public class ResumeService(
         var resumes = await dbContext.Resumes
             .Where(r => resumeIds.Contains(r.Id) && r.UserId == userId)
             .ToListAsync();
-
         if (resumes.Count == 0)
         {
             logger.LogWarning("No resumes found for bulk delete with IDs: {ResumeIds}", string.Join(", ", resumeIds));
             throw new NotFoundException("No resumes found for the provided IDs.");
         }
-
         foreach (var resume in resumes)
         {
-            await supabaseService.DeleteFileAsync(resume.ResumeUrl);
+            await supabaseService.DeleteFileAsync(resume.Url,"resumes");
         }
         dbContext.Resumes.RemoveRange(resumes);
         await dbContext.SaveChangesAsync();
+        
         cacheService.InvalidateUserResumeCache(userId);
+    }
+    public async Task<DownloadResultDto> DownloadResume(Guid id, string? userId)
+    {
+        var resume = await GetUserResume(id, userId);
+        
+        var bytes = await supabaseService.DownloadFileAsync(resume.Url, "resumes");
+        
+        return new DownloadResultDto { Bytes = bytes, Name = resume.Name };
     }
 }

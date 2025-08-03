@@ -3,7 +3,6 @@ using Newtonsoft.Json.Converters;
 
 namespace backend.Enums;
 
-[JsonConverter(typeof(StringEnumConverter))]
 public enum ApplicationJobType
 {
     fullTime,

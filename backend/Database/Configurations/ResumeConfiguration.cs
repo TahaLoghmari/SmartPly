@@ -12,7 +12,7 @@ public class ResumeConfiguration : IEntityTypeConfiguration<Resume>
         
         builder.HasKey(r => r.Id);
         
-        builder.Property(r => r.ResumeUrl)
+        builder.Property(r => r.Url)
             .IsRequired()
             .HasMaxLength(512);
         

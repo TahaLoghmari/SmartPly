@@ -146,6 +146,7 @@ public static class DependencyInjection
         builder.Services.AddTransient<AuthService>();
         builder.Services.AddTransient<CacheService>();
         builder.Services.AddScoped<ResumeService>();
+        builder.Services.AddScoped<CoverLetterService>();
         builder.Services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>("Database");
         

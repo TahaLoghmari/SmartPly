@@ -11,7 +11,7 @@ internal static class ResumeMappings
         {
             UserId = userId,
             Name = dto.Name,
-            ResumeUrl = resumeUrl,
+            Url = resumeUrl,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             Size = dto.File.Length,
@@ -27,7 +27,7 @@ internal static class ResumeMappings
             Name = resume.Name,
             CreatedAt = resume.CreatedAt,
             UpdatedAt = resume.UpdatedAt,
-            ResumeUrl = resume.ResumeUrl,
+            Url = resume.Url,
             Size = resume.Size,
         };
     }

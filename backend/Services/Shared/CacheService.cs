@@ -19,6 +19,7 @@ public sealed class CacheService(
     private const string USER_APPLICATIONS_PREFIX = "UserApplications_";
     private const string USER_CACHE_KEYS_PREFIX = "UserCacheKeys_";
     private const string USER_RESUMES_PREFIX = "UserResumes_";
+    private const string USER_COVER_LETTERS_PREFIX = "UserCoverLetters_";
     
     public string GenerateApplicationsCacheKey(string userId, ApplicationQueryParameters query)
     {
@@ -28,6 +29,11 @@ public sealed class CacheService(
     public string GenerateResumesCacheKey(string userId, ResumeQueryParameters query)
     {
         return $"{USER_RESUMES_PREFIX}{userId}_{query.Search}";
+    }
+
+    public string GenerateCoverLettersCacheKey(string userId, CoverLetterQueryParameters query)
+    {
+        return $"{USER_COVER_LETTERS_PREFIX}{userId}_{query.Search}";
     }
     
     public void CacheApplicationsResult(string cacheKey, PaginationResultDto<ApplicationResponseDto> resultDto, string userId)
@@ -56,6 +62,20 @@ public sealed class CacheService(
         cache.Set(cacheKey, result, cacheOptions);
 
         logger.LogDebug("Cached resume results with key: {CacheKey}", cacheKey);
+    }
+    
+    public void CacheCoverLettersResult(string cacheKey, ICollection<CoverLetterResponseDto> result, string userId)
+    {
+        var cacheOptions = new MemoryCacheEntryOptions()
+            .SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
+            .SetSlidingExpiration(TimeSpan.FromMinutes(5))
+            .SetPriority(CacheItemPriority.Normal);
+
+        TrackCacheKey(userId, cacheKey);
+
+        cache.Set(cacheKey, result, cacheOptions);
+
+        logger.LogDebug("Cached cover letter results with key: {CacheKey}", cacheKey);
     }
 
     public void TrackCacheKey(string userId, string cacheKey)
@@ -122,6 +142,37 @@ public sealed class CacheService(
         }
 
         logger.LogInformation("Invalidated {Count} resume cache entries for user: {UserId}",
+            keysToRemove.Count, userId);
+
+        if (userKeys.IsEmpty)
+        {
+            cache.Remove(userKeySet);
+            logger.LogDebug("Removed empty cache key set for user: {UserId}", userId);
+        }
+    }
+    
+    public void InvalidateUserCoverLetterCache(string userId)
+    {
+        string userKeySet = $"{USER_CACHE_KEYS_PREFIX}{userId}";
+
+        if (!cache.TryGetValue(userKeySet, out ConcurrentDictionary<string, byte>? userKeys))
+        {
+            logger.LogDebug("No cache keys found for user: {UserId}", userId);
+            return;
+        }
+
+        var keysToRemove = userKeys.Keys
+            .Where(key => key.StartsWith(USER_COVER_LETTERS_PREFIX))
+            .ToList();
+
+        foreach (var key in keysToRemove)
+        {
+            cache.Remove(key);
+            userKeys.TryRemove(key, out _);
+            logger.LogDebug("Removed cache key: {CacheKey}", key);
+        }
+
+        logger.LogInformation("Invalidated {Count} cover letter cache entries for user: {UserId}",
             keysToRemove.Count, userId);
 
         if (userKeys.IsEmpty)

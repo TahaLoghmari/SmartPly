@@ -29,10 +29,10 @@ public class SupabaseService
         await _client.InitializeAsync();
     }
 
-    public async Task<string> UploadFileAsync(IFormFile file)
+    public async Task<string> UploadFileAsync(IFormFile file, string name, string bucketName )
     {
         var ext        = Path.GetExtension(file.FileName); 
-        var objectPath = $"resume_{Guid.NewGuid():N}{ext}";
+        var objectPath = $"{name}_{Guid.NewGuid():N}{ext}";
 
         byte[] buffer;
         await using (var ms = new MemoryStream())
@@ -41,7 +41,7 @@ public class SupabaseService
             buffer = ms.ToArray();
         }
 
-        var bucket = _client.Storage.From("resumes");
+        var bucket = _client.Storage.From($"{bucketName}");
         await bucket.Upload(
             buffer,          
             objectPath,        
@@ -51,18 +51,18 @@ public class SupabaseService
                 Upsert       = false,
                 ContentType  = file.ContentType
             });
-        return $"{_supabaseUrl}/storage/v1/object/public/resumes/{objectPath}";
+        return $"{_supabaseUrl}/storage/v1/object/public/{bucketName}/{objectPath}";
     }
 
-    public async Task<byte[]> DownloadFileAsync(string resumeUrl)
+    public async Task<byte[]> DownloadFileAsync(string url, string bucketName)
     {
-        var objectPath = resumeUrl.Replace($"{_supabaseUrl}/storage/v1/object/public/resumes/", "");
-        return await _client.Storage.From("resumes").Download(objectPath, (TransformOptions?)null, (EventHandler<float>?)null);
+        var objectPath = url.Replace($"{_supabaseUrl}/storage/v1/object/public/{bucketName}/", "");
+        return await _client.Storage.From($"{bucketName}").Download(objectPath, (TransformOptions?)null, (EventHandler<float>?)null);
     }
     
-    public async Task DeleteFileAsync(string resumeUrl)
+    public async Task DeleteFileAsync(string url, string bucketName)
     {
-        var objectPath = resumeUrl.Replace($"{_supabaseUrl}/storage/v1/object/public/resumes/", "");
-        await _client.Storage.From("resumes").Remove(new List<string> { objectPath });
+        var objectPath = url.Replace($"{_supabaseUrl}/storage/v1/object/public/{bucketName}/", "");
+        await _client.Storage.From($"{bucketName}").Remove(new List<string> { objectPath });
     }
 }

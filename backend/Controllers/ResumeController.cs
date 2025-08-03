@@ -14,8 +14,7 @@ namespace backend.Controllers;
 [EnableRateLimiting("fixed")]
 public class ResumeController(
     ILogger<ResumeController> logger,
-    ResumeService resumeService,
-    SupabaseService supabaseService) : ControllerBase
+    ResumeService resumeService) : ControllerBase
 {
     [HttpPost]
     [Consumes("multipart/form-data")]
@@ -100,10 +99,9 @@ public class ResumeController(
     public async Task<IActionResult> DownloadResume(Guid id)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var resume = await resumeService.GetUserResume(id, userId);
 
-        var bytes = await supabaseService.DownloadFileAsync(resume.ResumeUrl);
+        DownloadResultDto result = await resumeService.DownloadResume(id, userId);
         
-        return File(bytes, "application/pdf", $"{resume.Name}.pdf"); 
+        return File(result.Bytes, "application/pdf", $"{result.Name}.pdf"); 
     }
 }
