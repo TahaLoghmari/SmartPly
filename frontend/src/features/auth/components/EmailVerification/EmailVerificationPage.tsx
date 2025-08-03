@@ -67,7 +67,7 @@ export default function EmailVerificationPage() {
                     disabled={resendConfirmationEmailMutation.isPending}
                   >
                     {resendConfirmationEmailMutation.isPending ? (
-                      <Spinner className="h-8 w-auto invert dark:invert-0" />
+                      <Spinner className="h-5 w-5 border-2 invert dark:invert-0" />
                     ) : (
                       "Resend Email"
                     )}

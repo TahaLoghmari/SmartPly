@@ -1,5 +1,5 @@
 import { FileText } from "lucide-react";
-import { useGetUserResumes, ViewAction } from "#/documents";
+import { useGetUserResumes, ResumeViewButton } from "#/documents";
 import { formatDistanceToNow } from "date-fns";
 import { usePatchApplication } from "#/applications";
 import type { JsonPatchDto } from "@/index";
@@ -46,7 +46,7 @@ export default function PageDocumentsResumes({
   if (isLoading)
     return (
       <div className="bg-card flex h-40 items-center justify-center rounded-lg border py-4">
-        <Spinner className="size-40 dark:invert" />
+        <Spinner className="dark:invert" />
       </div>
     );
   return (
@@ -73,7 +73,7 @@ export default function PageDocumentsResumes({
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <ViewAction url={resume.resumeUrl} />
+            <ResumeViewButton url={resume.resumeUrl} />
             <button
               className="text-muted-foreground bg-muted hover:text-strong-muted-foreground flex h-8 w-24 cursor-pointer items-center justify-center rounded-md p-1 text-xs font-medium"
               onClick={() => updateApplicationResume(resume.id)}
@@ -84,7 +84,7 @@ export default function PageDocumentsResumes({
             >
               {loadingResumeId === resume.id &&
               patchApplicationMutation.isPending ? (
-                <Spinner className="h-10 w-10" />
+                <Spinner className="h-4 w-4 border-2" />
               ) : (
                 <span className="cursor-pointer">Select</span>
               )}

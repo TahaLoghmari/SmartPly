@@ -37,7 +37,7 @@ export default function RegisterForm({
   const getGoogleOAuthUrlMutation = useGetGoogleOAuthUrl();
   const registerMutation = useRegister();
   const navigate = useNavigate();
-  
+
   const form = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
     mode: "onChange",
@@ -165,7 +165,7 @@ export default function RegisterForm({
                     }
                   >
                     {registerMutation.isPending ? (
-                      <Spinner className="h-8 w-auto invert dark:invert-0" />
+                      <Spinner className="h-5 w-5 border-2 invert dark:invert-0" />
                     ) : (
                       "Sign up"
                     )}

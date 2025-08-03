@@ -22,7 +22,7 @@ export default function LikeButton({ applicationCard }: ApplicationCardProps) {
   };
 
   return patchApplicationMutation.isPending ? (
-    <Spinner className="h-auto w-6 invert" />
+    <Spinner className="h-6 w-6 invert" />
   ) : (
     <button
       onClick={handleClick}

@@ -97,7 +97,9 @@ export default function FormDocuments({ form }: ApplicationFormContentProps) {
                   </PopoverContent>
                 </Popover>
               ) : (
-                <Spinner className="h-8 dark:invert" />
+                <div className="flex w-full items-center justify-center">
+                  <Spinner className="h-5 w-5 dark:invert" />
+                </div>
               )}
               <FormMessage />
             </FormItem>

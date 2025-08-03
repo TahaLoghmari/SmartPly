@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
-import { authRoutes } from "../features/auth";
-import { HomePage } from "../features/home";
-import { dashboardRoutes } from "../features/dashboard/dashboardRoutes";
+import { authRoutes } from "#/auth";
+import { HomePage } from "#/home";
+import { dashboardRoutes } from "#/dashboard";
 
 export const router = createBrowserRouter([
   {

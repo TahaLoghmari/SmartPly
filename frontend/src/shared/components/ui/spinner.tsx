@@ -1,18 +1,12 @@
-import loadingAnimation from "../../assets/Animation - 1744089714161.json";
-import Lottie from "lottie-react";
 import { cn } from "@/lib/utils";
 
-export function Spinner({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+export function Spinner({ className }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <Lottie
-      {...props}
-      animationData={loadingAnimation}
-      loop
-      autoplay
-      className={cn(className)}
+    <span
+      className={cn(
+        "h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-black",
+        className,
+      )}
     />
   );
 }
