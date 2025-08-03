@@ -1,9 +1,9 @@
 import z from "zod";
 import {
-  applicationsJobTypeOptionsConstant,
-  applicationsLevelOptionsConstant,
-  applicationsStatusOptionsConstant,
-  applicationsTypeOptionsConstant,
+  APPLICATIONS_JOB_TYPE_OPTIONS,
+  APPLICATIONS_LEVEL_OPTIONS,
+  APPLICATIONS_STATUS_OPTIONS,
+  APPLICATIONS_TYPE_OPTIONS,
 } from "#/applications";
 
 export const ApplicationsFormRequestSchema = z
@@ -48,28 +48,19 @@ export const ApplicationsFormRequestSchema = z
     deadline: z.date().optional(),
     jobDescription: z.string().optional(),
     status: z.enum(
-      applicationsStatusOptionsConstant.map((o) => o.value) as [
-        string,
-        ...string[],
-      ],
+      APPLICATIONS_STATUS_OPTIONS.map((o) => o.value) as [string, ...string[]],
     ),
     type: z.enum(
-      applicationsTypeOptionsConstant.map((o) => o.value) as [
-        string,
-        ...string[],
-      ],
+      APPLICATIONS_TYPE_OPTIONS.map((o) => o.value) as [string, ...string[]],
     ),
     jobType: z.enum(
-      applicationsJobTypeOptionsConstant.map((o) => o.value) as [
+      APPLICATIONS_JOB_TYPE_OPTIONS.map((o) => o.value) as [
         string,
         ...string[],
       ],
     ),
     level: z.enum(
-      applicationsLevelOptionsConstant.map((o) => o.value) as [
-        string,
-        ...string[],
-      ],
+      APPLICATIONS_LEVEL_OPTIONS.map((o) => o.value) as [string, ...string[]],
     ),
     wishListDate: z.date().optional(),
     appliedDate: z.date().optional(),

@@ -1,7 +1,7 @@
 import {
-  applicationsJobTypeOptionsConstant,
-  applicationsLevelOptionsConstant,
-  applicationsTypeOptionsConstant,
+  APPLICATIONS_JOB_TYPE_OPTIONS,
+  APPLICATIONS_LEVEL_OPTIONS,
+  APPLICATIONS_TYPE_OPTIONS,
   ApplicationTechnologiesUsed,
   type ApplicationJobTypeLabel,
   type ApplicationLevelLabel,
@@ -14,14 +14,13 @@ import ReactMarkdown from "react-markdown";
 export default function PageOverview({
   applicationCard,
 }: ApplicationCardProps) {
-  const type: ApplicationTypeLabel = applicationsTypeOptionsConstant.find(
+  const type: ApplicationTypeLabel = APPLICATIONS_TYPE_OPTIONS.find(
     (a) => a.value === applicationCard.type,
   )!.label;
-  const jobType: ApplicationJobTypeLabel =
-    applicationsJobTypeOptionsConstant.find(
-      (a) => a.value === applicationCard.jobType,
-    )!.label;
-  const level: ApplicationLevelLabel = applicationsLevelOptionsConstant.find(
+  const jobType: ApplicationJobTypeLabel = APPLICATIONS_JOB_TYPE_OPTIONS.find(
+    (a) => a.value === applicationCard.jobType,
+  )!.label;
+  const level: ApplicationLevelLabel = APPLICATIONS_LEVEL_OPTIONS.find(
     (a) => a.value === applicationCard.level,
   )!.label;
   return (

@@ -6,7 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  applicationsStatusOptionsConstant,
+  APPLICATIONS_STATUS_OPTIONS,
   usePatchApplication,
   ApplicationsStatusControlBuildPatch,
   type ApplicationsStatusControlProps,
@@ -38,7 +38,7 @@ export default function StatusControl({
         />
       </SelectTrigger>
       <SelectContent>
-        {applicationsStatusOptionsConstant.map((status) => (
+        {APPLICATIONS_STATUS_OPTIONS.map((status) => (
           <SelectItem key={status.value} value={status.value}>
             {status.label}
           </SelectItem>

@@ -10,7 +10,7 @@ import {
   type ApplicationRequestDto,
 } from "#/applications";
 
-export const applicationsLevelOptionsConstant: Readonly<
+export const APPLICATIONS_LEVEL_OPTIONS: Readonly<
   {
     value: ApplicationLevel;
     label: ApplicationLevelLabel;
@@ -21,7 +21,7 @@ export const applicationsLevelOptionsConstant: Readonly<
   { value: "senior", label: "Senior" },
 ] as const;
 
-export const applicationsStatusOptionsConstant: Readonly<
+export const APPLICATIONS_STATUS_OPTIONS: Readonly<
   {
     value: ApplicationStatus;
     label: ApplicationStatusLabel;
@@ -35,7 +35,7 @@ export const applicationsStatusOptionsConstant: Readonly<
   { value: "ghosted", label: "Ghosted" },
 ] as const;
 
-export const applicationsTypeOptionsConstant: Readonly<
+export const APPLICATIONS_TYPE_OPTIONS: Readonly<
   {
     value: ApplicationType;
     label: ApplicationTypeLabel;
@@ -46,7 +46,7 @@ export const applicationsTypeOptionsConstant: Readonly<
   { value: "hybrid", label: "Hybrid" },
 ] as const;
 
-export const applicationsJobTypeOptionsConstant: Readonly<
+export const APPLICATIONS_JOB_TYPE_OPTIONS: Readonly<
   {
     value: ApplicationJobType;
     label: ApplicationJobTypeLabel;
@@ -57,9 +57,9 @@ export const applicationsJobTypeOptionsConstant: Readonly<
   { value: "internship", label: "Internship" },
 ] as const;
 
-export const steps = ["WishList", "Applied", "Interview"] as const;
+export const STEPS = ["WishList", "Applied", "Interview"] as const;
 
-export const statusToDateKey: Record<string, keyof ApplicationRequestDto> = {
+export const STATUS_TO_DATE_KEY: Record<string, keyof ApplicationRequestDto> = {
   wishList: "wishListDate",
   applied: "appliedDate",
   interview: "interviewDate",
@@ -68,7 +68,7 @@ export const statusToDateKey: Record<string, keyof ApplicationRequestDto> = {
   ghosted: "ghostedDate",
 };
 
-export const statusToValue: Record<string, number> = {
+export const STATUS_TO_VALUE: Record<string, number> = {
   WishList: 0,
   Applied: 1,
   Interview: 2,
@@ -77,7 +77,7 @@ export const statusToValue: Record<string, number> = {
   Rejected: 5,
 };
 
-export const frameworks: Readonly<{ value: string; label: string }[]> = [
+export const TECHNOLOGIES: Readonly<{ value: string; label: string }[]> = [
   // Programming Languages
   { value: "javascript", label: "JavaScript" },
   { value: "typescript", label: "TypeScript" },

@@ -1,7 +1,4 @@
-"use client";
-
 import * as React from "react";
-import { type Icon } from "@tabler/icons-react";
 import { NavLink } from "react-router-dom";
 
 import {
@@ -11,17 +8,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import type { SidebarNavProps } from "#/dashboard/types";
 
 export default function SidebarNavSecondary({
   items,
   ...props
-}: {
-  items: {
-    title: string;
-    url: string;
-    icon: Icon | React.ElementType;
-  }[];
-} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+}: SidebarNavProps & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>

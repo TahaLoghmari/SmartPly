@@ -1,4 +1,3 @@
-import { type Icon } from "@tabler/icons-react";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -7,16 +6,9 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { NavLink } from "react-router-dom";
+import type { SidebarNavProps } from "#/dashboard";
 
-export default function SidebarNavMain({
-  items,
-}: {
-  items: {
-    title: string;
-    url: string;
-    icon: Icon | React.ElementType;
-  }[];
-}) {
+export default function SidebarNavMain({ items }: SidebarNavProps) {
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">

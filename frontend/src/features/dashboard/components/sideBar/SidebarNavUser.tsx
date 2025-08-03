@@ -22,17 +22,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useLogoutDialogStore } from "#/dashboard";
+import { useLogoutDialogStore, type SidebarNavUserProps } from "#/dashboard";
 
-export default function SidebarNavUser({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}) {
+export default function SidebarNavUser({ user }: SidebarNavUserProps) {
   const { isMobile } = useSidebar();
   const { setIsOpen } = useLogoutDialogStore();
   return (

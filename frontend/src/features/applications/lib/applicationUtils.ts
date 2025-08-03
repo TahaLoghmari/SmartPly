@@ -1,8 +1,8 @@
 import { type JsonPatchDto } from "@/types";
 import {
-  statusToValue,
-  steps,
-  statusToDateKey,
+  STATUS_TO_VALUE,
+  STEPS,
+  STATUS_TO_DATE_KEY,
   type ApplicationRequestDto,
   type ApplicationResponseDto,
 } from "#/applications";
@@ -11,7 +11,7 @@ export function ApplicationsStatusControlBuildPatch(
   applicationCard: ApplicationResponseDto,
   newStatus: string,
 ): JsonPatchDto[] {
-  const stepsWithLastStatus = [...steps, "Offer", "Rejected", "Ghosted"];
+  const stepsWithLastStatus = [...STEPS, "Offer", "Rejected", "Ghosted"];
   const newStatus_UpperCase = capitalize(newStatus);
 
   return [
@@ -22,7 +22,7 @@ export function ApplicationsStatusControlBuildPatch(
     },
     ...stepsWithLastStatus
       .filter(
-        (step) => statusToValue[step] > statusToValue[newStatus_UpperCase],
+        (step) => STATUS_TO_VALUE[step] > STATUS_TO_VALUE[newStatus_UpperCase],
       )
       .map((step) => ({
         op: "replace" as const,
@@ -31,7 +31,7 @@ export function ApplicationsStatusControlBuildPatch(
       })),
     ...stepsWithLastStatus
       .filter(
-        (step) => statusToValue[step] <= statusToValue[newStatus_UpperCase],
+        (step) => STATUS_TO_VALUE[step] <= STATUS_TO_VALUE[newStatus_UpperCase],
       )
       .map((step) => {
         const dateToChange = `${uncapitalize(step)}Date`;
@@ -57,11 +57,13 @@ export const ApplicationsFormHandleStatusChange = ({
   credentials,
   applicationCard,
 }: ApplicationsFormHandleStatusChangeProps) => {
-  const allSteps = [...steps, "Offer", "Ghosted", "Rejected"];
+  const allSteps = [...STEPS, "Offer", "Ghosted", "Rejected"];
   allSteps.map((step) => {
     const step_lowerCase = uncapitalize(step);
-    const field = statusToDateKey[step_lowerCase];
-    if (statusToValue[step] <= statusToValue[capitalize(credentials.status)]) {
+    const field = STATUS_TO_DATE_KEY[step_lowerCase];
+    if (
+      STATUS_TO_VALUE[step] <= STATUS_TO_VALUE[capitalize(credentials.status)]
+    ) {
       // If the date is already set and is in the past or now, keep it.
       // Otherwise, set it to the current date.
       if (
@@ -88,8 +90,8 @@ export function uncapitalize(status: string) {
 
 export function getStepsWithLastStatus(status: string) {
   return status === "rejected" || status === "ghosted"
-    ? [...steps, "Offer", capitalize(status)]
-    : [...steps, "Offer"];
+    ? [...STEPS, "Offer", capitalize(status)]
+    : [...STEPS, "Offer"];
 }
 
 export function formatDate(date: Date) {

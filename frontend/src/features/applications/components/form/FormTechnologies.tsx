@@ -1,6 +1,6 @@
 import {
   ApplicationTechnologiesUsed,
-  frameworks,
+  TECHNOLOGIES,
   type ApplicationFormContentProps,
 } from "#/applications";
 import { useState } from "react";
@@ -71,10 +71,10 @@ export default function FormTechnologies({
                       <CommandList>
                         <CommandEmpty>No framework found.</CommandEmpty>
                         <CommandGroup>
-                          {frameworks.map((framework) => (
+                          {TECHNOLOGIES.map((technology) => (
                             <CommandItem
-                              key={framework.value}
-                              value={framework.value}
+                              key={technology.value}
+                              value={technology.value}
                               onSelect={(currentValue) => {
                                 const currentValues = Array.isArray(field.value)
                                   ? field.value
@@ -97,12 +97,12 @@ export default function FormTechnologies({
                                 setOpen(true);
                               }}
                             >
-                              {framework.label}
+                              {technology.label}
                               <Check
                                 className={cn(
                                   "ml-auto",
                                   Array.isArray(field.value) &&
-                                    field.value.includes(framework.value)
+                                    field.value.includes(technology.value)
                                     ? "opacity-100"
                                     : "opacity-0",
                                 )}

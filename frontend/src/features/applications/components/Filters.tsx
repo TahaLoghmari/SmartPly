@@ -5,10 +5,10 @@ import {
   useApplicationTypeFilterStore,
   useApplicationLevelFilterStore,
   useApplicationJobTypeFilterStore,
-  applicationsStatusOptionsConstant,
-  applicationsTypeOptionsConstant,
-  applicationsLevelOptionsConstant,
-  applicationsJobTypeOptionsConstant,
+  APPLICATIONS_STATUS_OPTIONS,
+  APPLICATIONS_TYPE_OPTIONS,
+  APPLICATIONS_LEVEL_OPTIONS,
+  APPLICATIONS_JOB_TYPE_OPTIONS,
   useApplicationSearchBarStore,
 } from "#/applications";
 import { SearchBar } from "@/components/SearchBar";
@@ -47,28 +47,28 @@ export default function Filters() {
         key={"Status"}
         selectedFilter={selectedStatusFilter}
         setSelectedFilter={setSelectedStatusFilter}
-        applicationConstant={applicationsStatusOptionsConstant}
+        applicationConstant={APPLICATIONS_STATUS_OPTIONS}
         name={"Status"}
       />
       <ApplicationFilterbar
         key={"Type"}
         selectedFilter={selectedTypeFilter}
         setSelectedFilter={setSelectedTypeFilter}
-        applicationConstant={applicationsTypeOptionsConstant}
+        applicationConstant={APPLICATIONS_TYPE_OPTIONS}
         name={"Type"}
       />
       <ApplicationFilterbar
         key={"Level"}
         selectedFilter={selectedLevelFilter}
         setSelectedFilter={setSelectedLevelFilter}
-        applicationConstant={applicationsLevelOptionsConstant}
+        applicationConstant={APPLICATIONS_LEVEL_OPTIONS}
         name={"Level"}
       />
       <ApplicationFilterbar
         key={"Job Type"}
         selectedFilter={selectedJobTypeFilter}
         setSelectedFilter={setSelectedJobTypeFilter}
-        applicationConstant={applicationsJobTypeOptionsConstant}
+        applicationConstant={APPLICATIONS_JOB_TYPE_OPTIONS}
         name={"Job Type"}
       />
       <ApplicationClearFiltersButton />

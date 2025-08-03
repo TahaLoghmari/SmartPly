@@ -1,4 +1,4 @@
-import { type TechnologiesUsedProps, frameworks } from "#/applications";
+import { type TechnologiesUsedProps, TECHNOLOGIES } from "#/applications";
 import { Badge } from "@/components/ui/badge";
 
 export default function TechnologiesUsed({
@@ -10,7 +10,7 @@ export default function TechnologiesUsed({
     <div className={`flex flex-wrap items-center gap-1 ${className ?? ""}`}>
       {technologies.slice(0, MAX_DISPLAY).map((techValue) => (
         <Badge variant="secondary" key={techValue}>
-          {frameworks.find((f) => f.value === techValue)?.label || techValue}
+          {TECHNOLOGIES.find((t) => t.value === techValue)?.label || techValue}
         </Badge>
       ))}
 

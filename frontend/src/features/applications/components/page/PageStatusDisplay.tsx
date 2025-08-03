@@ -2,8 +2,8 @@ import {
   ApplicationPageStatusDate,
   capitalize,
   getStepsWithLastStatus,
-  statusToDateKey,
-  statusToValue,
+  STATUS_TO_DATE_KEY,
+  STATUS_TO_VALUE,
   uncapitalize,
   type ApplicationCardProps,
 } from "#/applications";
@@ -17,7 +17,7 @@ export default function PageStatusDisplay({
     <div className="flex flex-col">
       {stepsWithLastStatus.map((step, index) => {
         const applicationStatusDate =
-          applicationCard[statusToDateKey[uncapitalize(step)]];
+          applicationCard[STATUS_TO_DATE_KEY[uncapitalize(step)]];
 
         const isLast = index === stepsWithLastStatus.length - 1;
 
@@ -25,10 +25,10 @@ export default function PageStatusDisplay({
           <div key={`${applicationCard.id}-${index}`}>
             <div className="-mt-1 flex items-center gap-2">
               <div
-                className={` ${statusToValue[step] <= statusToValue[applicationStatus] ? "outline-input outline-2" : ""} bg-background border-muted-foreground flex size-4 items-center justify-center rounded-full border outline`}
+                className={` ${STATUS_TO_VALUE[step] <= STATUS_TO_VALUE[applicationStatus] ? "outline-input outline-2" : ""} bg-background border-muted-foreground flex size-4 items-center justify-center rounded-full border outline`}
               >
                 <div
-                  className={`${statusToValue[step] <= statusToValue[applicationStatus] ? "bg-muted-foreground size-1.5 rounded-full" : ""} `}
+                  className={`${STATUS_TO_VALUE[step] <= STATUS_TO_VALUE[applicationStatus] ? "bg-muted-foreground size-1.5 rounded-full" : ""} `}
                 ></div>
               </div>
               <ApplicationPageStatusDate

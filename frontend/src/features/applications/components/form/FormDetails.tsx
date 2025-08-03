@@ -1,9 +1,9 @@
 import {
   ApplicationFilterbar,
-  applicationsStatusOptionsConstant,
-  applicationsTypeOptionsConstant,
-  applicationsLevelOptionsConstant,
-  applicationsJobTypeOptionsConstant,
+  APPLICATIONS_STATUS_OPTIONS,
+  APPLICATIONS_TYPE_OPTIONS,
+  APPLICATIONS_LEVEL_OPTIONS,
+  APPLICATIONS_JOB_TYPE_OPTIONS,
   type ApplicationFormContentProps,
 } from "#/applications";
 import {
@@ -33,7 +33,7 @@ export default function FormDetails({ form }: ApplicationFormContentProps) {
                   field.onChange */
                   selectedFilter={field.value}
                   setSelectedFilter={field.onChange}
-                  applicationConstant={applicationsStatusOptionsConstant}
+                  applicationConstant={APPLICATIONS_STATUS_OPTIONS}
                   name={"Status"}
                 />
               </FormControl>
@@ -51,7 +51,7 @@ export default function FormDetails({ form }: ApplicationFormContentProps) {
                 <ApplicationFilterbar
                   selectedFilter={field.value}
                   setSelectedFilter={field.onChange}
-                  applicationConstant={applicationsTypeOptionsConstant}
+                  applicationConstant={APPLICATIONS_TYPE_OPTIONS}
                   name={"Type"}
                 />
               </FormControl>
@@ -69,7 +69,7 @@ export default function FormDetails({ form }: ApplicationFormContentProps) {
                 <ApplicationFilterbar
                   selectedFilter={field.value}
                   setSelectedFilter={field.onChange}
-                  applicationConstant={applicationsLevelOptionsConstant}
+                  applicationConstant={APPLICATIONS_LEVEL_OPTIONS}
                   name={"Level"}
                 />
               </FormControl>
@@ -87,7 +87,7 @@ export default function FormDetails({ form }: ApplicationFormContentProps) {
                 <ApplicationFilterbar
                   selectedFilter={field.value}
                   setSelectedFilter={field.onChange}
-                  applicationConstant={applicationsJobTypeOptionsConstant}
+                  applicationConstant={APPLICATIONS_JOB_TYPE_OPTIONS}
                   name={"Job Type"}
                 />
               </FormControl>
