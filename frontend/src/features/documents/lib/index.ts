@@ -1,1 +1,1 @@
-export * from "./documentsConstants";
+export * from "./documentsUtils";

@@ -2,7 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SearchBar } from "@/components/SearchBar";
 import {
   useDocumentSearchBarStore,
-  COLUMNS,
+  RESUME_COLUMNS,
   useGetUserResumes,
   ResumeUploadButton,
   useSelectedDocumentsStore,
@@ -71,7 +71,7 @@ export default function Documents() {
             </div>
           </div>
           <TabsContent value="resume" className="flex flex-col overflow-x-auto">
-            <DataTable columns={COLUMNS} data={resumes ?? []} />
+            <DataTable columns={RESUME_COLUMNS} data={resumes ?? []} />
           </TabsContent>
         </Tabs>
       </div>
