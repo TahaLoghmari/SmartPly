@@ -4,7 +4,17 @@ export interface ResumeResponseDto {
   name: string;
   createdAt: Date;
   updatedAt: Date | null;
-  resumeUrl: string;
+  url: string;
+  size: number;
+}
+
+export interface CoverLetterResponseDto {
+  id: string;
+  userId: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date | null;
+  Url: string;
   size: number;
 }
 
@@ -15,10 +25,4 @@ export interface ResumeRequestDto {
 
 export interface ResumeGetRequestDto {
   id: string;
-}
-
-export interface CoverLetterCreateResponseDto {
-  id: string;
-  userId: string;
-  name: string;
 }

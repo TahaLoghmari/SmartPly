@@ -73,7 +73,7 @@ export default function PageDocumentsResumes({
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <ResumeViewButton url={resume.resumeUrl} />
+            <ResumeViewButton url={resume.url} />
             <button
               className="text-muted-foreground bg-muted hover:text-strong-muted-foreground flex h-8 w-24 cursor-pointer items-center justify-center rounded-md p-1 text-xs font-medium"
               onClick={() => updateApplicationResume(resume.id)}

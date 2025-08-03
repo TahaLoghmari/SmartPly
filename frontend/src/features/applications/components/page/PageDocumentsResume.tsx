@@ -83,7 +83,7 @@ export default function PageDocumentsResume({
             <ChevronDown className="h-5 w-5 cursor-pointer" />
           )}
         </div>
-        {isResumePreviewOpen && <ResumePreview url={resume!.resumeUrl} />}
+        {isResumePreviewOpen && <ResumePreview url={resume!.url} />}
       </div>
     </>
   );

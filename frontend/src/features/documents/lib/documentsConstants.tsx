@@ -1,20 +1,11 @@
 import {
   ResumeActions,
-  type CoverLetterCreateResponseDto,
   type ResumeResponseDto,
 } from "#/documents";
 import { Checkbox } from "@/components/ui/checkbox";
 import { type ColumnDef } from "@tanstack/react-table";
 import { formatDistanceToNow } from "date-fns";
 import { FileText } from "lucide-react";
-
-export const COVER_LETTERS: CoverLetterCreateResponseDto[] = [
-  {
-    id: "e2b1c2d3-4f5a-6789-b0c1-2d3e4f5a6789",
-    userId: "9275e9bb-0670-4e89-b2b7-44e33cd1f62d",
-    name: "Frontend Position Cover Letter",
-  },
-];
 
 export const COLUMNS: ColumnDef<ResumeResponseDto>[] = [
   {
