@@ -1,8 +1,8 @@
 export * from "./types";
 export * from "./lib";
-export * from "./applicationApi";
+export * from "./applicationsApi";
 export * from "./stores";
 export * from "./hooks";
 export * from "./components";
 
-export { default as applicationRoutes } from "./applicationRoutes";
+export { default as applicationsRoutes } from "./applicationsRoutes";

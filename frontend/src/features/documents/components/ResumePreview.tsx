@@ -1,7 +1,7 @@
 import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 
-export function ResumePreview({ url }: { url: string }) {
+export default function ResumePreview({ url }: { url: string }) {
   const [loading, setLoading] = useState(true);
 
   return (

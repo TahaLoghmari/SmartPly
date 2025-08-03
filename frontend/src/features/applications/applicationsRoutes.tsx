@@ -1,7 +1,7 @@
 import type { RouteObject } from "react-router-dom";
 import { Applications, ApplicationPage } from "#/applications";
 
-const applicationRoutes: RouteObject[] = [
+const applicationsRoutes: RouteObject[] = [
   {
     path: "applications",
     element: <Applications />,
@@ -14,4 +14,4 @@ const applicationRoutes: RouteObject[] = [
   },
 ];
 
-export default applicationRoutes;
+export default applicationsRoutes;

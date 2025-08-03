@@ -6,7 +6,7 @@ import type {
   ResetPasswordDto,
   User,
 } from "#/auth";
-import { request } from "@/api/client";
+import { request } from "@/client";
 
 export const login = (credentials: LoginUserDto) => {
   return request<void>("/auth/login", {

@@ -1,7 +1,7 @@
 import { Navigate, type RouteObject } from "react-router-dom";
 import { Dashboard } from "#/dashboard";
 import { UserGuard } from "#/auth";
-import { applicationRoutes } from "#/applications";
+import { applicationsRoutes } from "#/applications";
 import { Analytics } from "#/analytics";
 import { Contacts } from "#/contacts";
 import { Documents } from "#/documents";
@@ -22,7 +22,7 @@ const dashboardRoutes: RouteObject[] = [
         index: true,
         element: <Navigate to="applications" replace />,
       },
-      ...applicationRoutes,
+      ...applicationsRoutes,
       {
         path: "analytics",
         element: <Analytics />,

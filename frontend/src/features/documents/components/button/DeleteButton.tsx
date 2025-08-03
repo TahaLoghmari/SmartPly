@@ -13,7 +13,7 @@ import { useDeleteResume } from "#/documents";
 import { Spinner } from "@/components/ui/spinner";
 import { useState } from "react";
 
-export function DeleteAction({ resumeId }: { resumeId: string }) {
+export default function DeleteButton({ resumeId }: { resumeId: string }) {
   const deleteResumeMutation = useDeleteResume();
   const [open, setOpen] = useState(false);
   return (

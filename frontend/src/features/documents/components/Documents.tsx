@@ -2,9 +2,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SearchBar } from "@/components/SearchBar";
 import {
   useDocumentSearchBarStore,
-  columns,
+  COLUMNS,
   useGetUserResumes,
-  UploadResumeButton,
+  ResumeUploadButton,
   useSelectedDocumentsStore,
   useBulkDeleteResumes,
 } from "#/documents";
@@ -13,7 +13,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
-export function Documents() {
+export default function Documents() {
   const { data: resumes } = useGetUserResumes();
   const [tab, setTab] = useState("resume");
   const { search, setSearch } = useDocumentSearchBarStore();
@@ -33,7 +33,7 @@ export function Documents() {
               Manage and tailor all of your job search documents here!
             </p>
           </div>
-          {tab === "resume" && <UploadResumeButton />}
+          {tab === "resume" && <ResumeUploadButton />}
         </div>
         <Tabs
           defaultValue="resume"
@@ -71,7 +71,7 @@ export function Documents() {
             </div>
           </div>
           <TabsContent value="resume" className="flex flex-col overflow-x-auto">
-            <DataTable columns={columns} data={resumes ?? []} />
+            <DataTable columns={COLUMNS} data={resumes ?? []} />
           </TabsContent>
         </Tabs>
       </div>

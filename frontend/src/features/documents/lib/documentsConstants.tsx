@@ -1,5 +1,5 @@
 import {
-  Actions,
+  ResumeActions,
   type CoverLetterCreateResponseDto,
   type ResumeResponseDto,
 } from "#/documents";
@@ -8,7 +8,7 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { formatDistanceToNow } from "date-fns";
 import { FileText } from "lucide-react";
 
-export const coverLettersConstant: CoverLetterCreateResponseDto[] = [
+export const COVER_LETTERS: CoverLetterCreateResponseDto[] = [
   {
     id: "e2b1c2d3-4f5a-6789-b0c1-2d3e4f5a6789",
     userId: "9275e9bb-0670-4e89-b2b7-44e33cd1f62d",
@@ -16,7 +16,7 @@ export const coverLettersConstant: CoverLetterCreateResponseDto[] = [
   },
 ];
 
-export const columns: ColumnDef<ResumeResponseDto>[] = [
+export const COLUMNS: ColumnDef<ResumeResponseDto>[] = [
   {
     id: "select",
     header: "",
@@ -78,7 +78,7 @@ export const columns: ColumnDef<ResumeResponseDto>[] = [
     accessorKey: "",
     header: "Actions",
     cell: ({ row }) => {
-      return <Actions {...row.original} />;
+      return <ResumeActions {...row.original} />;
     },
   },
 ];

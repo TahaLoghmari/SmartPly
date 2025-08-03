@@ -1,4 +1,4 @@
-import { request } from "@/api/client";
+import { request } from "@/client";
 import type {
   ResumeResponseDto,
   ResumeRequestDto,
