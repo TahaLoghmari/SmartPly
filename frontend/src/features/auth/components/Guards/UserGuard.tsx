@@ -1,12 +1,8 @@
 import { Navigate, useLocation } from "react-router-dom";
-import { useCurrentUser } from "#/auth";
+import { useCurrentUser, type GuardProps } from "#/auth";
 import { Spinner } from "@/components/ui/spinner";
 
-interface UserGuardProps {
-  children: React.ReactNode;
-}
-
-export default function UserGuard({ children }: UserGuardProps) {
+export default function UserGuard({ children }: GuardProps) {
   const { data: user, isLoading } = useCurrentUser();
   const location = useLocation();
 

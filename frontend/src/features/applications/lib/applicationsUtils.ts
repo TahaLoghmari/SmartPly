@@ -3,8 +3,8 @@ import {
   STATUS_TO_VALUE,
   STEPS,
   STATUS_TO_DATE_KEY,
-  type ApplicationRequestDto,
   type ApplicationResponseDto,
+  type ApplicationsFormHandleStatusChangeProps,
 } from "#/applications";
 
 export function ApplicationsStatusControlBuildPatch(
@@ -46,11 +46,6 @@ export function ApplicationsStatusControlBuildPatch(
         };
       }),
   ];
-}
-
-export interface ApplicationsFormHandleStatusChangeProps {
-  credentials: ApplicationRequestDto;
-  applicationCard: ApplicationResponseDto;
 }
 
 export const ApplicationsFormHandleStatusChange = ({

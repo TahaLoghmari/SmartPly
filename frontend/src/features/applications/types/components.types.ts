@@ -55,3 +55,8 @@ export interface ApplicationsPageStatusDateProps {
   step: string;
   id: string;
 }
+
+export interface ApplicationsFormHandleStatusChangeProps {
+  credentials: ApplicationRequestDto;
+  applicationCard: ApplicationResponseDto;
+}

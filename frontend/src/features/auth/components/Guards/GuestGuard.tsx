@@ -1,12 +1,8 @@
 import { Navigate } from "react-router-dom";
-import { useCurrentUser } from "#/auth";
+import { useCurrentUser, type GuardProps } from "#/auth";
 import { Spinner } from "@/components/ui/spinner";
 
-export interface GuestGuardProps {
-  children: React.ReactNode;
-}
-
-export default function GuestGuard({ children }: GuestGuardProps) {
+export default function GuestGuard({ children }: GuardProps) {
   const { data: user, isLoading } = useCurrentUser();
 
   if (isLoading) {
