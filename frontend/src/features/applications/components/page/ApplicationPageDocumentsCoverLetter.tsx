@@ -36,7 +36,7 @@ export default function ApplicationPageDocumentsCoverLetter({
     <>
       {!isChangingCoverLetter ? (
         <div className="flex items-center justify-between">
-          <p className="text-sm">{coverLetter?.name}.pdf</p>
+          <p className="text-sm font-bold">{coverLetter?.name}</p>
           <div className="mr-2 flex items-center gap-3">
             <svg
               xmlns="http://www.w3.org/2000/svg"

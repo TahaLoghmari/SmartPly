@@ -29,3 +29,8 @@ export interface ApplicationManageJobsStore {
   removeApplication: (id: string) => void;
   clearSelectedApplications: () => void;
 }
+
+export interface ChangingResumeStore {
+  isChangingResume: boolean;
+  setIsChangingResume: (state: boolean) => void;
+}

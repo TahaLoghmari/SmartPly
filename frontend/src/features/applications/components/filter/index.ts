@@ -1,1 +1,1 @@
-export { default as ApplicationFilterbar } from "./Filterbar";
+export { default as ApplicationFilterbar } from "./ApplicationFilterbar";

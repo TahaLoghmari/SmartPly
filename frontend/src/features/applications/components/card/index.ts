@@ -1,3 +1,3 @@
-export { default as ApplicationCard } from "./Card";
-export { default as ApplicationCardStatus } from "./CardStatus";
-export { default as ApplicationCardInfo } from "./CardInfo";
+export { default as ApplicationCard } from "./ApplicationCard";
+export { default as ApplicationCardStatus } from "./ApplicationCardStatus";
+export { default as ApplicationCardInfo } from "./ApplicationCardInfo";

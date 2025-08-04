@@ -1,7 +1,7 @@
 import {
   ApplicationAddButton,
-  ApplicationFilters,
-  ApplicationCards,
+  ApplicationsFilters,
+  ApplicationsCards,
   useGetUserApplications,
 } from "#/applications";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ export function Applications() {
         </p>
         <ApplicationAddButton />
       </div>
-      <ApplicationFilters />
+      <ApplicationsFilters />
       {isLoading && (
         <div className="flex w-full flex-1 flex-col items-center justify-center">
           <Spinner className="dark:invert" />
@@ -40,7 +40,7 @@ export function Applications() {
           </Button>
         </div>
       )}
-      {!isLoading && !isError && <ApplicationCards />}
+      {!isLoading && !isError && <ApplicationsCards />}
       <Outlet />
     </div>
   );

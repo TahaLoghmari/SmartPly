@@ -1,2 +1,2 @@
-export { default as ApplicationStatusControl } from "./StatusControl";
-export { default as ApplicationTechnologiesUsed } from "./TechnologiesUsed";
+export { default as ApplicationStatusControl } from "./ApplicationStatusControl";
+export { default as ApplicationTechnologiesUsed } from "./ApplicationTechnologiesUsed";

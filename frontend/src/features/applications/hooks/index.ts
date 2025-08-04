@@ -7,3 +7,5 @@ export * from "./useApplicationClearFilters";
 export * from "./useBulkDeleteApplications";
 export * from "./useApplicationFormMutation";
 export * from "./useGetUserApplications";
+export * from "./useUpdateApplicationResume";
+export * from "./useDeleteApplicationResume";

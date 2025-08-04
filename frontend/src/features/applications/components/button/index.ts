@@ -1,5 +1,6 @@
-export { default as ApplicationAddButton } from "./AddButton";
-export { default as ApplicationClearFiltersButton } from "./ClearFiltersButton";
-export { default as ApplicationDeleteButton } from "./DeleteButton";
-export { default as ApplicationEditButton } from "./EditButton";
-export { default as ApplicationLikeButton } from "./LikeButton";
+export { default as ApplicationAddButton } from "./ApplicationAddButton";
+export { default as ApplicationClearFiltersButton } from "./ApplicationClearFiltersButton";
+export { default as ApplicationDeleteButton } from "./ApplicationDeleteButton";
+export { default as ApplicationEditButton } from "./ApplicationEditButton";
+export { default as ApplicationLikeButton } from "./ApplicationLikeButton";
+export { default as ApplicationRemoveResumeButton } from "./ApplicationRemoveResumeButton";
