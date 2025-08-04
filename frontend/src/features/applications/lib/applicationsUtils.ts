@@ -102,7 +102,7 @@ export function formatDate(date: Date) {
 export const mapApplicationDates = (app: ApplicationResponseDto) => ({
   ...app,
   createdAt: new Date(app.createdAt),
-  updatedAt: app.updatedAt ? new Date(app.updatedAt) : undefined,
+  updatedAt: new Date(app.updatedAt),
   deadline: app.deadline ? new Date(app.deadline) : undefined,
   wishListDate: app.wishListDate ? new Date(app.wishListDate) : undefined,
   appliedDate: app.appliedDate ? new Date(app.appliedDate) : undefined,

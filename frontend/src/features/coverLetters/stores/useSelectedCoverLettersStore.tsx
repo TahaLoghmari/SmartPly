@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { type SelectedCoverLettersStore } from "#/resumes";
+import { type SelectedCoverLettersStore } from "#/coverLetters";
 
 export const useSelectedCoverLettersStore = create<
   SelectedCoverLettersStore<any>

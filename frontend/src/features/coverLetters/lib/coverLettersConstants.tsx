@@ -3,8 +3,9 @@ import type { CoverLetterResponseDto } from "#/coverLetters";
 import { FileText } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Checkbox } from "@/components/ui/checkbox";
+import { CoverLetterActions } from "#/coverLetters";
 
-export const CoverLetter_COLUMNS: ColumnDef<CoverLetterResponseDto>[] = [
+export const COVER_LETTER_COLUMNS: ColumnDef<CoverLetterResponseDto>[] = [
   {
     id: "select",
     header: "",
@@ -21,7 +22,7 @@ export const CoverLetter_COLUMNS: ColumnDef<CoverLetterResponseDto>[] = [
   },
   {
     accessorKey: "name",
-    header: "CoverLetter Name",
+    header: "Cover Letter Name",
     cell: ({ row }) => {
       return (
         <div className="flex items-center gap-3">

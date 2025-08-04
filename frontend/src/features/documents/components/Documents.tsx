@@ -1,28 +1,54 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SearchBar } from "@/components/SearchBar";
 import {
-  useDocumentSearchBarStore,
+  useResumeSearchbarStore,
   RESUME_COLUMNS,
   useGetUserResumes,
   ResumeUploadButton,
-  useSelectedDocumentsStore,
+  useSelectedResumesStore,
   useBulkDeleteResumes,
-} from "#/documents";
+  ResumeBulkDeleteButton,
+} from "#/resumes";
+import {
+  COVER_LETTER_COLUMNS,
+  CoverLetterBulkDeleteButton,
+  CoverLetterUploadButton,
+  useBulkDeleteCoverLetters,
+  useCoverLetterSearchbarStore,
+  useGetUserCoverLetters,
+  useSelectedCoverLettersStore,
+} from "#/coverLetters";
 import { DataTable } from "@/components/DataTable";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
 
 export default function Documents() {
-  const { data: resumes } = useGetUserResumes();
   const [tab, setTab] = useState("resume");
-  const { search, setSearch } = useDocumentSearchBarStore();
-  const { selected } = useSelectedDocumentsStore();
+
+  const { data: resumes } = useGetUserResumes();
+  const { search: resumeSearch, setSearch: setResumeSearch } =
+    useResumeSearchbarStore();
+  const { selected: selectedResumes, setSelected: setSelectedResumes } =
+    useSelectedResumesStore();
   const bulkDeleteResumesMutation = useBulkDeleteResumes();
-  const deleteSelectedRows = () => {
-    const resumeIds = selected.map((row) => row.original.id);
-    bulkDeleteResumesMutation.mutate({ Ids: resumeIds });
+
+  const { data: coverLetters } = useGetUserCoverLetters();
+  const { search: coverLetterSearch, setSearch: setCoverLetterSearch } =
+    useCoverLetterSearchbarStore();
+  const {
+    selected: selectedCoverLetters,
+    setSelected: setSelectedCoverLetters,
+  } = useSelectedCoverLettersStore();
+  const bulkDeleteCoverLettersMutation = useBulkDeleteCoverLetters();
+
+  const handleBulkDeleteResumes = () => {
+    const Ids = selectedResumes.map((row: any) => row.original.id);
+    bulkDeleteResumesMutation.mutate({ Ids });
   };
+  const handleBulkDeleteCoverLetters = () => {
+    const Ids = selectedCoverLetters.map((row: any) => row.original.id);
+    bulkDeleteCoverLettersMutation.mutate({ Ids });
+  };
+
   return (
     <div className="flex-1 overflow-auto transition-[width,height,margin,padding] duration-300">
       <div className="flex w-full flex-col gap-6 p-6 px-20">
@@ -34,6 +60,7 @@ export default function Documents() {
             </p>
           </div>
           {tab === "resume" && <ResumeUploadButton />}
+          {tab === "coverLetter" && <CoverLetterUploadButton />}
         </div>
         <Tabs
           defaultValue="resume"
@@ -47,31 +74,44 @@ export default function Documents() {
                 <TabsTrigger value="resume">Resumes</TabsTrigger>
                 <TabsTrigger value="coverLetter">Cover Letters</TabsTrigger>
               </TabsList>
-              {selected.length > 0 && (
-                <Button
-                  variant="destructive"
-                  onClick={() => deleteSelectedRows()}
-                  className="cursor-pointer"
-                >
-                  {!bulkDeleteResumesMutation.isPending ? (
-                    "Delete Selected"
-                  ) : (
-                    <Spinner className="h-5 w-5 border-2 invert dark:invert-0" />
-                  )}
-                </Button>
-              )}
+              <ResumeBulkDeleteButton
+                isLoading={bulkDeleteResumesMutation.isPending}
+                onClick={handleBulkDeleteResumes}
+                show={tab === "resume" && selectedResumes.length > 0}
+              />
+              <CoverLetterBulkDeleteButton
+                isLoading={bulkDeleteCoverLettersMutation.isPending}
+                onClick={handleBulkDeleteCoverLetters}
+                show={tab === "coverLetter" && selectedCoverLetters.length > 0}
+              />
             </div>
             <div className="my-4 flex flex-col-reverse items-center gap-4 sm:max-w-2xl sm:flex-row">
               <SearchBar
-                value={search}
-                onChange={setSearch}
+                value={tab === "resume" ? resumeSearch : coverLetterSearch}
+                onChange={
+                  tab === "resume" ? setResumeSearch : setCoverLetterSearch
+                }
                 placeholder="Search by name"
                 className="w-sm"
               />
             </div>
           </div>
           <TabsContent value="resume" className="flex flex-col overflow-x-auto">
-            <DataTable columns={RESUME_COLUMNS} data={resumes ?? []} />
+            <DataTable
+              columns={RESUME_COLUMNS}
+              data={resumes ?? []}
+              setSelected={setSelectedResumes}
+            />
+          </TabsContent>
+          <TabsContent
+            value="coverLetter"
+            className="flex flex-col overflow-x-auto"
+          >
+            <DataTable
+              columns={COVER_LETTER_COLUMNS}
+              data={coverLetters ?? []}
+              setSelected={setSelectedCoverLetters}
+            />
           </TabsContent>
         </Tabs>
       </div>

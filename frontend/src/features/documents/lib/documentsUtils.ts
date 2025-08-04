@@ -9,7 +9,7 @@ export const mapDocumentDates = (
 ) => ({
   ...document,
   createdAt: new Date(document.createdAt),
-  updatedAt: document.updatedAt ? new Date(document.updatedAt) : undefined,
+  updatedAt: new Date(document.updatedAt),
   size: +(document.size / (1024 * 1024)).toFixed(2),
 });
 

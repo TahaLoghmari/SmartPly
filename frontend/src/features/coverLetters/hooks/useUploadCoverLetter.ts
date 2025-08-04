@@ -18,7 +18,7 @@ export function useUploadCoverLetter() {
     mutationFn: uploadCoverLetter,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["coverLetter", user?.id],
+        queryKey: ["coverLetters", user?.id],
       });
     },
     onError: (error) => handleApiError({ apiError: error }),

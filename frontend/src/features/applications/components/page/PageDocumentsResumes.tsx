@@ -1,5 +1,9 @@
 import { FileText } from "lucide-react";
-import { useGetUserResumes, ResumeViewButton } from "#/documents";
+import {
+  useGetUserResumes,
+  ResumeViewButton,
+  type ResumeResponseDto,
+} from "#/resumes";
 import { formatDistanceToNow } from "date-fns";
 import { usePatchApplication } from "#/applications";
 import type { JsonPatchDto } from "@/index";
@@ -13,7 +17,7 @@ export default function PageDocumentsResumes({
   applicationId: string;
   setIsChangingResume: (state: boolean) => void;
 }) {
-  const { data: resumesList, isLoading } = useGetUserResumes();
+  const { data: resumes, isLoading } = useGetUserResumes();
   const patchApplicationMutation = usePatchApplication();
   const [loadingResumeId, setLoadingResumeId] = useState<string | null>(null);
 
@@ -51,7 +55,7 @@ export default function PageDocumentsResumes({
     );
   return (
     <div className="bg-card min-h-40 rounded-lg border py-4">
-      {resumesList?.map((resume, index) => (
+      {resumes?.map((resume: ResumeResponseDto, index: number) => (
         <div className="flex min-w-0 justify-between px-6 py-3" key={index}>
           <div className="flex flex-1 items-center gap-3">
             <div className="bg-muted flex h-8 w-8 items-center justify-center rounded-lg">

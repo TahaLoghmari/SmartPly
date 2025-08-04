@@ -3,7 +3,7 @@ export interface CoverLetterResponseDto {
   userId: string;
   name: string;
   createdAt: Date;
-  updatedAt: Date | null;
+  updatedAt: Date;
   url: string;
   size: number;
 }

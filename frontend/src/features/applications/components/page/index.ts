@@ -8,3 +8,5 @@ export { default as ApplicationPageStatusDisplay } from "./PageStatusDisplay";
 export { default as ApplicationPageStatusDate } from "./PageStatusDate";
 export { default as ApplicationPageDocumentsResume } from "./PageDocumentsResume";
 export { default as ApplicationPageDocumentsResumes } from "./PageDocumentsResumes";
+export { default as ApplicationPageDocumentsCoverLetter } from "./ApplicationPageDocumentsCoverLetter";
+export { default as ApplicationPageDocumentsCoverLetters } from "./ApplicationPageDocumentsCoverLetters";

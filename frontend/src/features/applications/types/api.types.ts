@@ -14,7 +14,7 @@ export type ApplicationRequestDto = z.infer<
 
 export interface ApplicationResponseDto {
   id: string;
-  resumeId: string;
+  resumeId: string | undefined;
   coverLetterId: string | undefined;
   userId: string;
   companyName: string;
@@ -29,7 +29,7 @@ export interface ApplicationResponseDto {
   isLiked: boolean;
   deadline: Date | undefined;
   createdAt: Date;
-  updatedAt: Date | undefined;
+  updatedAt: Date;
   wishListDate: Date | undefined;
   appliedDate: Date | undefined;
   interviewDate: Date | undefined;

@@ -1,4 +1,5 @@
 import {
+  ApplicationPageDocumentsCoverLetter,
   ApplicationPageDocumentsResume,
   type ApplicationCardProps,
 } from "#/applications";
@@ -18,8 +19,13 @@ export default function PageDocuments({
         <TabsContent value="resume" className="mt-4 flex flex-1 flex-col gap-6">
           <ApplicationPageDocumentsResume applicationCard={applicationCard} />
         </TabsContent>
-        <TabsContent value="coverLetter">
-          Change your password here.
+        <TabsContent
+          value="coverLetter"
+          className="mt-4 flex flex-1 flex-col gap-6"
+        >
+          <ApplicationPageDocumentsCoverLetter
+            applicationCard={applicationCard}
+          />
         </TabsContent>
       </Tabs>
     </div>

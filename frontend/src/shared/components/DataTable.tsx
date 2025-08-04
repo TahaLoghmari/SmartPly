@@ -2,6 +2,7 @@ import {
   type ColumnDef,
   flexRender,
   getCoreRowModel,
+  type Row,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -13,19 +14,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useSelectedDocumentsStore } from "#/documents";
 import { useEffect } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  setSelected: (state: Row<TData>[]) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  setSelected,
 }: DataTableProps<TData, TValue>) {
-  const setSelected = useSelectedDocumentsStore((s) => s.setSelected);
   const table = useReactTable({
     data,
     columns,

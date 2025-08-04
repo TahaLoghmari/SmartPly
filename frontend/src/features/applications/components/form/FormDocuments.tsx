@@ -1,5 +1,6 @@
 import { type ApplicationFormContentProps } from "#/applications";
-import { useCoverLetterStore, useGetUserResumes } from "#/documents";
+import { useGetUserResumes } from "#/resumes";
+import { useGetUserCoverLetters } from "#/coverLetters";
 import {
   FormControl,
   FormField,
@@ -27,9 +28,9 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 
 export default function FormDocuments({ form }: ApplicationFormContentProps) {
-  const { data: resumes, isLoading } = useGetUserResumes();
-  const { coverLettersState } = useCoverLetterStore();
-  const resumesState = resumes ?? [];
+  const { data: resumes, isLoading: AreResumesLoading } = useGetUserResumes();
+  const { data: coverLetters, isLoading: AreCoverLettersLoading } =
+    useGetUserCoverLetters();
   return (
     <div className="space-y-4">
       <p className="text-foreground border-b pb-2 text-lg font-medium">
@@ -42,7 +43,7 @@ export default function FormDocuments({ form }: ApplicationFormContentProps) {
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Resume *</FormLabel>
-              {!isLoading ? (
+              {!AreResumesLoading ? (
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -55,9 +56,8 @@ export default function FormDocuments({ form }: ApplicationFormContentProps) {
                         )}
                       >
                         {field.value
-                          ? resumesState.find(
-                              (resume) => resume.id === field.value,
-                            )?.name
+                          ? resumes!.find((resume) => resume.id === field.value)
+                              ?.name
                           : "Select Resume"}
                         <ChevronsUpDown className="opacity-50" />
                       </Button>
@@ -72,7 +72,7 @@ export default function FormDocuments({ form }: ApplicationFormContentProps) {
                       <CommandList>
                         <CommandEmpty>No Resumes found.</CommandEmpty>
                         <CommandGroup>
-                          {resumesState.map((resume) => (
+                          {resumes!.map((resume) => (
                             <CommandItem
                               value={resume.name}
                               key={resume.id}
@@ -110,60 +110,66 @@ export default function FormDocuments({ form }: ApplicationFormContentProps) {
           name="coverLetterId"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Cover Letter</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "w-full justify-between",
-                        !field.value && "text-muted-foreground",
-                      )}
-                    >
-                      {field.value
-                        ? coverLettersState.find(
-                            (coverLetter) => coverLetter.id === field.value,
-                          )?.name
-                        : "Select Cover Letter"}
-                      <ChevronsUpDown className="opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
-                  <Command>
-                    <CommandInput
-                      placeholder="Search Cover Letter..."
-                      className="h-9"
-                    />
-                    <CommandList>
-                      <CommandEmpty>No Cover Letters found.</CommandEmpty>
-                      <CommandGroup>
-                        {coverLettersState.map((coverLetter) => (
-                          <CommandItem
-                            value={coverLetter.name}
-                            key={coverLetter.id}
-                            onSelect={() => {
-                              form.setValue("coverLetterId", coverLetter.id);
-                            }}
-                          >
-                            {coverLetter.name}
-                            <Check
-                              className={cn(
-                                "ml-auto",
-                                coverLetter.id === field.value
-                                  ? "opacity-100"
-                                  : "opacity-0",
-                              )}
-                            />
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
+              <FormLabel>Cover Letter *</FormLabel>
+              {!AreCoverLettersLoading ? (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "w-full justify-between",
+                          !field.value && "text-muted-foreground",
+                        )}
+                      >
+                        {field.value
+                          ? coverLetters!.find(
+                              (coverLetter) => coverLetter.id === field.value,
+                            )?.name
+                          : "Select Cover Letter"}
+                        <ChevronsUpDown className="opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full p-0">
+                    <Command>
+                      <CommandInput
+                        placeholder="Search Cover Letter..."
+                        className="h-9"
+                      />
+                      <CommandList>
+                        <CommandEmpty>No Cover Letters found.</CommandEmpty>
+                        <CommandGroup>
+                          {coverLetters!.map((coverLetter) => (
+                            <CommandItem
+                              value={coverLetter.name}
+                              key={coverLetter.id}
+                              onSelect={() => {
+                                form.setValue("coverLetterId", coverLetter.id);
+                              }}
+                            >
+                              {coverLetter.name}
+                              <Check
+                                className={cn(
+                                  "ml-auto",
+                                  coverLetter.id === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0",
+                                )}
+                              />
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              ) : (
+                <div className="flex w-full items-center justify-center">
+                  <Spinner className="h-5 w-5 dark:invert" />
+                </div>
+              )}
               <FormMessage />
             </FormItem>
           )}
