@@ -65,16 +65,19 @@ public class ApplicationConfiguration : IEntityTypeConfiguration<Application>
         builder.HasOne(a => a.User)
             .WithMany(u => u.Applications)
             .HasForeignKey(a => a.UserId)
+            .OnDelete(DeleteBehavior.SetNull)
             .IsRequired();
         
         builder.HasOne(a => a.ResumeUsed)
             .WithMany(r => r.Applications)
             .HasForeignKey(a => a.ResumeId)
+            .OnDelete(DeleteBehavior.SetNull)
             .IsRequired(false);
         
         builder.HasOne(a => a.CoverLetterUsed)
             .WithMany(cl => cl.Applications)
             .HasForeignKey(a => a.CoverLetterId)
+            .OnDelete(DeleteBehavior.SetNull)
             .IsRequired(false);
         
         builder.Property(a => a.IsLiked)
