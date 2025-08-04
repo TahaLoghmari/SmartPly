@@ -1,6 +1,7 @@
 import {
   ApplicationPageDocumentsCoverLetter,
   ApplicationPageDocumentsResume,
+  useApplicationChangingCoverLetterStore,
   useApplicationChangingResumeStore,
   type ApplicationCardProps,
 } from "#/applications";
@@ -13,6 +14,7 @@ export default function ApplicationPageDocuments({
 }: ApplicationCardProps) {
   const [tab, setTab] = useState("resume");
   const { setIsChangingResume } = useApplicationChangingResumeStore();
+  const { setIsChangingCoverLetter } = useApplicationChangingCoverLetterStore();
   return (
     <div className="flex flex-1 flex-col gap-6 px-8 py-6">
       <p className="text-lg font-medium">Documents</p>
@@ -22,7 +24,11 @@ export default function ApplicationPageDocuments({
       <Button
         variant="outline"
         className="w-50"
-        onClick={() => setIsChangingResume(true)}
+        onClick={() => {
+          tab === "resume"
+            ? setIsChangingResume(true)
+            : setIsChangingCoverLetter(true);
+        }}
       >
         Link existing {tab === "resume" ? "resume" : "cover letter"}
       </Button>

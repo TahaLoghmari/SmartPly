@@ -34,3 +34,8 @@ export interface ChangingResumeStore {
   isChangingResume: boolean;
   setIsChangingResume: (state: boolean) => void;
 }
+
+export interface ChangingCoverLetterStore {
+  isChangingCoverLetter: boolean;
+  setIsChangingCoverLetter: (state: boolean) => void;
+}

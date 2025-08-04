@@ -4,10 +4,11 @@ import {
   type CoverLetterResponseDto,
 } from "#/coverLetters";
 
-export function useGetUserCoverLetter(id: string) {
+export function useGetUserCoverLetter(id: string | undefined) {
   return useQuery<CoverLetterResponseDto>({
     queryKey: ["coverLetter", id],
-    queryFn: () => getUserCoverLetter(id),
+    queryFn: () => getUserCoverLetter(id as string),
+    enabled: !!id,
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
     refetchOnMount: true,

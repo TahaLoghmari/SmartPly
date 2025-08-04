@@ -8,4 +8,6 @@ export * from "./useBulkDeleteApplications";
 export * from "./useApplicationFormMutation";
 export * from "./useGetUserApplications";
 export * from "./useUpdateApplicationResume";
+export * from "./useUpdateApplicationCoverLetter";
 export * from "./useDeleteApplicationResume";
+export * from "./useDeleteApplicationCoverLetter";

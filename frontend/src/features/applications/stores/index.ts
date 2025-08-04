@@ -4,3 +4,4 @@ export * from "./useApplicationFormDialogStore";
 export * from "./useApplicationPageNavigationStore";
 export * from "./useApplicationSearchBarStore";
 export * from "./useApplicationChangingResumeStore";
+export * from "./useApplicationChangingCoverLetterStore";
