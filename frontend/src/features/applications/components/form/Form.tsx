@@ -51,8 +51,7 @@ export default function ApplicationForm({
   }, [isError]);
 
   async function onSubmit(credentials: ApplicationRequestDto) {
-    if (applicationCard)
-      ApplicationsFormHandleStatusChange({ credentials, applicationCard });
+    ApplicationsFormHandleStatusChange({ credentials, applicationCard });
     mutate(credentials, {
       onSuccess: () => setOpenDialog(false),
     });

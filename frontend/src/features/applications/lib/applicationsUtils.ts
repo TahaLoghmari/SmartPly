@@ -62,11 +62,12 @@ export const ApplicationsFormHandleStatusChange = ({
       // If the date is already set and is in the past or now, keep it.
       // Otherwise, set it to the current date.
       if (
-        (applicationCard as any)[field] &&
-        (applicationCard as any)[field] <= new Date()
+        applicationCard &&
+        applicationCard[field] &&
+        applicationCard[field] <= new Date()
       ) {
         // Keep the existing date
-        (credentials as any)[field] = (applicationCard as any)[field];
+        (credentials as any)[field] = applicationCard[field];
       } else {
         // Set to now
         (credentials as any)[field] = new Date().toISOString();

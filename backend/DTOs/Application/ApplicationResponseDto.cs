@@ -5,7 +5,7 @@ namespace backend.DTOs;
 public sealed record ApplicationResponseDto 
 {
     public Guid Id { get; set; }
-    public Guid ResumeId { get; set; }
+    public Guid? ResumeId { get; set; }
     public Guid? CoverLetterId { get; set; }
     public string UserId { get; init; }
     

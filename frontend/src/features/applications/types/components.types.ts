@@ -58,5 +58,5 @@ export interface ApplicationsPageStatusDateProps {
 
 export interface ApplicationsFormHandleStatusChangeProps {
   credentials: ApplicationRequestDto;
-  applicationCard: ApplicationResponseDto;
+  applicationCard?: ApplicationResponseDto | undefined;
 }

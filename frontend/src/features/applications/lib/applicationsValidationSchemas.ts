@@ -39,8 +39,8 @@ export const ApplicationsFormRequestSchema = z
       .string()
       .min(1, "Location is required.")
       .max(100, "Location must be at most 100 characters."),
-    startSalary: z.coerce.number().min(1).max(1000),
-    endSalary: z.coerce.number().min(1).max(1000),
+    startSalary: z.coerce.number().min(0).max(1000),
+    endSalary: z.coerce.number().min(0).max(1000),
     isLiked: z.boolean(),
     technologiesUsed: z
       .array(z.string().min(1, "Technology cannot be empty"))

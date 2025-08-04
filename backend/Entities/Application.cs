@@ -5,7 +5,7 @@ namespace backend.Entities;
 public sealed class Application
 {
     public Guid Id { get; init; } = Guid.NewGuid();
-    public Guid ResumeId { get; set; }
+    public Guid? ResumeId { get; set; }
     public Guid? CoverLetterId { get; set; }
     public string UserId { get; init; }
     
