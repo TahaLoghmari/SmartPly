@@ -57,12 +57,12 @@ export default function ApplicationPage() {
             Detailed information about your application.
           </DialogDescription>
         </VisuallyHidden>
-        {isLoading && (
+        {!isError && isLoading && (
           <div className="flex flex-1 flex-col items-center justify-center overflow-auto transition-[width,height,margin,padding] duration-300">
             <Spinner className="dark:invert" />
           </div>
         )}
-        {(isError || !applicationCard) && (
+        {!isLoading && (isError || !applicationCard) && (
           <div className="flex flex-1 flex-col items-center justify-center overflow-auto transition-[width,height,margin,padding] duration-300">
             <p>Application not found.</p>
             <Button

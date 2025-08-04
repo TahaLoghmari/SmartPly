@@ -11,3 +11,5 @@ export * from "./useUpdateApplicationResume";
 export * from "./useUpdateApplicationCoverLetter";
 export * from "./useDeleteApplicationResume";
 export * from "./useDeleteApplicationCoverLetter";
+export * from "./useLikeApplication";
+export * from "./useUpdateApplicationStatus";

@@ -7,30 +7,22 @@ import {
 } from "@/components/ui/select";
 import {
   APPLICATIONS_STATUS_OPTIONS,
-  usePatchApplication,
-  ApplicationsStatusControlBuildPatch,
   type ApplicationsStatusControlProps,
 } from "#/applications";
+import { useUpdateApplicationStatus } from "#/applications";
 
 export default function ApplicationStatusControl({
   applicationCard,
   className = "",
 }: ApplicationsStatusControlProps) {
-  const patchApplicationMutation = usePatchApplication();
-
-  const handleValueChange = (newStatus: string) => {
-    const patchRequest = ApplicationsStatusControlBuildPatch(
-      applicationCard,
-      newStatus,
-    );
-    patchApplicationMutation.mutate({
-      id: applicationCard.id,
-      patch: patchRequest,
-    });
-  };
+  const { updateApplicationStatus } =
+    useUpdateApplicationStatus(applicationCard);
 
   return (
-    <Select value={applicationCard.status} onValueChange={handleValueChange}>
+    <Select
+      value={applicationCard.status}
+      onValueChange={updateApplicationStatus}
+    >
       <SelectTrigger className={`cursor-pointer ${className}`}>
         <SelectValue
           placeholder="Status"

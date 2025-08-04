@@ -1,29 +1,18 @@
-import { usePatchApplication, type ApplicationCardProps } from "#/applications";
+import { useLikeApplication, type ApplicationCardProps } from "#/applications";
 import { Spinner } from "@/components/ui/spinner";
-import { type JsonPatchDto } from "@/types";
 
 export default function ApplicationLikeButton({
   applicationCard,
 }: ApplicationCardProps) {
-  const patchApplicationMutation = usePatchApplication();
+  const { isPending, toggleLike } = useLikeApplication(applicationCard?.id);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     e.preventDefault();
-    const patchRequest: JsonPatchDto[] = [
-      {
-        op: "replace",
-        path: "/isLiked",
-        value: !applicationCard.isLiked,
-      },
-    ];
-    patchApplicationMutation.mutate({
-      id: applicationCard.id,
-      patch: patchRequest,
-    });
+    toggleLike(applicationCard.isLiked);
   };
 
-  return patchApplicationMutation.isPending ? (
+  return isPending ? (
     <Spinner className="h-6 w-6 invert" />
   ) : (
     <button
