@@ -12,13 +12,14 @@ public sealed record PaginationResultDto<T> : ICollectionResponse<T>
     public bool HasPreviousPage => Page > 1;
     public bool HasNextPage => Page < TotalPages;
     public static async Task<PaginationResultDto<T>> CreateAsync(
-        IQueryable<T> query, int page, int pageSize)
+        IQueryable<T> query, int page, int pageSize,
+        CancellationToken cancellationToken)
     {
-        var totalCount = await query.CountAsync();
+        var totalCount = await query.CountAsync(cancellationToken);
         var items = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return new PaginationResultDto<T>
         {

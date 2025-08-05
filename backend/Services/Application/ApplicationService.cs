@@ -18,7 +18,9 @@ public class ApplicationService(
     CacheService cacheService)
 {
     public async Task<ApplicationResponseDto> CreateApplicationAsync(
-        ApplicationRequestDto applicationRequestDto, string userId)
+        ApplicationRequestDto applicationRequestDto,
+        string? userId,
+        CancellationToken cancellationToken)
     {
         if (userId is null)
         {
@@ -30,7 +32,7 @@ public class ApplicationService(
         
         dbContext.Applications.Add(application);
         
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
         
         cacheService.InvalidateUserApplicationCache(application.UserId);
         
@@ -41,7 +43,8 @@ public class ApplicationService(
     
     public async Task<PaginationResultDto<ApplicationResponseDto>> GetUserApplications( 
         ApplicationQueryParameters query,
-        string? userId)
+        string? userId,
+        CancellationToken cancellationToken)
     {
         if (userId is null)
         {
@@ -77,14 +80,16 @@ public class ApplicationService(
             .Select(a => a.ToApplicationResponseDto());
         
         var paginationResult = await PaginationResultDto<ApplicationResponseDto>.CreateAsync(
-            applicationQuery, query.Page ?? 1, query.PageSize ?? 8);
+            applicationQuery, query.Page ?? 1, query.PageSize ?? 8,cancellationToken);
         
         cacheService.CacheApplicationsResult(cacheKey, paginationResult, userId);
         
         return paginationResult;
     }
     public async Task<ApplicationResponseDto> GetUserApplication(
-        Guid id, string? userId )
+        Guid id, 
+        string? userId,
+        CancellationToken cancellationToken)
     {
         if (id == Guid.Empty)
         {
@@ -102,7 +107,7 @@ public class ApplicationService(
         
         Application? application = await dbContext.Applications
             .AsNoTracking()
-            .FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
+            .FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId,cancellationToken);
 
         if (application is null)
         {
@@ -118,7 +123,8 @@ public class ApplicationService(
     public async Task EditApplication(
         Guid id,
         string? userId,
-        ApplicationRequestDto applicationEditRequestDto)
+        ApplicationRequestDto applicationEditRequestDto,
+        CancellationToken cancellationToken)
     {
         if (id == Guid.Empty)
         {
@@ -134,7 +140,7 @@ public class ApplicationService(
         
         logger.LogInformation("Starting application editing for user {UserId}", userId);
         
-        Application? application = await dbContext.Applications.FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
+        Application? application = await dbContext.Applications.FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId,cancellationToken);
 
         if (application is null)
         {
@@ -145,7 +151,7 @@ public class ApplicationService(
         application.UpdateFromDto(applicationEditRequestDto);
         logger.LogInformation("Updated application entity from DTO. ApplicationId: {ApplicationId}", application.Id);
         
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
         
         cacheService.InvalidateUserApplicationCache(userId);
 
@@ -157,7 +163,8 @@ public class ApplicationService(
         string? userId,
         JsonPatchDocument<ApplicationRequestDto> patchDoc,
         IValidator<ApplicationRequestDto> validator,
-        ModelStateDictionary modelState)
+        ModelStateDictionary modelState,
+        CancellationToken cancellationToken)
     {
         if (id == Guid.Empty)
         {
@@ -173,7 +180,7 @@ public class ApplicationService(
         
         logger.LogInformation("Starting application patching for user {UserId}", userId);
         
-        Application? application = await dbContext.Applications.FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
+        Application? application = await dbContext.Applications.FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId,cancellationToken);
 
         if (application is null)
         {
@@ -193,11 +200,11 @@ public class ApplicationService(
             throw new BadRequestException($"Invalid patch operations: {string.Join(", ", errors)}");
         }
         
-        await validator.ValidateAndThrowAsync(applicationDto);
+        await validator.ValidateAndThrowAsync(applicationDto,cancellationToken);
         
         application.UpdateFromDto(applicationDto);
         
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
         
         cacheService.InvalidateUserApplicationCache(userId);
         
@@ -206,7 +213,8 @@ public class ApplicationService(
     
     public async Task DeleteApplication(
         Guid id,
-        string? userId)
+        string? userId,
+        CancellationToken cancellationToken)
     {
         if (id == Guid.Empty)
         {
@@ -223,7 +231,7 @@ public class ApplicationService(
         }
         
         Application? application = await dbContext.Applications
-            .FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
+            .FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId,cancellationToken);
 
         if (application is null)
         {
@@ -232,7 +240,7 @@ public class ApplicationService(
         }
         
         dbContext.Applications.Remove(application);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
         
         cacheService.InvalidateUserApplicationCache(userId);
         
@@ -241,7 +249,8 @@ public class ApplicationService(
 
     public async Task BulkDeleteApplications(
         List<Guid> applicationIds,
-        string? userId)
+        string? userId,
+        CancellationToken cancellationToken)
     {
         if (userId is null)
         {
@@ -251,7 +260,7 @@ public class ApplicationService(
         
         var applications = await dbContext.Applications
             .Where(a => applicationIds.Contains(a.Id) && a.UserId == userId)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
         if (applications.Count == 0)
         {
             logger.LogWarning("No applications found for bulk delete with IDs: {ApplicationIds}", string.Join(", ", applicationIds));
@@ -260,7 +269,7 @@ public class ApplicationService(
 
         logger.LogInformation("Bulk deleting applications with IDs: {ApplicationIds}", string.Join(", ", applicationIds));
         dbContext.Applications.RemoveRange(applications);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
         cacheService.InvalidateUserApplicationCache(userId);
     }
 }
