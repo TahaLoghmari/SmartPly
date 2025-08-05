@@ -1,5 +1,5 @@
 import { IconFileAnalytics, IconSettings } from "@tabler/icons-react";
-import { Mail, ClipboardList, Users, FileText, Sparkles } from "lucide-react";
+import { Inbox, ClipboardList, Users, FileText, Sparkles } from "lucide-react";
 
 export function getNavigationData(user: {
   name: string;
@@ -34,9 +34,9 @@ export function getNavigationData(user: {
         icon: FileText,
       },
       {
-        title: "Gmail",
-        url: "gmail",
-        icon: Mail,
+        title: "Inbox",
+        url: "inbox",
+        icon: Inbox,
       },
     ],
     navSecondary: [

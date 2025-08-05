@@ -1,7 +1,7 @@
 import { Bell } from "lucide-react";
 import { useDashboardNotificationsCountStore } from "#/dashboard";
 
-export default function HeaderNotificationBell() {
+export default function DashboardHeaderNotificationBell() {
   const { notificationsCountState } = useDashboardNotificationsCountStore();
   return (
     <div className="hover:text-accent-foreground relative flex h-8 cursor-pointer items-center rounded-md px-3 hover:bg-gray-200">

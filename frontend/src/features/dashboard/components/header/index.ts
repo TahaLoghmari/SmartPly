@@ -1,4 +1,4 @@
-export { default as DashboardHeaderConnectGmailButton } from "./HeaderConnectGmailButton";
-export { default as DashboardHeaderGmailConnectionStatus } from "./HeaderGmailConnectionStatus";
-export { default as DashboardHeader } from "./Header";
-export { default as DashboardHeaderNotificationBell } from "./HeaderNotificationBell";
+export { default as DashboardHeaderConnectGmailButton } from "./DashboardHeaderConnectGmailButton";
+export { default as DashboardHeaderGmailConnectionStatus } from "./DashboardHeaderGmailConnectionStatus";
+export { default as DashboardHeader } from "./DashboardHeader";
+export { default as DashboardHeaderNotificationBell } from "./DashboardHeaderNotificationBell";

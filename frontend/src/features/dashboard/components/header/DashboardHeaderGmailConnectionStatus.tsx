@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { DashboardHeaderConnectGmailButton } from "#/dashboard";
 
-export default function HeaderGmailConnectionStatus() {
+export default function DashboardHeaderGmailConnectionStatus() {
   const { data: user } = useCurrentUser();
   return (
     <AlertDialog>

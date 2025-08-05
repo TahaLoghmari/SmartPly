@@ -20,12 +20,10 @@ export default function SidebarNavMain({ items }: SidebarNavProps) {
                   <SidebarMenuButton
                     tooltip={item.title}
                     isActive={isActive}
-                    asChild
+                    className="cursor-pointer"
                   >
-                    <span className="flex items-center gap-2">
-                      {item.icon && <item.icon />}
-                      <span>{item.title}</span>
-                    </span>
+                    {item.icon && <item.icon />}
+                    <span>{item.title}</span>
                   </SidebarMenuButton>
                 )}
               </NavLink>

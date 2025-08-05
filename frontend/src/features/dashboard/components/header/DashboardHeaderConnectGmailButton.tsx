@@ -7,7 +7,7 @@ import {
 import { useGetGoogleLinkOAuthUrl } from "#/auth";
 import { Spinner } from "@/components/ui/spinner";
 
-export default function HeaderConnectGmailButton() {
+export default function DashboardHeaderConnectGmailButton() {
   const getGoogleOAuthUrlMutation = useGetGoogleLinkOAuthUrl();
   return (
     <>
