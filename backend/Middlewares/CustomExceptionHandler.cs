@@ -40,6 +40,15 @@ public sealed class CustomExceptionHandler(
                 problemDetails.Status = StatusCodes.Status401Unauthorized;
                 if ( unauthorized.Errors != null ) problemDetails.Extensions["errors"] = unauthorized.Errors;
                 break;
+            
+            case InternalServerErrorException internalServerError:
+                httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                problemDetails.Title = internalServerError.Title;
+                problemDetails.Detail = internalServerError.Message;
+                problemDetails.Status = StatusCodes.Status500InternalServerError;
+                if ( internalServerError.Errors != null ) problemDetails.Extensions["errors"] = internalServerError.Errors;
+                break;
+            
             case ValidationException validation:
                 httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
                 problemDetails.Title = "Validation Failed";

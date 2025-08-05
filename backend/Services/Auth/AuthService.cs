@@ -118,13 +118,7 @@ public class AuthService(
             throw new UnauthorizedException("Refresh token is missing.", "Unauthorized");
         }
 
-        AccessTokensDto? tokens = await tokenManagementService.RefreshUserTokens(refreshTokenValue,cancellationToken);
-        
-        if ( tokens is null)
-        {
-            logger.LogWarning("Token refresh failed - invalid or expired refresh token");
-            throw new UnauthorizedException("Refresh token not found or expired.", "Unauthorized");
-        }
+        AccessTokensDto tokens = await tokenManagementService.RefreshUserTokens(refreshTokenValue,cancellationToken);
         
         cookieService.AddCookies(httpContext.Response, tokens, jwtAuthOptions);
         

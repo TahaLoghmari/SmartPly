@@ -3,6 +3,7 @@ using System.Net;
 using System.Text.Encodings.Web;
 using backend.DTOs;
 using backend.Entities;
+using backend.Exceptions;
 using backend.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -67,13 +68,7 @@ namespace backend.Services
             if (passwordResetLink is null)
             {
                 logger.LogError("Password reset link generation failed for user {UserId}. The generated link was null.", user.Id);
-                var problem = new ProblemDetails
-                {
-                    Status = StatusCodes.Status500InternalServerError,
-                    Title = "Password reset link generation failed",
-                    Detail = "Could not generate a valid reset password link."
-                };
-                throw new Exception(problem.Detail);
+                throw new InternalServerErrorException("Could not generate a valid reset password link.", "Password reset link generation failed");
             }
 
             logger.LogInformation("Successfully generated password reset link for user {UserId}", user.Id);
@@ -195,13 +190,7 @@ namespace backend.Services
             if (confirmationLink is null)
             {
                 logger.LogError("Email confirmation link generation failed for user {UserId}. The generated link was null.", user.Id);
-                var problem = new ProblemDetails
-                {
-                    Status = StatusCodes.Status500InternalServerError,
-                    Title = "Email confirmation link generation failed",
-                    Detail = "Could not generate a valid email confirmation link."
-                };
-                throw new Exception(problem.Detail);
+                throw new InternalServerErrorException("Could not generate a valid email confirmation link.","Email confirmation link generation failed");
             }
             
             logger.LogInformation("Successfully generated email confirmation link for user {UserId}", user.Id);
