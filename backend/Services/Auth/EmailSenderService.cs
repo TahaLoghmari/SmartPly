@@ -17,7 +17,9 @@ namespace backend.Services
     {
         private readonly EmailSettings _emailSettings = options.Value;
 
-        private Task SendEmailAsync(SendEmailDto sendEmailDto)
+        private Task SendEmailAsync(
+            SendEmailDto sendEmailDto,
+            CancellationToken cancellationToken)
         {
 
             string? mailServer = _emailSettings.MailServer;
@@ -47,9 +49,13 @@ namespace backend.Services
 
             mailMessage.To.Add(sendEmailDto.ToEmail);
 
-            return client.SendMailAsync(mailMessage);
+            return client.SendMailAsync(mailMessage,cancellationToken);
         }
-        public async Task SendForgotPasswordEmail(string email, User user, HttpContext httpContext, IUrlHelper url)
+        public async Task SendForgotPasswordEmail(string email,
+            User user,
+            HttpContext httpContext,
+            IUrlHelper url,
+            CancellationToken cancellationToken)
         {
             logger.LogInformation("Attempting to send password reset email for user {UserId} to {Email}", user.Id, email);
             var token = await userManager.GeneratePasswordResetTokenAsync(user);
@@ -170,10 +176,14 @@ namespace backend.Services
 ";
 
             SendEmailDto sendEmailDto = new SendEmailDto(email, subject, messageBody, true);
-            await SendEmailAsync(sendEmailDto);
+            await SendEmailAsync(sendEmailDto,cancellationToken);
             logger.LogInformation("Successfully sent password reset email to {Email} for user {UserId}", email, user.Id);
         }
-        public async Task SendConfirmationEmail(string email, User user, HttpContext httpContext, IUrlHelper url)
+        public async Task SendConfirmationEmail(string email,
+            User user,
+            HttpContext httpContext,
+            IUrlHelper url,
+            CancellationToken cancellationToken)
         {
             logger.LogInformation("Generated email confirmation token for user {UserId}", user.Id);
             var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -294,7 +304,7 @@ namespace backend.Services
 
             SendEmailDto sendEmailDto = new SendEmailDto(email, subject, messageBody, true);
 
-            await SendEmailAsync(sendEmailDto);
+            await SendEmailAsync(sendEmailDto,cancellationToken);
             logger.LogInformation("Successfully sent confirmation email to {Email} for user {UserId}", email, user.Id);
         }
         

@@ -20,8 +20,8 @@ public class AuthService(
     public async Task Register(
         RegisterUserDto registerUserDto,
         HttpContext httpContext,
-        IUrlHelper urlHelper
-        )
+        IUrlHelper urlHelper,
+        CancellationToken cancellationToken)
     {
         logger.LogInformation("User registration attempt started for {@Email}", registerUserDto.Email);
         
@@ -59,7 +59,7 @@ public class AuthService(
         logger.LogInformation("User registration successful for {Email}, UserId: {UserId}", 
             registerUserDto.Email, user.Id);
 
-        await emailSenderService.SendConfirmationEmail(registerUserDto.Email, user, httpContext, urlHelper);
+        await emailSenderService.SendConfirmationEmail(registerUserDto.Email, user, httpContext, urlHelper,cancellationToken);
         
         logger.LogInformation("Confirmation email sent to {Email}", registerUserDto.Email);
     }
@@ -67,7 +67,8 @@ public class AuthService(
     public async Task Login(
         LoginUserDto loginUserDto,
         JwtAuthOptions jwtAuthOptions,
-        HttpContext httpContext)
+        HttpContext httpContext,
+        CancellationToken cancellationToken)
     {
         logger.LogInformation("Login attempt started for {Email}", loginUserDto.Email);
 
@@ -95,7 +96,7 @@ public class AuthService(
             throw new BadRequestException("Invalid email or password", "Login failed");
         }
         
-        AccessTokensDto tokens = await tokenManagementService.CreateAndStoreTokens(user.Id, loginUserDto.Email);
+        AccessTokensDto tokens = await tokenManagementService.CreateAndStoreTokens(user.Id, loginUserDto.Email,cancellationToken);
 
         cookieService.AddCookies(httpContext.Response, tokens, jwtAuthOptions);
         
@@ -106,7 +107,8 @@ public class AuthService(
     public async Task Refresh(
         string? refreshTokenValue,
         JwtAuthOptions jwtAuthOptions,
-        HttpContext httpContext)
+        HttpContext httpContext,
+        CancellationToken cancellationToken)
     {
         logger.LogInformation("Token refresh attempt started");
         
@@ -116,7 +118,7 @@ public class AuthService(
             throw new UnauthorizedException("Refresh token is missing.", "Unauthorized");
         }
 
-        AccessTokensDto? tokens = await tokenManagementService.RefreshUserTokens(refreshTokenValue);
+        AccessTokensDto? tokens = await tokenManagementService.RefreshUserTokens(refreshTokenValue,cancellationToken);
         
         if ( tokens is null)
         {
@@ -187,7 +189,8 @@ public class AuthService(
         string? state,
         string? error,
         JwtAuthOptions jwtAuthOptions,
-        HttpResponse response)
+        HttpResponse response,
+        CancellationToken cancellationToken)
     {
         logger.LogInformation("GoogleCallback invoked with state: {State}, code: {Code}, error: {Error}", state, code, error);
         
@@ -200,7 +203,7 @@ public class AuthService(
         var stateParts = state?.Split(':');
         string? linkAccountUserId = stateParts?.Length == 2 ? stateParts[0] : null;
 
-        GoogleTokenResponse? googleTokens = await googleTokensProvider.ExchangeCodeForTokens(code);
+        GoogleTokenResponse? googleTokens = await googleTokensProvider.ExchangeCodeForTokens(code,cancellationToken);
         
         if (googleTokens is null)
         {
@@ -239,7 +242,7 @@ public class AuthService(
             }
             
             await googleTokensProvider.StoreGoogleTokens(user, googleTokens);
-            accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, user.Email!);
+            accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, user.Email!,cancellationToken);
             cookieService.AddCookies(response, accessTokens, jwtAuthOptions);
             logger.LogInformation("User created and tokens stored for UserId: {UserId}, Email: {Email}", user.Id, user.Email);
         }
@@ -275,13 +278,14 @@ public class AuthService(
 
     public async Task Logout(
         string? refreshTokenValue,
-        HttpResponse response)
+        HttpResponse response,
+        CancellationToken cancellationToken)
     {
         logger.LogInformation("Logout attempt started");
 
         if (!string.IsNullOrEmpty(refreshTokenValue))
         {
-            await tokenManagementService.RemoveRefreshToken(refreshTokenValue);
+            await tokenManagementService.RemoveRefreshToken(refreshTokenValue,cancellationToken);
             logger.LogInformation("Refresh token removed during logout");
         }
 
@@ -290,7 +294,9 @@ public class AuthService(
         logger.LogInformation("Logout successful");
     }
 
-    public async Task<bool> ConfirmEmail(string userId, string token)
+    public async Task<bool> ConfirmEmail(
+        string userId,
+        string token)
     {
         var user = await userManager.FindByIdAsync(userId);
         if (user is null)
@@ -316,7 +322,8 @@ public class AuthService(
     public async Task ResendConfirmationEmail(
         ResendConfirmationEmailDto dto,
         HttpContext httpContext,
-        IUrlHelper urlHelper)
+        IUrlHelper urlHelper,
+        CancellationToken cancellationToken)
 
     {
         logger.LogInformation("Resend confirmation email requested for {Email}", dto.Email);
@@ -332,7 +339,7 @@ public class AuthService(
                 "Resend confirmation email failed");
         }
 
-        await emailSenderService.SendConfirmationEmail(dto.Email, user, httpContext, urlHelper);
+        await emailSenderService.SendConfirmationEmail(dto.Email, user, httpContext, urlHelper,cancellationToken);
 
         logger.LogInformation("Confirmation email resent successfully to {Email}, UserId: {UserId}",
             dto.Email, user.Id);
@@ -341,7 +348,8 @@ public class AuthService(
     public async Task ForgotPassword(
         ForgotPasswordDto dto,
         HttpContext httpContext,
-        IUrlHelper urlHelper)
+        IUrlHelper urlHelper,
+        CancellationToken cancellationToken)
     {
         logger.LogInformation("Forgot password requested for {Email}", dto.Email);
 
@@ -354,7 +362,7 @@ public class AuthService(
                 "Forgot password failed");
         }
         
-        await emailSenderService.SendForgotPasswordEmail(user.Email!, user, httpContext, urlHelper);
+        await emailSenderService.SendForgotPasswordEmail(user.Email!, user, httpContext, urlHelper,cancellationToken);
         
         logger.LogInformation("Password reset email sent to {Email}, UserId: {UserId}", 
             user.Email, user.Id);

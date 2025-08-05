@@ -11,7 +11,9 @@ public sealed class GoogleTokensProvider(
     IConfiguration configuration,
     ILogger<GoogleTokensProvider> logger)
 {
-    public async Task<GoogleTokenResponse?> ExchangeCodeForTokens(string code)
+    public async Task<GoogleTokenResponse?> ExchangeCodeForTokens(
+        string? code,
+        CancellationToken cancellationToken)
     {
         var clientId = configuration["Google:ClientId"];
         var clientSecret = configuration["Google:ClientSecret"];
@@ -28,8 +30,8 @@ public sealed class GoogleTokensProvider(
             new KeyValuePair<string, string>("grant_type", "authorization_code")
         });
 
-        var response = await httpClient.PostAsync("https://oauth2.googleapis.com/token", tokenRequest);
-        var responseContent = await response.Content.ReadAsStringAsync();
+        var response = await httpClient.PostAsync("https://oauth2.googleapis.com/token", tokenRequest,cancellationToken);
+        var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -80,7 +82,7 @@ public sealed class GoogleTokensProvider(
                 "refresh_token",
                 tokens.RefreshToken);
         }
-         var expiresAt = DateTime.UtcNow.AddSeconds(tokens.ExpiresIn).ToString("o");
+        var expiresAt = DateTime.UtcNow.AddSeconds(tokens.ExpiresIn).ToString("o");
             await userManager.SetAuthenticationTokenAsync(
                 user,
                 "Google",
@@ -156,7 +158,9 @@ public sealed class GoogleTokensProvider(
         return user;
     }
 
-    public async Task<User?> LinkUserAsync(GoogleUserInfo googleUser, string linkAccountUserId )
+    public async Task<User?> LinkUserAsync(
+        GoogleUserInfo googleUser,
+        string linkAccountUserId)
     {
         var userWithThisGoogleAccount = await userManager.FindByLoginAsync("Google", googleUser.Id);
         if ( userWithThisGoogleAccount != null)

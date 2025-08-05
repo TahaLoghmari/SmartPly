@@ -25,32 +25,35 @@ public sealed class AuthController(
     [HttpPost("register")]
     public async Task<IActionResult> Register(
         RegisterUserDto registerUserDto,
-        IValidator<RegisterUserDto> validator)
+        IValidator<RegisterUserDto> validator,
+        CancellationToken cancellationToken)
     {
-        await validator.ValidateAndThrowAsync(registerUserDto);
+        await validator.ValidateAndThrowAsync(registerUserDto,cancellationToken);
         
-        await authService.Register(registerUserDto,HttpContext, Url);
+        await authService.Register(registerUserDto,HttpContext, Url,cancellationToken);
         
         return NoContent();
     }
     [HttpPost("login")]
     public async Task<IActionResult> Login(
         LoginUserDto loginUserDto,
-        IValidator<LoginUserDto> validator)
+        IValidator<LoginUserDto> validator,
+        CancellationToken cancellationToken)
     {
-        await validator.ValidateAndThrowAsync(loginUserDto);
+        await validator.ValidateAndThrowAsync(loginUserDto,cancellationToken);
         
-        await authService.Login(loginUserDto,_jwtAuthOptions,HttpContext);
+        await authService.Login(loginUserDto,_jwtAuthOptions,HttpContext,cancellationToken);
 
         return NoContent();
     }
 
     [HttpPost("refresh")]
-    public async Task<IActionResult> Refresh()
+    public async Task<IActionResult> Refresh(
+        CancellationToken cancellationToken)
     {
         var refreshTokenValue = Request.Cookies["refreshToken"];
 
-        await authService.Refresh(refreshTokenValue, _jwtAuthOptions, HttpContext);
+        await authService.Refresh(refreshTokenValue, _jwtAuthOptions, HttpContext,cancellationToken);
         
         return NoContent();
     }
@@ -76,16 +79,17 @@ public sealed class AuthController(
     [HttpGet("google/callback")]
     public async Task<IActionResult> GoogleCallback(
         [FromQuery] GoogleCallbackDto googleCallbackDto,
-        IValidator<GoogleCallbackDto> validator)
+        IValidator<GoogleCallbackDto> validator,
+        CancellationToken cancellationToken)
     {
-        await validator.ValidateAndThrowAsync(googleCallbackDto);
+        await validator.ValidateAndThrowAsync(googleCallbackDto,cancellationToken);
 
         var (user, error) = await authService.GoogleCallback(
             googleCallbackDto.code,
             googleCallbackDto.state,
             googleCallbackDto.error,
             _jwtAuthOptions,
-            Response);
+            Response,cancellationToken);
 
         var frontendBaseUrl = configuration["Frontend:BaseUrl"]!;
 
@@ -115,11 +119,12 @@ public sealed class AuthController(
     }
     
     [HttpPost("logout")]
-    public async Task<IActionResult> Logout()
+    public async Task<IActionResult> Logout(
+        CancellationToken cancellationToken)
     {
         var refreshTokenValue = Request.Cookies["refreshToken"];
 
-        await authService.Logout(refreshTokenValue,Response);
+        await authService.Logout(refreshTokenValue,Response,cancellationToken);
 
         return NoContent();
     }
@@ -127,9 +132,10 @@ public sealed class AuthController(
     [AllowAnonymous]
     public async Task<IActionResult> ConfirmEmail(
         [FromQuery] ConfirmationDto confirmationDto,
-        IValidator<ConfirmationDto> validator)
+        IValidator<ConfirmationDto> validator,
+        CancellationToken cancellationToken)
     {
-        await validator.ValidateAndThrowAsync(confirmationDto);
+        await validator.ValidateAndThrowAsync(confirmationDto,cancellationToken);
 
         bool success = await authService.ConfirmEmail(confirmationDto.UserId,
             confirmationDto.Token);
@@ -144,11 +150,12 @@ public sealed class AuthController(
     [HttpPost("resend-confirmation-email")]
     public async Task<IActionResult> ResendConfirmationEmail( 
         ResendConfirmationEmailDto dto,
-        IValidator<ResendConfirmationEmailDto> validator)
+        IValidator<ResendConfirmationEmailDto> validator,
+        CancellationToken cancellationToken)
     {
-        await validator.ValidateAndThrowAsync(dto);
+        await validator.ValidateAndThrowAsync(dto,cancellationToken);
 
-        await authService.ResendConfirmationEmail(dto,HttpContext,Url);
+        await authService.ResendConfirmationEmail(dto,HttpContext,Url,cancellationToken);
 
         return NoContent();
     }
@@ -156,11 +163,12 @@ public sealed class AuthController(
     [AllowAnonymous]
     public async Task<IActionResult> ForgotPassword(
         ForgotPasswordDto dto,
-        IValidator<ForgotPasswordDto> validator)
+        IValidator<ForgotPasswordDto> validator,
+        CancellationToken cancellationToken)
     {
-        await validator.ValidateAndThrowAsync(dto);
+        await validator.ValidateAndThrowAsync(dto,cancellationToken);
 
-        await authService.ForgotPassword(dto,HttpContext,Url);
+        await authService.ForgotPassword(dto,HttpContext,Url,cancellationToken);
         
         return NoContent();
     }
@@ -168,11 +176,12 @@ public sealed class AuthController(
     [AllowAnonymous]
     public async Task<IActionResult> GetResetPasswordPage(
     [FromQuery] EmailResetPasswordDto emailResetPasswordDto,
-    IValidator<EmailResetPasswordDto> validator)
+    IValidator<EmailResetPasswordDto> validator,
+    CancellationToken cancellationToken)
     {
         var frontendUrl = configuration["Frontend:BaseUrl"];
         
-        var validationResult = await validator.ValidateAsync(emailResetPasswordDto);
+        var validationResult = await validator.ValidateAsync(emailResetPasswordDto,cancellationToken);
         if (!validationResult.IsValid)
         {
             return Redirect($"{frontendUrl}/login?type=reset_password_error&" +
@@ -188,9 +197,10 @@ public sealed class AuthController(
     [AllowAnonymous]
     public async Task<IActionResult> ProcessResetPassword(
     ResetPasswordDto processResetPasswordDto,
-    IValidator<ResetPasswordDto> validator)
+    IValidator<ResetPasswordDto> validator,
+    CancellationToken cancellationToken)
     {
-        await validator.ValidateAndThrowAsync(processResetPasswordDto);
+        await validator.ValidateAndThrowAsync(processResetPasswordDto,cancellationToken);
 
         await authService.ProcessResetPassword(processResetPasswordDto);
         

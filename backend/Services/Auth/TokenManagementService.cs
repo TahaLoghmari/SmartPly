@@ -14,7 +14,10 @@ public sealed class TokenManagementService(
 {
     private readonly JwtAuthOptions _jwtAuthOptions = options.Value;
 
-    public async Task<AccessTokensDto> CreateAndStoreTokens(string userId, string email)
+    public async Task<AccessTokensDto> CreateAndStoreTokens(
+        string userId,
+        string email,
+        CancellationToken cancellationToken)
     {
 
         var oldRefreshTokens = applicationDbContext.RefreshTokens
@@ -34,16 +37,18 @@ public sealed class TokenManagementService(
 
         applicationDbContext.RefreshTokens.Add(refreshToken);
 
-        await applicationDbContext.SaveChangesAsync();
+        await applicationDbContext.SaveChangesAsync(cancellationToken);
 
         return accessTokens;
     }
 
-    public async Task<AccessTokensDto?> RefreshUserTokens(string refreshTokenValue)
+    public async Task<AccessTokensDto?> RefreshUserTokens(
+        string refreshTokenValue,
+        CancellationToken cancellationToken)
     {
         var refreshToken = await applicationDbContext.RefreshTokens
             .Include(rt => rt.User)
-            .FirstOrDefaultAsync(rt => rt.Token == refreshTokenValue);
+            .FirstOrDefaultAsync(rt => rt.Token == refreshTokenValue,cancellationToken);
 
         if (refreshToken is null || refreshToken.ExpiresAtUtc < DateTime.UtcNow )
         {
@@ -56,20 +61,22 @@ public sealed class TokenManagementService(
         refreshToken.Token = tokens.RefreshToken;
         refreshToken.ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthOptions.RefreshTokenExpirationDays);
 
-        await applicationDbContext.SaveChangesAsync();
+        await applicationDbContext.SaveChangesAsync(cancellationToken);
 
         return tokens;
     }
 
-    public async Task RemoveRefreshToken(string refreshTokenValue)
+    public async Task RemoveRefreshToken(
+        string refreshTokenValue,
+        CancellationToken cancellationToken)
     {
         var refreshToken = await applicationDbContext.RefreshTokens
-            .FirstOrDefaultAsync(rt => rt.Token == refreshTokenValue);
+            .FirstOrDefaultAsync(rt => rt.Token == refreshTokenValue,cancellationToken);
 
         if (refreshToken != null)
         {
             applicationDbContext.RefreshTokens.Remove(refreshToken);
-            await applicationDbContext.SaveChangesAsync();
+            await applicationDbContext.SaveChangesAsync(cancellationToken);
         }
     }
     
