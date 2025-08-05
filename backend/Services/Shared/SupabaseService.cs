@@ -29,7 +29,11 @@ public class SupabaseService
         await _client.InitializeAsync();
     }
 
-    public async Task<string> UploadFileAsync(IFormFile file, string name, string bucketName )
+    public async Task<string> UploadFileAsync(
+        IFormFile file,
+        string name,
+        string bucketName,
+        CancellationToken cancellationToken)
     {
         var ext        = Path.GetExtension(file.FileName); 
         var objectPath = $"{name}_{Guid.NewGuid():N}{ext}";
@@ -37,7 +41,7 @@ public class SupabaseService
         byte[] buffer;
         await using (var ms = new MemoryStream())
         {
-            await file.CopyToAsync(ms);
+            await file.CopyToAsync(ms,cancellationToken);
             buffer = ms.ToArray();
         }
 

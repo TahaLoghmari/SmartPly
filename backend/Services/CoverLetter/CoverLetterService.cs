@@ -14,7 +14,10 @@ public class CoverLetterService(
     CacheService cacheService,
     SupabaseService supabaseService)
 {
-    public async Task<CoverLetterResponseDto> CreateCoverLetterAsync(CoverLetterRequestDto dto, string userId)
+    public async Task<CoverLetterResponseDto> CreateCoverLetterAsync(
+        CoverLetterRequestDto dto,
+        string? userId,
+        CancellationToken cancellationToken)
     {
         if (userId is null)
         {
@@ -22,12 +25,12 @@ public class CoverLetterService(
             throw new UnauthorizedException("User ID claim is missing.");
         }
 
-        string coverLetterUrl = await supabaseService.UploadFileAsync(dto.File,"coverLetter","cover-letters");
+        string coverLetterUrl = await supabaseService.UploadFileAsync(dto.File,"coverLetter","cover-letters",cancellationToken);
         
         CoverLetter coverLetter = dto.ToCoverLetter(userId, coverLetterUrl);
         
         dbContext.CoverLetters.Add(coverLetter);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
         
         cacheService.InvalidateUserCoverLetterCache(coverLetter.UserId);
         
@@ -36,7 +39,10 @@ public class CoverLetterService(
         return coverLetter.ToCoverLetterResponseDto();
     }
 
-    public async Task<ICollection<CoverLetterResponseDto>> GetUserCoverLetters(CoverLetterQueryParameters query, string userId)
+    public async Task<ICollection<CoverLetterResponseDto>> GetUserCoverLetters(
+        CoverLetterQueryParameters query,
+        string? userId,
+        CancellationToken cancellationToken)
     {
         if (userId is null)
         {
@@ -60,13 +66,16 @@ public class CoverLetterService(
             .Where(r => r.UserId == userId)
             .Where(r => query.Search == null || r.Name.ToLower().Contains(query.Search))
             .Select(r => r.ToCoverLetterResponseDto())
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
         
         cacheService.CacheCoverLettersResult(cacheKey, result, userId);
         return result;
     }
 
-    public async Task<CoverLetterResponseDto> GetUserCoverLetter(Guid id, string userId)
+    public async Task<CoverLetterResponseDto> GetUserCoverLetter(
+        Guid id,
+        string? userId,
+        CancellationToken cancellationToken)
     {
         if (id == Guid.Empty)
         {
@@ -82,7 +91,7 @@ public class CoverLetterService(
         
         var coverLetter = await dbContext.CoverLetters
             .AsNoTracking()
-            .FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
+            .FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId,cancellationToken);
         if (coverLetter is null)
         {
             logger.LogWarning("Cover letter not found for Id: {CoverLetterId}", id);
@@ -91,7 +100,11 @@ public class CoverLetterService(
         return coverLetter.ToCoverLetterResponseDto();
     }
 
-    public async Task EditCoverLetter(Guid id, string userId, CoverLetterRequestDto dto)
+    public async Task EditCoverLetter(
+        Guid id,
+        string? userId,
+        CoverLetterRequestDto dto,
+        CancellationToken cancellationToken)
     {
         if (id == Guid.Empty)
         {
@@ -105,7 +118,7 @@ public class CoverLetterService(
             throw new UnauthorizedException("User ID claim is missing.");
         }
         
-        var coverLetter = await dbContext.CoverLetters.FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
+        var coverLetter = await dbContext.CoverLetters.FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId,cancellationToken);
         if (coverLetter is null)
         {
             logger.LogWarning("Cover letter not found for Id: {CoverLetterId}", id);
@@ -113,12 +126,15 @@ public class CoverLetterService(
         }
         
         coverLetter.UpdateFromDto(dto);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
         cacheService.InvalidateUserCoverLetterCache(userId);
         logger.LogInformation("Cover letter edited with ID {CoverLetterId}", coverLetter.Id);
     }
 
-    public async Task DeleteCoverLetter(Guid id, string userId)
+    public async Task DeleteCoverLetter(
+        Guid id,
+        string? userId,
+        CancellationToken cancellationToken)
     {
         if (id == Guid.Empty)
         {
@@ -132,7 +148,7 @@ public class CoverLetterService(
             throw new UnauthorizedException("User ID claim is missing.");
         }
         
-        var coverLetter = await dbContext.CoverLetters.FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
+        var coverLetter = await dbContext.CoverLetters.FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId,cancellationToken);
         if (coverLetter is null)
         {
             logger.LogWarning("Cover letter not found for Id: {CoverLetterId}", id);
@@ -142,14 +158,17 @@ public class CoverLetterService(
         await supabaseService.DeleteFileAsync(coverLetter.Url,"cover-letters");
         
         dbContext.CoverLetters.Remove(coverLetter);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
         
         cacheService.InvalidateUserCoverLetterCache(userId);
         
         logger.LogInformation("Cover letter deleted with ID {CoverLetterId}", coverLetter.Id);
     }
 
-    public async Task BulkDeleteCoverLetters(List<Guid> coverLetterIds, string userId)
+    public async Task BulkDeleteCoverLetters(
+        List<Guid> coverLetterIds,
+        string? userId,
+        CancellationToken cancellationToken)
     {
         if (userId is null)
         {
@@ -159,7 +178,7 @@ public class CoverLetterService(
         
         var coverLetters = await dbContext.CoverLetters
             .Where(r => coverLetterIds.Contains(r.Id) && r.UserId == userId)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
         if (coverLetters.Count == 0)
         {
             logger.LogWarning("No cover letters found for bulk delete with IDs: {CoverLetterIds}", string.Join(", ", coverLetterIds));
@@ -171,14 +190,17 @@ public class CoverLetterService(
         }
         
         dbContext.CoverLetters.RemoveRange(coverLetters);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
         
         cacheService.InvalidateUserCoverLetterCache(userId);
     }
     
-    public async Task<DownloadResultDto> DownloadCoverLetter(Guid id, string? userId)
+    public async Task<DownloadResultDto> DownloadCoverLetter(
+        Guid id,
+        string? userId,
+        CancellationToken cancellationToken)
     {
-        var coverLetter = await GetUserCoverLetter(id, userId);
+        var coverLetter = await GetUserCoverLetter(id, userId,cancellationToken);
         
         var bytes = await supabaseService.DownloadFileAsync(coverLetter.Url, "cover-letters");
         
