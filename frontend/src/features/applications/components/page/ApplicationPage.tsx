@@ -68,10 +68,7 @@ export default function ApplicationPage() {
             <Button
               variant="ghost"
               className="cursor-pointer"
-              onClick={() => {
-                setOpen(false);
-                navigate("/app/applications");
-              }}
+              onClick={() => handleClose(false)}
               aria-label="Back to Applications"
             >
               <ArrowLeft className="h-4 w-4" />
