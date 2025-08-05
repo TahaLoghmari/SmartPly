@@ -14,7 +14,10 @@ public class ResumeService(
     CacheService cacheService,
     SupabaseService supabaseService)
 {
-    public async Task<ResumeResponseDto> CreateResumeAsync(ResumeRequestDto dto, string userId )
+    public async Task<ResumeResponseDto> CreateResumeAsync(
+        ResumeRequestDto dto,
+        string? userId,
+        CancellationToken cancellationToken)
     {
         if (userId is null)
         {
@@ -22,13 +25,13 @@ public class ResumeService(
             throw new UnauthorizedException("User ID claim is missing.");
         }
 
-        string resumeUrl = await supabaseService.UploadFileAsync(dto.File,"resume","resumes");
+        string resumeUrl = await supabaseService.UploadFileAsync(dto.File,"resume","resumes",cancellationToken);
         
         Resume resume = dto.ToResume(userId,resumeUrl);
         
         dbContext.Resumes.Add(resume);
         
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
         
         cacheService.InvalidateUserResumeCache(resume.UserId);
         
@@ -38,7 +41,9 @@ public class ResumeService(
     }
 
     public async Task<ICollection<ResumeResponseDto>> GetUserResumes(
-        ResumeQueryParameters query, string? userId)
+        ResumeQueryParameters query,
+        string? userId,
+        CancellationToken cancellationToken)
     {
         if (userId is null)
         {
@@ -63,14 +68,17 @@ public class ResumeService(
             .Where(r => r.UserId == userId)
             .Where(r => query.Search == null || r.Name.ToLower().Contains(query.Search))
             .Select(r => r.ToResumeResponseDto())
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         cacheService.CacheResumesResult(cacheKey, result, userId);
 
         return result;
     }
 
-    public async Task<ResumeResponseDto> GetUserResume(Guid id, string? userId)
+    public async Task<ResumeResponseDto> GetUserResume(
+        Guid id,
+        string? userId,
+        CancellationToken cancellationToken)
     {
         if (id == Guid.Empty)
         {
@@ -86,7 +94,7 @@ public class ResumeService(
 
         var resume = await dbContext.Resumes
             .AsNoTracking()
-            .FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
+            .FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId,cancellationToken);
         if (resume is null)
         {
             logger.LogWarning("Resume not found for Id: {ResumeId}", id);
@@ -96,7 +104,11 @@ public class ResumeService(
         return resume.ToResumeResponseDto();
     }
 
-    public async Task EditResume(Guid id, string? userId, ResumeRequestDto dto)
+    public async Task EditResume(
+        Guid id,
+        string? userId,
+        ResumeRequestDto dto,
+        CancellationToken cancellationToken)
     {
         if (id == Guid.Empty)
         {
@@ -110,7 +122,7 @@ public class ResumeService(
             throw new UnauthorizedException("User ID claim is missing.");
         }
 
-        var resume = await dbContext.Resumes.FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
+        var resume = await dbContext.Resumes.FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId,cancellationToken);
 
         if (resume is null)
         {
@@ -119,12 +131,15 @@ public class ResumeService(
         }
 
         resume.UpdateFromDto(dto);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
         cacheService.InvalidateUserResumeCache(userId);
         logger.LogInformation("Resume edited with ID {ResumeId}", resume.Id);
     }
 
-    public async Task DeleteResume(Guid id, string? userId)
+    public async Task DeleteResume(
+        Guid id,
+        string? userId,
+        CancellationToken cancellationToken)
     {
         if (id == Guid.Empty)
         {
@@ -138,7 +153,7 @@ public class ResumeService(
             throw new UnauthorizedException("User ID claim is missing.");
         }
 
-        var resume = await dbContext.Resumes.FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
+        var resume = await dbContext.Resumes.FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId,cancellationToken);
 
         if (resume is null)
         {
@@ -149,12 +164,15 @@ public class ResumeService(
         await supabaseService.DeleteFileAsync(resume.Url,"resumes");
         
         dbContext.Resumes.Remove(resume);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
         cacheService.InvalidateUserResumeCache(userId);
         logger.LogInformation("Resume deleted with ID {ResumeId}", resume.Id);
     }
     
-    public async Task BulkDeleteResumes(List<Guid> resumeIds, string userId)
+    public async Task BulkDeleteResumes(
+        List<Guid> resumeIds,
+        string? userId,
+        CancellationToken cancellationToken)
     {
         if (userId is null)
         {
@@ -164,7 +182,7 @@ public class ResumeService(
         
         var resumes = await dbContext.Resumes
             .Where(r => resumeIds.Contains(r.Id) && r.UserId == userId)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
         if (resumes.Count == 0)
         {
             logger.LogWarning("No resumes found for bulk delete with IDs: {ResumeIds}", string.Join(", ", resumeIds));
@@ -175,13 +193,16 @@ public class ResumeService(
             await supabaseService.DeleteFileAsync(resume.Url,"resumes");
         }
         dbContext.Resumes.RemoveRange(resumes);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
         
         cacheService.InvalidateUserResumeCache(userId);
     }
-    public async Task<DownloadResultDto> DownloadResume(Guid id, string? userId)
+    public async Task<DownloadResultDto> DownloadResume(
+        Guid id,
+        string? userId,
+        CancellationToken cancellationToken)
     {
-        var resume = await GetUserResume(id, userId);
+        var resume = await GetUserResume(id, userId,cancellationToken);
         
         var bytes = await supabaseService.DownloadFileAsync(resume.Url, "resumes");
         
