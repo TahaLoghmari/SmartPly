@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/sidebar";
 import type { SidebarNavProps } from "#/dashboard/types";
 
-export default function SidebarNavSecondary({
+export default function DashboardSidebarNavSecondary({
   items,
   ...props
 }: SidebarNavProps & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {

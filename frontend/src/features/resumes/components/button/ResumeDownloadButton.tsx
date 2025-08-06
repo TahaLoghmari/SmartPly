@@ -1,11 +1,11 @@
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
-export default function DownloadButton({ id }: { id: string }) {
+export default function ResumeDownloadButton({ id }: { id: string }) {
   const handleDownload = () => {
     const link = document.createElement("a");
     link.href = `${API_BASE_URL}/resumes/${id}/download`;
-    link.download = ""; 
+    link.download = "";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

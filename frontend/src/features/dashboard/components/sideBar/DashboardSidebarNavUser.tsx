@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useLogoutDialogStore, type SidebarNavUserProps } from "#/dashboard";
 
-export default function SidebarNavUser({ user }: SidebarNavUserProps) {
+export default function DashboardSidebarNavUser({ user }: SidebarNavUserProps) {
   const { isMobile } = useSidebar();
   const { setIsOpen } = useLogoutDialogStore();
   return (

@@ -12,7 +12,7 @@ import { useUploadResume } from "#/resumes";
 import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 
-export default function UploadButton() {
+export default function ResumeUploadButton() {
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const uploadResumeMutation = useUploadResume();

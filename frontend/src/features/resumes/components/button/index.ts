@@ -1,5 +1,5 @@
-export { default as ResumeDeleteButton } from "./DeleteButton";
-export { default as ResumeDownloadButton } from "./DownloadButton";
-export { default as ResumeUploadButton } from "./UploadButton";
-export { default as ResumeViewButton } from "./ViewButton";
-export { default as ResumeBulkDeleteButton } from "./BulkDeleteButton";
+export { default as ResumeDeleteButton } from "./ResumeDeleteButton";
+export { default as ResumeDownloadButton } from "./ResumeDownloadButton";
+export { default as ResumeUploadButton } from "./ResumeUploadButton";
+export { default as ResumeViewButton } from "./ResumeViewButton";
+export { default as ResumeBulkDeleteButton } from "./ResumeBulkDeleteButton";

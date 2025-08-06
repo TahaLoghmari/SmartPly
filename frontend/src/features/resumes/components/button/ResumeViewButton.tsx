@@ -2,7 +2,7 @@ import { ResumePreview } from "#/resumes";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { FileText } from "lucide-react";
 
-export default function ViewButton({ url }: { url: string }) {
+export default function ResumeViewButton({ url }: { url: string }) {
   return (
     <Dialog>
       <DialogTrigger>

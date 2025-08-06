@@ -8,7 +8,7 @@ import {
 import { NavLink } from "react-router-dom";
 import type { SidebarNavProps } from "#/dashboard";
 
-export default function SidebarNavMain({ items }: SidebarNavProps) {
+export default function DashboardSidebarNavMain({ items }: SidebarNavProps) {
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">

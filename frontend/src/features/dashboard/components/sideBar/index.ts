@@ -1,5 +1,5 @@
-export { default as DashboardSidebar } from "./Sidebar";
-export { default as DashboardSidebarLogoutButton } from "./SidebarLogoutButton";
-export { default as DashboardSidebarNavMain } from "./SidebarNavMain";
-export { default as DashboardSidebarNavSecondary } from "./SidebarNavSecondary";
-export { default as DashboardSidebarNavUser } from "./SidebarNavUser";
+export { default as DashboardSidebar } from "./DashboardSidebar";
+export { default as DashboardSidebarLogoutButton } from "./DashboardSidebarLogoutButton";
+export { default as DashboardSidebarNavMain } from "./DashboardSidebarNavMain";
+export { default as DashboardSidebarNavSecondary } from "./DashboardSidebarNavSecondary";
+export { default as DashboardSidebarNavUser } from "./DashboardSidebarNavUser";
