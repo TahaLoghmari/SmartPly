@@ -79,7 +79,7 @@ export default function DashboardSidebar({
         // remove min-h-screen after
         <Sidebar
           collapsible="none"
-          className="hidden h-[100svh] w-[307px] md:flex"
+          className="hidden h-[100svh] w-[307px] border-r md:flex"
         >
           <SidebarHeader className="gap-3.5 border-b p-4">
             <div className="flex w-full items-center justify-between">
