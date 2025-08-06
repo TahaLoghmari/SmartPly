@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Switch } from "@/components/ui/switch";
 import Logo from "@/assets/Logo.png";
+import { Inbox } from "#/inbox";
 
 export default function DashboardSidebar({
   ...props
@@ -28,7 +29,7 @@ export default function DashboardSidebar({
   const { isSidebarOpen } = useDashboardSidebarStateStore();
   const { data: user } = useCurrentUser();
   const navigationData = getNavigationData(user!);
-  const isGmailRoute = location.pathname.includes("gmail");
+  const isInboxRoute = location.pathname.includes("inbox");
   return (
     <>
       <Sidebar collapsible="icon" {...props}>
@@ -74,7 +75,7 @@ export default function DashboardSidebar({
         </SidebarFooter>
       </Sidebar>
 
-      {isGmailRoute && (
+      {isInboxRoute && (
         // remove min-h-screen after
         <Sidebar
           collapsible="none"
@@ -82,7 +83,7 @@ export default function DashboardSidebar({
         >
           <SidebarHeader className="gap-3.5 border-b p-4">
             <div className="flex w-full items-center justify-between">
-              <div className="text-foreground text-base font-medium">Gmail</div>
+              <div className="text-foreground text-base font-medium">Inbox</div>
               <Label className="flex items-center gap-2 text-sm">
                 <span>Unreads</span>
                 <Switch className="shadow-none" />
@@ -92,7 +93,10 @@ export default function DashboardSidebar({
           </SidebarHeader>
           <SidebarContent>
             <SidebarGroup className="px-0">
-              <SidebarGroupContent></SidebarGroupContent>
+              {/* Add Inbox Component here */}
+              <SidebarGroupContent>
+                <Inbox></Inbox>
+              </SidebarGroupContent>
             </SidebarGroup>
           </SidebarContent>
         </Sidebar>

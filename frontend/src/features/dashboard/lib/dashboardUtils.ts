@@ -34,8 +34,8 @@ export function getNavigationData(user: {
         icon: FileText,
       },
       {
-        title: "Gmail",
-        url: "gmail",
+        title: "Inbox",
+        url: "inbox",
         icon: Inbox,
       },
     ],

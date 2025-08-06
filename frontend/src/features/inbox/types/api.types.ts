@@ -1,34 +1,34 @@
-export interface GmailMessagePartBody {
+export interface EmailPartBody {
   attachmentId?: string;
   data?: string;
   size?: number;
   ETag?: string;
 }
 
-export interface GmailMessagePartHeader {
+export interface EmailPartHeader {
   name?: string;
   value?: string;
   ETag?: string;
 }
 
-export interface GmailMessagePart {
+export interface EmailPart {
   partId?: string;
   mimeType?: string;
   filename?: string;
-  headers?: GmailMessagePartHeader[];
-  body?: GmailMessagePartBody;
-  parts?: GmailMessagePart[];
+  headers?: EmailPartHeader[];
+  body?: EmailPartBody;
+  parts?: EmailPart[];
   ETag?: string;
 }
 
-export interface GmailMessage {
+export interface Email {
   id?: string;
   threadId?: string;
   labelIds?: string[];
   snippet?: string;
   historyId?: string;
   internalDate?: string;
-  payload?: GmailMessagePart;
+  payload?: EmailPart;
   sizeEstimate?: number;
   raw?: string;
   ETag?: string;

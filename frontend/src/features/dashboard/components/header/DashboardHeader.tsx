@@ -15,7 +15,7 @@ export default function DashboardHeader() {
         <SidebarTrigger
           className="-ml-1"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          disabled={location.pathname.includes("gmail")}
+          disabled={location.pathname.includes("inbox")}
         />
         <Separator
           orientation="vertical"
