@@ -84,7 +84,7 @@ public class GmailClientProvider(
         string? pageToken)
     {
         var listRequest = service.Users.Messages.List("me");
-        listRequest.MaxResults = 10;
+        listRequest.MaxResults = 7;
         listRequest.PageToken = pageToken;
         var listResponse = await listRequest.ExecuteAsync(cancellationToken);
 
@@ -101,10 +101,12 @@ public class GmailClientProvider(
                 messages.Add(msg);
             }
         }
+        
+        var sortedMessages = messages.OrderByDescending(m => m.InternalDate).ToList();
 
         return new PaginatedMessageResponse
         {
-            Messages = messages,
+            Messages = sortedMessages,
             NextPageToken = listResponse.NextPageToken
         };
     }
