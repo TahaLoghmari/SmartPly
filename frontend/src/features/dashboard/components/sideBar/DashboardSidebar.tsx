@@ -28,7 +28,7 @@ export default function DashboardSidebar({
   const { isSidebarOpen } = useDashboardSidebarStateStore();
   const { data: user } = useCurrentUser();
   const navigationData = getNavigationData(user!);
-  const isInboxRoute = location.pathname.includes("inbox");
+  const isGmailRoute = location.pathname.includes("gmail");
   return (
     <>
       <Sidebar collapsible="icon" {...props}>
@@ -74,7 +74,7 @@ export default function DashboardSidebar({
         </SidebarFooter>
       </Sidebar>
 
-      {isInboxRoute && (
+      {isGmailRoute && (
         // remove min-h-screen after
         <Sidebar
           collapsible="none"
@@ -82,7 +82,7 @@ export default function DashboardSidebar({
         >
           <SidebarHeader className="gap-3.5 border-b p-4">
             <div className="flex w-full items-center justify-between">
-              <div className="text-foreground text-base font-medium">Inbox</div>
+              <div className="text-foreground text-base font-medium">Gmail</div>
               <Label className="flex items-center gap-2 text-sm">
                 <span>Unreads</span>
                 <Switch className="shadow-none" />

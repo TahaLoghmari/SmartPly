@@ -15,7 +15,7 @@ export function Dashboard() {
   const { isSidebarOpen, setIsSidebarOpen } = useDashboardSidebarStateStore();
   const { isLoading } = useCurrentUser();
   const [searchParams, setSearchParams] = useSearchParams();
-  const isInboxRoute = location.pathname.includes("inbox");
+  const isGmailRoute = location.pathname.includes("gmail");
 
   // this is for google signin/signup failing or any error when the redirection is comming from the backend with an error
   useEffect(() => {
@@ -27,9 +27,9 @@ export function Dashboard() {
   }, [searchParams, setSearchParams]);
 
   useEffect(() => {
-    if (isInboxRoute) setIsSidebarOpen(false);
+    if (isGmailRoute) setIsSidebarOpen(false);
     else setIsSidebarOpen(true);
-  }, [setIsSidebarOpen, isInboxRoute]);
+  }, [setIsSidebarOpen, isGmailRoute]);
 
   if (isLoading)
     return (
