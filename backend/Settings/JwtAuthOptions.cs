@@ -1,6 +1,6 @@
 namespace backend.Settings;
 
-public sealed class JwtAuthOptions
+public sealed class JwtAuthSettings
 {
     public string Issuer { get; init; }
     public string Audience { get; init; }

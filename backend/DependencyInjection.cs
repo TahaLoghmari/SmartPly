@@ -92,10 +92,11 @@ public static class DependencyInjection
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
-        builder.Services.Configure<JwtAuthOptions>(builder.Configuration.GetSection("Jwt"));
+        builder.Services.Configure<JwtAuthSettings>(builder.Configuration.GetSection("Jwt"));
         builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+        builder.Services.Configure<GoogleSettings>(builder.Configuration.GetSection("Google"));
 
-        JwtAuthOptions jwtAuthOptions = builder.Configuration.GetSection("Jwt").Get<JwtAuthOptions>()!;
+        JwtAuthSettings jwtAuthOptions = builder.Configuration.GetSection("Jwt").Get<JwtAuthSettings>()!;
 
         builder.Services
             .AddAuthentication(options =>
@@ -144,6 +145,7 @@ public static class DependencyInjection
         builder.Services.AddTransient<EmailSenderService>();
         builder.Services.AddTransient<ApplicationService>();
         builder.Services.AddTransient<AuthService>();
+        builder.Services.AddTransient<GmailClientProvider>();
         builder.Services.AddTransient<CacheService>();
         builder.Services.AddScoped<ResumeService>();
         builder.Services.AddScoped<CoverLetterService>();

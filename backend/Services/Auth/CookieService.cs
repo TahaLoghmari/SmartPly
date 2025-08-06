@@ -1,44 +1,46 @@
 using backend.DTOs;
 using backend.Settings;
+using Microsoft.Extensions.Options;
 
 namespace backend.Services;
 
-public sealed class CookieService
+public sealed class CookieService(
+    IOptions<JwtAuthSettings> jwtAuthSettings)
 {
-    private CookieOptions CreateCookieOptions(JwtAuthOptions jwtAuthOptions)
+    private readonly JwtAuthSettings _jwtAuthSettings = jwtAuthSettings.Value;
+    private CookieOptions CreateCookieOptions()
     {
         return new CookieOptions
         {
             HttpOnly = true,
             Secure = false, 
             SameSite = SameSiteMode.Lax, 
-            Expires = DateTime.UtcNow.AddMinutes(jwtAuthOptions.ExpirationInMinutes)
+            Expires = DateTime.UtcNow.AddMinutes(_jwtAuthSettings.ExpirationInMinutes)
         };
     }
     
-    private CookieOptions CreateRefreshCookieOptions(JwtAuthOptions jwtAuthOptions)
+    private CookieOptions CreateRefreshCookieOptions()
     {
         return new CookieOptions
         {
             HttpOnly = true,
             Secure = false, 
             SameSite = SameSiteMode.Lax, 
-            Expires = DateTime.UtcNow.AddDays(jwtAuthOptions.RefreshTokenExpirationDays)
+            Expires = DateTime.UtcNow.AddDays(_jwtAuthSettings.RefreshTokenExpirationDays)
         };
     }
     
     public void AddCookies(
-        HttpResponse Response,
-        AccessTokensDto accessTokens,
-        JwtAuthOptions jwtAuthOptions
+        HttpResponse response,
+        AccessTokensDto accessTokens
     ) 
     {
-        RemoveCookies(Response);
-        Response.Cookies.Append("accessToken", accessTokens.AccessToken, CreateCookieOptions(jwtAuthOptions));
-        Response.Cookies.Append("refreshToken", accessTokens.RefreshToken, CreateRefreshCookieOptions(jwtAuthOptions));
+        RemoveCookies(response);
+        response.Cookies.Append("accessToken", accessTokens.AccessToken, CreateCookieOptions());
+        response.Cookies.Append("refreshToken", accessTokens.RefreshToken, CreateRefreshCookieOptions());
     }
     
-    public void RemoveCookies(HttpResponse Response )
+    public void RemoveCookies(HttpResponse response )
     {
         var expiredOptions = new CookieOptions
         {
@@ -48,7 +50,7 @@ public sealed class CookieService
             Expires = DateTime.UtcNow.AddDays(-1)
         };
 
-        Response.Cookies.Append("accessToken", "", expiredOptions);
-        Response.Cookies.Append("refreshToken", "", expiredOptions);
+        response.Cookies.Append("accessToken", "", expiredOptions);
+        response.Cookies.Append("refreshToken", "", expiredOptions);
     }
 }

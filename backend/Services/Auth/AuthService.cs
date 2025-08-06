@@ -5,6 +5,7 @@ using backend.Mappings;
 using backend.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace backend.Services;
 
@@ -14,9 +15,11 @@ public class AuthService(
     EmailSenderService emailSenderService,
     TokenManagementService tokenManagementService,
     CookieService cookieService,
-    IConfiguration configuration,
+    IOptions<GoogleSettings> googleSettings,
     GoogleTokensProvider googleTokensProvider)
 {
+    private readonly GoogleSettings _googleSettings = googleSettings.Value;
+    
     public async Task Register(
         RegisterUserDto registerUserDto,
         HttpContext httpContext,
@@ -66,7 +69,6 @@ public class AuthService(
     
     public async Task Login(
         LoginUserDto loginUserDto,
-        JwtAuthOptions jwtAuthOptions,
         HttpContext httpContext,
         CancellationToken cancellationToken)
     {
@@ -98,7 +100,7 @@ public class AuthService(
         
         AccessTokensDto tokens = await tokenManagementService.CreateAndStoreTokens(user.Id, loginUserDto.Email,cancellationToken);
 
-        cookieService.AddCookies(httpContext.Response, tokens, jwtAuthOptions);
+        cookieService.AddCookies(httpContext.Response, tokens);
         
         logger.LogInformation("Login successful for {Email}, UserId: {UserId}", 
             loginUserDto.Email, user.Id);
@@ -106,7 +108,6 @@ public class AuthService(
 
     public async Task Refresh(
         string? refreshTokenValue,
-        JwtAuthOptions jwtAuthOptions,
         HttpContext httpContext,
         CancellationToken cancellationToken)
     {
@@ -120,7 +121,7 @@ public class AuthService(
 
         AccessTokensDto tokens = await tokenManagementService.RefreshUserTokens(refreshTokenValue,cancellationToken);
         
-        cookieService.AddCookies(httpContext.Response, tokens, jwtAuthOptions);
+        cookieService.AddCookies(httpContext.Response, tokens);
         
         logger.LogInformation("Token refresh successful");
     }
@@ -129,9 +130,9 @@ public class AuthService(
     {
         logger.LogInformation("Google authorization URL requested");
         
-        var clientId = configuration["Google:ClientId"];
-        var redirectUri = configuration["Google:RedirectUri"]!;
-        var scope = configuration["Google:Scopes"]!;
+        var clientId = _googleSettings.ClientId;
+        var redirectUri = _googleSettings.RedirectUri!;
+        var scope = _googleSettings.Scopes!;
         var state = Guid.NewGuid().ToString();
 
         var authUrl = $"https://accounts.google.com/o/oauth2/v2/auth?" +
@@ -159,9 +160,9 @@ public class AuthService(
             throw new UnauthorizedException("User ID claim is missing.", "Unauthorized");
         }
         
-        var clientId = configuration["Google:ClientId"];
-        var redirectUri = configuration["Google:RedirectUri"]!;
-        var scope = configuration["Google:Scopes"]!;
+        var clientId = _googleSettings.ClientId;
+        var redirectUri = _googleSettings.RedirectUri!;
+        var scope = _googleSettings.Scopes!;
         var state = $"{userId}:{Guid.NewGuid()}";
 
         var authUrl = $"https://accounts.google.com/o/oauth2/v2/auth?" +
@@ -182,7 +183,6 @@ public class AuthService(
         string? code,
         string? state,
         string? error,
-        JwtAuthOptions jwtAuthOptions,
         HttpResponse response,
         CancellationToken cancellationToken)
     {
@@ -237,7 +237,7 @@ public class AuthService(
             
             await googleTokensProvider.StoreGoogleTokens(user, googleTokens);
             accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, user.Email!,cancellationToken);
-            cookieService.AddCookies(response, accessTokens, jwtAuthOptions);
+            cookieService.AddCookies(response, accessTokens);
             logger.LogInformation("User created and tokens stored for UserId: {UserId}, Email: {Email}", user.Id, user.Email);
         }
         

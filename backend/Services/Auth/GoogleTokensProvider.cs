@@ -1,23 +1,26 @@
 using System.Text.Json;
 using backend.DTOs;
 using backend.Entities;
+using backend.Settings;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 
 namespace backend.Services;
 
 public sealed class GoogleTokensProvider(
     UserManager<User> userManager,
-    IConfiguration configuration,
+    IOptions<GoogleSettings> googleSettings,
     ILogger<GoogleTokensProvider> logger)
 {
+    private readonly GoogleSettings _googleSettings = googleSettings.Value;
     public async Task<GoogleTokenResponse?> ExchangeCodeForTokens(
         string? code,
         CancellationToken cancellationToken)
     {
-        var clientId = configuration["Google:ClientId"];
-        var clientSecret = configuration["Google:ClientSecret"];
-        var redirectUri = configuration["Google:RedirectUri"];
+        var clientId = _googleSettings.ClientId;
+        var clientSecret = _googleSettings.ClientSecret;
+        var redirectUri = _googleSettings.RedirectUri;
 
         using var httpClient = new HttpClient();
 
@@ -78,12 +81,6 @@ public sealed class GoogleTokensProvider(
                 "refresh_token",
                 tokens.RefreshToken);
         }
-        var expiresAt = DateTime.UtcNow.AddSeconds(tokens.ExpiresIn).ToString("o");
-            await userManager.SetAuthenticationTokenAsync(
-                user,
-                "Google",
-                "expires_at",
-                expiresAt);
     }
 
     public async Task<User?> FindOrCreateUserAsync(GoogleUserInfo googleUser, string? linkAccountUserId = null)

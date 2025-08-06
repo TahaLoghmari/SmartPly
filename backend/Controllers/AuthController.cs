@@ -16,12 +16,9 @@ namespace backend.Controllers;
 [Route("auth")]
 [EnableRateLimiting("fixed")]
 public sealed class AuthController(
-    IOptions<JwtAuthOptions> options,
     IConfiguration configuration,
     AuthService authService) : ControllerBase
 {
-    private readonly JwtAuthOptions _jwtAuthOptions = options.Value;
-
     [HttpPost("register")]
     public async Task<IActionResult> Register(
         RegisterUserDto registerUserDto,
@@ -42,7 +39,7 @@ public sealed class AuthController(
     {
         await validator.ValidateAndThrowAsync(loginUserDto,cancellationToken);
         
-        await authService.Login(loginUserDto,_jwtAuthOptions,HttpContext,cancellationToken);
+        await authService.Login(loginUserDto,HttpContext,cancellationToken);
 
         return NoContent();
     }
@@ -53,7 +50,7 @@ public sealed class AuthController(
     {
         var refreshTokenValue = Request.Cookies["refreshToken"];
 
-        await authService.Refresh(refreshTokenValue, _jwtAuthOptions, HttpContext,cancellationToken);
+        await authService.Refresh(refreshTokenValue, HttpContext,cancellationToken);
         
         return NoContent();
     }
@@ -88,7 +85,6 @@ public sealed class AuthController(
             googleCallbackDto.code,
             googleCallbackDto.state,
             googleCallbackDto.error,
-            _jwtAuthOptions,
             Response,cancellationToken);
 
         var frontendBaseUrl = configuration["Frontend:BaseUrl"]!;

@@ -12,11 +12,11 @@ using Microsoft.Extensions.Options;
 namespace backend.Services
 {
     public sealed class EmailSenderService(
-        IOptions<EmailSettings> options,
+        IOptions<EmailSettings> emailSettings,
         UserManager<User> userManager,
         ILogger<EmailSenderService> logger)
     {
-        private readonly EmailSettings _emailSettings = options.Value;
+        private readonly EmailSettings _emailSettings = emailSettings.Value;
 
         private Task SendEmailAsync(
             SendEmailDto sendEmailDto,

@@ -9,12 +9,12 @@ namespace backend.Services;
 
 public sealed class TokenManagementService(
     ApplicationDbContext applicationDbContext,
-    IOptions<JwtAuthOptions> options,
+    IOptions<JwtAuthSettings> jwtAuthSettings,
     TokenProvider tokenProvider,
     ILogger<TokenManagementService> logger
 )
 {
-    private readonly JwtAuthOptions _jwtAuthOptions = options.Value;
+    private readonly JwtAuthSettings _jwtAuthSettings = jwtAuthSettings.Value;
 
     public async Task<AccessTokensDto> CreateAndStoreTokens(
         string userId,
@@ -34,7 +34,7 @@ public sealed class TokenManagementService(
             Id = Guid.CreateVersion7(),
             UserId = userId,
             Token = accessTokens.RefreshToken,
-            ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthOptions.RefreshTokenExpirationDays)
+            ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthSettings.RefreshTokenExpirationDays)
         };
 
         applicationDbContext.RefreshTokens.Add(refreshToken);
@@ -67,7 +67,7 @@ public sealed class TokenManagementService(
         AccessTokensDto tokens = tokenProvider.Create(tokenRequest);
 
         refreshToken.Token = tokens.RefreshToken;
-        refreshToken.ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthOptions.RefreshTokenExpirationDays);
+        refreshToken.ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtAuthSettings.RefreshTokenExpirationDays);
 
         await applicationDbContext.SaveChangesAsync(cancellationToken);
 

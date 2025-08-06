@@ -10,9 +10,10 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Services;
 
-public sealed class TokenProvider(IOptions<JwtAuthOptions> options)
+public sealed class TokenProvider(
+    IOptions<JwtAuthSettings> jwtAuthSettings)
 {
-    private readonly JwtAuthOptions _jwtAuthOptions = options.Value;
+    private readonly JwtAuthSettings _jwtAuthSettings = jwtAuthSettings.Value;
     public AccessTokensDto Create(TokenRequest tokenRequest)
     {
         return new AccessTokensDto(
@@ -23,7 +24,7 @@ public sealed class TokenProvider(IOptions<JwtAuthOptions> options)
     private string GenerateAccessToken(TokenRequest tokenRequest)
     {
         var securityKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_jwtAuthOptions.Key)
+            Encoding.UTF8.GetBytes(_jwtAuthSettings.Key)
         );
         var credentials = new SigningCredentials(
             securityKey,
@@ -40,10 +41,10 @@ public sealed class TokenProvider(IOptions<JwtAuthOptions> options)
         {
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddMinutes(
-                                    _jwtAuthOptions.ExpirationInMinutes),
+                                    _jwtAuthSettings.ExpirationInMinutes),
             SigningCredentials = credentials,
-            Issuer = _jwtAuthOptions.Issuer,
-            Audience = _jwtAuthOptions.Audience
+            Issuer = _jwtAuthSettings.Issuer,
+            Audience = _jwtAuthSettings.Audience
         };
 
         var handler = new JsonWebTokenHandler();
