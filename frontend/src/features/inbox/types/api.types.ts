@@ -33,3 +33,8 @@ export interface Email {
   raw?: string;
   ETag?: string;
 }
+
+export interface PaginatedEmailResponse {
+  messages: Email[];
+  nextPageToken: string;
+}

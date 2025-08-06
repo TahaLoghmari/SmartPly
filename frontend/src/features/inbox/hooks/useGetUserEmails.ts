@@ -1,12 +1,14 @@
 import { useCurrentUser } from "#/auth";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { getUserEmails } from "#/inbox";
 
 export function useGetUserEmails() {
   const { data: user } = useCurrentUser();
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ["emails", user?.id],
-    queryFn: () => getUserEmails(),
+    queryFn: ({ pageParam }) => getUserEmails(pageParam),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => lastPage.nextPageToken || undefined,
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
     refetchOnMount: true,

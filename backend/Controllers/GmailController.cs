@@ -1,3 +1,4 @@
+using backend.DTOs;
 using backend.Services;
 using Google.Apis.Gmail.v1.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -8,17 +9,18 @@ namespace backend.Controllers;
 
 [ApiController]
 [Authorize]
-[Route("gmail")]
+[Route("emails")]
 [EnableRateLimiting("fixed")]
 public class GmailController(
     GmailClientProvider gmailClientProvider) : ControllerBase
 {
-    public async Task<ActionResult<Message>> GetInbox(
-        CancellationToken cancellationToken)
+    public async Task<ActionResult<Message>> GetEmails(
+        CancellationToken cancellationToken,
+        [FromQuery] string? pageToken = null)
     {
         var gmailService = await gmailClientProvider.GetGmailServiceAsync(User,cancellationToken);
         
-        List<Message> subjects = await gmailClientProvider.GetLatestEmailsAsync(gmailService,cancellationToken);
+        PaginatedMessageResponse subjects = await gmailClientProvider.GetLatestEmailsAsync(gmailService,cancellationToken,pageToken);
 
         return Ok(subjects);
     }

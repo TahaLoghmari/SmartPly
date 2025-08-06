@@ -1,8 +1,11 @@
-import type { Email } from "#/inbox";
+import type { PaginatedEmailResponse } from "#/inbox";
 import { request } from "@/index";
 
-export const getUserEmails = () => {
-  return request<Email>("/emails", {
+export const getUserEmails = (pageToken?: string) => {
+  const url = pageToken
+    ? `/emails?pageToken=${encodeURIComponent(pageToken)}`
+    : "/emails";
+  return request<PaginatedEmailResponse>(url, {
     method: "GET",
   });
 };

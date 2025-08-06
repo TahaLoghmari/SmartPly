@@ -2,6 +2,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using backend.DTOs;
 using backend.Entities;
 using backend.Exceptions;
 using backend.Settings;
@@ -77,31 +78,35 @@ public class GmailClientProvider(
         return gmailService;
     }
     
-    public async Task<List<Message>> GetLatestEmailsAsync(
+    public async Task<PaginatedMessageResponse> GetLatestEmailsAsync(
         GmailService service,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        string? pageToken)
     {
         var listRequest = service.Users.Messages.List("me");
         listRequest.MaxResults = 10;
+        listRequest.PageToken = pageToken;
         var listResponse = await listRequest.ExecuteAsync(cancellationToken);
 
         var messages = new List<Message>();
 
-        if (listResponse.Messages is null)
+        if (listResponse.Messages is not null)
         {
-            return messages;
-        }
-
-        foreach (var message in listResponse.Messages)
-        {
-            var getRequest = service.Users.Messages.Get("me", message.Id);
-            getRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Full;
+            foreach (var message in listResponse.Messages)
+            {
+                var getRequest = service.Users.Messages.Get("me", message.Id);
+                getRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Full;
         
-            Message msg = await getRequest.ExecuteAsync(cancellationToken);
-            messages.Add(msg);
+                Message msg = await getRequest.ExecuteAsync(cancellationToken);
+                messages.Add(msg);
+            }
         }
 
-        return messages;
+        return new PaginatedMessageResponse
+        {
+            Messages = messages,
+            NextPageToken = listResponse.NextPageToken
+        };
     }
 
 }
