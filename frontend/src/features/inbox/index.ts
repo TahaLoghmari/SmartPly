@@ -1,4 +1,5 @@
 export * from "./types";
+export * from "./lib";
 export * from "./inboxApi";
 export * from "./hooks";
-export { Inbox } from "./components";
+export * from "./components";

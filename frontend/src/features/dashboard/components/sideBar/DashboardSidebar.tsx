@@ -32,7 +32,7 @@ export default function DashboardSidebar({
   const isInboxRoute = location.pathname.includes("inbox");
   return (
     <>
-      <Sidebar collapsible="icon" {...props}>
+      <Sidebar collapsible="icon" className="border-r" {...props}>
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
@@ -79,7 +79,7 @@ export default function DashboardSidebar({
         // remove min-h-screen after
         <Sidebar
           collapsible="none"
-          className="hidden min-h-[100svh] w-[307px] md:flex"
+          className="hidden h-[100svh] w-[307px] md:flex"
         >
           <SidebarHeader className="gap-3.5 border-b p-4">
             <div className="flex w-full items-center justify-between">
@@ -93,7 +93,6 @@ export default function DashboardSidebar({
           </SidebarHeader>
           <SidebarContent>
             <SidebarGroup className="px-0">
-              {/* Add Inbox Component here */}
               <SidebarGroupContent>
                 <Inbox></Inbox>
               </SidebarGroupContent>
