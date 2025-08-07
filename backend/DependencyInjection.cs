@@ -145,7 +145,7 @@ public static class DependencyInjection
         builder.Services.AddTransient<EmailSenderService>();
         builder.Services.AddTransient<ApplicationService>();
         builder.Services.AddTransient<AuthService>();
-        builder.Services.AddTransient<GmailClientProvider>();
+        builder.Services.AddScoped<GmailClientProvider>();
         builder.Services.AddTransient<CacheService>();
         builder.Services.AddScoped<ResumeService>();
         builder.Services.AddScoped<CoverLetterService>();

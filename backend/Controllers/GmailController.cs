@@ -14,14 +14,25 @@ namespace backend.Controllers;
 public class GmailController(
     GmailClientProvider gmailClientProvider) : ControllerBase
 {
+    [HttpGet]
     public async Task<ActionResult<Message>> GetEmails(
         CancellationToken cancellationToken,
         [FromQuery] string? pageToken = null)
     {
-        var gmailService = await gmailClientProvider.GetGmailServiceAsync(User,cancellationToken);
+        await gmailClientProvider.InitializeAsync(User, cancellationToken);
         
-        PaginatedMessageResponse subjects = await gmailClientProvider.GetLatestEmailsAsync(gmailService,cancellationToken,pageToken);
+        PaginatedMessageResponse subjects = await gmailClientProvider.GetLatestEmailsAsync(cancellationToken, pageToken);
 
         return Ok(subjects);
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Message>> GetEmailById(
+        string id,
+        CancellationToken cancellationToken)
+    {
+        await gmailClientProvider.InitializeAsync(User, cancellationToken);
+        var message = await gmailClientProvider.GetEmailByIdAsync(id, cancellationToken);
+        return Ok(message);
     }
 }
