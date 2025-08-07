@@ -114,7 +114,7 @@ public class GmailClientProvider(
         string emailId,
         CancellationToken cancellationToken)
     {
-        var getRequest = _gmailService.Users.Messages.Get("me", emailId);
+        var getRequest = _gmailService!.Users.Messages.Get("me", emailId);
         getRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Full;
         var message = await getRequest.ExecuteAsync(cancellationToken);
         return message;
