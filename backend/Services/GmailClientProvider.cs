@@ -82,7 +82,7 @@ public class GmailClientProvider(
         string? pageToken)
     {
         var listRequest = _gmailService!.Users.Messages.List("me");
-        listRequest.MaxResults = 7;
+        listRequest.MaxResults = 10;
         listRequest.PageToken = pageToken;
         var listResponse = await listRequest.ExecuteAsync(cancellationToken);
 

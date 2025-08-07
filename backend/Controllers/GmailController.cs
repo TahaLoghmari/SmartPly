@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
 namespace backend.Controllers;
-
+// add caching and all the APIs best practices
 [ApiController]
 [Authorize]
 [Route("emails")]
