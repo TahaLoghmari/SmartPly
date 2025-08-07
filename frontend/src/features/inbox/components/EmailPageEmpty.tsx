@@ -6,8 +6,7 @@ export function EmailPageEmpty() {
           Welcome to Your Inbox
         </p>
         <p className="text-muted-foreground leading-relaxed">
-          Select an email from the list to start reading, or choose a folder
-          from the sidebar to browse your messages.
+          Select an email from the list to start reading.
         </p>
       </div>
     </div>

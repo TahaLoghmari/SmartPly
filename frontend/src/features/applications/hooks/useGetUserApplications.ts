@@ -7,7 +7,9 @@ import {
   useApplicationLevelFilterStore,
   useApplicationJobTypeFilterStore,
   useApplicationSearchBarStore,
+  type ApplicationResponseDto,
 } from "#/applications";
+import type { PaginationResultDto } from "@/index";
 
 export function useGetUserApplications() {
   const { data: user } = useCurrentUser();
@@ -16,7 +18,7 @@ export function useGetUserApplications() {
   const { selectedFilter: level } = useApplicationLevelFilterStore();
   const { selectedFilter: jobType } = useApplicationJobTypeFilterStore();
   const { search } = useApplicationSearchBarStore();
-  return useInfiniteQuery({
+  return useInfiniteQuery<PaginationResultDto<ApplicationResponseDto>>({
     queryKey: ["applications", user?.id, status, type, level, jobType, search],
     queryFn: ({ pageParam = 1 }) =>
       getUserApplications({
@@ -25,7 +27,7 @@ export function useGetUserApplications() {
         level,
         jobType,
         search,
-        page: pageParam,
+        page: pageParam as number,
         pageSize: 8,
       }),
     initialPageParam: 1,

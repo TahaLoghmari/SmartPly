@@ -5,12 +5,10 @@ const inboxRoutes: RouteObject[] = [
   {
     path: "inbox",
     element: <EmailPageEmpty />,
-    children: [
-      {
-        path: ":id",
-        element: <EmailPage />,
-      },
-    ],
+  },
+  {
+    path: "inbox/:id",
+    element: <EmailPage />,
   },
 ];
 
