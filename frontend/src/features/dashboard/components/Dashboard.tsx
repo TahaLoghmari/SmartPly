@@ -50,7 +50,7 @@ export function Dashboard() {
       }
     >
       <DashboardSidebar />
-      <SidebarInset>
+      <SidebarInset className="h-svh">
         <DashboardHeader />
         <Outlet />
         {/* this is a dialog */}

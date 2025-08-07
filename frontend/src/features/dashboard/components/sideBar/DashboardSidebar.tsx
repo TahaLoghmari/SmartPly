@@ -6,7 +6,6 @@ import {
   DashboardSidebarNavUser,
   useDashboardSidebarStateStore,
 } from "#/dashboard";
-import { Label } from "@/components/ui/label";
 import {
   Sidebar,
   SidebarContent,
@@ -14,12 +13,10 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
-  SidebarInput,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Switch } from "@/components/ui/switch";
 import Logo from "@/assets/Logo.png";
 import { Inbox } from "#/inbox";
 
@@ -76,23 +73,15 @@ export default function DashboardSidebar({
       </Sidebar>
 
       {isInboxRoute && (
-        // remove min-h-screen after
         <Sidebar
           collapsible="none"
           className="hidden h-[100svh] w-[307px] border-r md:flex"
         >
-          <SidebarHeader className="gap-3.5 border-b p-4">
-            <div className="flex w-full items-center justify-between">
-              <div className="text-foreground text-base font-medium">Inbox</div>
-              <Label className="flex items-center gap-2 text-sm">
-                <span>Unreads</span>
-                <Switch className="shadow-none" />
-              </Label>
-            </div>
-            <SidebarInput placeholder="Type to search..." />
+          <SidebarHeader className="gap-3.5 border-b p-4 pb-[7px]">
+            <div className="text-foreground text-base font-medium">Inbox</div>
           </SidebarHeader>
           <SidebarContent>
-            <SidebarGroup className="px-0">
+            <SidebarGroup className="p-0">
               <SidebarGroupContent>
                 <Inbox></Inbox>
               </SidebarGroupContent>
