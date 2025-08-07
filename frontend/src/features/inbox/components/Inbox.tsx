@@ -1,19 +1,19 @@
-import { MailCard, useGetUserEmails, type Email } from "#/inbox";
+import { EmailCard, useGetUserEmails, type Email } from "#/inbox";
 import { Spinner } from "@/components/ui/spinner";
-import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 
 export function Inbox() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useGetUserEmails();
 
-  const { ref, inView } = useInView({ rootMargin: "200px" });
-
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+  const { ref } = useInView({
+    threshold: 1,
+    onChange: (inView) => {
+      if (inView && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+  });
 
   const emails = data?.pages.flatMap((page) => page.messages) ?? [];
 
@@ -27,7 +27,7 @@ export function Inbox() {
   return (
     <>
       {emails.map((email: Email) => (
-        <MailCard email={email} key={email.id} />
+        <EmailCard email={email} key={email.id} />
       ))}
 
       {isFetchingNextPage && (
@@ -35,7 +35,7 @@ export function Inbox() {
           <Spinner className="dark:invert" />
         </div>
       )}
-      {hasNextPage && <div ref={ref} />}
+      {hasNextPage && <div ref={ref} className="" />}
     </>
   );
 }

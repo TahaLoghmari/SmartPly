@@ -6,7 +6,7 @@ import {
   type Email,
 } from "#/inbox";
 
-export function MailCard({ email }: { email: Email }) {
+export function EmailCard({ email }: { email: Email }) {
   const headers = email.payload?.headers;
   const fromRaw = getHeader(headers, "From");
   const from = getSenderName(fromRaw);

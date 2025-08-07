@@ -53,6 +53,7 @@ export function Dashboard() {
       <SidebarInset>
         <DashboardHeader />
         <Outlet />
+        {/* this is a dialog */}
         <DashboardSidebarLogoutButton />
       </SidebarInset>
     </SidebarProvider>

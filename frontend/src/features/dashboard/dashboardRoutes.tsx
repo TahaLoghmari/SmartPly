@@ -5,9 +5,9 @@ import { applicationsRoutes } from "#/applications";
 import { Analytics } from "#/analytics";
 import { Contacts } from "#/contacts";
 import { Documents } from "#/documents";
-import { Mail } from "#/inbox";
 import { Notifications } from "#/notifications";
 import { Settings } from "#/settings";
+import { inboxRoutes } from "#/inbox";
 
 const dashboardRoutes: RouteObject[] = [
   {
@@ -35,10 +35,7 @@ const dashboardRoutes: RouteObject[] = [
         path: "documents",
         element: <Documents />,
       },
-      {
-        path: "inbox",
-        element: <Mail />,
-      },
+      ...inboxRoutes,
       {
         path: "notifications",
         element: <Notifications />,

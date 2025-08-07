@@ -1,3 +1,4 @@
 export * from "./Inbox";
-export * from "./Mail";
-export * from "./MailCard";
+export * from "./EmailPage";
+export * from "./EmailPageEmpty";
+export * from "./EmailCard";
