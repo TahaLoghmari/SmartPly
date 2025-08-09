@@ -8,6 +8,7 @@ import {
   useGetUserEmail,
 } from "#/inbox";
 import { Spinner } from "@/components/ui/spinner";
+import { Badge } from "@/components/ui/badge";
 
 export function EmailPage() {
   const { id } = useParams<{ id: string }>();
@@ -44,7 +45,10 @@ export function EmailPage() {
 
   return (
     <div className="flex w-full flex-1 flex-col overflow-y-auto pt-4">
-      <p className="mb-2 ml-15 text-2xl font-bold">{subject}</p>
+      <div className="mb-2 ml-15 flex items-center gap-2">
+        <p className="text-2xl font-bold">{subject}</p>
+        <Badge variant="outline">Inbox</Badge>
+      </div>
       <div className="mx-15 flex items-center justify-between border-b pb-4">
         <p>
           {senderName}{" "}
