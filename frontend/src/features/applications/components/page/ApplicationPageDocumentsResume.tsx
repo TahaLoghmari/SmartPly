@@ -29,7 +29,7 @@ export default function ApplicationPageDocumentsResume({
   if (isLoading)
     return (
       <div className="mt-4 flex flex-1 flex-col items-center justify-center gap-6">
-        <Spinner className="dark:invert" />
+        <Spinner  />
       </div>
     );
   return (

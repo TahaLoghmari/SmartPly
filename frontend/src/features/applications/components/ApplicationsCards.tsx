@@ -39,7 +39,7 @@ export default function ApplicationsCards() {
         {/* When you call fetchNextPage(), TanStack Query will call your function again with the next pageParam. */}
         {isFetchingNextPage && (
           <div className="flex w-full flex-1 flex-col items-center justify-center">
-            <Spinner className="dark:invert" />
+            <Spinner />
           </div>
         )}
         {hasNextPage && <div ref={ref} style={{ height: 40 }} />}

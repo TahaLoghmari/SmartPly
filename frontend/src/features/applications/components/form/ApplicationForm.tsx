@@ -76,7 +76,7 @@ export default function ApplicationForm({
           </DialogClose>
           <Button type="submit" disabled={isPending} className="w-34">
             {isPending ? (
-              <Spinner className="h-5 w-5 invert dark:invert-0" />
+              <Spinner className="h-5 w-5 invert" />
             ) : mutationType === "create" ? (
               "Add Application"
             ) : (

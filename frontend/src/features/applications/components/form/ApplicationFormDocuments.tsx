@@ -100,7 +100,7 @@ export default function ApplicationFormDocuments({
                 </Popover>
               ) : (
                 <div className="flex w-full items-center justify-center">
-                  <Spinner className="h-5 w-5 dark:invert" />
+                  <Spinner className="h-5 w-5" />
                 </div>
               )}
               <FormMessage />
@@ -169,7 +169,7 @@ export default function ApplicationFormDocuments({
                 </Popover>
               ) : (
                 <div className="flex w-full items-center justify-center">
-                  <Spinner className="h-5 w-5 dark:invert" />
+                  <Spinner className="h-5 w-5" />
                 </div>
               )}
               <FormMessage />

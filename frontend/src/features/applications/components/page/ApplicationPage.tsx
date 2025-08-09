@@ -59,7 +59,7 @@ export default function ApplicationPage() {
         </VisuallyHidden>
         {!isError && isLoading && (
           <div className="flex flex-1 flex-col items-center justify-center overflow-auto transition-[width,height,margin,padding] duration-300">
-            <Spinner className="dark:invert" />
+            <Spinner />
           </div>
         )}
         {!isLoading && (isError || !applicationCard) && (

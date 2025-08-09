@@ -25,7 +25,7 @@ export default function ApplicationPageDocumentsResumes({
   if (isLoading)
     return (
       <div className="bg-card flex h-40 items-center justify-center rounded-lg border py-4">
-        <Spinner className="dark:invert" />
+        <Spinner />
       </div>
     );
 

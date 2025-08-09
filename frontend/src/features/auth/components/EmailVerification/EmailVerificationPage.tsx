@@ -40,9 +40,7 @@ export default function EmailVerificationPage() {
                     <p className="text-muted-foreground">
                       We have sent a verification link to:
                     </p>
-                    <p className="font-medium text-gray-900 dark:text-white">
-                      {email}
-                    </p>
+                    <p className="font-medium text-gray-900">{email}</p>
                     <p className="text-muted-foreground text-center text-sm">
                       Click on the link to complete the verification process.
                     </p>
@@ -50,8 +48,8 @@ export default function EmailVerificationPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-3">
-                <div className="flex w-full items-center justify-center rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
-                  <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                <div className="flex w-full items-center justify-center rounded-lg border border-yellow-200 bg-yellow-50 p-4">
+                  <p className="text-sm text-yellow-800">
                     <strong>Note:</strong> You might need to check your spam
                     folder.
                   </p>
@@ -67,7 +65,7 @@ export default function EmailVerificationPage() {
                     disabled={resendConfirmationEmailMutation.isPending}
                   >
                     {resendConfirmationEmailMutation.isPending ? (
-                      <Spinner className="h-5 w-5 border-2 invert dark:invert-0" />
+                      <Spinner className="h-5 w-5 border-2 invert" />
                     ) : (
                       "Resend Email"
                     )}

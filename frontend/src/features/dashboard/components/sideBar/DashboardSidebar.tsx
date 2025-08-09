@@ -52,7 +52,7 @@ export default function DashboardSidebar({
                     <img
                       src={Logo}
                       alt="Logo"
-                      className="min-h-8 w-full invert dark:invert-0"
+                      className="min-h-8 w-full invert"
                     />
                   </div>
                 )}

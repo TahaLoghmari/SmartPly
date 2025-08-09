@@ -1,6 +1,5 @@
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { ModeToggle } from "@/components/ui/mode-toggle";
 import {
   DashboardHeaderGmailConnectionStatus,
   DashboardHeaderNotificationBell,
@@ -24,7 +23,6 @@ export default function DashboardHeader() {
         <div className="ml-auto flex items-center gap-2">
           <DashboardHeaderGmailConnectionStatus />
           <DashboardHeaderNotificationBell />
-          <ModeToggle />
         </div>
       </div>
     </header>

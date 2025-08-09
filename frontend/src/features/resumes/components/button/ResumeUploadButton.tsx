@@ -73,7 +73,7 @@ export default function ResumeUploadButton() {
             }}
           >
             {uploadResumeMutation.isPending ? (
-              <Spinner className="h-5 w-5 border-2 invert dark:invert-0" />
+              <Spinner className="h-5 w-5 border-2 invert" />
             ) : (
               "Upload"
             )}

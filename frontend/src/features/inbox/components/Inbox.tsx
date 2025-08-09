@@ -20,7 +20,7 @@ export function Inbox() {
   if (isLoading)
     return (
       <div className="flex h-[80svh] flex-1 flex-col items-center justify-center gap-2">
-        <Spinner className="dark:invert" />
+        <Spinner  />
       </div>
     );
 
@@ -32,7 +32,7 @@ export function Inbox() {
 
       {isFetchingNextPage && (
         <div className="mt-6 flex w-full flex-1 flex-col items-center justify-center">
-          <Spinner className="dark:invert" />
+          <Spinner  />
         </div>
       )}
       {hasNextPage && <div ref={ref} className="" />}

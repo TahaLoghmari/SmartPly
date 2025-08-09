@@ -31,7 +31,7 @@ export default function ApplicationFilterbar<T extends string>({
           variant="ghost"
           role="combobox"
           aria-expanded={isOpen}
-          className="bg-card dark:hover:bg-accent w-[200px] justify-between border font-normal duration-0"
+          className="bg-card w-[200px] justify-between border font-normal duration-0"
         >
           {selectedFilter
             ? applicationConstant.find((item) => item.value === selectedFilter)

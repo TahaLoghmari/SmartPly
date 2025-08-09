@@ -22,7 +22,7 @@ export default function ApplicationDeleteButton({
       <AlertDialogTrigger asChild>
         <Button
           variant="outline"
-          className="text-destructive/80 border-destructive/80 hover:text-destructive hover:bg-destructive/5 dark:border-destructive/80 dark:hover:bg-destructive/5 flex w-23 cursor-pointer items-center"
+          className="text-destructive/80 border-destructive/80 hover:text-destructive hover:bg-destructive/5 flex w-23 cursor-pointer items-center"
         >
           {isLoading ? (
             <span className="border-destructive inline-block h-3 w-3 animate-spin rounded-full border-2 border-solid border-t-transparent"></span>
