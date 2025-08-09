@@ -24,7 +24,7 @@ export function Applications() {
       <ApplicationsFilters />
       {isLoading && (
         <div className="flex w-full flex-1 flex-col items-center justify-center">
-          <Spinner className="dark:invert" />
+          <Spinner />
         </div>
       )}
       {isError && (
