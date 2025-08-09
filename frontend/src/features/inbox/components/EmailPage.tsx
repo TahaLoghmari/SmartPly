@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
-import { useRef } from "react";
 import {
-  formatEmailDate,
+  extractEmail,
+  formatEmailDisplay,
   getEmailBody,
   getHeader,
   getSenderName,
@@ -31,15 +31,31 @@ export function EmailPage() {
     );
   }
 
-  // const headers = email.payload?.headers;
-  // const fromRaw = getHeader(headers, "From");
-  // const from = getSenderName(fromRaw);
-  // const subject = getHeader(headers, "Subject");
-  // const dateRaw = getHeader(headers, "Date");
-  // const date = formatEmailDate(dateRaw);
+  const headers = email.payload?.headers;
+  const from = getHeader(headers, "From");
+  const senderEmail = extractEmail(from || "");
+  const senderName = getSenderName(from || "");
+  const subject = getHeader(headers, "Subject");
+  const dateRaw = getHeader(headers, "Date");
+
+  const formattedDate = formatEmailDisplay(dateRaw || "");
+
   const bodyHtml = getEmailBody(email.payload);
 
   return (
-    <iframe className="max-w-full flex-1 overflow-y-auto" srcDoc={bodyHtml} />
+    <div className="flex w-full flex-1 flex-col overflow-y-auto pt-4">
+      <p className="mb-2 ml-15 text-2xl font-bold">{subject}</p>
+      <div className="mx-15 flex items-center justify-between border-b pb-4">
+        <p>
+          {senderName}{" "}
+          <span className="text-muted-foreground text-xs">
+            {" "}
+            &lt;{senderEmail}&gt;
+          </span>
+        </p>
+        <p className="text-muted-foreground text-xs">{formattedDate}</p>
+      </div>
+      <iframe className="mx-15 max-w-full flex-1" srcDoc={bodyHtml} />
+    </div>
   );
 }
