@@ -55,18 +55,23 @@ export function formatEmailDisplay(dateRaw?: string) {
   });
 
   const diffMs = now.getTime() - date.getTime();
-  const hours = Math.floor(diffMs / (1000 * 60 * 60));
+  const minutes = Math.floor(diffMs / (1000 * 60));
+  const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
   const weeks = Math.floor(days / 7);
 
-  const rel =
-    weeks >= 1
-      ? `${weeks} week${weeks > 1 ? "s" : ""} ago`
-      : days >= 1
-        ? `${days} day${days > 1 ? "s" : ""} ago`
-        : hours >= 1
-          ? `${hours} hour${hours > 1 ? "s" : ""} ago`
-          : "Just now";
+  let rel: string;
+  if (minutes < 1) {
+    rel = "Just now";
+  } else if (minutes < 60) {
+    rel = `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+  } else if (days < 1) {
+    rel = `${hours} hour${hours > 1 ? "s" : ""} ago`;
+  } else if (weeks < 1) {
+    rel = `${days} day${days > 1 ? "s" : ""} ago`;
+  } else {
+    rel = `${weeks} week${weeks > 1 ? "s" : ""} ago`;
+  }
 
   if (isSameDay) {
     return `${time} (${rel})`;
