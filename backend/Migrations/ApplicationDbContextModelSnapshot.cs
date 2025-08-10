@@ -271,7 +271,7 @@ namespace backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Applications");
+                    b.ToTable("Applications", (string)null);
                 });
 
             modelBuilder.Entity("backend.Entities.Contact", b =>
@@ -287,7 +287,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Contacts");
+                    b.ToTable("Contacts", (string)null);
                 });
 
             modelBuilder.Entity("backend.Entities.CoverLetter", b =>
@@ -323,7 +323,7 @@ namespace backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CoverLetters");
+                    b.ToTable("CoverLetters", (string)null);
                 });
 
             modelBuilder.Entity("backend.Entities.RefreshToken", b =>
@@ -352,7 +352,7 @@ namespace backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("RefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("backend.Entities.Resume", b =>
@@ -388,7 +388,7 @@ namespace backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Resumes");
+                    b.ToTable("Resumes", (string)null);
                 });
 
             modelBuilder.Entity("backend.Entities.User", b =>

@@ -1,4 +1,6 @@
 using System.Threading.RateLimiting;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
@@ -180,6 +182,21 @@ public static class DependencyInjection
     public static WebApplicationBuilder AddCaching(this WebApplicationBuilder builder)
     {
         builder.Services.AddMemoryCache();
+
+        return builder;
+    }
+
+    public static WebApplicationBuilder AddHangfire(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddHangfire(config =>
+            config
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UsePostgreSqlStorage(options =>
+                    options.UseNpgsqlConnection(
+                        builder.Configuration.GetConnectionString("Database"))));
+        builder.Services.AddHangfireServer();
 
         return builder;
     }

@@ -1,6 +1,7 @@
 using backend;
 using backend.Extensions;
 using backend.Services;
+using Hangfire;
 using Serilog;
 
 
@@ -15,7 +16,8 @@ builder
     .AddSwagger()
     .AddRateLimiting()
     .AddCaching()
-    .AddSupabase();
+    .AddSupabase()
+    .AddHangfire();
 
 var app = builder.Build();
 
@@ -38,6 +40,7 @@ app.MapControllers();
 
 app.UseSerilogRequestLogging();
 app.UseRateLimiter();
+app.UseHangfireDashboard("/hangfire-dashboard");
 var supabaseService = app.Services.GetRequiredService<SupabaseService>();
 await supabaseService.InitializeAsync();
 
