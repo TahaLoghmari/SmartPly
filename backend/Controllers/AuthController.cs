@@ -27,7 +27,7 @@ public sealed class AuthController(
     {
         await validator.ValidateAndThrowAsync(registerUserDto,cancellationToken);
         
-        await authService.Register(registerUserDto,HttpContext, Url,cancellationToken);
+        await authService.Register(registerUserDto,HttpContext, Url);
         
         return NoContent();
     }
@@ -151,7 +151,7 @@ public sealed class AuthController(
     {
         await validator.ValidateAndThrowAsync(dto,cancellationToken);
 
-        await authService.ResendConfirmationEmail(dto,HttpContext,Url,cancellationToken);
+        await authService.ResendConfirmationEmail(dto,HttpContext,Url);
 
         return NoContent();
     }
@@ -164,7 +164,7 @@ public sealed class AuthController(
     {
         await validator.ValidateAndThrowAsync(dto,cancellationToken);
 
-        await authService.ForgotPassword(dto,HttpContext,Url,cancellationToken);
+        await authService.ForgotPassword(dto,HttpContext,Url);
         
         return NoContent();
     }

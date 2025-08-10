@@ -56,8 +56,7 @@ public sealed class EmailSenderService(
     public async Task SendForgotPasswordEmail(string email,
         User user,
         HttpContext httpContext,
-        IUrlHelper url,
-        CancellationToken cancellationToken)
+        IUrlHelper url)
     {
         logger.LogInformation("Attempting to send password reset email for user {UserId} to {Email}", user.Id, email);
         var token = await userManager.GeneratePasswordResetTokenAsync(user);
@@ -180,8 +179,7 @@ public sealed class EmailSenderService(
     public async Task SendConfirmationEmail(string email,
         User user,
         HttpContext httpContext,
-        IUrlHelper url,
-        CancellationToken cancellationToken)
+        IUrlHelper url)
     {
         logger.LogInformation("Generated email confirmation token for user {UserId}", user.Id);
         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);

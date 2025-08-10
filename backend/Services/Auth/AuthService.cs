@@ -23,8 +23,7 @@ public class AuthService(
     public async Task Register(
         RegisterUserDto registerUserDto,
         HttpContext httpContext,
-        IUrlHelper urlHelper,
-        CancellationToken cancellationToken)
+        IUrlHelper urlHelper)
     {
         logger.LogInformation("User registration attempt started for {@Email}", registerUserDto.Email);
         
@@ -62,7 +61,7 @@ public class AuthService(
         logger.LogInformation("User registration successful for {Email}, UserId: {UserId}", 
             registerUserDto.Email, user.Id);
 
-        await emailSenderService.SendConfirmationEmail(registerUserDto.Email, user, httpContext, urlHelper,cancellationToken);
+        await emailSenderService.SendConfirmationEmail(registerUserDto.Email, user, httpContext, urlHelper);
         
         logger.LogInformation("Confirmation email sent to {Email}", registerUserDto.Email);
     }
@@ -316,8 +315,7 @@ public class AuthService(
     public async Task ResendConfirmationEmail(
         ResendConfirmationEmailDto dto,
         HttpContext httpContext,
-        IUrlHelper urlHelper,
-        CancellationToken cancellationToken)
+        IUrlHelper urlHelper)
 
     {
         logger.LogInformation("Resend confirmation email requested for {Email}", dto.Email);
@@ -333,7 +331,7 @@ public class AuthService(
                 "Resend confirmation email failed");
         }
 
-        await emailSenderService.SendConfirmationEmail(dto.Email, user, httpContext, urlHelper,cancellationToken);
+        await emailSenderService.SendConfirmationEmail(dto.Email, user, httpContext, urlHelper);
 
         logger.LogInformation("Confirmation email resent successfully to {Email}, UserId: {UserId}",
             dto.Email, user.Id);
@@ -342,8 +340,7 @@ public class AuthService(
     public async Task ForgotPassword(
         ForgotPasswordDto dto,
         HttpContext httpContext,
-        IUrlHelper urlHelper,
-        CancellationToken cancellationToken)
+        IUrlHelper urlHelper)
     {
         logger.LogInformation("Forgot password requested for {Email}", dto.Email);
 
@@ -356,7 +353,7 @@ public class AuthService(
                 "Forgot password failed");
         }
         
-        await emailSenderService.SendForgotPasswordEmail(user.Email!, user, httpContext, urlHelper,cancellationToken);
+        await emailSenderService.SendForgotPasswordEmail(user.Email!, user, httpContext, urlHelper);
         
         logger.LogInformation("Password reset email sent to {Email}, UserId: {UserId}", 
             user.Email, user.Id);
