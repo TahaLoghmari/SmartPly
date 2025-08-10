@@ -31,29 +31,29 @@ public class ApplicationController(
 
         ApplicationResponseDto application = await applicationService.CreateApplicationAsync(applicationRequestDto,userId,cancellationToken);
         
-        return CreatedAtAction(nameof(GetUserApplication), new { id = application.Id }, application);
+        return CreatedAtAction(nameof(GetApplication), new { id = application.Id }, application);
     }
 
     [HttpGet]
-    public async Task<ActionResult<PaginationResultDto<ApplicationResponseDto>>> GetUserApplications( 
+    public async Task<ActionResult<PaginationResultDto<ApplicationResponseDto>>> GetApplications( 
         [FromQuery] ApplicationQueryParameters query,
         CancellationToken cancellationToken)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        PaginationResultDto<ApplicationResponseDto> paginationResultDto = await applicationService.GetUserApplications(query, userId,cancellationToken);
+        PaginationResultDto<ApplicationResponseDto> paginationResultDto = await applicationService.GetApplicationsAsync(query, userId,cancellationToken);
         
         return Ok(paginationResultDto);
     }
     
     [HttpGet("{id}")]
-    public async Task<ActionResult<ApplicationResponseDto>> GetUserApplication(
+    public async Task<ActionResult<ApplicationResponseDto>> GetApplication(
         [FromRoute] Guid id,
         CancellationToken cancellationToken)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         
-        ApplicationResponseDto application = await applicationService.GetUserApplication(id, userId,cancellationToken);
+        ApplicationResponseDto application = await applicationService.GetApplicationAsync(id, userId,cancellationToken);
         
         return Ok(application);
     }
@@ -69,7 +69,7 @@ public class ApplicationController(
         
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         
-        await applicationService.EditApplication(id,userId, applicationEditRequestDto,cancellationToken);
+        await applicationService.EditApplicationAsync(id,userId, applicationEditRequestDto,cancellationToken);
 
         return NoContent();
     }
@@ -83,7 +83,7 @@ public class ApplicationController(
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         
-        await applicationService.PatchApplication(id, userId, patchDoc,validator,ModelState,cancellationToken);
+        await applicationService.PatchApplicationAsync(id, userId, patchDoc,validator,ModelState,cancellationToken);
 
         return NoContent();
     }
@@ -96,7 +96,7 @@ public class ApplicationController(
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         
-        await applicationService.DeleteApplication(id, userId,cancellationToken);
+        await applicationService.DeleteApplicationAsync(id, userId,cancellationToken);
 
         return NoContent();
     }
@@ -111,7 +111,7 @@ public class ApplicationController(
         
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         
-        await applicationService.BulkDeleteApplications(request.Ids, userId,cancellationToken);
+        await applicationService.BulkDeleteApplicationsAsync(request.Ids, userId,cancellationToken);
 
         return NoContent();
     }
