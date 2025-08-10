@@ -3,6 +3,7 @@ using backend.Entities;
 using backend.Exceptions;
 using backend.Mappings;
 using backend.Settings;
+using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -16,7 +17,9 @@ public class AuthService(
     TokenManagementService tokenManagementService,
     CookieService cookieService,
     IOptions<GoogleSettings> googleSettings,
-    GoogleTokensProvider googleTokensProvider)
+    GoogleTokensProvider googleTokensProvider,
+    EmailService emailService,
+    IBackgroundJobClient backgroundJobClient)
 {
     private readonly GoogleSettings _googleSettings = googleSettings.Value;
     
@@ -239,6 +242,9 @@ public class AuthService(
             cookieService.AddCookies(response, accessTokens);
             logger.LogInformation("User created and tokens stored for UserId: {UserId}, Email: {Email}", user.Id, user.Email);
         }
+        
+        backgroundJobClient.Enqueue(() => emailService.FetchInitialEmailsAsync(user.Id, CancellationToken.None));
+        logger.LogInformation("Enqueued initial email fetch for UserId: {UserId}", user.Id);
         
         logger.LogInformation("GoogleCallback completed successfully for UserId: {UserId}", user?.Id);
 

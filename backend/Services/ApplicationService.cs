@@ -41,7 +41,7 @@ public class ApplicationService(
         return (application.ToApplicationResponseDto());
     }
     
-    public async Task<PaginationResultDto<ApplicationResponseDto>> GetUserApplications( 
+    public async Task<PaginationResultDto<ApplicationResponseDto>> GetApplicationsAsync( 
         ApplicationQueryParameters query,
         string? userId,
         CancellationToken cancellationToken)
@@ -86,12 +86,12 @@ public class ApplicationService(
         
         return paginationResult;
     }
-    public async Task<ApplicationResponseDto> GetUserApplication(
-        Guid id, 
+    public async Task<ApplicationResponseDto> GetApplicationAsync(
+        Guid? id, 
         string? userId,
         CancellationToken cancellationToken)
     {
-        if (id == Guid.Empty)
+        if (id == Guid.Empty || id is null )
         {
             logger.LogWarning("Invalid application id provided.");
             throw new BadRequestException("The provided application ID is invalid.");
@@ -120,13 +120,13 @@ public class ApplicationService(
         return application.ToApplicationResponseDto();
     }
     
-    public async Task EditApplication(
-        Guid id,
+    public async Task EditApplicationAsync(
+        Guid? id,
         string? userId,
         ApplicationRequestDto applicationEditRequestDto,
         CancellationToken cancellationToken)
     {
-        if (id == Guid.Empty)
+        if (id == Guid.Empty || id is null )
         {
             logger.LogWarning("Invalid application id provided.");
             throw new BadRequestException("The provided application ID is invalid.");
@@ -158,15 +158,15 @@ public class ApplicationService(
         logger.LogInformation("Application edited with ID {ApplicationId}", application.Id);
     }
     
-    public async Task PatchApplication(
-        Guid id,
+    public async Task PatchApplicationAsync(
+        Guid? id,
         string? userId,
         JsonPatchDocument<ApplicationRequestDto> patchDoc,
         IValidator<ApplicationRequestDto> validator,
         ModelStateDictionary modelState,
         CancellationToken cancellationToken)
     {
-        if (id == Guid.Empty)
+        if (id == Guid.Empty || id is null )
         {
             logger.LogWarning("Invalid application id provided.");
             throw new BadRequestException("The provided application ID is invalid.");
@@ -211,12 +211,12 @@ public class ApplicationService(
         logger.LogInformation("Application patched with ID {ApplicationId}", application.Id);
     }
     
-    public async Task DeleteApplication(
-        Guid id,
+    public async Task DeleteApplicationAsync(
+        Guid? id,
         string? userId,
         CancellationToken cancellationToken)
     {
-        if (id == Guid.Empty)
+        if (id == Guid.Empty || id is null )
         {
             logger.LogWarning("Invalid application id provided.");
             throw new BadRequestException("The provided application ID is invalid.");
@@ -247,7 +247,7 @@ public class ApplicationService(
         logger.LogInformation("Application deleted with ID {ApplicationId}", application.Id);
     }
 
-    public async Task BulkDeleteApplications(
+    public async Task BulkDeleteApplicationsAsync(
         List<Guid> applicationIds,
         string? userId,
         CancellationToken cancellationToken)

@@ -11,6 +11,7 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
     public DbSet<Contact> Contacts { get; set; }
     public DbSet<Resume> Resumes { get; set; }
     public DbSet<CoverLetter> CoverLetters { get; set; }
+    public DbSet<Email> Emails { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

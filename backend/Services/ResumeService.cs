@@ -78,11 +78,11 @@ public class ResumeService(
     }
 
     public async Task<ResumeResponseDto> GetUserResume(
-        Guid id,
+        Guid? id,
         string? userId,
         CancellationToken cancellationToken)
     {
-        if (id == Guid.Empty)
+        if (id == Guid.Empty || id is null )
         {
             logger.LogWarning("Invalid resume id provided.");
             throw new BadRequestException("The provided resume ID is invalid.");
@@ -107,12 +107,12 @@ public class ResumeService(
     }
 
     public async Task EditResume(
-        Guid id,
+        Guid? id,
         string? userId,
         ResumeRequestDto dto,
         CancellationToken cancellationToken)
     {
-        if (id == Guid.Empty)
+        if (id == Guid.Empty || id is null )
         {
             logger.LogWarning("Invalid resume id provided.");
             throw new BadRequestException("The provided resume ID is invalid.");
@@ -139,11 +139,11 @@ public class ResumeService(
     }
 
     public async Task DeleteResume(
-        Guid id,
+        Guid? id,
         string? userId,
         CancellationToken cancellationToken)
     {
-        if (id == Guid.Empty)
+        if (id == Guid.Empty || id is null )
         {
             logger.LogWarning("Invalid resume id provided.");
             throw new BadRequestException("The provided resume ID is invalid.");

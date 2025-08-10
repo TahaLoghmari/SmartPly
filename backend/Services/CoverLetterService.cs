@@ -75,11 +75,11 @@ public class CoverLetterService(
     }
 
     public async Task<CoverLetterResponseDto> GetUserCoverLetter(
-        Guid id,
+        Guid? id,
         string? userId,
         CancellationToken cancellationToken)
     {
-        if (id == Guid.Empty)
+        if (id == Guid.Empty || id is null )
         {
             logger.LogWarning("Invalid cover letter id provided.");
             throw new BadRequestException("The provided cover letter ID is invalid.");
@@ -103,12 +103,12 @@ public class CoverLetterService(
     }
 
     public async Task EditCoverLetter(
-        Guid id,
+        Guid? id,
         string? userId,
         CoverLetterRequestDto dto,
         CancellationToken cancellationToken)
     {
-        if (id == Guid.Empty)
+        if (id == Guid.Empty || id is null )
         {
             logger.LogWarning("Invalid cover letter id provided.");
             throw new BadRequestException("The provided cover letter ID is invalid.");
@@ -134,11 +134,11 @@ public class CoverLetterService(
     }
 
     public async Task DeleteCoverLetter(
-        Guid id,
+        Guid? id,
         string? userId,
         CancellationToken cancellationToken)
     {
-        if (id == Guid.Empty)
+        if (id == Guid.Empty || id is null )
         {
             logger.LogWarning("Invalid cover letter id provided.");
             throw new BadRequestException("The provided cover letter ID is invalid.");
