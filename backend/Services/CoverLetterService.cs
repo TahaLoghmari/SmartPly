@@ -2,6 +2,7 @@ using backend.DTOs;
 using backend.Entities;
 using backend.Exceptions;
 using backend.Mappings;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -12,7 +13,8 @@ public class CoverLetterService(
     ApplicationDbContext dbContext,
     IMemoryCache cache,
     CacheService cacheService,
-    SupabaseService supabaseService)
+    SupabaseService supabaseService,
+    IBackgroundJobClient backgroundJobClient)
 {
     public async Task<CoverLetterResponseDto> CreateCoverLetterAsync(
         CoverLetterRequestDto dto,
@@ -155,12 +157,12 @@ public class CoverLetterService(
             throw new NotFoundException($"No Cover Letter found with ID '{id}'.");
         }
         
-        await supabaseService.DeleteFileAsync(coverLetter.Url,"cover-letters");
-        
         dbContext.CoverLetters.Remove(coverLetter);
         await dbContext.SaveChangesAsync(cancellationToken);
-        
         cacheService.InvalidateUserCoverLetterCache(userId);
+        
+        backgroundJobClient.Enqueue(() =>
+            DeleteCoverLetterFileAsync(coverLetter.Url, coverLetter.Id));
         
         logger.LogInformation("Cover letter deleted with ID {CoverLetterId}", coverLetter.Id);
     }
@@ -184,15 +186,36 @@ public class CoverLetterService(
             logger.LogWarning("No cover letters found for bulk delete with IDs: {CoverLetterIds}", string.Join(", ", coverLetterIds));
             throw new NotFoundException("No cover letters found for the provided IDs.");
         }
-        foreach (var coverLetter in coverLetters)
-        {
-            await supabaseService.DeleteFileAsync(coverLetter.Url,"cover-letters");
-        }
         
         dbContext.CoverLetters.RemoveRange(coverLetters);
         await dbContext.SaveChangesAsync(cancellationToken);
-        
         cacheService.InvalidateUserCoverLetterCache(userId);
+        
+        foreach (var coverLetter in coverLetters)
+        {
+            backgroundJobClient.Enqueue(() =>
+                DeleteCoverLetterFileAsync(coverLetter.Url, coverLetter.Id));
+        }
+        
+        logger.LogInformation("Bulk deleted {Count} cover letters for user {UserId}", 
+            coverLetters.Count, userId);
+    }
+    
+    private async Task DeleteCoverLetterFileAsync(string fileUrl, Guid coverLetterId)
+    {
+        try
+        {
+            await supabaseService.DeleteFileAsync(fileUrl, "cover-letters");
+            logger.LogInformation("Successfully deleted file for cover letter {CoverLetterId}", coverLetterId);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to delete file for cover letter {CoverLetterId}. URL: {FileUrl}", 
+                coverLetterId, fileUrl);
+
+            backgroundJobClient.Schedule(() => 
+                DeleteCoverLetterFileAsync(fileUrl, coverLetterId), TimeSpan.FromMinutes(15));
+        }
     }
     
     public async Task<DownloadResultDto> DownloadCoverLetter(
