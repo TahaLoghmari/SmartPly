@@ -91,4 +91,16 @@ public sealed class TokenManagementService(
         await applicationDbContext.SaveChangesAsync(cancellationToken);
     }
     
+    public async Task CleanupExpiredTokens()
+    {
+        logger.LogInformation("Starting cleanup of expired refresh tokens");
+    
+        var expiredTokens = applicationDbContext.RefreshTokens
+            .Where(rt => rt.ExpiresAtUtc < DateTime.UtcNow);
+    
+        var deletedCount = await expiredTokens.ExecuteDeleteAsync();
+    
+        logger.LogInformation("Cleaned up {DeletedCount} expired refresh tokens", deletedCount);
+    }
+    
 }

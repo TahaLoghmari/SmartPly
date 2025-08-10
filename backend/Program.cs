@@ -21,6 +21,14 @@ builder
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    RecurringJob.AddOrUpdate<TokenManagementService>(
+        "cleanup-expired-tokens",
+        service => service.CleanupExpiredTokens(),
+        Cron.Daily); 
+}
+
 if ( app.Environment.IsDevelopment() )
 {
     app.UseSwagger();
