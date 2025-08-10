@@ -29,16 +29,9 @@ public class EmailService(
     private GmailService? _gmailService;
     
     private async Task InitializeAsync(
-        string userId,
+        User user,
         CancellationToken cancellationToken)
     {
-        var user = await userManager.FindByIdAsync(userId);
-        if (user is null)
-        {
-            logger.LogWarning("Get current user failed - user ID not found");
-            throw new UnauthorizedException("User not found.");
-        }
-
         var accessToken = await userManager.GetAuthenticationTokenAsync(user, "Google", "access_token");
         var refreshToken = await userManager.GetAuthenticationTokenAsync(user, "Google", "refresh_token");
 
@@ -92,7 +85,14 @@ public class EmailService(
             throw new UnauthorizedException("User ID claim is missing.");
         }
         
-        await InitializeAsync(userId, cancellationToken);
+        var user = await userManager.FindByIdAsync(userId);
+        if (user is null)
+        {
+            logger.LogWarning("Get current user failed - user ID not found");
+            throw new UnauthorizedException("User not found.");
+        }
+        
+        await InitializeAsync(user, cancellationToken);
         
         var listRequest = _gmailService!.Users.Messages.List("me");
         listRequest.MaxResults = 100;
@@ -116,6 +116,12 @@ public class EmailService(
         var emails = messages.Select(msg => EmailMappings.MapToEmailEntity(msg, userId)).ToList();
     
         await dbContext.Emails.AddRangeAsync(emails, cancellationToken);
+        
+        var profile = await _gmailService.Users.GetProfile("me").ExecuteAsync(cancellationToken);
+        user.LastHistoryId = profile.HistoryId;
+        user.LastSyncedAt = DateTime.UtcNow;
+        user.IsInitialSyncComplete = true;
+        
         await dbContext.SaveChangesAsync(cancellationToken);
         
         cacheService.InvalidateUserEmailCache(userId);

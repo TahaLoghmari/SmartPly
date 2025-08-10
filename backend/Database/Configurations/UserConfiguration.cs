@@ -11,6 +11,10 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Name)
             .IsRequired()
             .HasMaxLength(100);
+        
+        builder.Property(u => u.GoogleEmail)
+            .IsRequired(false)
+            .HasMaxLength(200);
 
         builder.Property(u => u.ImageUrl)
             .IsRequired(false)
