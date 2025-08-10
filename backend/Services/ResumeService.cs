@@ -2,6 +2,7 @@
 using backend.Entities;
 using backend.Exceptions;
 using backend.Mappings;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -12,7 +13,8 @@ public class ResumeService(
     ApplicationDbContext dbContext,
     IMemoryCache cache,
     CacheService cacheService,
-    SupabaseService supabaseService)
+    SupabaseService supabaseService,
+    IBackgroundJobClient backgroundJobClient)
 {
     public async Task<ResumeResponseDto> CreateResumeAsync(
         ResumeRequestDto dto,
@@ -160,12 +162,14 @@ public class ResumeService(
             logger.LogWarning("Resume not found for Id: {ResumeId}", id);
             throw new NotFoundException($"No Resume found with ID '{id}'.");
         }
-
-        await supabaseService.DeleteFileAsync(resume.Url,"resumes");
         
         dbContext.Resumes.Remove(resume);
         await dbContext.SaveChangesAsync(cancellationToken);
         cacheService.InvalidateUserResumeCache(userId);
+
+        backgroundJobClient.Enqueue(() =>
+            DeleteResumeFileAsync(resume.Url, resume.Id));
+        
         logger.LogInformation("Resume deleted with ID {ResumeId}", resume.Id);
     }
     
@@ -188,15 +192,38 @@ public class ResumeService(
             logger.LogWarning("No resumes found for bulk delete with IDs: {ResumeIds}", string.Join(", ", resumeIds));
             throw new NotFoundException("No resumes found for the provided IDs.");
         }
-        foreach (var resume in resumes)
-        {
-            await supabaseService.DeleteFileAsync(resume.Url,"resumes");
-        }
+        
         dbContext.Resumes.RemoveRange(resumes);
         await dbContext.SaveChangesAsync(cancellationToken);
-        
         cacheService.InvalidateUserResumeCache(userId);
+        
+        foreach (var resume in resumes)
+        {
+            backgroundJobClient.Enqueue(() =>
+                DeleteResumeFileAsync(resume.Url, resume.Id));
+        }
+        
+        logger.LogInformation("Bulk deleted {Count} resumes for user {UserId}",
+            resumes.Count, userId);
     }
+    
+    private async Task DeleteResumeFileAsync(string fileUrl, Guid resumeId)
+    {
+        try
+        {
+            await supabaseService.DeleteFileAsync(fileUrl, "resumes");
+            logger.LogInformation("Successfully deleted file for resume {ResumeId}", resumeId);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to delete file for resume {ResumeId}. URL: {FileUrl}",
+                resumeId, fileUrl);
+
+            backgroundJobClient.Schedule(() =>
+                DeleteResumeFileAsync(fileUrl, resumeId), TimeSpan.FromMinutes(15));
+        }
+    }
+    
     public async Task<DownloadResultDto> DownloadResume(
         Guid id,
         string? userId,
