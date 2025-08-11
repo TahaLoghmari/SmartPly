@@ -76,8 +76,8 @@ public class EmailService(
     }
     
     public async Task FetchInitialEmailsAsync(
-    string? userId,
-    CancellationToken cancellationToken)
+        string? userId,
+        CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(userId))
         {
