@@ -4,7 +4,6 @@ using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
-
 namespace backend;
 using Serilog;
 using Services;

@@ -21,14 +21,6 @@ builder
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    RecurringJob.AddOrUpdate<TokenManagementService>(
-        "cleanup-expired-tokens",
-        service => service.CleanupExpiredTokens(),
-        Cron.Daily); 
-}
-
 if ( app.Environment.IsDevelopment() )
 {
     app.UseSwagger();
@@ -51,5 +43,6 @@ app.UseRateLimiter();
 app.UseHangfireDashboard("/hangfire-dashboard");
 var supabaseService = app.Services.GetRequiredService<SupabaseService>();
 await supabaseService.InitializeAsync();
+app.ConfigureRecurringJobs();
 
 app.Run();
