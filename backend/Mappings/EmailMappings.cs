@@ -22,4 +22,16 @@ internal static class EmailMappings
             Etag = message.ETag
         };
     }
+    public static void UpdateEmailEntity(Email existing, Email updated)
+    {
+        existing.HistoryId = updated.HistoryId;
+        existing.ThreadId = updated.ThreadId;
+        existing.InternalDate = updated.InternalDate;
+        existing.LabelIds = updated.LabelIds;
+        existing.Payload = updated.Payload;
+        existing.Raw = updated.Raw;
+        existing.SizeEstimate = updated.SizeEstimate;
+        existing.Snippet = updated.Snippet;
+        existing.Etag = updated.Etag;
+    }
 }

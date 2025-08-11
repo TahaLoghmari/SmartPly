@@ -9,7 +9,7 @@ public sealed class User : IdentityUser
     public string? ImageUrl { get; set; }
     public bool? GmailConnected { get; set; }
     public ulong? LastHistoryId { get; set; }
-    public DateTime LastSyncedAt { get; set; }
+    public DateTime? LastSyncedAt { get; set; }
     public bool IsInitialSyncComplete { get; set; }
     public ICollection<Application>? Applications { get; set; } = new List<Application>();
     public ICollection<Resume> Resumes { get; set; } = new List<Resume>();

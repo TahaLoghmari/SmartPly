@@ -246,7 +246,17 @@ public class AuthService(
         backgroundJobClient.Enqueue(() => emailService.FetchInitialEmailsAsync(user.Id, CancellationToken.None));
         logger.LogInformation("Enqueued initial email fetch for UserId: {UserId}", user.Id);
         
+        RecurringJob.AddOrUpdate<EmailService>(
+            $"sync-emails-{user.Id}",
+            service => service.SyncUserEmailAsync(user.Id, CancellationToken.None),
+            "*/10 * * * *",
+            new RecurringJobOptions
+            {
+                TimeZone = TimeZoneInfo.Utc
+            });
+        
         logger.LogInformation("GoogleCallback completed successfully for UserId: {UserId}", user?.Id);
+        logger.LogInformation("Scheduled recurring email sync for UserId: {UserId}", user.Id);
 
         return (user, null);
     }
