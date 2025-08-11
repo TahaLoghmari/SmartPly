@@ -28,13 +28,13 @@ public class EmailController(
     }
     
     [HttpGet("{id}")]
-    public async Task<ActionResult<Email>> GetEmailById(
+    public async Task<ActionResult<Message>> GetEmailById(
         [FromRoute] string id,
         CancellationToken cancellationToken)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         
-        Email application = await emailService.GetEmailByIdAsync(id, userId,cancellationToken);
+        Message application = await emailService.GetEmailByIdAsync(id, userId,cancellationToken);
         
         return Ok(application);
     }

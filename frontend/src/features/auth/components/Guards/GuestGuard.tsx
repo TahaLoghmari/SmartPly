@@ -3,9 +3,13 @@ import { useCurrentUser, type GuardProps } from "#/auth";
 import { Spinner } from "@/components/ui/spinner";
 
 export default function GuestGuard({ children }: GuardProps) {
-  const { data: user, isLoading } = useCurrentUser();
+  const { data: user, isLoading, isError } = useCurrentUser();
 
-  if (isLoading) {
+  if (isError) {
+    return <>{children}</>;
+  }
+
+  if (isLoading && !isError) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <Spinner />

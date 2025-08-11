@@ -16,7 +16,6 @@ public class ApplicationConfiguration : IEntityTypeConfiguration<Application>
         builder.HasIndex(a => a.UserId);
 
         builder.Property(a => a.UserId)
-            .HasMaxLength(50)
             .IsRequired();
         
         builder.Property(a => a.CompanyName)
@@ -64,9 +63,8 @@ public class ApplicationConfiguration : IEntityTypeConfiguration<Application>
         
         builder.HasOne(a => a.User)
             .WithMany(u => u.Applications)
-            .HasForeignKey(a => a.UserId)
-            .OnDelete(DeleteBehavior.SetNull)
-            .IsRequired();
+            .HasForeignKey(a => a.UserId) 
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasOne(a => a.ResumeUsed)
             .WithMany(r => r.Applications)

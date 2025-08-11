@@ -47,7 +47,7 @@ export default function ApplicationsCards() {
     );
 
   return (
-    <div className="text-muted-foreground mt-26 flex w-full flex-1 flex-col items-center justify-center gap-4">
+    <div className="text-muted-foreground flex w-full flex-1 flex-col items-center justify-center gap-4">
       <div className="bg-muted flex h-16 w-16 items-center justify-center rounded-full">
         <Plus className="h-8 w-8" />
       </div>

@@ -19,8 +19,14 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.ImageUrl)
             .IsRequired(false)
             .HasMaxLength(500);
+        
         builder.Property(u => u.GmailConnected)
             .IsRequired(false)
             .HasDefaultValue(false);
+
+        builder.HasMany(u => u.Emails)
+            .WithOne(e => e.User)
+            .HasForeignKey(e => e.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

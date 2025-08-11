@@ -180,6 +180,20 @@ public class AuthService(
 
         return authUrl;
     }
+    
+    public void ScheduleRecurringEmailSync(string userId)
+    {
+        RecurringJob.AddOrUpdate<EmailService>(
+            $"sync-emails-{userId}",
+            service => service.SyncUserEmailAsync(userId, CancellationToken.None),
+            "*/10 * * * *",
+            new RecurringJobOptions
+            {
+                TimeZone = TimeZoneInfo.Utc
+            });
+    
+        logger.LogInformation("Scheduled recurring email sync for UserId: {UserId}", userId);
+    }
 
     public async Task<(User? user, string? error)> GoogleCallback(
         string? code,
@@ -243,17 +257,12 @@ public class AuthService(
             logger.LogInformation("User created and tokens stored for UserId: {UserId}, Email: {Email}", user.Id, user.Email);
         }
         
-        backgroundJobClient.Enqueue(() => emailService.FetchInitialEmailsAsync(user.Id, CancellationToken.None));
+        var initialJobId = backgroundJobClient.Enqueue(() => emailService.FetchInitialEmailsAsync(user.Id, CancellationToken.None));
         logger.LogInformation("Enqueued initial email fetch for UserId: {UserId}", user.Id);
         
-        RecurringJob.AddOrUpdate<EmailService>(
-            $"sync-emails-{user.Id}",
-            service => service.SyncUserEmailAsync(user.Id, CancellationToken.None),
-            "*/10 * * * *",
-            new RecurringJobOptions
-            {
-                TimeZone = TimeZoneInfo.Utc
-            });
+        backgroundJobClient.ContinueJobWith(
+            initialJobId,
+            () => ScheduleRecurringEmailSync(user.Id));
         
         logger.LogInformation("GoogleCallback completed successfully for UserId: {UserId}", user?.Id);
         logger.LogInformation("Scheduled recurring email sync for UserId: {UserId}", user.Id);

@@ -7,7 +7,7 @@ public sealed class Application
     public Guid Id { get; init; } = Guid.NewGuid();
     public Guid? ResumeId { get; set; }
     public Guid? CoverLetterId { get; set; }
-    public string UserId { get; init; }
+    public string UserId { get; set; } = string.Empty;
     
     public string CompanyName { get; set; }
     public string? CompanyEmail { get; set; }
@@ -36,6 +36,6 @@ public sealed class Application
     public List<string>? TechnologiesUsed { get; set; } = new List<string>();
     
     public Resume? ResumeUsed { get; set; } 
-    public User? User { get; init; }
+    public User? User { get; set; }
     public CoverLetter? CoverLetterUsed { get; set; }
 }

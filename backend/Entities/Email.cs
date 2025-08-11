@@ -14,7 +14,7 @@ public class Email
     public string? Raw { get; set; }
     public int? SizeEstimate { get; set; }
     public string Snippet { get; set; } = string.Empty;
-    public string Etag { get; set; } = string.Empty;
+    public string? Etag { get; set; } = string.Empty;
     public User? User { get; init; } 
 }
 

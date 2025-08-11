@@ -76,105 +76,64 @@ public class EmailService(
     }
     
     public async Task FetchInitialEmailsAsync(
-        string? userId,
-        CancellationToken cancellationToken)
+    string? userId,
+    CancellationToken cancellationToken)
     {
-        if (userId is null)
+        if (string.IsNullOrWhiteSpace(userId))
         {
             logger.LogWarning("Get current user failed - user ID claim missing");
             throw new UnauthorizedException("User ID claim is missing.");
         }
-        
+
         var user = await userManager.FindByIdAsync(userId);
         if (user is null)
         {
             logger.LogWarning("Get current user failed - user ID not found");
             throw new UnauthorizedException("User not found.");
         }
-        
+
         await InitializeAsync(user, cancellationToken);
-        
-        var listRequest = _gmailService!.Users.Messages.List("me");
-        listRequest.MaxResults = 200;
-        var listResponse = await listRequest.ExecuteAsync(cancellationToken);
 
         var messages = new List<Message>();
+        
+        var listRequest = _gmailService!.Users.Messages.List("me");
+        listRequest.MaxResults = 100; 
 
+        var listResponse = await listRequest.ExecuteAsync(cancellationToken);
+        
         if (listResponse.Messages is not null && listResponse.Messages.Any())
         {
-            var tasks = listResponse.Messages.Select(message =>
-            {
-                var getRequest = _gmailService.Users.Messages.Get("me", message.Id);
-                getRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Full;
-                return getRequest.ExecuteAsync(cancellationToken);
-            });
+            const int batchSize = 10;
+            const int delayMs = 200; 
 
-            var fetchedMessages = await Task.WhenAll(tasks);
-            messages.AddRange(fetchedMessages);
+            foreach (var batch in listResponse.Messages.Chunk(batchSize))
+            {
+                var batchTasks = batch.Select(async msg =>
+                {
+                    var getRequest = _gmailService.Users.Messages.Get("me", msg.Id);
+                    getRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Metadata; 
+                    return await getRequest.ExecuteAsync(cancellationToken);
+                });
+
+                var fetchedBatch = await Task.WhenAll(batchTasks);
+                messages.AddRange(fetchedBatch);
+                
+                await Task.Delay(delayMs, cancellationToken);
+            }
         }
         
         var emails = messages.Select(msg => EmailMappings.MapToEmailEntity(msg, userId)).ToList();
-    
         await dbContext.Emails.AddRangeAsync(emails, cancellationToken);
-        
+
         var profile = await _gmailService.Users.GetProfile("me").ExecuteAsync(cancellationToken);
         user.LastHistoryId = profile.HistoryId;
         user.LastSyncedAt = DateTime.UtcNow;
         user.IsInitialSyncComplete = true;
-        
+
         await userManager.UpdateAsync(user);
         await dbContext.SaveChangesAsync(cancellationToken);
-        
+
         cacheService.InvalidateUserEmailCache(userId);
-    }
-    
-    private async Task ProcessNewMessages(
-        IList<HistoryMessageAdded> messagesAdded,
-        string userId,
-        CancellationToken cancellationToken)
-    {
-        if (!messagesAdded.Any()) return;
-
-        var messages = new List<Message>();
-
-        var tasks = messagesAdded.Select(async messageAdded =>
-        {
-            var getRequest = _gmailService!.Users.Messages.Get("me", messageAdded.Message.Id);
-            getRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Full;
-            return await getRequest.ExecuteAsync(cancellationToken);
-        });
-
-        var fetchedMessages = await Task.WhenAll(tasks);
-        messages.AddRange(fetchedMessages);
-
-        var emails = messages.Select(msg => EmailMappings.MapToEmailEntity(msg, userId)).ToList();
-    
-        await dbContext.Emails.AddRangeAsync(emails, cancellationToken);
-        await dbContext.SaveChangesAsync(cancellationToken);
-
-        logger.LogInformation("Processed {Count} new messages for user {UserId}", emails.Count, userId);
-    }
-    
-    private async Task ProcessDeletedMessages(
-        IList<HistoryMessageDeleted> messagesDeleted,
-        string userId,
-        CancellationToken cancellationToken)
-    {
-        if (!messagesDeleted.Any()) return;
-
-        var messageIds = messagesDeleted.Select(md => md.Message.Id).ToList();
-
-        var emailsToDelete = await dbContext.Emails
-            .Where(e => e.UserId == userId && messageIds.Contains(e.Id))
-            .ToListAsync(cancellationToken);
-
-        if (emailsToDelete.Any())
-        {
-            dbContext.Emails.RemoveRange(emailsToDelete);
-            await dbContext.SaveChangesAsync(cancellationToken);
-
-            logger.LogInformation("Processed {Count} deleted messages for user {UserId}", emailsToDelete.Count, userId);
-        }
     }
     
     private async Task PerformHistoryBasedSync(User user, string userId, CancellationToken cancellationToken)
@@ -189,14 +148,44 @@ public class EmailService(
         {
             foreach (var historyRecord in historyResponse.History)
             {
-                if (historyRecord.MessagesAdded != null)
+                if (historyRecord.MessagesAdded != null && historyRecord.MessagesAdded.Any())
                 {
-                    await ProcessNewMessages(historyRecord.MessagesAdded, userId, cancellationToken);
+                    const int batchSize = 10;
+                    const int delayMs = 200;
+
+                    foreach (var batch in historyRecord.MessagesAdded.Chunk(batchSize))
+                    {
+                        var batchTasks = batch.Select(async messageAdded =>
+                        {
+                            var getRequest = _gmailService!.Users.Messages.Get("me", messageAdded.Message.Id);
+                            getRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Metadata;
+                            return await getRequest.ExecuteAsync(cancellationToken);
+                        });
+
+                        var fetchedBatch = await Task.WhenAll(batchTasks);
+                        await UpsertMessages(fetchedBatch.ToList(), userId, cancellationToken);
+        
+                        await Task.Delay(delayMs, cancellationToken);
+                    }
+
+                    logger.LogInformation("Processed {Count} new messages for user {UserId}", historyRecord.MessagesAdded.Count, userId);
                 }
 
-                if (historyRecord.MessagesDeleted != null)
+                if (historyRecord.MessagesDeleted is not null && historyRecord.MessagesDeleted.Any())
                 {
-                    await ProcessDeletedMessages(historyRecord.MessagesDeleted, userId, cancellationToken);
+                    var messageIds = historyRecord.MessagesDeleted.Select(md => md.Message.Id).ToList();
+
+                    var emailsToDelete = await dbContext.Emails
+                        .Where(e => e.UserId == userId && messageIds.Contains(e.Id))
+                        .ToListAsync(cancellationToken);
+
+                    if (emailsToDelete.Any())
+                    {
+                        dbContext.Emails.RemoveRange(emailsToDelete);
+                        await dbContext.SaveChangesAsync(cancellationToken);
+
+                        logger.LogInformation("Processed {Count} deleted messages for user {UserId}", emailsToDelete.Count, userId);
+                    }
                 }
             }
         }
@@ -260,40 +249,38 @@ public class EmailService(
 
         var listRequest = _gmailService!.Users.Messages.List("me");
         listRequest.Q = $"after:{unixTimestamp}";
-        listRequest.MaxResults = 500;
+        listRequest.MaxResults = 20;
 
-        var messages = new List<Message>();
-        string? nextPageToken = null;
+        var listResponse = await listRequest.ExecuteAsync(cancellationToken);
 
-        do
+        if (listResponse.Messages != null && listResponse.Messages.Any())
         {
-            listRequest.PageToken = nextPageToken;
-            var listResponse = await listRequest.ExecuteAsync(cancellationToken);
+            const int batchSize = 10;
+            const int delayMs = 200;
 
-            if (listResponse.Messages != null && listResponse.Messages.Any())
+            foreach (var batch in listResponse.Messages.Chunk(batchSize))
             {
-                var tasks = listResponse.Messages.Select(async message =>
+                var batchTasks = batch.Select(async message =>
                 {
                     var getRequest = _gmailService.Users.Messages.Get("me", message.Id);
-                    getRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Full;
+                    getRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Metadata;
                     return await getRequest.ExecuteAsync(cancellationToken);
                 });
 
-                var fetchedMessages = await Task.WhenAll(tasks);
-                messages.AddRange(fetchedMessages);
+                var fetchedBatch = await Task.WhenAll(batchTasks);
+                await UpsertMessages(fetchedBatch.ToList(), userId, cancellationToken);
+
+                await Task.Delay(delayMs, cancellationToken);
             }
-
-            nextPageToken = listResponse.NextPageToken;
-        } while (!string.IsNullOrEmpty(nextPageToken));
-
-        await UpsertMessages(messages, userId, cancellationToken);
+        }
 
         var profile = await _gmailService.Users.GetProfile("me").ExecuteAsync(cancellationToken);
         user.LastHistoryId = profile.HistoryId;
         user.LastSyncedAt = DateTime.UtcNow;
         await userManager.UpdateAsync(user);
 
-        logger.LogInformation("Date-based sync completed for user {UserId}. Processed {Count} messages", userId, messages.Count);
+        logger.LogInformation("Date-based sync completed for user {UserId}. Processed {Count} messages", 
+            userId, listResponse.Messages?.Count ?? 0);
     }
 
     public async Task SyncUserEmailAsync(
@@ -352,7 +339,7 @@ public class EmailService(
         if (cache.TryGetValue(cacheKey, out PaginationResultDto<Email>? cachedResult))
         {
             logger.LogDebug("Cache hit for emails query: {CacheKey}", cacheKey);
-            return cachedResult;
+            return cachedResult!;
         }
         
         logger.LogDebug("Cache miss for emails query: {CacheKey}", cacheKey);
@@ -370,7 +357,7 @@ public class EmailService(
         return paginationResult;
     }
     
-    public async Task<Email> GetEmailByIdAsync(
+    public async Task<Message> GetEmailByIdAsync(
         string? id,
         string? userId,
         CancellationToken cancellationToken)
@@ -389,19 +376,19 @@ public class EmailService(
             throw new UnauthorizedException("User ID claim is missing.");
         }
         
-        Email? email = await dbContext.Emails
-            .AsNoTracking()
-            .FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId,cancellationToken);
-
-        if (email is null)
+        var user = await userManager.FindByIdAsync(userId);
+        if (user is null)
         {
-            logger.LogWarning("Get current email failed - email not found for Id: {emailId}", id);
-            throw new NotFoundException($"No email found with ID '{id}'.");
+            logger.LogWarning("Get current user failed - user ID not found");
+            throw new UnauthorizedException("User not found.");
         }
         
-        logger.LogInformation("email Retrieved with ID {emailId}", email.Id);
-        
-        return email;
+        await InitializeAsync(user, cancellationToken);
+    
+        var getRequest = _gmailService!.Users.Messages.Get("me", id);
+        getRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Full;
+    
+        return await getRequest.ExecuteAsync(cancellationToken);
     }
     
     

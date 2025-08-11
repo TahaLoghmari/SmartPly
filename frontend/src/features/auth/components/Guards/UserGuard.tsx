@@ -3,8 +3,12 @@ import { useCurrentUser, type GuardProps } from "#/auth";
 import { Spinner } from "@/components/ui/spinner";
 
 export default function UserGuard({ children }: GuardProps) {
-  const { data: user, isLoading } = useCurrentUser();
+  const { data: user, isLoading, isError } = useCurrentUser();
   const location = useLocation();
+
+  if (isError) {
+    return <>{children}</>;
+  }
 
   if (isLoading) {
     return (
