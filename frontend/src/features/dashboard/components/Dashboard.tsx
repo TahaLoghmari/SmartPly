@@ -13,7 +13,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export function Dashboard() {
   const { isSidebarOpen, setIsSidebarOpen } = useDashboardSidebarStateStore();
-  const { isLoading } = useCurrentUser();
+  const { isPending } = useCurrentUser();
   const [searchParams, setSearchParams] = useSearchParams();
   const isInboxRoute = location.pathname.includes("inbox");
 
@@ -31,7 +31,7 @@ export function Dashboard() {
     else setIsSidebarOpen(true);
   }, [setIsSidebarOpen, isInboxRoute]);
 
-  if (isLoading)
+  if (isPending)
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <Spinner />

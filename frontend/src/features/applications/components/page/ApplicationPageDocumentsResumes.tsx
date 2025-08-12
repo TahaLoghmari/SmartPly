@@ -17,10 +17,35 @@ export default function ApplicationPageDocumentsResumes({
   applicationId: string;
 }) {
   const { setIsChangingResume } = useApplicationChangingResumeStore();
-  const { data: resumes, isLoading } = useGetUserResumes();
+  const {
+    data: resumes,
+    isLoading,
+    isError,
+    refetch,
+    isFetching,
+  } = useGetUserResumes();
 
   const { updateApplicationResume, loadingResumeId, isPending } =
     useUpdateApplicationResume(applicationId, () => setIsChangingResume(false));
+
+  if (isError) {
+    return (
+      <div className="bg-card flex h-40 items-center justify-center rounded-lg border py-4">
+        <div className="flex flex-col items-center gap-2">
+          <p className="text-muted-foreground text-sm">
+            Failed to load resumes.
+          </p>
+          <button
+            onClick={() => refetch()}
+            disabled={isFetching}
+            className="bg-muted hover:bg-muted/80 rounded px-3 py-1 text-xs font-medium"
+          >
+            {isFetching ? "Retrying..." : "Retry"}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading)
     return (
@@ -68,6 +93,11 @@ export default function ApplicationPageDocumentsResumes({
           </div>
         </div>
       ))}
+      {resumes?.length === 0 && (
+        <p className="text-muted-foreground mt-14 text-center text-sm">
+          No resumes found.
+        </p>
+      )}
     </div>
   );
 }

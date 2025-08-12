@@ -9,7 +9,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Link, Outlet } from "react-router-dom";
 
 export function Applications() {
-  const { isError, isLoading, data } = useGetUserApplications();
+  const { isError, isPending, data } = useGetUserApplications();
   return (
     <div className="flex w-full flex-1 flex-col overflow-auto p-6 px-20 transition-[width,height,margin,padding] duration-300">
       <div className="flex flex-col">
@@ -22,7 +22,7 @@ export function Applications() {
         <ApplicationAddButton />
       </div>
       <ApplicationsFilters />
-      {isLoading && (
+      {isPending && (
         <div className="flex w-full flex-1 flex-col items-center justify-center">
           <Spinner />
         </div>
@@ -40,7 +40,7 @@ export function Applications() {
           </Button>
         </div>
       )}
-      {!isLoading && !isError && <ApplicationsCards />}
+      {!isPending && !isError && <ApplicationsCards />}
       <Outlet />
     </div>
   );

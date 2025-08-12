@@ -24,7 +24,7 @@ export default function ApplicationPage() {
   const { navigationPage } = useApplicationPageNavigationStore();
   const {
     data: applicationCard,
-    isLoading,
+    isPending,
     isError,
   } = useGetUserApplication({
     id: id ?? "",
@@ -57,12 +57,12 @@ export default function ApplicationPage() {
             Detailed information about your application.
           </DialogDescription>
         </VisuallyHidden>
-        {!isError && isLoading && (
+        {!isError && isPending && (
           <div className="flex flex-1 flex-col items-center justify-center overflow-auto transition-[width,height,margin,padding] duration-300">
             <Spinner />
           </div>
         )}
-        {!isLoading && (isError || !applicationCard) && (
+        {!isPending && (isError || !applicationCard) && (
           <div className="flex flex-1 flex-col items-center justify-center overflow-auto transition-[width,height,margin,padding] duration-300">
             <p>Application not found.</p>
             <Button
@@ -76,7 +76,7 @@ export default function ApplicationPage() {
             </Button>
           </div>
         )}
-        {!isLoading && !isError && applicationCard && (
+        {!isPending && !isError && applicationCard && (
           <>
             <ApplicationPageHeader applicationCard={applicationCard} />
             <div className="flex flex-1">

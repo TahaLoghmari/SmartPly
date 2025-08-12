@@ -17,12 +17,37 @@ export default function ApplicationPageDocumentsCoverLetters({
   applicationId: string;
 }) {
   const { setIsChangingCoverLetter } = useApplicationChangingCoverLetterStore();
-  const { data: coverLetters, isLoading } = useGetUserCoverLetters();
+  const {
+    data: coverLetters,
+    isLoading,
+    isError,
+    refetch,
+    isFetching,
+  } = useGetUserCoverLetters();
 
   const { updateApplicationCoverLetter, loadingCoverLetterId, isPending } =
     useUpdateApplicationCoverLetter(applicationId, () =>
       setIsChangingCoverLetter(false),
     );
+
+  if (isError) {
+    return (
+      <div className="bg-card flex h-40 items-center justify-center rounded-lg border py-4">
+        <div className="flex flex-col items-center gap-2">
+          <p className="text-muted-foreground text-sm">
+            Failed to load cover letters.
+          </p>
+          <button
+            onClick={() => refetch()}
+            disabled={isFetching}
+            className="bg-muted hover:bg-muted/80 rounded px-3 py-1 text-xs font-medium"
+          >
+            {isFetching ? "Retrying..." : "Retry"}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading)
     return (
@@ -73,6 +98,11 @@ export default function ApplicationPageDocumentsCoverLetters({
           </div>
         </div>
       ))}
+      {coverLetters?.length === 0 && (
+        <p className="text-muted-foreground mt-14 text-center text-sm">
+          No cover letters found.
+        </p>
+      )}
     </div>
   );
 }

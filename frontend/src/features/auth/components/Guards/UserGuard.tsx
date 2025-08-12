@@ -10,7 +10,7 @@ export default function UserGuard({ children }: GuardProps) {
     return <>{children}</>;
   }
 
-  if (isLoading) {
+  if (isLoading && !isError) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <Spinner />
