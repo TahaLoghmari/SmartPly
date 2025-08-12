@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250812084107_UpdatedEmailEntity")]
+    partial class UpdatedEmailEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -331,8 +334,45 @@ namespace backend.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
 
+                    b.Property<int>("AttachmentCount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("AttachmentIds")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("AttachmentNames")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("AttachmentsTotalSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("BccAddresses")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CcAddresses")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DeliveredTo")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("Encoding")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("FromAddress")
                         .IsRequired()
@@ -344,11 +384,24 @@ namespace backend.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<DateTime?>("HeaderDate")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<bool>("HasAttachments")
+                        .HasColumnType("boolean");
 
-                    b.Property<long?>("InternalDate")
-                        .HasColumnType("bigint");
+                    b.Property<decimal?>("HistoryId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<string>("HtmlBody")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Importance")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("InReplyTo")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<bool>("IsImportant")
                         .HasColumnType("boolean");
@@ -360,6 +413,49 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ListId")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("MessageId")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("MimeType")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("Priority")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime?>("ReceivedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("References")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReplyToAddress")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("ReturnPath")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime?>("SentDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("SizeEstimate")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Snippet")
                         .IsRequired()
                         .HasMaxLength(10000)
@@ -367,8 +463,20 @@ namespace backend.Migrations
 
                     b.Property<string>("Subject")
                         .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)");
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<string>("TextBody")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ThreadId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("ToAddresses")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -378,13 +486,28 @@ namespace backend.Migrations
                         .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
+                    b.Property<string>("XMailer")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("InternalDate");
+                    b.HasIndex("MessageId");
+
+                    b.HasIndex("ReceivedDate");
+
+                    b.HasIndex("SentDate");
+
+                    b.HasIndex("ThreadId");
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("UserId", "HeaderDate");
+                    b.HasIndex("UserId", "HasAttachments");
+
+                    b.HasIndex("UserId", "IsImportant");
+
+                    b.HasIndex("UserId", "IsRead");
 
                     b.ToTable("Emails");
                 });
@@ -488,6 +611,9 @@ namespace backend.Migrations
 
                     b.Property<bool>("IsInitialSyncComplete")
                         .HasColumnType("boolean");
+
+                    b.Property<decimal?>("LastHistoryId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<DateTime?>("LastSyncedAt")
                         .HasColumnType("timestamp with time zone");

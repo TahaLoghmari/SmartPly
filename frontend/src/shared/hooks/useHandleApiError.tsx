@@ -17,9 +17,7 @@ export function handleApiError({ apiError, email }: handleApiErrorProps) {
   toast.error(apiError.title, {
     description: (
       <div className="flex flex-1 flex-col gap-2">
-        <p className="text-strong-muted-foreground text-xs">
-          {apiError.detail}
-        </p>
+        <p className="text-muted-foreground text-xs">{apiError.detail}</p>
 
         {/* this is for the toast error when email is not verified */}
         {email && apiError.title === "Email not Verified" && (
@@ -30,7 +28,7 @@ export function handleApiError({ apiError, email }: handleApiErrorProps) {
             Resend Email
           </Link>
         )}
-        
+
         {apiError.errors && (
           <ul className="border-muted-foreground text-muted-foreground mt-1 border-l-2 pl-3 text-sm">
             {Object.values(apiError.errors)
