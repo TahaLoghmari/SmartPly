@@ -14,7 +14,8 @@ internal static class UserMappings
             Name = user.Name!,
             ImageUrl = user.ImageUrl!,
             GoogleEmail = user.GoogleEmail!,
-            GmailConnected = user.GmailConnected!
+            GmailConnected = user.GmailConnected!,
+            IsInitialSyncComplete = user.IsInitialSyncComplete,
         };
     }
 }

@@ -8,4 +8,5 @@ public sealed record UserDto
     public string? GoogleEmail { get; set; }
     public string? ImageUrl { get; set; }
     public bool? GmailConnected { get; set; }
+    public bool IsInitialSyncComplete { get; set; }
 }
