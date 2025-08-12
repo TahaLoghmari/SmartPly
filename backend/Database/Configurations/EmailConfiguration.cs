@@ -9,45 +9,58 @@ public class EmailConfiguration : IEntityTypeConfiguration<Email>
     public void Configure(EntityTypeBuilder<Email> builder)
     {
         builder.HasKey(e => e.Id);
-
+        
         builder.Property(e => e.Id)
-            .IsRequired()
-            .HasMaxLength(128);
-
+            .HasMaxLength(255)
+            .IsRequired();
+            
         builder.Property(e => e.UserId)
-            .IsRequired()
-            .HasMaxLength(450);
-
+            .HasMaxLength(255)
+            .IsRequired();
+            
         builder.Property(e => e.Subject)
-            .HasMaxLength(1000);
-
+            .HasMaxLength(1000)
+            .IsRequired();
+            
         builder.Property(e => e.FromAddress)
-            .HasMaxLength(256);
-
+            .HasMaxLength(500)
+            .IsRequired();
+            
         builder.Property(e => e.FromName)
-            .HasMaxLength(256);
-
+            .HasMaxLength(500)
+            .IsRequired();
+            
         builder.Property(e => e.Labels)
-            .HasColumnType("text");
-
+            .HasColumnType("TEXT")
+            .IsRequired();
+            
         builder.Property(e => e.Snippet)
-            .HasMaxLength(10000);
-
-        builder.Property(e => e.InternalDate);
-
+            .HasColumnType("TEXT")
+            .IsRequired();
+            
+        builder.Property(e => e.HeaderDate)
+            .HasMaxLength(100);
+            
+        builder.Property(e => e.IsRead)
+            .IsRequired();
+            
+        builder.Property(e => e.IsImportant)
+            .IsRequired();
+            
         builder.Property(e => e.CreatedAt)
             .IsRequired();
-
+            
         builder.Property(e => e.UpdatedAt)
             .IsRequired();
-
+            
         builder.HasOne(e => e.User)
             .WithMany(u => u.Emails)
             .HasForeignKey(e => e.UserId)
             .OnDelete(DeleteBehavior.Cascade);
-
+            
         builder.HasIndex(e => e.UserId);
-        builder.HasIndex(e => e.InternalDate);
-        builder.HasIndex(e => new { e.UserId, e.HeaderDate });
+        builder.HasIndex(e => e.IsRead);
+        builder.HasIndex(e => e.IsImportant);
+        builder.HasIndex(e => e.CreatedAt);
     }
 }
