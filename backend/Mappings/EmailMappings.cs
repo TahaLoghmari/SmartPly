@@ -16,7 +16,7 @@ internal static class EmailMappings
             Id = message.Id,
             UserId = userId,
             InternalDate = message.InternalDate,
-            HeaderDate = EmailUtilities.ParseHeaderDate(EmailUtilities.GetHeaderValue(headers, "Date")),
+            HeaderDate = EmailUtilities.GetHeaderValue(headers, "Date"),
             Subject = EmailUtilities.GetHeaderValue(headers, "Subject"),
             FromAddress = EmailUtilities.ExtractEmailAddress(EmailUtilities.GetHeaderValue(headers, "From")),
             FromName = EmailUtilities.ExtractDisplayName(EmailUtilities.GetHeaderValue(headers, "From")),

@@ -31,7 +31,7 @@ public class EmailService(
     private const int DefaultDelayMs = 200;
     private const int InitialFetchLimit = 100;
     private const int SyncFetchLimit = 20;
-    private const int DefaultPageSize = 8;
+    private const int DefaultPageSize = 10;
     
     private async Task InitializeAsync(
         User user,

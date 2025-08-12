@@ -5,7 +5,7 @@ public class Email
     public string Id { get; set; } = string.Empty;
     public string UserId { get; set; } = string.Empty;
     public long? InternalDate { get; set; }
-    public DateTime? HeaderDate { get; set; }
+    public string? HeaderDate { get; set; }
     public string Subject { get; set; } = string.Empty;
     public string FromAddress { get; set; } = string.Empty;
     public string FromName { get; set; } = string.Empty;
