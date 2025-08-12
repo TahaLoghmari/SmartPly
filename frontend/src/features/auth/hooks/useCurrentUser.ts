@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCurrentUser } from "#/auth";
+import { getCurrentUser, type User } from "#/auth";
 
 export function useCurrentUser() {
-  return useQuery({
+  return useQuery<User>({
     queryKey: ["currentUser"],
     queryFn: getCurrentUser,
     staleTime: 5 * 60 * 1000,
@@ -19,7 +19,12 @@ export function useCurrentUser() {
       return failureCount < 1;
     },
     refetchOnWindowFocus: false,
-    refetchOnMount: false, // Don't auto-fetch on mount for login page
-    refetchOnReconnect: false, // Don't auto-fetch on reconnect for unauthenticated users
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    refetchInterval: (query) => {
+      const user = query.state.data;
+      return user && !user.isInitialSyncComplete ? 5000 : false;
+    },
+    refetchIntervalInBackground: true,
   });
 }

@@ -13,6 +13,7 @@ export function useGetUserEmails() {
     getNextPageParam: (lastPage, pages) => {
       return lastPage.hasNextPage ? pages.length + 1 : undefined;
     },
+    enabled: user?.isInitialSyncComplete === true,
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
     refetchOnMount: true,

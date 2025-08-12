@@ -6,6 +6,7 @@ export interface User {
   imageUrl: string;
   gmailConnected: boolean;
   emailConfirmed?: boolean;
+  isInitialSyncComplete: boolean;
 }
 
 export interface LoginUserDto {
