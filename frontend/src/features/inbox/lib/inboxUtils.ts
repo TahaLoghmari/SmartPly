@@ -1,4 +1,4 @@
-import type { EmailPart } from "#/inbox";
+import type { MessagePart } from "#/inbox";
 
 export function getHeader(headers: any[] | undefined, name: string) {
   return (
@@ -94,7 +94,7 @@ export function decodeHtmlEntities(str: string | undefined) {
   return txt.value;
 }
 
-export function getEmailBody(payload: EmailPart | undefined) {
+export function getEmailBody(payload: MessagePart | undefined) {
   if (!payload) return "";
 
   const base64UrlToBytes = (data: string) => {

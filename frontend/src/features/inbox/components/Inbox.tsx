@@ -15,12 +15,12 @@ export function Inbox() {
     },
   });
 
-  const emails = data?.pages.flatMap((page) => page.messages) ?? [];
+  const emails = data?.pages.flatMap((page) => page.items) ?? [];
 
   if (isLoading)
     return (
       <div className="flex h-[80svh] flex-1 flex-col items-center justify-center gap-2">
-        <Spinner  />
+        <Spinner />
       </div>
     );
 
@@ -32,7 +32,7 @@ export function Inbox() {
 
       {isFetchingNextPage && (
         <div className="mt-6 flex w-full flex-1 flex-col items-center justify-center">
-          <Spinner  />
+          <Spinner />
         </div>
       )}
       {hasNextPage && <div ref={ref} className="" />}

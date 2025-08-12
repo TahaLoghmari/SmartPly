@@ -1,40 +1,56 @@
-export interface EmailPartBody {
+export interface Email {
+  id: string;
+  userId: string;
+  internalDate?: number | null;
+  headerDate?: string | null;
+  subject: string;
+  fromAddress: string;
+  fromName: string;
+  labels: string;
+  snippet: string;
+  isRead: boolean;
+  isImportant: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MessagePartBody {
   attachmentId?: string;
   data?: string;
   size?: number;
   ETag?: string;
 }
 
-export interface EmailPartHeader {
+export interface MessagePartHeader {
   name?: string;
   value?: string;
   ETag?: string;
 }
 
-export interface EmailPart {
+export interface MessagePart {
   partId?: string;
   mimeType?: string;
   filename?: string;
-  headers?: EmailPartHeader[];
-  body?: EmailPartBody;
-  parts?: EmailPart[];
+  headers?: MessagePartHeader[];
+  body?: MessagePartBody;
+  parts?: MessagePart[];
   ETag?: string;
 }
 
-export interface Email {
+export interface Message {
   id?: string;
   threadId?: string;
   labelIds?: string[];
   snippet?: string;
   historyId?: string;
   internalDate?: string;
-  payload?: EmailPart;
+  payload?: MessagePart;
   sizeEstimate?: number;
   raw?: string;
   ETag?: string;
 }
 
-export interface PaginatedEmailResponse {
-  messages: Email[];
-  nextPageToken: string;
+export interface EmailQueryParameters {
+  page: number;
+  pageSize: number;
 }

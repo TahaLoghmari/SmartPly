@@ -1,19 +1,9 @@
-import {
-  decodeHtmlEntities,
-  formatEmailDate,
-  getHeader,
-  getSenderName,
-  type Email,
-} from "#/inbox";
+import { decodeHtmlEntities, formatEmailDate, type Email } from "#/inbox";
 import { NavLink } from "react-router-dom";
 
 export function EmailCard({ email }: { email: Email }) {
-  const headers = email.payload?.headers;
-  const fromRaw = getHeader(headers, "From");
-  const from = getSenderName(fromRaw);
-  const subject = getHeader(headers, "Subject");
-  const dateRaw = getHeader(headers, "Date");
-  const date = formatEmailDate(dateRaw);
+  console.log(email);
+  const date = formatEmailDate(email.headerDate!);
   return (
     <NavLink
       key={email.id}
@@ -26,10 +16,12 @@ export function EmailCard({ email }: { email: Email }) {
       }
     >
       <div className="flex w-full items-center gap-2">
-        <span className="w-[208px] truncate">{decodeHtmlEntities(from)}</span>
+        <span className="w-[208px] truncate">
+          {decodeHtmlEntities(email?.fromName)}
+        </span>
         <span className="ml-auto text-xs">{date}</span>
       </div>
-      <span className="w-[260px] truncate font-medium">{subject}</span>
+      <span className="w-[260px] truncate font-medium">{email?.subject}</span>
       <span className="line-clamp-2 w-[260px] text-xs whitespace-break-spaces">
         {decodeHtmlEntities(email.snippet)}
       </span>
