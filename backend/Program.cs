@@ -40,7 +40,10 @@ app.MapControllers();
 
 app.UseSerilogRequestLogging();
 app.UseRateLimiter();
-app.UseHangfireDashboard("/hangfire-dashboard");
+app.UseHangfireDashboard("/hangfire-dashboard", new DashboardOptions
+{
+    Authorization = new[] { new DashboardAuthorizationFilter() }
+});
 var supabaseService = app.Services.GetRequiredService<SupabaseService>();
 await supabaseService.InitializeAsync();
 app.ConfigureRecurringJobs();
