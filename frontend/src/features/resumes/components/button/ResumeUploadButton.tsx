@@ -7,7 +7,7 @@ import {
   DialogFooter,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Upload, FileText, ImagePlus } from "lucide-react";
+import { Upload, FileText } from "lucide-react";
 import { useUploadResume } from "#/resumes";
 import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
@@ -25,7 +25,7 @@ export default function ResumeUploadButton() {
         </Button>
       </DialogTrigger>
       <DialogContent
-        className="max-h-[90vh] overflow-auto sm:max-w-3xl"
+        className="max-h-[90vh] overflow-auto sm:max-w-lg"
         aria-describedby={undefined}
       >
         <DialogHeader>
@@ -38,8 +38,10 @@ export default function ResumeUploadButton() {
             </p>
           </DialogTitle>
         </DialogHeader>
-        <label className="mb-2 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-gray-200 px-2 py-6 tracking-wide">
-          <ImagePlus className="text-muted-foreground h-12 w-12 font-light" />
+        <label className="mb-2 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-[#d7d8db] px-2 py-6 tracking-wide">
+          <div className="bg-muted mx-auto flex h-12 w-12 items-center justify-center rounded-full">
+            <Upload className="text-muted-foreground h-6 w-6" />
+          </div>
           <p className="text-primary text-sm font-medium transition duration-150 ease-in-out focus:underline focus:outline-none">
             {!file
               ? "Please upload a resume"
@@ -57,7 +59,7 @@ export default function ResumeUploadButton() {
         </label>
         <DialogFooter className="sm:justify-center">
           <Button
-            className="w-76"
+            className="w-44"
             disabled={!file}
             onClick={() => {
               if (!file) return;
