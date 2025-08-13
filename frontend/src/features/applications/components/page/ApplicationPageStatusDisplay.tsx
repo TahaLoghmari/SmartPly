@@ -37,6 +37,10 @@ export default function ApplicationPageStatusDisplay({
                     ? applicationStatusDate
                     : undefined
                 }
+                selected={
+                  STATUS_TO_VALUE[step] > STATUS_TO_VALUE[applicationStatus]
+                }
+                applicationCard={applicationCard}
                 step={step}
                 id={applicationCard.id}
               />

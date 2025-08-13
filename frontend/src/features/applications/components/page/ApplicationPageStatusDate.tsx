@@ -1,5 +1,6 @@
 import {
   usePatchApplication,
+  useUpdateApplicationStatus,
   type ApplicationsPageStatusDateProps,
 } from "#/applications";
 import { Calendar } from "@/components/ui/calendar";
@@ -14,10 +15,17 @@ import { type JsonPatchDto } from "@/types";
 export default function ApplicationPageStatusDate({
   applicationStatusDate,
   step,
+  selected,
+  applicationCard,
   id,
 }: ApplicationsPageStatusDateProps) {
+  // selected prop is for knowing wether this current step is selected or not ( after current state or not )
+  // we need to know that in order to update the current status to current step when the current's step
+  // date is updated, since it's updated and it's not selected then select it
   const [open, setOpen] = useState<boolean>(false);
   const patchApplicationMutation = usePatchApplication();
+  const { updateApplicationStatus } =
+    useUpdateApplicationStatus(applicationCard);
   return (
     <>
       <p className="flex items-center font-medium">
@@ -66,6 +74,7 @@ export default function ApplicationPageStatusDate({
                   },
                 },
               );
+              if (selected) updateApplicationStatus(step);
             }}
             className="rounded-lg border shadow-sm"
           />

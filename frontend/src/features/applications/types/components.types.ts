@@ -54,6 +54,8 @@ export interface ApplicationsPageStatusDateProps {
   applicationStatusDate: Date | undefined;
   step: string;
   id: string;
+  selected: boolean;
+  applicationCard: ApplicationResponseDto;
 }
 
 export interface ApplicationsFormHandleStatusChangeProps {

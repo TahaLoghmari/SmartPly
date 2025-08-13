@@ -38,7 +38,7 @@ export function Inbox() {
       </div>
     );
 
-  if (emails.length === 0 && isError) {
+  if (emails.length === 0) {
     return (
       <div className="flex h-[80svh] flex-1 flex-col items-center justify-center gap-4">
         <span className="text-muted-foreground text-lg">

@@ -10,7 +10,11 @@ interface handleApiErrorProps {
 export function handleApiError({ apiError, email }: handleApiErrorProps) {
   if (apiError instanceof TypeError) {
     toast.error("Unable to connect to the server.", {
-      description: "Please check your internet connection and try again.",
+      description: (
+        <p className="text-muted-foreground text-xs">
+          Please check your internet connection and try again.
+        </p>
+      ),
     });
     return;
   }
