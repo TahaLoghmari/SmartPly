@@ -23,14 +23,31 @@ export default function ApplicationPageCoverLetter({
     useState(true);
   const { isChangingCoverLetter, setIsChangingCoverLetter } =
     useApplicationChangingCoverLetterStore();
-  const { data: coverLetter, isLoading } = useGetUserCoverLetter(
-    applicationCard.coverLetterId ?? undefined,
-  );
+  const {
+    data: coverLetter,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetUserCoverLetter(applicationCard.coverLetterId ?? undefined);
 
   if (isLoading)
     return (
       <div className="mt-4 flex flex-1 flex-col items-center justify-center gap-6">
         <Spinner />
+      </div>
+    );
+  if (isError)
+    return (
+      <div className="mt-4 flex flex-1 flex-col items-center justify-center gap-3">
+        <span className="text-muted-foreground text-sm">
+          Failed to load cover letter.
+        </span>
+        <button
+          className="bg-muted hover:bg-muted/80 rounded px-3 py-1 text-xs font-medium"
+          onClick={() => refetch()}
+        >
+          Retry
+        </button>
       </div>
     );
   return (

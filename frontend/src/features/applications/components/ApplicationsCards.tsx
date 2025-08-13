@@ -8,21 +8,41 @@ import { Spinner } from "@/components/ui/spinner";
 import { Plus } from "lucide-react";
 import { ApplicationAddButton } from "#/applications";
 import { useInView } from "react-intersection-observer";
-import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function ApplicationsCards() {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useGetUserApplications();
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isError,
+    isPending,
+  } = useGetUserApplications();
 
-  const { ref, inView } = useInView({ rootMargin: "200px" });
-
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+  const { ref } = useInView({
+    threshold: 1,
+    onChange: (inView) => {
+      if (inView && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+  });
 
   const allItems = data?.pages.flatMap((page) => page.items) ?? [];
+
+  if (allItems.length === 0 && isError) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center gap-4 py-12">
+        <span className="text-muted-foreground text-lg">
+          Failed to load applications.
+        </span>
+        <Button onClick={() => fetchNextPage()} className="cursor-pointer">
+          {isPending ? <Spinner className="h-6 w-6 invert" /> : "Retry"}
+        </Button>
+      </div>
+    );
+  }
 
   if (allItems.length > 0)
     return (
@@ -42,7 +62,21 @@ export default function ApplicationsCards() {
             <Spinner />
           </div>
         )}
-        {hasNextPage && <div ref={ref} style={{ height: 40 }} />}
+        {isError && (
+          <div className="flex w-full flex-1 flex-col items-center justify-center gap-2">
+            <span className="text-muted-foreground text-sm">
+              Failed to load more applications.
+            </span>
+            <Button className="cursor-pointer" onClick={() => fetchNextPage}>
+              {isFetchingNextPage ? (
+                <Spinner className="h-6 w-6 invert" />
+              ) : (
+                "Retry"
+              )}
+            </Button>
+          </div>
+        )}
+        {hasNextPage && !isError && <div ref={ref} />}
       </>
     );
 

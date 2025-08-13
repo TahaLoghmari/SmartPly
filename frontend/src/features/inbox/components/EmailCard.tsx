@@ -2,7 +2,6 @@ import { decodeHtmlEntities, formatEmailDate, type Email } from "#/inbox";
 import { NavLink } from "react-router-dom";
 
 export function EmailCard({ email }: { email: Email }) {
-  console.log(email);
   const date = formatEmailDate(email.headerDate!);
   return (
     <NavLink

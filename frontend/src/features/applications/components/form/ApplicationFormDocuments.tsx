@@ -30,9 +30,18 @@ import { Spinner } from "@/components/ui/spinner";
 export default function ApplicationFormDocuments({
   form,
 }: ApplicationFormContentProps) {
-  const { data: resumes, isLoading: AreResumesLoading } = useGetUserResumes();
-  const { data: coverLetters, isLoading: AreCoverLettersLoading } =
-    useGetUserCoverLetters();
+  const {
+    data: resumes,
+    isLoading: AreResumesLoading,
+    isError: DidResumeFetchingFail,
+    refetch: refetchResumes,
+  } = useGetUserResumes();
+  const {
+    data: coverLetters,
+    isLoading: AreCoverLettersLoading,
+    isError: DidCVFetchingFail,
+    refetch: refetchCVs,
+  } = useGetUserCoverLetters();
   return (
     <div className="space-y-4">
       <p className="text-foreground border-b pb-2 text-lg font-medium">
@@ -45,7 +54,26 @@ export default function ApplicationFormDocuments({
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Resume *</FormLabel>
-              {!AreResumesLoading ? (
+              {DidResumeFetchingFail && (
+                <div className="flex w-full flex-col items-center justify-center gap-2">
+                  <span className="text-muted-foreground text-sm">
+                    Failed to load resumes.
+                  </span>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => refetchResumes()}
+                  >
+                    Retry
+                  </Button>
+                </div>
+              )}
+              {AreResumesLoading && (
+                <div className="flex w-full items-center justify-center">
+                  <Spinner className="h-5 w-5" />
+                </div>
+              )}
+              {!DidResumeFetchingFail && !AreResumesLoading && (
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -98,10 +126,6 @@ export default function ApplicationFormDocuments({
                     </Command>
                   </PopoverContent>
                 </Popover>
-              ) : (
-                <div className="flex w-full items-center justify-center">
-                  <Spinner className="h-5 w-5" />
-                </div>
               )}
               <FormMessage />
             </FormItem>
@@ -113,7 +137,26 @@ export default function ApplicationFormDocuments({
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Cover Letter *</FormLabel>
-              {!AreCoverLettersLoading ? (
+              {DidCVFetchingFail && (
+                <div className="flex w-full flex-col items-center justify-center gap-2">
+                  <span className="text-muted-foreground text-sm">
+                    Failed to load cover letters.
+                  </span>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => refetchCVs()}
+                  >
+                    Retry
+                  </Button>
+                </div>
+              )}
+              {AreCoverLettersLoading && (
+                <div className="flex w-full items-center justify-center">
+                  <Spinner className="h-5 w-5" />
+                </div>
+              )}
+              {!DidCVFetchingFail && !AreCoverLettersLoading && (
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -167,10 +210,6 @@ export default function ApplicationFormDocuments({
                     </Command>
                   </PopoverContent>
                 </Popover>
-              ) : (
-                <div className="flex w-full items-center justify-center">
-                  <Spinner className="h-5 w-5" />
-                </div>
               )}
               <FormMessage />
             </FormItem>

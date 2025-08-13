@@ -1,12 +1,19 @@
 import { useCurrentUser } from "#/auth";
 import { EmailCard, useGetUserEmails, type Email } from "#/inbox";
+import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useInView } from "react-intersection-observer";
 
 export function Inbox() {
   const { data: user } = useCurrentUser();
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending } =
-    useGetUserEmails();
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isPending,
+    isError,
+  } = useGetUserEmails();
 
   const { ref } = useInView({
     threshold: 1,
@@ -31,6 +38,19 @@ export function Inbox() {
       </div>
     );
 
+  if (emails.length === 0 && isError) {
+    return (
+      <div className="flex h-[80svh] flex-1 flex-col items-center justify-center gap-4">
+        <span className="text-muted-foreground text-lg">
+          Failed to load emails.
+        </span>
+        <Button onClick={() => fetchNextPage()} className="cursor-pointer">
+          {isPending ? <Spinner className="h-6 w-6 invert" /> : "Retry"}
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <>
       {emails.map((email: Email) => (
@@ -42,7 +62,21 @@ export function Inbox() {
           <Spinner />
         </div>
       )}
-      {hasNextPage && <div ref={ref} className="" />}
+      {emails.length > 0 && isError && (
+        <div className="mt-6 flex w-full flex-1 flex-col items-center justify-center gap-2">
+          <span className="text-muted-foreground text-sm">
+            Failed to load more emails.
+          </span>
+          <Button className="cursor-pointer" onClick={() => fetchNextPage}>
+            {isFetchingNextPage ? (
+              <Spinner className="h-6 w-6 invert" />
+            ) : (
+              "Retry"
+            )}
+          </Button>
+        </div>
+      )}
+      {hasNextPage && !isError && <div ref={ref} />}
     </>
   );
 }

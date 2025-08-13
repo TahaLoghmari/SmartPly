@@ -1,4 +1,5 @@
 import { useCreateApplication, useEditApplication } from "#/applications";
+import { handleApiError } from "@/hooks";
 
 export function useApplicationFormMutation(
   type: "create" | "edit",
@@ -19,9 +20,15 @@ export function useApplicationFormMutation(
     },
   ) => {
     if (type === "create") {
-      create.mutate(credentials, { onSuccess });
+      create.mutate(credentials, {
+        onSuccess,
+        onError: (error) => handleApiError({ apiError: error }),
+      });
     } else {
-      edit.mutate({ id: editId!, data: credentials }, { onSuccess });
+      edit.mutate(
+        { id: editId!, data: credentials },
+        { onSuccess, onError: (error) => handleApiError({ apiError: error }) },
+      );
     }
   };
 

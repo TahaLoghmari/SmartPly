@@ -22,14 +22,31 @@ export default function ApplicationPageDocumentsResume({
   const [isResumePreviewOpen, setIsResumePreviewOpen] = useState(true);
   const { isChangingResume, setIsChangingResume } =
     useApplicationChangingResumeStore();
-  const { data: resume, isLoading } = useGetUserResume(
-    applicationCard.resumeId ?? undefined,
-  );
+  const {
+    data: resume,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetUserResume(applicationCard.resumeId ?? undefined);
 
   if (isLoading)
     return (
       <div className="mt-4 flex flex-1 flex-col items-center justify-center gap-6">
-        <Spinner  />
+        <Spinner />
+      </div>
+    );
+  if (isError)
+    return (
+      <div className="mt-4 flex flex-1 flex-col items-center justify-center gap-3">
+        <span className="text-muted-foreground text-sm">
+          Failed to load resume.
+        </span>
+        <button
+          className="bg-muted hover:bg-muted/80 rounded px-3 py-1 text-xs font-medium"
+          onClick={() => refetch()}
+        >
+          Retry
+        </button>
       </div>
     );
   return (

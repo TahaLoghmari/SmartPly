@@ -6,10 +6,6 @@ export default function UserGuard({ children }: GuardProps) {
   const { data: user, isLoading, isError } = useCurrentUser();
   const location = useLocation();
 
-  if (isError) {
-    return <>{children}</>;
-  }
-
   if (isLoading && !isError) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
@@ -18,7 +14,7 @@ export default function UserGuard({ children }: GuardProps) {
     );
   }
 
-  if (!user) {
+  if (!user || isError) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
