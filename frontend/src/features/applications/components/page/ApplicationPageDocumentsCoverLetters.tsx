@@ -56,6 +56,16 @@ export default function ApplicationPageDocumentsCoverLetters({
       </div>
     );
 
+  if (coverLetters?.length === 0) {
+    return (
+      <div className="bg-card flex min-h-40 items-center justify-center rounded-lg border py-4">
+        <p className="text-muted-foreground text-center text-sm">
+          No cover letters found.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-card min-h-40 rounded-lg border py-4">
       {coverLetters?.map((coverLetter: CoverLetterResponseDto) => (
@@ -98,11 +108,6 @@ export default function ApplicationPageDocumentsCoverLetters({
           </div>
         </div>
       ))}
-      {coverLetters?.length === 0 && (
-        <p className="text-muted-foreground mt-14 text-center text-sm">
-          No cover letters found.
-        </p>
-      )}
     </div>
   );
 }

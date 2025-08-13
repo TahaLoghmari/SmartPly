@@ -54,6 +54,16 @@ export default function ApplicationPageDocumentsResumes({
       </div>
     );
 
+  if (resumes?.length === 0) {
+    return (
+      <div className="bg-card flex min-h-40 items-center justify-center rounded-lg border py-4">
+        <p className="text-muted-foreground text-center text-sm">
+          No resumes found.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-card min-h-40 rounded-lg border py-4">
       {resumes?.map((resume: ResumeResponseDto) => (
@@ -93,11 +103,6 @@ export default function ApplicationPageDocumentsResumes({
           </div>
         </div>
       ))}
-      {resumes?.length === 0 && (
-        <p className="text-muted-foreground mt-14 text-center text-sm">
-          No resumes found.
-        </p>
-      )}
     </div>
   );
 }
