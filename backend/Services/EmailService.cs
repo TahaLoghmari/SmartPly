@@ -11,6 +11,7 @@ using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Gmail.v1;
 using Google.Apis.Gmail.v1.Data;
 using Google.Apis.Util.Store;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
@@ -99,41 +100,65 @@ public class EmailService(
 
         await InitializeAsync(user, cancellationToken);
 
-        var messages = new List<Message>();
-        
-        var listRequest = _gmailService!.Users.Messages.List("me");
-        listRequest.MaxResults = InitialFetchLimit; 
-
-        var listResponse = await listRequest.ExecuteAsync(cancellationToken);
-        
-        if (listResponse.Messages is not null && listResponse.Messages.Any())
+        try
         {
-            foreach (var batch in listResponse.Messages.Chunk(DefaultBatchSize))
-            {
-                var batchTasks = batch.Select(async msg =>
-                {
-                    var getRequest = _gmailService.Users.Messages.Get("me", msg.Id);
-                    getRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Metadata; 
-                    return await getRequest.ExecuteAsync(cancellationToken);
-                });
-
-                var fetchedBatch = await Task.WhenAll(batchTasks);
-                messages.AddRange(fetchedBatch);
-                
-                await Task.Delay(DefaultDelayMs, cancellationToken);
-            }
-        }
+            var messages = new List<Message>();
         
-        var emails = messages.Select(msg => EmailMappings.MapToEmailEntity(msg, userId)).ToList();
-        await dbContext.Emails.AddRangeAsync(emails, cancellationToken);
+            var listRequest = _gmailService!.Users.Messages.List("me");
+            listRequest.MaxResults = InitialFetchLimit; 
 
-        user.LastSyncedAt = DateTime.UtcNow;
-        user.IsInitialSyncComplete = true;
+            var listResponse = await listRequest.ExecuteAsync(cancellationToken);
+        
+            if (listResponse.Messages is not null && listResponse.Messages.Any())
+            {
+                foreach (var batch in listResponse.Messages.Chunk(DefaultBatchSize))
+                {
+                    var batchTasks = batch.Select(async msg =>
+                    {
+                        var getRequest = _gmailService.Users.Messages.Get("me", msg.Id);
+                        getRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Metadata; 
+                        return await getRequest.ExecuteAsync(cancellationToken);
+                    });
 
-        await userManager.UpdateAsync(user);
-        await dbContext.SaveChangesAsync(cancellationToken);
+                    var fetchedBatch = await Task.WhenAll(batchTasks);
+                    messages.AddRange(fetchedBatch);
+                
+                    await Task.Delay(DefaultDelayMs, cancellationToken);
+                }
+            }
+        
+            var emails = messages.Select(msg => EmailMappings.MapToEmailEntity(msg, userId)).ToList();
+            await dbContext.Emails.AddRangeAsync(emails, cancellationToken);
 
-        cacheService.InvalidateUserEmailCache(userId);
+            user.LastSyncedAt = DateTime.UtcNow;
+            
+            cancellationToken.ThrowIfCancellationRequested();
+            
+            user.IsInitialSyncComplete = true;
+            if (!user.IsRecurringSyncScheduled)
+            {
+                RecurringJob.AddOrUpdate<EmailService>(
+                    $"sync-emails-{userId}",
+                    s => s.SyncUserEmailAsync(userId, CancellationToken.None),
+                    "*/10 * * * *",
+                    new RecurringJobOptions { TimeZone = TimeZoneInfo.Utc });
+
+                user.IsRecurringSyncScheduled = true;
+                logger.LogInformation("Recurring sync scheduled for UserId: {UserId}", user.Id);
+            }
+
+            await userManager.UpdateAsync(user);
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            cacheService.InvalidateUserEmailCache(userId);
+        }
+        catch (Exception ex)
+        {
+            user.IsInitialSyncStarted = false; 
+            await userManager.UpdateAsync(user);
+            logger.LogError(ex, "Initial email fetch failed for UserId: {UserId}", user.Id);
+            throw;
+        }
     }
 
     public async Task SyncUserEmailAsync(
