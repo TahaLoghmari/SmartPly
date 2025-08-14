@@ -17,7 +17,8 @@ builder
     .AddRateLimiting()
     .AddCaching()
     .AddSupabase()
-    .AddHangfire();
+    .AddHangfire()
+    .AddGenerativeAI();
 
 var app = builder.Build();
 

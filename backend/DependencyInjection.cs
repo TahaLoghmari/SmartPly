@@ -1,10 +1,10 @@
+namespace backend;
 using System.Threading.RateLimiting;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
-namespace backend;
 using Serilog;
 using Services;
 using Settings;
@@ -16,6 +16,8 @@ using System.Text;
 using Entities;
 using FluentValidation;
 using Middlewares;
+using Mscc.GenerativeAI.Web;
+
 
 
 public static class DependencyInjection
@@ -197,6 +199,13 @@ public static class DependencyInjection
                         builder.Configuration.GetConnectionString("Database"))));
         builder.Services.AddHangfireServer();
 
+        return builder;
+    }
+
+    public static WebApplicationBuilder AddGenerativeAI(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddGenerativeAI(builder.Configuration.GetSection("Gemini"));
+        
         return builder;
     }
 }
