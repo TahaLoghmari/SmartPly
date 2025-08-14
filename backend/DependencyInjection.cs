@@ -1,3 +1,5 @@
+using Mscc.GenerativeAI;
+
 namespace backend;
 using System.Threading.RateLimiting;
 using Hangfire;
@@ -16,9 +18,6 @@ using System.Text;
 using Entities;
 using FluentValidation;
 using Middlewares;
-using Mscc.GenerativeAI.Web;
-
-
 
 public static class DependencyInjection
 {
@@ -199,13 +198,6 @@ public static class DependencyInjection
                         builder.Configuration.GetConnectionString("Database"))));
         builder.Services.AddHangfireServer();
 
-        return builder;
-    }
-
-    public static WebApplicationBuilder AddGenerativeAI(this WebApplicationBuilder builder)
-    {
-        builder.Services.AddGenerativeAI(builder.Configuration.GetSection("Gemini"));
-        
         return builder;
     }
 }

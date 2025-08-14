@@ -11,8 +11,11 @@ public class Email
     public string FromName { get; set; } = string.Empty;
     public string Labels { get; set; } = string.Empty; 
     public string Snippet { get; set; } = string.Empty;
+    public string? Category { get; set; } = string.Empty;
+    public string? Summary { get; set; } = string.Empty;
     public bool IsRead { get; set; }
     public bool IsImportant { get; set; }
+    public bool IsJobRelated { get; set; } = false;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public User? User { get; set; }

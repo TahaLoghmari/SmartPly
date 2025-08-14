@@ -36,6 +36,7 @@ public class EmailConfiguration : IEntityTypeConfiguration<Email>
             
         builder.Property(e => e.Snippet)
             .HasColumnType("TEXT")
+            .HasMaxLength(500)
             .IsRequired();
             
         builder.Property(e => e.HeaderDate)
@@ -43,6 +44,17 @@ public class EmailConfiguration : IEntityTypeConfiguration<Email>
             
         builder.Property(e => e.IsRead)
             .IsRequired();
+
+        builder.Property(e => e.Category)
+            .HasMaxLength(255);
+
+        builder.Property(e => e.Summary)
+            .HasColumnType("TEXT")
+            .HasMaxLength(500);
+        
+        builder.Property(e => e.IsJobRelated)
+            .IsRequired()
+            .HasDefaultValue(false);
             
         builder.Property(e => e.IsImportant)
             .IsRequired();
