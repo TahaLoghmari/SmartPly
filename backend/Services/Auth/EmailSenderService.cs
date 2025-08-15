@@ -19,7 +19,7 @@ public sealed class EmailSenderService(
 {
     private readonly EmailSettings _emailSettings = emailSettings.Value;
 
-    private async Task SendEmailAsync(
+    public async Task SendEmailAsync(
         SendEmailDto sendEmailDto,
         CancellationToken cancellationToken)
     {

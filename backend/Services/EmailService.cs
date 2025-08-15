@@ -38,8 +38,8 @@ public class EmailService(
     private GmailService? _gmailService;
     private const int DefaultBatchSize = 10;
     private const int DefaultDelayMs = 200;
-    private const int InitialFetchLimit = 5;
-    private const int SyncFetchLimit = 5;
+    private const int InitialFetchLimit = 100;
+    private const int SyncFetchLimit = 20;
     private const int DefaultPageSize = 10;
     
     private async Task InitializeAsync(
@@ -266,7 +266,7 @@ public class EmailService(
             await dbContext.SaveChangesAsync(cancellationToken);
             
             var emailIds = emails.Select(e => e.Id).ToList();
-            backgroundJobClient.Enqueue(() => ProcessEmailsWithAI(emailIds, userId, CancellationToken.None));
+            // backgroundJobClient.Enqueue(() => ProcessEmailsWithAI(emailIds, userId, CancellationToken.None));
             
             cacheService.InvalidateUserEmailCache(userId);
         }
