@@ -26,6 +26,19 @@ export function Inbox() {
 
   const emails = data?.pages.flatMap((page) => page.items) ?? [];
 
+  if (!user?.gmailConnected) {
+    return (
+      <div className="flex h-[80svh] flex-1 flex-col items-center justify-center gap-4">
+        <p className="text-foreground text-center text-lg font-semibold">
+          Gmail is not connected!
+        </p>
+        <span className="text-muted-foreground text-center leading-relaxed">
+          Connect your Gmail account to view your inbox.
+        </span>
+      </div>
+    );
+  }
+
   if (user?.isInitialSyncComplete === false || isPending)
     return (
       <div className="flex h-[80svh] flex-1 flex-col items-center justify-center gap-2">

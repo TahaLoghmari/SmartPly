@@ -27,8 +27,11 @@ export default function Documents() {
   const { data: resumes } = useGetUserResumes();
   const { search: resumeSearch, setSearch: setResumeSearch } =
     useResumeSearchbarStore();
-  const { selected: selectedResumes, setSelected: setSelectedResumes } =
-    useSelectedResumesStore();
+  const {
+    selected: selectedResumes,
+    setSelected: setSelectedResumes,
+    clearSelected: clearSelectedResumes,
+  } = useSelectedResumesStore();
   const bulkDeleteResumesMutation = useBulkDeleteResumes();
 
   const { data: coverLetters } = useGetUserCoverLetters();
@@ -37,16 +40,19 @@ export default function Documents() {
   const {
     selected: selectedCoverLetters,
     setSelected: setSelectedCoverLetters,
+    clearSelected: clearSelectedCoverLetters,
   } = useSelectedCoverLettersStore();
   const bulkDeleteCoverLettersMutation = useBulkDeleteCoverLetters();
 
   const handleBulkDeleteResumes = () => {
     const Ids = selectedResumes.map((row: any) => row.original.id);
     bulkDeleteResumesMutation.mutate({ Ids });
+    clearSelectedResumes();
   };
   const handleBulkDeleteCoverLetters = () => {
     const Ids = selectedCoverLetters.map((row: any) => row.original.id);
     bulkDeleteCoverLettersMutation.mutate({ Ids });
+    clearSelectedCoverLetters();
   };
 
   return (

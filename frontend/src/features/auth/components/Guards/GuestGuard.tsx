@@ -5,11 +5,9 @@ import { Spinner } from "@/components/ui/spinner";
 export default function GuestGuard({ children }: GuardProps) {
   const { data: user, isLoading, isError } = useCurrentUser();
 
-  if (isError) {
-    return <>{children}</>;
-  }
+  if (isError) return <>{children}</>;
 
-  if (isLoading && !isError) {
+  if (isLoading) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <Spinner />
@@ -17,9 +15,7 @@ export default function GuestGuard({ children }: GuardProps) {
     );
   }
 
-  if (user) {
-    return <Navigate to="/app" replace />;
-  }
+  if (user) return <Navigate to="/app" replace />;
 
   return <>{children}</>;
 }
