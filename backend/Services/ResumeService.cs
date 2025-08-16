@@ -168,7 +168,7 @@ public class ResumeService(
         cacheService.InvalidateUserResumeCache(userId);
 
         backgroundJobClient.Enqueue(() =>
-            DeleteResumeFileAsync(resume.Url, resume.Id));
+            supabaseService.DeleteFileAsync(resume.Url, "resumes"));
         
         logger.LogInformation("Resume deleted with ID {ResumeId}", resume.Id);
     }
@@ -200,28 +200,11 @@ public class ResumeService(
         foreach (var resume in resumes)
         {
             backgroundJobClient.Enqueue(() =>
-                DeleteResumeFileAsync(resume.Url, resume.Id));
+                supabaseService.DeleteFileAsync(resume.Url, "resumes"));
         }
         
         logger.LogInformation("Bulk deleted {Count} resumes for user {UserId}",
             resumes.Count, userId);
-    }
-    
-    private async Task DeleteResumeFileAsync(string fileUrl, Guid resumeId)
-    {
-        try
-        {
-            await supabaseService.DeleteFileAsync(fileUrl, "resumes");
-            logger.LogInformation("Successfully deleted file for resume {ResumeId}", resumeId);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Failed to delete file for resume {ResumeId}. URL: {FileUrl}",
-                resumeId, fileUrl);
-
-            backgroundJobClient.Schedule(() =>
-                DeleteResumeFileAsync(fileUrl, resumeId), TimeSpan.FromMinutes(15));
-        }
     }
     
     public async Task<DownloadResultDto> DownloadResume(

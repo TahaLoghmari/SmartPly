@@ -162,7 +162,7 @@ public class CoverLetterService(
         cacheService.InvalidateUserCoverLetterCache(userId);
         
         backgroundJobClient.Enqueue(() =>
-            DeleteCoverLetterFileAsync(coverLetter.Url, coverLetter.Id));
+            supabaseService.DeleteFileAsync(coverLetter.Url, "cover-letters"));
         
         logger.LogInformation("Cover letter deleted with ID {CoverLetterId}", coverLetter.Id);
     }
@@ -194,28 +194,11 @@ public class CoverLetterService(
         foreach (var coverLetter in coverLetters)
         {
             backgroundJobClient.Enqueue(() =>
-                DeleteCoverLetterFileAsync(coverLetter.Url, coverLetter.Id));
+                supabaseService.DeleteFileAsync(coverLetter.Url, "cover-letters"));
         }
         
         logger.LogInformation("Bulk deleted {Count} cover letters for user {UserId}", 
             coverLetters.Count, userId);
-    }
-    
-    private async Task DeleteCoverLetterFileAsync(string fileUrl, Guid coverLetterId)
-    {
-        try
-        {
-            await supabaseService.DeleteFileAsync(fileUrl, "cover-letters");
-            logger.LogInformation("Successfully deleted file for cover letter {CoverLetterId}", coverLetterId);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Failed to delete file for cover letter {CoverLetterId}. URL: {FileUrl}", 
-                coverLetterId, fileUrl);
-
-            backgroundJobClient.Schedule(() => 
-                DeleteCoverLetterFileAsync(fileUrl, coverLetterId), TimeSpan.FromMinutes(15));
-        }
     }
     
     public async Task<DownloadResultDto> DownloadCoverLetter(
