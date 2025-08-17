@@ -1,6 +1,11 @@
-export function EditUserFormDefaults() {
+export function UserNameFormDefaults() {
   return {
-    Name: "",
+    name: "",
+  };
+}
+
+export function PasswordFormDefaults() {
+  return {
     currentPassword: "",
     password: "",
     confirmPassword: "",

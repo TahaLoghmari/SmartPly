@@ -1,5 +1,3 @@
-import { Save } from "lucide-react";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -8,60 +6,49 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { EditUserFormDefaults, EditUserFormSchema } from "#/settings";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
-import { useCurrentUser } from "#/auth";
-import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import type z from "zod";
+import {
+  PasswordFormDefaults,
+  PasswordFormSchema,
+  useUpdateCurrentUser,
+  type UserRequestDto,
+} from "#/settings";
 import { Button } from "@/components/ui/button";
+import { Save } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
-export function SettingsForm() {
-  const onSubmit = () => {};
-  const { data: user } = useCurrentUser();
-  // handle errors, loading
-
-  const form = useForm<z.infer<typeof EditUserFormSchema>>({
-    resolver: zodResolver(EditUserFormSchema),
+export function SettingsPasswordForm() {
+  const form = useForm<z.infer<typeof PasswordFormSchema>>({
+    resolver: zodResolver(PasswordFormSchema),
     mode: "onChange",
-    defaultValues: EditUserFormDefaults(),
+    defaultValues: PasswordFormDefaults(),
   });
+  const updateCurrentUserMutation = useUpdateCurrentUser();
+  const onSubmit = (data: z.infer<typeof PasswordFormSchema>) => {
+    const userRequest: UserRequestDto = {
+      name: undefined,
+      password: data.password,
+      confirmPassword: data.confirmPassword,
+      currentPassword: data.currentPassword,
+    };
+
+    updateCurrentUserMutation.mutate(userRequest, {
+      onSuccess: () => {
+        form.reset();
+      },
+    });
+  };
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex gap-4">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem className="flex flex-1 flex-col gap-3">
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="flex flex-1 flex-col gap-3">
-            <Label>Email Adress</Label>
-            <Input
-              type="email"
-              placeholder="Email"
-              className="bg-accent"
-              value={user?.email}
-              disabled
-            />
-            <span className="text-muted-foreground text-xs">
-              Email adress cannot be changed.
-            </span>
-          </div>
-        </div>
         <FormField
           control={form.control}
           name="currentPassword"
           render={({ field }) => (
-            <FormItem className="mt-10 mb-6 flex-1 gap-3">
+            <FormItem className="mb-6 flex-1 gap-3">
               <FormLabel>Current Password</FormLabel>
               <FormControl>
                 <Input
@@ -113,11 +100,17 @@ export function SettingsForm() {
         <div className="flex w-full justify-end">
           <Button
             type="submit"
-            className="mt-10 cursor-pointer"
+            className="mt-10 w-[148px] cursor-pointer"
             disabled={!form.formState.isValid}
           >
-            <Save className="h-4 w-4" />
-            Save Changes
+            {updateCurrentUserMutation.isPending ? (
+              <Spinner className="h-5 w-5 border-2 invert" />
+            ) : (
+              <>
+                <Save className="h-4 w-4" />
+                Save Changes
+              </>
+            )}
           </Button>
         </div>
       </form>

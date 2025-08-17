@@ -7,6 +7,7 @@ export interface User {
   gmailConnected: boolean;
   emailConfirmed?: boolean;
   isInitialSyncComplete: boolean;
+  hasPassword: boolean;
 }
 
 export interface LoginUserDto {

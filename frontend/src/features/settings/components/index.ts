@@ -1,3 +1,4 @@
 export * from "./Settings";
-export * from "./SettingsForm";
+export * from "./SettingsUserNameForm";
+export * from "./SettingsPasswordForm";
 export * from "./SettingsDeleteAccountButton";
