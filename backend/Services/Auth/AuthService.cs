@@ -114,7 +114,7 @@ public class AuthService(
                 $"user-{user.Id}-cleanup-expired-tokens",
                 service => service.CleanupExpiredTokens(),
                 Cron.Daily);
-            user.IsRecurringSyncScheduled = true;
+            user.IsRecurringCleanupScheduled = true;
             await userManager.UpdateAsync(user);
             logger.LogInformation("Recurring cleanup job scheduled for UserId: {UserId}", user.Id);
         }
@@ -254,14 +254,14 @@ public class AuthService(
             cookieService.AddCookies(response, accessTokens);
             logger.LogInformation("User created and tokens stored for UserId: {UserId}, Email: {Email}", user.Id, user.Email);
             
-            if (!user.IsRecurringSyncScheduled)
+            if (!user.IsRecurringCleanupScheduled)
             {
                 RecurringJob.AddOrUpdate<TokenManagementService>(
                     $"user-{user.Id}-cleanup-expired-tokens",
                     service => service.CleanupExpiredTokens(),
                     Cron.Daily);
 
-                user.IsRecurringSyncScheduled = true;
+                user.IsRecurringCleanupScheduled = true;
                 await userManager.UpdateAsync(user);
                 logger.LogInformation("Recurring cleanup job scheduled for UserId: {UserId}", user.Id);
             }
@@ -280,30 +280,6 @@ public class AuthService(
         logger.LogInformation("GoogleCallback completed successfully for UserId: {UserId}", user?.Id);
 
         return (user, null);
-    }
-
-    public async Task<UserDto> GetCurrentUser(
-        string? userId)
-    {
-        if (userId is null)
-        {
-            logger.LogWarning("Get current user failed - user ID claim missing");
-            throw new UnauthorizedException("User ID claim is missing.", "Unauthorized");
-        }
-
-        var user = await userManager.FindByIdAsync(userId);
-
-        if (user is null)
-        {
-            logger.LogWarning("Get current user failed - user not found for UserId: {UserId}", userId);
-            throw new NotFoundException($"No user found with ID '{userId}'.", "User not found");
-        }
-        
-        logger.LogInformation("Current user retrieved successfully for UserId: {UserId}", userId);
-        
-        UserDto userDto = user.toUserDto();
-
-        return userDto;
     }
 
     public async Task Logout(

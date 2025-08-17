@@ -102,17 +102,6 @@ public sealed class AuthController(
 
         return Redirect($"{frontendBaseUrl}/app");
     }
-
-    [HttpGet("me")]
-    [Authorize]
-    public async Task<IActionResult> GetCurrentUser()
-    {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        UserDto userDto = await authService.GetCurrentUser(userId);
-
-        return Ok(userDto);
-    }
     
     [HttpPost("logout")]
     public async Task<IActionResult> Logout(

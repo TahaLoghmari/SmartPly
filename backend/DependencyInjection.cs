@@ -140,17 +140,18 @@ public static class DependencyInjection
     }
     public static WebApplicationBuilder AddServices(this WebApplicationBuilder builder)
     {
-        builder.Services.AddTransient<TokenProvider>();
-        builder.Services.AddTransient<GoogleTokensProvider>();
-        builder.Services.AddTransient<TokenManagementService>();
+        builder.Services.AddScoped<TokenProvider>();
+        builder.Services.AddScoped<GoogleTokensProvider>();
+        builder.Services.AddScoped<TokenManagementService>();
         builder.Services.AddScoped<CookieService>();
-        builder.Services.AddTransient<EmailSenderService>();
-        builder.Services.AddTransient<ApplicationService>();
-        builder.Services.AddTransient<AuthService>();
+        builder.Services.AddScoped<EmailSenderService>();
+        builder.Services.AddScoped<ApplicationService>();
+        builder.Services.AddScoped<AuthService>();
         builder.Services.AddScoped<EmailService>();
-        builder.Services.AddTransient<CacheService>();
+        builder.Services.AddScoped<CacheService>();
         builder.Services.AddScoped<ResumeService>();
         builder.Services.AddScoped<CoverLetterService>();
+        builder.Services.AddScoped<UserService>();
         builder.Services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>("Database");
         

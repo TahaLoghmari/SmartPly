@@ -40,7 +40,7 @@ public sealed class CookieService(
         response.Cookies.Append("refreshToken", accessTokens.RefreshToken, CreateRefreshCookieOptions());
     }
     
-    public void RemoveCookies(HttpResponse response )
+    public void RemoveCookies(HttpResponse response)
     {
         var expiredOptions = new CookieOptions
         {

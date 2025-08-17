@@ -13,18 +13,28 @@ namespace backend.Controllers;
 public sealed class UserController(
     UserService userService ) : ControllerBase
 {
+    [HttpGet]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        UserDto userDto = await userService.GetCurrentUser(userId);
+
+        return Ok(userDto);
+    }
+    
     [HttpDelete]
     public async Task<IActionResult> DeleteCurrentUser()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         
-        await userService.DeleteUserAsync(userId);
+        await userService.DeleteCurrentUserAsync(userId,HttpContext);
         
         return NoContent();
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateUser(
+    public async Task<IActionResult> UpdateCurrentUser(
         [FromBody] UserRequestDto dto,
         [FromServices] IValidator<UserRequestDto> validator)
     {
@@ -32,7 +42,7 @@ public sealed class UserController(
         
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         
-        await userService.UpdateUserAsync(dto,userId);
+        await userService.UpdateCurrentUserAsync(dto,userId);
         
         return NoContent();
     }

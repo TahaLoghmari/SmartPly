@@ -1,6 +1,7 @@
 using backend.DTOs;
 using backend.Entities;
 using backend.Exceptions;
+using backend.Mappings;
 using Hangfire;
 using Hangfire.Storage;
 using Microsoft.AspNetCore.Identity;
@@ -10,9 +11,36 @@ namespace backend.Services;
 public class UserService(
     UserManager<User> userManager,
     ILogger<UserService> logger,
-    IRecurringJobManager recurringJobManager)
+    IRecurringJobManager recurringJobManager,
+    CookieService cookieService)
 {
-    public async Task DeleteUserAsync(string? userId)
+    public async Task<UserDto> GetCurrentUser(
+        string? userId)
+    {
+        if (userId is null)
+        {
+            logger.LogWarning("Get current user failed - user ID claim missing");
+            throw new UnauthorizedException("User ID claim is missing.", "Unauthorized");
+        }
+
+        var user = await userManager.FindByIdAsync(userId);
+
+        if (user is null)
+        {
+            logger.LogWarning("Get current user failed - user not found for UserId: {UserId}", userId);
+            throw new NotFoundException($"No user found with ID '{userId}'.", "User not found");
+        }
+        
+        logger.LogInformation("Current user retrieved successfully for UserId: {UserId}", userId);
+        
+        UserDto userDto = user.toUserDto();
+
+        return userDto;
+    }
+    
+    public async Task DeleteCurrentUserAsync(
+        string? userId,
+        HttpContext httpContext)
     {
         if (userId is null)
         {
@@ -38,9 +66,13 @@ public class UserService(
         }
         
         logger.LogInformation("Removed all jobs for UserId: {UserId}", userId);
+        
+        cookieService.RemoveCookies(httpContext.Response);
+        
+        logger.LogInformation("Removed cookies for UserId: {UserId}", userId);
     }
 
-    public async Task UpdateUserAsync(
+    public async Task UpdateCurrentUserAsync(
         UserRequestDto dto,
         string? userId)
     {
