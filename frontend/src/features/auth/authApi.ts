@@ -43,7 +43,7 @@ export const refresh = () => {
 };
 
 export const getCurrentUser = () => {
-  return request<User>("/auth/me");
+  return request<User>("/me");
 };
 
 export const resendConfirmationEmail = (email: string) => {

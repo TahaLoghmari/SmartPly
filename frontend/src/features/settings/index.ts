@@ -1,2 +1,4 @@
-// components
-export { Settings } from "./components/Settings";
+export * from "./lib";
+export * from "./settingsApi";
+export * from "./hooks";
+export * from "./components";

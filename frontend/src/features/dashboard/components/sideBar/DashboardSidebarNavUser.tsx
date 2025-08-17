@@ -1,8 +1,6 @@
 import {
-  IconCreditCard,
   IconDotsVertical,
   IconLogout,
-  IconNotification,
   IconUserCircle,
 } from "@tabler/icons-react";
 
@@ -23,10 +21,12 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useLogoutDialogStore, type SidebarNavUserProps } from "#/dashboard";
+import { useNavigate } from "react-router-dom";
 
 export default function DashboardSidebarNavUser({ user }: SidebarNavUserProps) {
   const { isMobile } = useSidebar();
   const { setIsOpen } = useLogoutDialogStore();
+  const navigate = useNavigate();
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -75,17 +75,9 @@ export default function DashboardSidebarNavUser({ user }: SidebarNavUserProps) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/app/settings")}>
                 <IconUserCircle />
                 Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconCreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconNotification />
-                Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
