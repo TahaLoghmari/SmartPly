@@ -12,7 +12,8 @@ public class UserService(
     UserManager<User> userManager,
     ILogger<UserService> logger,
     IRecurringJobManager recurringJobManager,
-    CookieService cookieService)
+    CookieService cookieService,
+    ApplicationDbContext dbContext)
 {
     public async Task<UserDto> GetCurrentUser(
         string? userId)
@@ -89,18 +90,35 @@ public class UserService(
             throw new UnauthorizedException("User not found.");
         }
         
-        logger.LogInformation("Updating user profile for UserId: {UserId}", userId);
-        user.Name = dto.Name;
-        await userManager.UpdateAsync(user);
+        await using var transaction = await dbContext.Database.BeginTransactionAsync();
 
-        logger.LogInformation("Attempting password change for UserId: {UserId}", userId);
-        var result = await userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
-        if (!result.Succeeded)
+        try
         {
-            logger.LogWarning("Password change failed for UserId: {UserId}. Errors: {Errors}",
-                userId, string.Join(", ", result.Errors.Select(e => $"{e.Code}: {e.Description}")));
-            throw new BadRequestException("Password change failed.", "Password change failed", result.Errors);
+            logger.LogInformation("Updating user profile for UserId: {UserId}", userId);
+
+            if (!string.IsNullOrEmpty(dto.Name)) user.Name = dto.Name;
+            await userManager.UpdateAsync(user);
+
+            if (!string.IsNullOrEmpty(dto.CurrentPassword) && !string.IsNullOrEmpty(dto.Password))
+            {
+                logger.LogInformation("Attempting password change for UserId: {UserId}", userId);
+                var result = await userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.Password);
+                if (!result.Succeeded)
+                {
+                    logger.LogWarning("Password change failed for UserId: {UserId}. Errors: {Errors}",
+                        userId, string.Join(", ", result.Errors.Select(e => $"{e.Code}: {e.Description}")));
+                    throw new BadRequestException("Password change failed.", "Password change failed", result.Errors);
+                }
+                logger.LogInformation("Password changed successfully for UserId: {UserId}", userId);
+            }
+
+            await transaction.CommitAsync();
         }
-        logger.LogInformation("Password changed successfully for UserId: {UserId}", userId);
+        catch
+        {
+            await transaction.RollbackAsync();
+            logger.LogWarning("Failed to update user profile for UserId: {UserId}", userId);
+            throw;
+        }
     }
 }

@@ -16,6 +16,7 @@ internal static class UserMappings
             GoogleEmail = user.GoogleEmail!,
             GmailConnected = user.GmailConnected!,
             IsInitialSyncComplete = user.IsInitialSyncComplete,
+            HasPassword = user.PasswordHash is not null
         };
     }
 }
