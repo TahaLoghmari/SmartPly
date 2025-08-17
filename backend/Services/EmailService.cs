@@ -253,7 +253,7 @@ public class EmailService(
             if (!user.IsRecurringSyncScheduled)
             {
                 RecurringJob.AddOrUpdate<EmailService>(
-                    $"sync-emails-{userId}",
+                    $"user-{userId}-email-sync",
                     s => s.SyncUserEmailAsync(userId, CancellationToken.None),
                     "*/10 * * * *",
                     new RecurringJobOptions { TimeZone = TimeZoneInfo.Utc });

@@ -38,6 +38,10 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.IsRecurringSyncScheduled)
             .IsRequired()
             .HasDefaultValue(false);
+        
+        builder.Property(u => u.IsRecurringCleanupScheduled)
+            .IsRequired()
+            .HasDefaultValue(false);
 
         builder.HasMany(u => u.Emails)
             .WithOne(e => e.User)

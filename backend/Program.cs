@@ -47,6 +47,5 @@ app.UseHangfireDashboard("/hangfire-dashboard");
 // });
 var supabaseService = app.Services.GetRequiredService<SupabaseService>();
 await supabaseService.InitializeAsync();
-app.ConfigureRecurringJobs();
 
 app.Run();

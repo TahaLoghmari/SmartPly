@@ -107,6 +107,17 @@ public class AuthService(
         
         logger.LogInformation("Login successful for {Email}, UserId: {UserId}", 
             loginUserDto.Email, user.Id);
+
+        if (!user.IsRecurringCleanupScheduled)
+        {
+            RecurringJob.AddOrUpdate<TokenManagementService>(
+                $"user-{user.Id}-cleanup-expired-tokens",
+                service => service.CleanupExpiredTokens(),
+                Cron.Daily);
+            user.IsRecurringSyncScheduled = true;
+            await userManager.UpdateAsync(user);
+            logger.LogInformation("Recurring cleanup job scheduled for UserId: {UserId}", user.Id);
+        }
     }
 
     public async Task Refresh(
@@ -242,6 +253,18 @@ public class AuthService(
             accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, user.Email!,cancellationToken);
             cookieService.AddCookies(response, accessTokens);
             logger.LogInformation("User created and tokens stored for UserId: {UserId}, Email: {Email}", user.Id, user.Email);
+            
+            if (!user.IsRecurringSyncScheduled)
+            {
+                RecurringJob.AddOrUpdate<TokenManagementService>(
+                    $"user-{user.Id}-cleanup-expired-tokens",
+                    service => service.CleanupExpiredTokens(),
+                    Cron.Daily);
+
+                user.IsRecurringSyncScheduled = true;
+                await userManager.UpdateAsync(user);
+                logger.LogInformation("Recurring cleanup job scheduled for UserId: {UserId}", user.Id);
+            }
         }
 
         if (!user.IsInitialSyncStarted)
