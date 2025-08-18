@@ -10,10 +10,13 @@ import { useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useCurrentUser } from "#/auth";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import * as signalR from "@microsoft/signalr";
+import { useQueryClient } from "@tanstack/react-query";
+import type { NotificationResponseDto } from "#/notifications";
 
 export function Dashboard() {
   const { isSidebarOpen, setIsSidebarOpen } = useDashboardSidebarStateStore();
-  const { isPending } = useCurrentUser();
+  const { data: user, isPending } = useCurrentUser();
   const [searchParams, setSearchParams] = useSearchParams();
   const isInboxRoute = location.pathname.includes("inbox");
 
@@ -37,6 +40,47 @@ export function Dashboard() {
         <Spinner />
       </div>
     );
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const connection = new signalR.HubConnectionBuilder()
+      .withUrl("http://localhost:5000/hubs/notifications", {
+        withCredentials: true,
+      })
+      .withAutomaticReconnect()
+      .build();
+
+    connection
+      .start()
+      .then(() => console.log("Connected to SignalR"))
+      .catch((err) => console.error("Connection failed: ", err));
+
+    connection.on(
+      "NotificationReceived",
+      (notification: NotificationResponseDto) => {
+        console.log(notification);
+
+        queryClient.invalidateQueries({
+          queryKey: ["notifications", user?.id],
+        });
+
+        if (notification.title === "Initial Email Sync Completed") {
+          queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+        }
+      },
+    );
+
+    connection.onclose((err) => {
+      console.error("SignalR disconnected", err);
+    });
+
+    return () => {
+      connection.stop();
+    };
+  }, [user?.id, queryClient]);
 
   return (
     <SidebarProvider

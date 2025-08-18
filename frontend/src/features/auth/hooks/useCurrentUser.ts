@@ -12,10 +12,5 @@ export function useCurrentUser() {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
-    refetchInterval: (query) => {
-      const user = query.state.data;
-      return user && !user.isInitialSyncComplete ? 5000 : false;
-    },
-    refetchIntervalInBackground: true,
   });
 }
