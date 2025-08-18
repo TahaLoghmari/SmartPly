@@ -61,8 +61,6 @@ export function Dashboard() {
     connection.on(
       "NotificationReceived",
       (notification: NotificationResponseDto) => {
-        console.log(notification);
-
         queryClient.invalidateQueries({
           queryKey: ["notifications", user?.id],
         });

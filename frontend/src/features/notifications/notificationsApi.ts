@@ -23,3 +23,9 @@ export const getNotifications = (params: NotificationQueryParameters) => {
     items: result.items.map(mapNotificationDates),
   }));
 };
+
+export const markAllNotificationsRead = () => {
+  return request<void>(`/notifications/mark-as-read`, {
+    method: "POST",
+  });
+};
