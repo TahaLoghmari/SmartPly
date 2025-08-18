@@ -152,6 +152,7 @@ public static class DependencyInjection
         builder.Services.AddScoped<ResumeService>();
         builder.Services.AddScoped<CoverLetterService>();
         builder.Services.AddScoped<UserService>();
+        builder.Services.AddScoped<NotificationService>();
         builder.Services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>("Database");
         
@@ -199,6 +200,13 @@ public static class DependencyInjection
                         builder.Configuration.GetConnectionString("Database"))));
         builder.Services.AddHangfireServer();
 
+        return builder;
+    }
+    
+    public static WebApplicationBuilder AddHubs(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddSignalR();
+        
         return builder;
     }
 }

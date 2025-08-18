@@ -1,5 +1,6 @@
 using backend;
 using backend.Extensions;
+using backend.Hubs;
 using backend.Services;
 using Hangfire;
 using Serilog;
@@ -41,10 +42,8 @@ app.MapControllers();
 app.UseSerilogRequestLogging();
 app.UseRateLimiter();
 app.UseHangfireDashboard("/hangfire-dashboard");
-// app.UseHangfireDashboard("/hangfire-dashboard", new DashboardOptions
-// {
-//     Authorization = new[] { new DashboardAuthorizationFilter() }
-// });
+app.MapHub<NotificationHub>("/hubs/notifications");
+
 var supabaseService = app.Services.GetRequiredService<SupabaseService>();
 await supabaseService.InitializeAsync();
 

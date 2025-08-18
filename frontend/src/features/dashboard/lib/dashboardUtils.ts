@@ -47,7 +47,7 @@ export function getNavigationData(user: {
       },
       {
         title: "AI",
-        url: "#",
+        url: "ai",
         icon: Sparkles,
       },
     ],

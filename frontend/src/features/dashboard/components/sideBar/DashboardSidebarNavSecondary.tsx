@@ -20,12 +20,18 @@ export default function DashboardSidebarNavSecondary({
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild>
-                <NavLink to={`/app/${item.url}`}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </NavLink>
-              </SidebarMenuButton>
+              <NavLink to={`/app/${item.url}`}>
+                {({ isActive }) => (
+                  <SidebarMenuButton
+                    tooltip={item.title}
+                    isActive={isActive}
+                    className="cursor-pointer"
+                  >
+                    {item.icon && <item.icon />}
+                    <span>{item.title}</span>
+                  </SidebarMenuButton>
+                )}
+              </NavLink>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
