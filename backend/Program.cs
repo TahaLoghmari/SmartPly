@@ -18,7 +18,8 @@ builder
     .AddRateLimiting()
     .AddCaching()
     .AddSupabase()
-    .AddHangfire();
+    .AddHangfire()
+    .AddHubs();
 
 var app = builder.Build();
 

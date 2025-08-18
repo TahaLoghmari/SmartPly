@@ -5,6 +5,7 @@ using Google.Apis.Services;
 using Microsoft.AspNetCore.Identity;
 using backend.DTOs;
 using backend.Entities;
+using backend.Enums;
 using backend.Exceptions;
 using backend.Settings;
 using backend.Mappings;
@@ -32,7 +33,8 @@ public class EmailService(
     IMemoryCache cache,
     CacheService cacheService,
     IBackgroundJobClient backgroundJobClient,
-    IConfiguration configuration)
+    IConfiguration configuration,
+    NotificationService notificationService)
 {
     private readonly GoogleSettings _googleSettings = googleSettings.Value;
     private GmailService? _gmailService;
@@ -269,6 +271,22 @@ public class EmailService(
             // backgroundJobClient.Enqueue(() => ProcessEmailsWithAI(emailIds, userId, CancellationToken.None));
             
             cacheService.InvalidateUserEmailCache(userId);
+            
+            logger.LogInformation("Initial email fetch completed for UserId: {UserId}. Processed {Count} messages",
+                user.Id, listResponse.Messages?.Count ?? 0);
+
+            NotificationRequestDto notificationRequestDto = new NotificationRequestDto
+            {
+                Title = "Initial Email Sync Completed",
+                Message = "Your initial email sync has been successfully completed.",
+                Type = NotificationType.otherUpdate,
+                IsRead = false,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await notificationService.AddNotificationAsync(userId, notificationRequestDto,cancellationToken);
+            
+            logger.LogInformation("Notification sent to user {UserId} for initial email sync completion", userId);
         }
         catch (Exception ex)
         {
