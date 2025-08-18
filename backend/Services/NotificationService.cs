@@ -105,7 +105,7 @@ public class NotificationService(
             notification.IsRead = true;
 
         await dbContext.SaveChangesAsync(cancellationToken);
-        logger.LogInformation("Marked notifications as read for user ID: {UserId}", userId);
+        logger.LogInformation("Marked {UnreadNotificationsCount} notifications as read for user ID: {UserId}", notifications.Count, userId);
     }
     
     public async Task AddNotificationAsync(
