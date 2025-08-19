@@ -79,6 +79,9 @@ public class NotificationService(
             await dbContext.SaveChangesAsync(cancellationToken);
             logger.LogInformation("Notification {NotificationId} marked as read", id);
         }
+        
+        cacheService.InvalidateUserNotificationCache(userId);
+        logger.LogInformation("Notifications Cache invalidated for user ID: {UserId}", userId);
     }
 
     public async Task MarkNotificationsAsReadAsync(
@@ -106,6 +109,9 @@ public class NotificationService(
 
         await dbContext.SaveChangesAsync(cancellationToken);
         logger.LogInformation("Marked {UnreadNotificationsCount} notifications as read for user ID: {UserId}", notifications.Count, userId);
+        
+        cacheService.InvalidateUserNotificationCache(userId);
+        logger.LogInformation("Notifications Cache invalidated for user ID: {UserId}", userId);
     }
     
     public async Task AddNotificationAsync(

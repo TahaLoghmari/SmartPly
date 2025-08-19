@@ -7,5 +7,6 @@ public enum NotificationType
     offer,
     rejected,
     ghosted,
+    emailUpdate,
     otherUpdate,
 }

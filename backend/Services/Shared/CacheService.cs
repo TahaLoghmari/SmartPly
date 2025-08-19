@@ -15,7 +15,7 @@ namespace backend.Services;
 
 public sealed class CacheService(
     IMemoryCache cache,
-    ILogger<ApplicationService> logger)
+    ILogger<CacheService> logger)
 {
     private const string UserCacheKeysPrefix = "UserCacheKeys_";
     private const string UserApplicationsPrefix = "UserApplications_";
@@ -256,7 +256,7 @@ public sealed class CacheService(
     
     public void InvalidateUserNotificationCache(string userId)
     {
-        string userKeySet = $"{UserNotificationsPrefix}{userId}";
+        string userKeySet = $"{UserCacheKeysPrefix}{userId}";
 
         if (!cache.TryGetValue(userKeySet, out ConcurrentDictionary<string, byte>? userKeys))
         {
