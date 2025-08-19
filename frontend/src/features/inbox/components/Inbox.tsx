@@ -58,7 +58,11 @@ export function Inbox() {
           Failed to load emails.
         </span>
         <Button onClick={() => fetchNextPage()} className="cursor-pointer">
-          {isPending ? <Spinner className="h-6 w-6 invert" /> : "Retry"}
+          {isPending ? (
+            <Spinner className="h-6 w-6 border-2 invert" />
+          ) : (
+            "Retry"
+          )}
         </Button>
       </div>
     );
@@ -82,7 +86,7 @@ export function Inbox() {
           </span>
           <Button className="cursor-pointer" onClick={() => fetchNextPage}>
             {isFetchingNextPage ? (
-              <Spinner className="h-6 w-6 invert" />
+              <Spinner className="h-6 w-6 border-2 invert" />
             ) : (
               "Retry"
             )}

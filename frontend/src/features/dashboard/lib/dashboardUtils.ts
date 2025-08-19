@@ -1,5 +1,5 @@
-import { IconFileAnalytics, IconSettings } from "@tabler/icons-react";
-import { Inbox, ClipboardList, Users, FileText, Sparkles } from "lucide-react";
+import { IconSettings } from "@tabler/icons-react";
+import { Inbox, ClipboardList, FileText, Sparkles } from "lucide-react";
 
 export function getNavigationData(user: {
   name: string;
@@ -18,16 +18,16 @@ export function getNavigationData(user: {
         url: "applications",
         icon: ClipboardList,
       },
-      {
-        title: "Analytics",
-        url: "analytics",
-        icon: IconFileAnalytics,
-      },
-      {
-        title: "Contacts",
-        url: "contacts",
-        icon: Users,
-      },
+      // {
+      //   title: "Analytics",
+      //   url: "analytics",
+      //   icon: IconFileAnalytics,
+      // },
+      // {
+      //   title: "Contacts",
+      //   url: "contacts",
+      //   icon: Users,
+      // },
       {
         title: "Documents",
         url: "documents",

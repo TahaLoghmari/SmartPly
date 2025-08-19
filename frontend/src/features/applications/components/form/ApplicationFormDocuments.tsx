@@ -70,7 +70,7 @@ export default function ApplicationFormDocuments({
               )}
               {AreResumesLoading && (
                 <div className="flex w-full items-center justify-center">
-                  <Spinner className="h-5 w-5" />
+                  <Spinner className="h-5 w-5 border-2" />
                 </div>
               )}
               {!DidResumeFetchingFail && !AreResumesLoading && (
@@ -153,7 +153,7 @@ export default function ApplicationFormDocuments({
               )}
               {AreCoverLettersLoading && (
                 <div className="flex w-full items-center justify-center">
-                  <Spinner className="h-5 w-5" />
+                  <Spinner className="h-5 w-5 border-2" />
                 </div>
               )}
               {!DidCVFetchingFail && !AreCoverLettersLoading && (
