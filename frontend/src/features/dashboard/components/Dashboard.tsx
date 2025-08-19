@@ -55,7 +55,12 @@ export function Dashboard() {
 
     connection
       .start()
-      .then(() => console.log("Connected to SignalR"))
+      .then(() => {
+        console.log("Connected to SignalR");
+        // this is to handle the situation if my backend sends a notification before my websocket
+        // connection is established
+        queryClient.invalidateQueries({ queryKey: ["notifications", user.id] });
+      })
       .catch((err) => console.error("Connection failed: ", err));
 
     connection.on(

@@ -4,4 +4,5 @@ export type NotificationType =
   | "offer"
   | "rejected"
   | "ghosted"
+  | "emailUpdate"
   | "otherUpdate";

@@ -29,3 +29,9 @@ export const markAllNotificationsRead = () => {
     method: "POST",
   });
 };
+
+export const markNotificationRead = (id: string) => {
+  return request<void>(`/notifications/${id}/mark-as-read`, {
+    method: "POST",
+  });
+};

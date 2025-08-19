@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import {
   useGetNotifications,
   useMarkAllNotificationsRead,
+  Notification,
+  type NotificationResponseDto,
 } from "#/notifications";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -20,7 +22,9 @@ export function Notifications() {
     (page) => page.totalCount,
   )[0];
 
-  const totalNotificationsUnread = allNotifications.filter(
+  console.log(allNotifications);
+
+  const totalUnreadNotifications = allNotifications.filter(
     (n) => n.isRead === false,
   ).length;
 
@@ -48,8 +52,11 @@ export function Notifications() {
         </div>
         <div className="flex items-center gap-3">
           <Badge variant="secondary">{totalNotifications} Total</Badge>
-          <Badge variant="default">{totalNotificationsUnread} Unread</Badge>
+          <Badge variant="default">{totalUnreadNotifications} Unread</Badge>
         </div>
+        {allNotifications.map((notification: NotificationResponseDto) => (
+          <Notification key={notification.id} data={notification} />
+        ))}
       </div>
     </div>
   );
