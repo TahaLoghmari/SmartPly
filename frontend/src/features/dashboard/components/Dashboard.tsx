@@ -13,6 +13,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import * as signalR from "@microsoft/signalr";
 import { useQueryClient } from "@tanstack/react-query";
 import type { NotificationResponseDto } from "#/notifications";
+import { useCurrentScreenSize } from "@/index";
 
 export function Dashboard() {
   const { isSidebarOpen, setIsSidebarOpen } = useDashboardSidebarStateStore();
@@ -84,10 +85,14 @@ export function Dashboard() {
       connection.stop();
     };
   }, [user?.id, queryClient]);
-
+  const { currentScreenSize } = useCurrentScreenSize();
   return (
     <SidebarProvider
-      open={isSidebarOpen}
+      open={
+        currentScreenSize < 1280 && currentScreenSize >= 768
+          ? false
+          : isSidebarOpen
+      }
       onOpenChange={setIsSidebarOpen}
       style={
         {

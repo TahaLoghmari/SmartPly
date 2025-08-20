@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser, type User } from "#/auth";
-import type { ProblemDetailsDto } from "@/types";
+import type { ProblemDetailsDto } from "@/types/api.types";
 
 export function useCurrentUser() {
   return useQuery<User, ProblemDetailsDto>({

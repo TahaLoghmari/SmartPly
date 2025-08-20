@@ -5,7 +5,7 @@ import {
   generateUploadDocumentData,
 } from "#/documents";
 import { type ResumeRequestDto, type ResumeResponseDto } from "#/resumes";
-import type { BulkDeleteRequestDto } from "@/types";
+import type { BulkDeleteRequestDto } from "@/types/api.types";
 
 export const getUserResumes = (search?: string) => {
   return request<ResumeResponseDto[]>(

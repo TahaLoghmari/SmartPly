@@ -4,7 +4,7 @@ import {
   type ApplicationPatchRequestDto,
 } from "#/applications";
 import { useCurrentUser } from "#/auth";
-import { type ProblemDetailsDto } from "@/types";
+import { type ProblemDetailsDto } from "@/types/api.types";
 import { handleApiError } from "@/index";
 
 export function usePatchApplication() {

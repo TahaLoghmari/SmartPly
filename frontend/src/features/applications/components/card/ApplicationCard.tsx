@@ -21,11 +21,11 @@ export default function ApplicationCard({
   return (
     <NavLink
       to={`/app/applications/${applicationCard.id}`}
-      className={`bg-card flex items-center gap-6 rounded-lg border p-4 shadow-xs hover:cursor-pointer hover:bg-[var(--accent-light)]`}
+      className={`bg-card relative flex items-center gap-6 rounded-lg border p-4 shadow-xs hover:cursor-pointer hover:bg-[var(--accent-light)]`}
     >
       {isSelecting ? (
         <div
-          className="flex w-6 items-center justify-center"
+          className="absolute top-4 right-4 flex w-6 items-center justify-center sm:static sm:top-0 sm:right-0"
           onClick={(e) => e.preventDefault()}
         >
           <Checkbox
@@ -41,12 +41,14 @@ export default function ApplicationCard({
       ) : (
         <ApplicationLikeButton applicationCard={applicationCard} />
       )}
+      <div className="flex flex-1 flex-col gap-4 md:flex-row md:items-center">
+        <ApplicationCardInfo applicationCard={applicationCard} />
+        <ApplicationCardStatus applicationCard={applicationCard} />
+      </div>
 
-      <ApplicationCardInfo applicationCard={applicationCard} />
-      <ApplicationCardStatus applicationCard={applicationCard} />
       <ApplicationStatusControl
         applicationCard={applicationCard}
-        className="w-[120px]"
+        className="hidden w-[120px] lg:flex"
       />
     </NavLink>
   );

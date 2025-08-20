@@ -4,7 +4,7 @@ import {
   generateUserDocumentsUrl,
   generateUploadDocumentData,
 } from "#/documents";
-import type { BulkDeleteRequestDto } from "@/types";
+import type { BulkDeleteRequestDto } from "@/types/api.types";
 import {
   type CoverLetterResponseDto,
   type CoverLetterRequestDto,

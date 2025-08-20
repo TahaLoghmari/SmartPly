@@ -1,4 +1,4 @@
-import { type JsonPatchDto } from "@/types";
+import { type JsonPatchDto } from "@/types/api.types";
 import {
   STATUS_TO_VALUE,
   STEPS,

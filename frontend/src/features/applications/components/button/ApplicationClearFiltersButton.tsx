@@ -6,7 +6,7 @@ export default function ApplicationClearFiltersButton() {
   return (
     <Button
       variant="ghost"
-      className="bg-card hover:bg-accent border duration-0"
+      className="bg-card hover:bg-accent self-start border duration-0 lg:self-auto"
       onClick={clearAll}
     >
       Clear Filters

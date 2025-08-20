@@ -31,13 +31,13 @@ export default function ApplicationFilterbar<T extends string>({
           variant="ghost"
           role="combobox"
           aria-expanded={isOpen}
-          className="bg-card w-[200px] justify-between border font-normal duration-0"
+          className="bg-card w-full justify-between border px-2! font-normal duration-0"
         >
           {selectedFilter
             ? applicationConstant.find((item) => item.value === selectedFilter)
                 ?.label
             : name}
-          <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronsUpDownIcon className="h-3! w-3! opacity-50 xl:h-4 xl:w-4" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">

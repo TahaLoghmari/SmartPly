@@ -8,7 +8,10 @@ import {
   type ApplicationEditRequestDto,
   mapApplicationDates,
 } from "#/applications";
-import type { BulkDeleteRequestDto, PaginationResultDto } from "@/types";
+import type {
+  BulkDeleteRequestDto,
+  PaginationResultDto,
+} from "@/types/api.types";
 
 export const createApplication = (credentials: ApplicationRequestDto) => {
   return request<ApplicationResponseDto>("/applications", {

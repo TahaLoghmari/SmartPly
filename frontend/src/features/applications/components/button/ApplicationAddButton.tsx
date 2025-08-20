@@ -9,15 +9,18 @@ import {
 } from "@/components/ui/dialog";
 import { useApplicationFormDialogStore } from "#/applications";
 import { ApplicationForm } from "#/applications";
+import { useCurrentScreenSize } from "@/hooks";
 
 export default function ApplicationAddButton() {
+  const { currentScreenSize } = useCurrentScreenSize();
+
   const { openDialog, setOpenDialog } = useApplicationFormDialogStore();
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
-        <Button className="cursor-pointer">
+        <Button className="flex cursor-pointer items-center justify-center rounded-md p-2!">
           <Plus className="h-4 w-4" />
-          <p>Add Application</p>
+          {currentScreenSize >= 1024 && <p>Add Application</p>}
         </Button>
       </DialogTrigger>
       <DialogContent

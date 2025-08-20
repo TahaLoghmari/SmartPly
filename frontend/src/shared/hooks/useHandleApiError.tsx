@@ -1,4 +1,4 @@
-import type { ProblemDetailsDto } from "@/types";
+import type { ProblemDetailsDto } from "@/types/api.types";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 

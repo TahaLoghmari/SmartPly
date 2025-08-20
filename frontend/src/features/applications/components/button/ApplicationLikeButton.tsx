@@ -15,13 +15,13 @@ export default function ApplicationLikeButton({
   };
 
   return isPending ? (
-    <Spinner className="h-5 w-5 border-2" />
+    <Spinner className="absolute top-4 right-4 h-5 w-5 border-2 sm:static sm:top-0 sm:right-0" />
   ) : (
     <button
       onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`text-muted-foreground flex w-5 cursor-pointer items-center justify-center rounded transition-colors duration-200`}
+      className={`text-muted-foreground absolute top-4 right-4 flex w-5 cursor-pointer items-center justify-center rounded transition-colors duration-200 sm:static sm:top-0 sm:right-0`}
     >
       {(applicationCard.isLiked && !isHovered) ||
       (isHovered && !applicationCard.isLiked) ? (

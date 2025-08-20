@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { type LoginUserDto, login } from "#/auth";
-import { type ProblemDetailsDto } from "@/types";
+import { type ProblemDetailsDto } from "@/types/api.types";
 
 export function useLogin() {
   const navigate = useNavigate();

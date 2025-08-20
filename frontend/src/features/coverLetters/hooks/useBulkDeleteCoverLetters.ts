@@ -1,6 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { bulkDeleteCoverLetters } from "#/coverLetters";
-import { type ProblemDetailsDto, type BulkDeleteRequestDto } from "@/types";
+import {
+  type ProblemDetailsDto,
+  type BulkDeleteRequestDto,
+} from "@/types/api.types";
 import { useCurrentUser } from "#/auth";
 import { handleApiError } from "@/index";
 

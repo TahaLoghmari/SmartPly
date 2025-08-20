@@ -10,7 +10,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useState } from "react";
-import { type JsonPatchDto } from "@/types";
+import { type JsonPatchDto } from "@/types/api.types";
 
 export default function ApplicationPageStatusDate({
   applicationStatusDate,

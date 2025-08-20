@@ -3,9 +3,11 @@ import { faLocationDot, faBuilding } from "@fortawesome/free-solid-svg-icons";
 import { BriefcaseBusiness } from "lucide-react";
 import { type ApplicationCardProps } from "#/applications";
 
-export default function ApplicationCardInfo({ applicationCard }: ApplicationCardProps) {
+export default function ApplicationCardInfo({
+  applicationCard,
+}: ApplicationCardProps) {
   return (
-    <div className="flex flex-1 items-center gap-4">
+    <div className="flex items-center gap-4 xl:flex-1">
       <div className="rounded-sm bg-gradient-to-r from-gray-500 to-gray-400 p-3 text-white">
         <BriefcaseBusiness className="h-8 w-8" />
       </div>
