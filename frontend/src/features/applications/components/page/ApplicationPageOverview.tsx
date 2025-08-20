@@ -29,27 +29,36 @@ export default function ApplicationPageOverview({
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-1">
           <p className="text-muted-foreground text-sm">Location</p>
-          <p className="text-sm">{applicationCard.location || "N/A"}</p>
+          <p className="truncate text-sm">
+            {applicationCard.location || "N/A"}
+          </p>
         </div>
         <div className="flex flex-col gap-1">
           <p className="text-muted-foreground text-sm">Job Type</p>
-          <p className="text-sm">{jobType || "N/A"}</p>
+          <p className="truncate text-sm">{jobType || "N/A"}</p>
         </div>
         <div className="flex flex-col gap-1">
           <p className="text-muted-foreground text-sm">Type</p>
-          <p className="text-sm">{type || "N/A"}</p>
+          <p className="truncate text-sm">{type || "N/A"}</p>
         </div>
         <div className="flex flex-col gap-1">
           <p className="text-muted-foreground text-sm">Level</p>
-          <p className="text-sm">{level || "N/A"}</p>
+          <p className="truncate text-sm">{level || "N/A"}</p>
         </div>
         <div className="flex flex-col gap-1">
           <p className="text-muted-foreground text-sm">URL</p>
-          <p className="text-sm">{applicationCard.link || "N/A"}</p>
+          <a
+            href={applicationCard.link}
+            className="truncate text-sm"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {applicationCard.link || "N/A"}
+          </a>
         </div>
         <div className="flex flex-col gap-1">
           <p className="text-muted-foreground text-sm">Deadline</p>
-          <p className="text-sm">
+          <p className="truncate text-sm">
             {(applicationCard.deadline &&
               applicationCard.deadline
                 .toLocaleDateString("en-GB")
@@ -59,7 +68,7 @@ export default function ApplicationPageOverview({
         </div>
         <div className="flex flex-col gap-1">
           <p className="text-muted-foreground text-sm">Created</p>
-          <p className="text-sm">
+          <p className="truncate text-sm">
             {(applicationCard.createdAt &&
               applicationCard.createdAt
                 .toLocaleDateString("en-GB")
@@ -69,7 +78,7 @@ export default function ApplicationPageOverview({
         </div>
         <div className="flex flex-col gap-1">
           <p className="text-muted-foreground text-sm">Last Update</p>
-          <p className="text-sm">
+          <p className="truncate text-sm">
             {(applicationCard.updatedAt &&
               formatDistanceToNow(applicationCard.updatedAt, {
                 addSuffix: true,

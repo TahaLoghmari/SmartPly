@@ -19,10 +19,10 @@ export default function ApplicationEditButton({
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="border-primary flex w-23 cursor-pointer items-center"
+          className="border-primary flex w-fit cursor-pointer items-center lg:w-23"
         >
           <SquarePen className="h-4 w-4" />
-          Edit
+          <span className="hidden lg:inline">Edit</span>
         </Button>
       </DialogTrigger>
       <DialogContent

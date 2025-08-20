@@ -12,7 +12,7 @@ export default function CoverLetterPreview({ url }: { url: string }) {
         </div>
       )}
       <iframe
-        src={`${url}#toolbar=0&navpanes=0`}
+        src={`${url}#toolbar=0&navpanes=0&zoom=80`}
         title="CoverLetter Preview"
         className="w-full flex-1 border-0"
         onLoad={() => setLoading(false)}

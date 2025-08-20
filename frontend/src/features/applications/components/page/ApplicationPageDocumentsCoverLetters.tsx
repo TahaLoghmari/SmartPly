@@ -70,7 +70,7 @@ export default function ApplicationPageDocumentsCoverLetters({
     <div className="bg-card min-h-40 rounded-lg border py-4">
       {coverLetters?.map((coverLetter: CoverLetterResponseDto) => (
         <div
-          className="flex min-w-0 justify-between px-6 py-3"
+          className="flex min-w-0 flex-col justify-between gap-2 px-6 py-3 sm:flex-row lg:gap-0"
           key={coverLetter.id}
         >
           <div className="flex flex-1 items-center gap-3">

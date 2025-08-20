@@ -84,7 +84,7 @@ export default function ApplicationPageDocumentsResume({
               className="w-full"
             />
             <X
-              className="text-muted-foreground hover:text-strong-muted-foreground h-[18px] w-[18px] cursor-pointer"
+              className="text-muted-foreground hover:text-strong-muted-foreground h-[18px] w-[18px] shrink-0 cursor-pointer"
               onClick={() => setIsChangingResume(false)}
             />
           </div>

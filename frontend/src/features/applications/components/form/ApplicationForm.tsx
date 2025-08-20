@@ -74,7 +74,7 @@ export default function ApplicationForm({
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button type="submit" disabled={isPending} className="w-34">
+          <Button type="submit" disabled={isPending} className="w-full sm:w-34">
             {isPending ? (
               <Spinner className="h-5 w-5 border-2 invert" />
             ) : mutationType === "create" ? (

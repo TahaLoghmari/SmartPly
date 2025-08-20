@@ -41,7 +41,7 @@ export default function ApplicationFormTechnologies({
           control={form.control}
           name="technologiesUsed"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="h-fit">
               <FormControl>
                 <Popover open={open} onOpenChange={setOpen}>
                   <PopoverTrigger asChild>
@@ -49,12 +49,12 @@ export default function ApplicationFormTechnologies({
                       variant="outline"
                       role="combobox"
                       aria-expanded={open}
-                      className="w-full justify-between"
+                      className="h-fit w-full justify-between"
                     >
                       {field.value && field.value.length > 0 ? (
                         <ApplicationTechnologiesUsed
                           technologies={field.value}
-                          className="min-h-15"
+                          className="min-h-fit"
                         />
                       ) : (
                         "Add framework..."

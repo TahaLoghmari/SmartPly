@@ -15,11 +15,13 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useEffect, useRef, useState } from "react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { useCurrentScreenSize } from "@/index";
 
 export default function ApplicationPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
+  const { currentScreenSize } = useCurrentScreenSize();
 
   const { navigationPage } = useApplicationPageNavigationStore();
   const {
@@ -50,7 +52,7 @@ export default function ApplicationPage() {
 
   return (
     <Sheet open={open} onOpenChange={handleClose}>
-      <SheetContent className="gap-0 overflow-y-auto focus:outline-none sm:max-w-7xl">
+      <SheetContent className="w-full gap-0 overflow-y-auto focus:outline-none sm:max-w-7xl">
         <VisuallyHidden>
           <DialogTitle>Application Details</DialogTitle>
           <DialogDescription>
@@ -76,30 +78,65 @@ export default function ApplicationPage() {
             </Button>
           </div>
         )}
-        {!isPending && !isError && applicationCard && (
-          <>
-            <ApplicationPageHeader applicationCard={applicationCard} />
-            <div className="flex flex-1">
-              <div className="flex flex-1 flex-col">
-                <ApplicationPageTabs />
-                {navigationPage === "Overview" ? (
-                  <ApplicationPageOverview applicationCard={applicationCard} />
-                ) : (
-                  <ApplicationPageDocuments applicationCard={applicationCard} />
-                )}
-              </div>
-              <div className="flex w-1/3 flex-col gap-6 border-x px-8 py-6">
-                <ApplicationPageStatus applicationCard={applicationCard} />
-                <div className="flex w-full flex-col gap-2">
-                  <p className="font-medium">Notes</p>
-                  <div className="bg-accent text-accent-foreground rounded-md p-4 text-xs break-words">
-                    {applicationCard.notes || '"N/A"'}
+        {/* this is for desktop */}
+        {!isPending &&
+          !isError &&
+          applicationCard &&
+          currentScreenSize >= 1024 && (
+            <>
+              <ApplicationPageHeader
+                applicationCard={applicationCard}
+                handleClose={handleClose}
+              />
+              <div className="flex flex-1">
+                <div className="flex flex-1 flex-col">
+                  <ApplicationPageTabs />
+                  {navigationPage === "Overview" ? (
+                    <ApplicationPageOverview
+                      applicationCard={applicationCard}
+                    />
+                  ) : (
+                    <ApplicationPageDocuments
+                      applicationCard={applicationCard}
+                    />
+                  )}
+                </div>
+                <div className="flex w-1/3 flex-col gap-6 border-x px-8 py-6">
+                  <ApplicationPageStatus applicationCard={applicationCard} />
+                  <div className="flex w-full flex-col gap-2">
+                    <p className="font-medium">Notes</p>
+                    <div className="bg-accent text-accent-foreground rounded-md p-4 text-xs break-words">
+                      {applicationCard.notes || '"N/A"'}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
+        {/* this is for mobile */}
+        {!isPending &&
+          !isError &&
+          applicationCard &&
+          currentScreenSize < 1024 && (
+            <>
+              <ApplicationPageHeader
+                applicationCard={applicationCard}
+                handleClose={handleClose}
+              />
+              <div className="flex flex-1 flex-col">
+                <ApplicationPageTabs />
+                {navigationPage === "Overview" && (
+                  <ApplicationPageOverview applicationCard={applicationCard} />
+                )}
+                {navigationPage === "Documents" && (
+                  <ApplicationPageDocuments applicationCard={applicationCard} />
+                )}
+                {navigationPage === "Status" && (
+                  <ApplicationPageStatus applicationCard={applicationCard} />
+                )}
+              </div>
+            </>
+          )}
       </SheetContent>
     </Sheet>
   );

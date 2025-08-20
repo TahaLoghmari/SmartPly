@@ -67,8 +67,11 @@ export default function ApplicationPageDocumentsResumes({
   return (
     <div className="bg-card min-h-40 rounded-lg border py-4">
       {resumes?.map((resume: ResumeResponseDto) => (
-        <div className="flex min-w-0 justify-between px-6 py-3" key={resume.id}>
-          <div className="flex flex-1 items-center gap-3">
+        <div
+          className="flex min-w-0 flex-col justify-between gap-2 px-6 py-3 sm:flex-row lg:gap-0"
+          key={resume.id}
+        >
+          <div className="flex flex-1 gap-3 lg:items-center">
             <div className="bg-muted flex h-8 w-8 items-center justify-center rounded-lg">
               <FileText className="text-muted-foreground h-4 w-4" />
             </div>
