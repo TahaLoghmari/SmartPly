@@ -9,7 +9,7 @@ export default function ApplicationClearFiltersButton() {
       className="bg-card hover:bg-accent self-start border duration-0 lg:self-auto"
       onClick={clearAll}
     >
-      Clear Filters
+      Clear Filters 
     </Button>
   );
 }
