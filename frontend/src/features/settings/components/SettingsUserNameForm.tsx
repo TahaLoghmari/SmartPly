@@ -48,7 +48,7 @@ export function SettingsUserNameForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex gap-4">
+        <div className="bsm:flex-row flex flex-col gap-4">
           <FormField
             control={form.control}
             name="name"

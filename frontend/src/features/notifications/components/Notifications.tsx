@@ -9,11 +9,13 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 
 export function Notifications() {
-  const { data: notifications, isLoading, isError } = useGetNotifications();
+  const {
+    data: notifications,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetNotifications();
   const markAllNotificationsReadMutation = useMarkAllNotificationsRead();
-
-  if (isLoading) return <div>Loading..</div>;
-  if (isError) return <div>Error</div>;
 
   const allNotifications =
     notifications?.pages.flatMap((page) => page.items) ?? [];
@@ -22,16 +24,14 @@ export function Notifications() {
     (page) => page.totalCount,
   )[0];
 
-  console.log(allNotifications);
-
   const totalUnreadNotifications = allNotifications.filter(
     (n) => n.isRead === false,
   ).length;
 
   return (
     <div className="flex flex-1 flex-col items-center overflow-auto transition-[width,height,margin,padding] duration-300">
-      <div className="flex w-[50%] flex-col gap-7 p-6">
-        <div className="flex items-center justify-between">
+      <div className="flex w-full flex-1 flex-col gap-7 p-6 px-3 sm:px-6 lg:w-[90%] xl:w-[75%] 2xl:w-[50%]">
+        <div className="flex items-center justify-between gap-5 sm:gap-0">
           <div className="flex flex-col">
             <p className="text-3xl font-bold tracking-tight">Notifications</p>
             <p className="text-muted-foreground mt-1">
@@ -50,13 +50,38 @@ export function Notifications() {
             )}
           </Button>
         </div>
-        <div className="flex items-center gap-3">
-          <Badge variant="secondary">{totalNotifications} Total</Badge>
-          <Badge variant="default">{totalUnreadNotifications} Unread</Badge>
-        </div>
-        {allNotifications.map((notification: NotificationResponseDto) => (
-          <Notification key={notification.id} data={notification} />
-        ))}
+        {isLoading && (
+          <div className="flex flex-1 items-center justify-center">
+            <Spinner />
+          </div>
+        )}
+        {isError && (
+          <div className="flex flex-1 items-center justify-center">
+            <div className="flex flex-1 flex-col items-center justify-center gap-4 py-12">
+              <span className="text-muted-foreground text-lg">
+                Failed to load notifications.
+              </span>
+              <Button onClick={() => refetch()} className="cursor-pointer">
+                {isLoading ? (
+                  <Spinner className="h-6 w-6 border-2 invert" />
+                ) : (
+                  "Retry"
+                )}
+              </Button>
+            </div>
+          </div>
+        )}
+        {!isLoading && !isError && (
+          <>
+            <div className="flex items-center gap-3">
+              <Badge variant="secondary">{totalNotifications} Total</Badge>
+              <Badge variant="default">{totalUnreadNotifications} Unread</Badge>
+            </div>
+            {allNotifications.map((notification: NotificationResponseDto) => (
+              <Notification key={notification.id} data={notification} />
+            ))}
+          </>
+        )}
       </div>
     </div>
   );

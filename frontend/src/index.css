@@ -126,6 +126,7 @@
 
 @theme {
   --breakpoint-psm: 480px;
+  --breakpoint-bsm: 550px;
   --font-inter:
     "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";

@@ -13,7 +13,7 @@ export function Applications() {
 
   return (
     <div className="flex w-full flex-1 flex-col items-center overflow-auto transition-[width,height,margin,padding] duration-300">
-      <div className="mb-4 w-[94%] pt-8 xl:w-[90%]">
+      <div className="mb-4 flex w-[94%] flex-1 flex-col pt-8 xl:w-[90%]">
         <div className="flex flex-col">
           <p className="text-3xl font-bold tracking-tight">Job Applications</p>
         </div>
