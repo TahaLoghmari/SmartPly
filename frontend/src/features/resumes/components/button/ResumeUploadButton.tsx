@@ -21,7 +21,7 @@ export default function ResumeUploadButton() {
       <DialogTrigger asChild>
         <Button className="cursor-pointer">
           <Upload className="h-4 w-4" />
-          <p>Upload a resume</p>
+          <p className="hidden sm:flex">Upload a resume</p>
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -57,7 +57,7 @@ export default function ResumeUploadButton() {
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
           />
         </label>
-        <DialogFooter className="sm:justify-center">
+        <DialogFooter className="items-center sm:justify-center">
           <Button
             className="w-44"
             disabled={!file}
