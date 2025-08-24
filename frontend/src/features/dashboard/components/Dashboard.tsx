@@ -90,7 +90,7 @@ export function Dashboard() {
   return (
     <div className="flex">
       <DashboardSidebar />
-      <div className="flex h-svh flex-1 flex-col">
+      <div className="flex h-svh flex-1 flex-col overflow-hidden">
         <DashboardHeader />
         <Outlet />
         {/* this is a dialog */}
