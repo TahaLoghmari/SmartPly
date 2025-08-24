@@ -19,23 +19,29 @@ export default function ApplicationStatusControl({
     useUpdateApplicationStatus(applicationCard);
 
   return (
-    <Select
-      value={applicationCard.status}
-      onValueChange={updateApplicationStatus}
+    <div
+      onClick={(e) => {
+        e.preventDefault();
+      }}
     >
-      <SelectTrigger className={`cursor-pointer ${className}`}>
-        <SelectValue
-          placeholder="Status"
-          className="text-primary placeholder:text-primary text-sm"
-        />
-      </SelectTrigger>
-      <SelectContent>
-        {APPLICATIONS_STATUS_OPTIONS.map((status) => (
-          <SelectItem key={status.value} value={status.value}>
-            {status.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+      <Select
+        value={applicationCard.status}
+        onValueChange={updateApplicationStatus}
+      >
+        <SelectTrigger className={`cursor-pointer ${className}`}>
+          <SelectValue
+            placeholder="Status"
+            className="text-primary placeholder:text-primary text-sm"
+          />
+        </SelectTrigger>
+        <SelectContent>
+          {APPLICATIONS_STATUS_OPTIONS.map((status) => (
+            <SelectItem key={status.value} value={status.value}>
+              {status.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   );
 }

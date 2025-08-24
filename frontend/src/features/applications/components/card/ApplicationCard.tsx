@@ -28,15 +28,21 @@ export default function ApplicationCard({
           className="absolute top-4 right-4 flex w-6 items-center justify-center sm:static sm:top-0 sm:right-0"
           onClick={(e) => e.preventDefault()}
         >
-          <Checkbox
-            className="border-muted-foreground"
-            checked={selectedApplications.includes(applicationCard.id)}
-            onCheckedChange={(checked) => {
-              return checked
-                ? addApplication(applicationCard.id)
-                : removeApplication(applicationCard.id);
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
             }}
-          />
+          >
+            <Checkbox
+              className="border-muted-foreground"
+              checked={selectedApplications.includes(applicationCard.id)}
+              onCheckedChange={(checked) => {
+                return checked
+                  ? addApplication(applicationCard.id)
+                  : removeApplication(applicationCard.id);
+              }}
+            />
+          </div>
         </div>
       ) : (
         <ApplicationLikeButton applicationCard={applicationCard} />
