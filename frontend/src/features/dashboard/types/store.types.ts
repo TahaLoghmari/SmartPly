@@ -12,3 +12,8 @@ export interface DashboardInboxStateStore {
   isInboxOpen: boolean;
   setIsInboxOpen: (state: boolean) => void;
 }
+
+export interface DashboardOverallSidebarState {
+  isOverallSidebarOpen: boolean;
+  setIsOverallSidebarOpen: (state: boolean) => void;
+}

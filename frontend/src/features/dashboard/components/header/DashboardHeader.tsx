@@ -2,6 +2,7 @@ import {
   DashboardHeaderGmailConnectionStatus,
   DashboardHeaderNotificationBell,
   useDashboardInboxStateStore,
+  useDashboardOverallSidebarState,
   useDashboardSidebarStateStore,
 } from "#/dashboard";
 import { useCurrentScreenSize } from "@/hooks";
@@ -10,6 +11,8 @@ import { PanelRight } from "lucide-react";
 export default function DashboardHeader() {
   const { isSidebarOpen, setIsSidebarOpen } = useDashboardSidebarStateStore();
   const { isInboxOpen, setIsInboxOpen } = useDashboardInboxStateStore();
+  const { isOverallSidebarOpen, setIsOverallSidebarOpen } =
+    useDashboardOverallSidebarState();
   const isInboxRoute = location.pathname.includes("inbox");
   const { currentScreenSize } = useCurrentScreenSize();
   return (
@@ -18,8 +21,12 @@ export default function DashboardHeader() {
         <div
           className={`hover:bg-accent flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-sm font-medium ${currentScreenSize < 1280 && currentScreenSize >= 768 && !isInboxRoute && "hidden"}`}
           onClick={() => {
-            if (!isInboxRoute || (isInboxRoute && currentScreenSize < 768))
-              setIsSidebarOpen(!isSidebarOpen);
+            // if it's desktop screen and it's inbox route, this controls the inbox sidebar state
+            // if it's desktop and it's not inbox route, this controls the navigation sidebar state
+            // if it's not desktop and it's inbox, this controls the navigation sidebar state which contains both
+            if (currentScreenSize < 768) {
+              setIsOverallSidebarOpen(!isOverallSidebarOpen);
+            } else if (!isInboxRoute) setIsSidebarOpen(!isSidebarOpen);
             else setIsInboxOpen(!isInboxOpen);
           }}
         >

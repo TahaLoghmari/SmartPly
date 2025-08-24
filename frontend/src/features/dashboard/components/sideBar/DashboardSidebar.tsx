@@ -1,31 +1,35 @@
 import {
-  useDashboardSidebarStateStore,
   DashboardSidebarContent,
   useDashboardInboxStateStore,
+  useDashboardOverallSidebarState,
 } from "#/dashboard";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Inbox } from "#/inbox";
 import { useCurrentScreenSize } from "@/hooks";
 
 export default function DashboardSidebar() {
-  const { isSidebarOpen, setIsSidebarOpen } = useDashboardSidebarStateStore();
   const { isInboxOpen } = useDashboardInboxStateStore();
   const isInboxRoute = location.pathname.includes("inbox");
+  const { isOverallSidebarOpen, setIsOverallSidebarOpen } =
+    useDashboardOverallSidebarState();
   const { currentScreenSize } = useCurrentScreenSize();
   return (
     <>
       {currentScreenSize < 768 ? (
-        <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+        <Sheet
+          open={isOverallSidebarOpen}
+          onOpenChange={setIsOverallSidebarOpen}
+        >
           <SheetContent
             side="left"
-            className={`flex ${isInboxRoute && currentScreenSize < 768 ? "w-fit gap-0 sm:max-w-full" : "w-[287px]"} flex-row focus:outline-none`}
+            className={`flex ${isInboxRoute && currentScreenSize < 768 ? "w-fit flex-row gap-0 sm:max-w-full" : "w-[287px]"} focus:outline-none`}
           >
             <DashboardSidebarContent
-              className={`${isInboxRoute ? "bg-sidebar border-r" : ""} `}
+              className={`${isInboxRoute ? "bg-sidebar flex-1 border-r" : ""} `}
             />
             {isInboxRoute && (
               <div
-                className={`bg-sidebar ${isInboxOpen ? "h-svh w-[307px]" : "w-0"} flex flex-col transition-all duration-200`}
+                className={`bg-sidebar ${isInboxOpen ? "h-svh w-[300px]" : "w-0"} flex flex-col transition-all duration-200`}
               >
                 {isInboxOpen && (
                   <>
