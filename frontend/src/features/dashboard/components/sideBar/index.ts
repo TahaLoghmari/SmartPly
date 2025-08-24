@@ -3,3 +3,4 @@ export { default as DashboardSidebarLogoutButton } from "./DashboardSidebarLogou
 export { default as DashboardSidebarNavMain } from "./DashboardSidebarNavMain";
 export { default as DashboardSidebarNavSecondary } from "./DashboardSidebarNavSecondary";
 export { default as DashboardSidebarNavUser } from "./DashboardSidebarNavUser";
+export * from "./DashboardSidebarContent";

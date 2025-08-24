@@ -9,17 +9,17 @@ import { toast } from "sonner";
 import { useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useCurrentUser } from "#/auth";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import * as signalR from "@microsoft/signalr";
 import { useQueryClient } from "@tanstack/react-query";
 import type { NotificationResponseDto } from "#/notifications";
 import { useCurrentScreenSize } from "@/index";
 
 export function Dashboard() {
-  const { isSidebarOpen, setIsSidebarOpen } = useDashboardSidebarStateStore();
+  const { setIsSidebarOpen } = useDashboardSidebarStateStore();
   const { data: user, isPending } = useCurrentUser();
   const [searchParams, setSearchParams] = useSearchParams();
   const isInboxRoute = location.pathname.includes("inbox");
+  const { currentScreenSize } = useCurrentScreenSize();
 
   // this is for google signin/signup failing or any error when the redirection is comming from the backend with an error
   useEffect(() => {
@@ -31,9 +31,10 @@ export function Dashboard() {
   }, [searchParams, setSearchParams]);
 
   useEffect(() => {
-    if (isInboxRoute) setIsSidebarOpen(false);
+    if (isInboxRoute || (currentScreenSize >= 768 && currentScreenSize < 1280))
+      setIsSidebarOpen(false);
     else setIsSidebarOpen(true);
-  }, [setIsSidebarOpen, isInboxRoute]);
+  }, [setIsSidebarOpen, isInboxRoute, currentScreenSize]);
 
   if (isPending)
     return (
@@ -85,29 +86,16 @@ export function Dashboard() {
       connection.stop();
     };
   }, [user?.id, queryClient]);
-  const { currentScreenSize } = useCurrentScreenSize();
+
   return (
-    <SidebarProvider
-      open={
-        currentScreenSize < 1280 && currentScreenSize >= 768
-          ? false
-          : isSidebarOpen
-      }
-      onOpenChange={setIsSidebarOpen}
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
+    <div className="flex">
       <DashboardSidebar />
-      <SidebarInset className="h-svh">
+      <div className="flex h-svh flex-1 flex-col">
         <DashboardHeader />
         <Outlet />
         {/* this is a dialog */}
         <DashboardSidebarLogoutButton />
-      </SidebarInset>
-    </SidebarProvider>
+      </div>
+    </div>
   );
 }

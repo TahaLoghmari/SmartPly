@@ -1,41 +1,25 @@
-import * as React from "react";
 import { NavLink } from "react-router-dom";
-
-import {
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
 import type { SidebarNavProps } from "#/dashboard/types";
+import { useDashboardSidebarStateStore } from "#/dashboard";
 
 export default function DashboardSidebarNavSecondary({
   items,
-  ...props
-}: SidebarNavProps & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+}: SidebarNavProps) {
+  const { isSidebarOpen } = useDashboardSidebarStateStore();
   return (
-    <SidebarGroup {...props}>
-      <SidebarGroupContent>
-        <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <NavLink to={`/app/${item.url}`}>
-                {({ isActive }) => (
-                  <SidebarMenuButton
-                    tooltip={item.title}
-                    isActive={isActive}
-                    className="cursor-pointer"
-                  >
-                    {item.icon && <item.icon />}
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
-                )}
-              </NavLink>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-      </SidebarGroupContent>
-    </SidebarGroup>
+    <div className="flex flex-col gap-1 p-2">
+      {items.map((item) => (
+        <NavLink
+          to={`/app/${item.url}`}
+          key={item.title}
+          className={({ isActive }) =>
+            `flex cursor-pointer items-center gap-2 rounded-md p-2 text-sm ${isActive ? "bg-primary text-secondary" : "hover:bg-sidebar-accent"}`
+          }
+        >
+          {item.icon && <item.icon className="h-4 w-4" />}
+          {isSidebarOpen && <span>{item.title}</span>}
+        </NavLink>
+      ))}
+    </div>
   );
 }
