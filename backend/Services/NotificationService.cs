@@ -29,16 +29,6 @@ public class NotificationService(
 
         logger.LogInformation("Retrieving notifications for user with ID {UserId}", userId); 
 
-        string cacheKey = cacheService.GenerateNotificationsCacheKey(userId, query);
-        
-        if (cache.TryGetValue(cacheKey, out PaginationResultDto<NotificationResponseDto>? cachedResult))
-        {
-            logger.LogDebug("Cache hit for notifications query: {CacheKey}", cacheKey);
-            return cachedResult!;
-        }
-        
-        logger.LogDebug("Cache miss for notifications query: {CacheKey}", cacheKey);
-
         IQueryable<NotificationResponseDto> notificationQuery = dbContext.Notifications
             .AsNoTracking()
             .Where(a => a.UserId == userId)
@@ -47,8 +37,6 @@ public class NotificationService(
         
         var paginationResult = await PaginationResultDto<NotificationResponseDto>.CreateAsync(
             notificationQuery, query.Page ?? 1, query.PageSize ?? 8,cancellationToken);
-        
-        cacheService.CacheNotificationsResult(cacheKey, paginationResult, userId);
         
         return paginationResult;
     }
@@ -80,7 +68,6 @@ public class NotificationService(
             logger.LogInformation("Notification {NotificationId} marked as read", id);
         }
         
-        cacheService.InvalidateUserNotificationCache(userId);
         logger.LogInformation("Notifications Cache invalidated for user ID: {UserId}", userId);
     }
 
@@ -109,8 +96,7 @@ public class NotificationService(
 
         await dbContext.SaveChangesAsync(cancellationToken);
         logger.LogInformation("Marked {UnreadNotificationsCount} notifications as read for user ID: {UserId}", notifications.Count, userId);
-        
-        cacheService.InvalidateUserNotificationCache(userId);
+
         logger.LogInformation("Notifications Cache invalidated for user ID: {UserId}", userId);
     }
     
@@ -130,8 +116,6 @@ public class NotificationService(
         dbContext.Notifications.Add(notification);
         
         await dbContext.SaveChangesAsync(cancellationToken);
-        
-        cacheService.InvalidateUserNotificationCache(userId);
         
         logger.LogInformation("Notification created with ID {NotificationId}", notification.Id);
 

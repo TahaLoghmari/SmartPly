@@ -22,7 +22,6 @@ public sealed class CacheService(
     private const string UserResumesPrefix = "UserResumes_";
     private const string UserCoverLettersPrefix = "UserCoverLetters_";
     private const string UserEmailsPrefix = "UserEmails_";
-    private const string UserNotificationsPrefix = "UserNotifications_";
     
     public string GenerateApplicationsCacheKey(string userId, ApplicationQueryParameters query)
     {
@@ -42,11 +41,6 @@ public sealed class CacheService(
     public string GenerateEmailsCacheKey(string userId, EmailQueryParameters query)
     {
         return $"{UserEmailsPrefix}{userId}_{query.Page}_{query.PageSize}";
-    }
-    
-    public string GenerateNotificationsCacheKey(string userId, NotificationQueryParameters query)
-    {
-        return $"{UserNotificationsPrefix}{userId}_{query.Page}_{query.PageSize}";
     }
     
     public void CacheApplicationsResult(string cacheKey, PaginationResultDto<ApplicationResponseDto> resultDto, string userId)
@@ -245,37 +239,6 @@ public sealed class CacheService(
         }
 
         logger.LogInformation("Invalidated {Count} email cache entries for user: {UserId}",
-            keysToRemove.Count, userId);
-
-        if (userKeys.IsEmpty)
-        {
-            cache.Remove(userKeySet);
-            logger.LogDebug("Removed empty cache key set for user: {UserId}", userId);
-        }
-    }
-    
-    public void InvalidateUserNotificationCache(string userId)
-    {
-        string userKeySet = $"{UserCacheKeysPrefix}{userId}";
-
-        if (!cache.TryGetValue(userKeySet, out ConcurrentDictionary<string, byte>? userKeys))
-        {
-            logger.LogDebug("No cache keys found for user: {UserId}", userId);
-            return;
-        }
-
-        var keysToRemove = userKeys!.Keys
-            .Where(key => key.StartsWith(UserNotificationsPrefix))
-            .ToList();
-
-        foreach (var key in keysToRemove)
-        {
-            cache.Remove(key);
-            userKeys.TryRemove(key, out _);
-            logger.LogDebug("Removed cache key: {CacheKey}", key);
-        }
-
-        logger.LogInformation("Invalidated {Count} notification cache entries for user: {UserId}",
             keysToRemove.Count, userId);
 
         if (userKeys.IsEmpty)

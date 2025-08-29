@@ -17,6 +17,9 @@ public class EmailConfiguration : IEntityTypeConfiguration<Email>
         builder.Property(e => e.UserId)
             .HasMaxLength(255)
             .IsRequired();
+        
+        builder.Property(e => e.MatchedJobId)
+            .HasMaxLength(255);
             
         builder.Property(e => e.Subject)
             .HasMaxLength(1000)

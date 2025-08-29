@@ -1,6 +1,6 @@
 namespace backend.Entities;
 
-public class EmailAiResult
+public class JobDetectionPromptResult
 {
     [Newtonsoft.Json.JsonProperty("isJobRelated")]
     public bool IsJobRelated { get; set; }
