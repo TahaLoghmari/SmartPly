@@ -1,5 +1,4 @@
-using System.Net.Http.Headers;
-using System.Text;
+using System.Text.Json;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Microsoft.AspNetCore.Identity;
@@ -18,8 +17,7 @@ using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using Mscc.GenerativeAI;
-using Newtonsoft.Json;
+using Mscc.GenerativeAI.Web;
 using ClientSecrets = Google.Apis.Auth.OAuth2.ClientSecrets;
 using Message = Google.Apis.Gmail.v1.Data.Message;
 
@@ -34,13 +32,14 @@ public class EmailService(
     CacheService cacheService,
     IBackgroundJobClient backgroundJobClient,
     IConfiguration configuration,
-    NotificationService notificationService)
+    NotificationService notificationService,
+    IGenerativeModelService aiService)
 {
     private readonly GoogleSettings _googleSettings = googleSettings.Value;
     private GmailService? _gmailService;
     private const int DefaultBatchSize = 10;
     private const int DefaultDelayMs = 200;
-    private const int InitialFetchLimit = 100;
+    private const int InitialFetchLimit = 5; // raja3ha 100
     private const int SyncFetchLimit = 20;
     private const int DefaultPageSize = 10;
     
@@ -96,45 +95,57 @@ public class EmailService(
     string? userId,
     CancellationToken cancellationToken)
     {
-        var apiKey = configuration["GoogleAI:ApiKey"];
-        var googleAI = new GoogleAI(apiKey: apiKey);
-        var model = googleAI.GenerativeModel(model: Model.Gemini15Pro);
-
+        var model = aiService.CreateInstance();
+        
         foreach (var id in emailIds)
         {
             var existingEmail = await dbContext.Emails
                 .FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId, cancellationToken);
-
+    
             if (existingEmail is null)
             {
                 logger.LogWarning($"Email with id {id} was not found.");
                 throw new NotFoundException($"Email with id {id} was not found.");
             }
-
+    
             Message? fullEmail = await GetEmailByIdAsync(id, userId, cancellationToken);
             var decodedBody = EmailUtilities.GetDecodedEmailBody(fullEmail);
-
+    
             var promptText = $@"
-                You are an AI that classifies emails related to job applications.
-                Given these email's info:
-                - Subject
-                - FromAddress
-                - FromName
-                - Snippet
-                - EmailBodyText
-                determine:
-                1. If the email is related to a job application or recruitment.
-                2. If yes, assign one category from:
-                   - interview
-                   - offer
-                   - applied
-                   - rejection
-                   - otherUpdates
-                3. If yes, provide a concise summary of the email in 1–2 sentences.
-                EMAIL TEXT:
-                """"""
-                {decodedBody}
-                """"""
+                You are an AI email classifier. Your task is to analyze email content and determine if it is 
+                directly related to a job application process involving the recipient.
+
+                CLASSIFICATION RULES:
+                - Classify as job-related ONLY if the email is a direct communication about the recipient's personal application, such as:
+                    - Applying for a job.
+                    - Scheduling or conducting an interview.
+                    - Receiving an offer.
+                    - Receiving a rejection or status update.
+                    - Direct outreach from a recruiter about a specific role for the recipient.
+                - DO NOT classify as job-related if the email is generic, promotional, or not specific to the recipient's application. Examples include:
+                    - General job market newsletters or career advice.
+                    - Job board updates or promotional alerts.
+                    - General networking or business-related emails.
+
+                CATEGORIES:
+                - interview: For scheduling, confirming, or providing details about an interview.
+                - offer: For job offers or related discussions.
+                - applied: For confirmations of a submitted application.
+                - rejection: For rejection notices.
+                - otherUpdates: For any other direct status updates (e.g., ""application under review"").
+
+                INSTRUCTIONS:
+                1.  Read the EMAIL INFO and EMAIL TEXT provided below.
+                2. First, decide if the email matches ANY job-related case (applied, interview, offer, rejection, status update, recruiter outreach).  
+                   - If yes, you MUST set `""isJobRelated"": true`.  
+                   - If no, set `""isJobRelated"": false`.  
+                3. VERY IMPORTANT:  
+                   - If `""isJobRelated"": true`, `""category""` MUST be one of the provided categories, and `""summary""` MUST be a concise 1–2 sentence summary.  
+                   - If `""isJobRelated"": false`, then `""category""` MUST be null AND `""summary""` MUST be null. Do not output anything else in these fields. 
+                4.  Provide a concise, 1-2 sentence summary of the email's content.
+
+                RESPOND ONLY with a valid JSON object. Do not include any extra text, commentary, or markdown formatting like ```json.
+
                 EMAIL INFO:
                 {{
                     ""subject"": ""{existingEmail.Subject}"",
@@ -142,63 +153,45 @@ public class EmailService(
                     ""from_name"": ""{existingEmail.FromName}"",
                     ""snippet"": ""{existingEmail.Snippet}""
                 }}
+
+                EMAIL TEXT:
+                """"""
+                {decodedBody}
+                """"""
+
                 OUTPUT JSON FORMAT:
                 {{
-                  ""is_job_related"": boolean,
+                  ""isJobRelated"": boolean,
                   ""category"": ""string|null"",
-                  ""summary"": ""string|null"",
-                  ""confidence"": float
+                  ""summary"": ""string|null""
                 }}
-                Rules:
-                - If is_job_related is false → category and summary must be null.
-                - Use lowercase for category values.
-                - confidence is a number from 0 to 1.
-                - Summary must be short and factual.";
+                ";
+    
+            var result = await model.GenerateContent(promptText);
 
-            int retryCount = 0;
-            bool success = false;
-
-            while (!success && retryCount < 2) // Try max twice
-            {
-                try
-                {
-                    var result = await model.GenerateContent(promptText, cancellationToken: cancellationToken);
-                    logger.LogInformation("AI response for email {EmailId}: {Response}", id, result);
-
-                    success = true;
-                    // var aiResponseText = result.Candidates[0].Content.Parts
-                    //     .FirstOrDefault()?.Text?.Trim() ?? string.Empty;
-                    // var aiResult = JsonConvert.DeserializeObject<EmailAIResult>(aiResponseText);
-                    //
-                    // existingEmail.IsJobRelated = aiResult.IsJobRelated;
-                    // existingEmail.Category = aiResult.Category;
-                    // existingEmail.Summary = aiResult.Summary;
-                    // existingEmail.UpdatedAt = DateTime.UtcNow;
-                }
-                catch (HttpRequestException ex) when (ex.Message.Contains("TooManyRequests"))
-                {
-                    retryCount++;
-                    var retryDelay = TimeSpan.FromSeconds(30); 
-
-                    if (ex.Data["Body"] is string bodyJson &&
-                        bodyJson.Contains("\"retryDelay\"") &&
-                        TimeSpan.TryParse(bodyJson.Split("\"retryDelay\":\"")[1].Split('"')[0].Replace("s", "s"), out var parsedDelay))
-                    {
-                        retryDelay = parsedDelay;
-                    }
-
-                    logger.LogWarning("Rate limit hit. Waiting {Seconds}s before retry {RetryCount}...", retryDelay.TotalSeconds, retryCount);
-
-                    await Task.Delay(retryDelay, cancellationToken);
-                }
-            }
+            var cleanedText = EmailUtilities.CleanJsonResponse(result.Text);
             
-            // Wait between requests to avoid per-minute quota exhaustion
+            var aiJsonResult = JsonSerializer.Deserialize<EmailAiResult>(
+                cleanedText,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            
+            logger.LogInformation(
+                "AI response for email {EmailId}: isJobRelated={IsJobRelated}, category={Category}, summary={Summary}",
+                id,
+                aiJsonResult.IsJobRelated,
+                aiJsonResult.Category,
+                aiJsonResult.Summary
+            );
+            
+            existingEmail.IsJobRelated = aiJsonResult.IsJobRelated;
+            existingEmail.Category = aiJsonResult.Category;
+            existingEmail.Summary = aiJsonResult.Summary;
+            existingEmail.UpdatedAt = DateTime.UtcNow;
+
             await Task.Delay(2000, cancellationToken);
         }
-        // await dbContext.SaveChangesAsync(cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
-
     
     public async Task FetchInitialEmailsAsync(
         string? userId,
@@ -268,7 +261,7 @@ public class EmailService(
             await dbContext.SaveChangesAsync(cancellationToken);
             
             var emailIds = emails.Select(e => e.Id).ToList();
-            // backgroundJobClient.Enqueue(() => ProcessEmailsWithAI(emailIds, userId, CancellationToken.None));
+            backgroundJobClient.Enqueue(() => ProcessEmailsWithAI(emailIds, userId, CancellationToken.None));
             
             cacheService.InvalidateUserEmailCache(userId);
             

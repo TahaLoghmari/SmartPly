@@ -6,6 +6,7 @@ using Google.Apis.Gmail.v1.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Mscc.GenerativeAI.Web;
 
 namespace backend.Controllers;
 [ApiController]

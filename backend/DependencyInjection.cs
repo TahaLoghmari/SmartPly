@@ -1,4 +1,5 @@
-using Mscc.GenerativeAI;
+
+using Mscc.GenerativeAI.Web;
 
 namespace backend;
 using System.Threading.RateLimiting;
@@ -155,6 +156,7 @@ public static class DependencyInjection
         builder.Services.AddScoped<NotificationService>();
         builder.Services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>("Database");
+        builder.Services.AddGenerativeAI(builder.Configuration.GetSection("Gemini"));
         
         return builder; 
     }
