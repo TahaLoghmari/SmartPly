@@ -1,4 +1,5 @@
 using System.Text;
+using backend.Entities;
 using backend.Enums;
 using Google.Apis.Gmail.v1.Data;
 
@@ -106,6 +107,44 @@ public static class EmailUtilities
                 return NotificationType.emailUpdate;
             default:
                 return NotificationType.otherUpdate;
+        }
+    }
+    
+    public static ApplicationStatus MapCategoryToStatusType(string? category)
+    {
+        switch (category.Trim().ToLowerInvariant())
+        {
+            case "interview":
+                return ApplicationStatus.interview;
+            case "offer":
+                return ApplicationStatus.offer;
+            case "applied":
+                return ApplicationStatus.applied;
+            case "rejected":
+                return ApplicationStatus.rejected;
+            default:
+                return ApplicationStatus.offer;
+        }
+    }
+
+    public static void UpdateApplicationStatusDate(Application application, string? category)
+    {
+        var cat = string.IsNullOrWhiteSpace(category) ? string.Empty : category.Trim().ToLowerInvariant();
+
+        switch (cat)
+        {
+            case "interview":
+                application.InterviewDate = DateTime.UtcNow;
+                break;
+            case "offer":
+                application.OfferDate = DateTime.UtcNow;
+                break;
+            case "applied":
+                application.AppliedDate = DateTime.UtcNow;
+                break;
+            case "rejected":
+                application.RejectedDate = DateTime.UtcNow;
+                break;
         }
     }
 }

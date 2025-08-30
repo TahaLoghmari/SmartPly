@@ -33,7 +33,8 @@ public class EmailService(
     IBackgroundJobClient backgroundJobClient,
     IConfiguration configuration,
     NotificationService notificationService,
-    IGenerativeModelService aiService)
+    IGenerativeModelService aiService,
+    AiService generativeAiService)
 {
     private readonly GoogleSettings _googleSettings = googleSettings.Value;
     private GmailService? _gmailService;
@@ -90,200 +91,21 @@ public class EmailService(
         });
     }
     
-    public async Task ProcessEmailsWithAI(
+    public async Task ClassifyAndMatchEmailsAsync(
     List<string> emailIds,
-    string? userId,
+    string userId,
     CancellationToken cancellationToken)
     {
         var model = aiService.CreateInstance();
+        var userApplications = await dbContext.Applications
+            .Where(a => a.UserId == userId)
+            .Select(a => a.ToApplicationAiPromptDto())
+            .ToListAsync(cancellationToken);
         
         foreach (var id in emailIds)
         {
-            var existingEmail = await dbContext.Emails
-                .FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId, cancellationToken);
-    
-            if (existingEmail is null)
-            {
-                logger.LogWarning($"Email with id {id} was not found.");
-                throw new NotFoundException($"Email with id {id} was not found.");
-            }
-    
-            Message? fullEmail = await GetEmailByIdAsync(id, userId, cancellationToken);
-            var decodedBody = EmailUtilities.GetDecodedEmailBody(fullEmail);
-    
-            var promptText = $@"
-                You are an AI email classifier. Your task is to analyze email content and determine if it is 
-                directly related to a job application process involving the recipient.
-
-                CLASSIFICATION RULES:
-                - Classify as job-related ONLY if the email is a direct communication about the recipient's personal application, such as:
-                    - Applying for a job.
-                    - Scheduling or conducting an interview.
-                    - Receiving an offer.
-                    - Receiving a rejection or status update.
-                    - Direct outreach from a recruiter about a specific role for the recipient.
-                - DO NOT classify as job-related if the email is generic, promotional, or not specific to the recipient's application. Examples include:
-                    - General job market newsletters or career advice.
-                    - Job board updates or promotional alerts.
-                    - General networking or business-related emails.
-
-                CATEGORIES:
-                - interview: For scheduling, confirming, or providing details about an interview.
-                - offer: For job offers or related discussions.
-                - applied: For confirmations of a submitted application.
-                - rejected: For rejection notices.
-                - emailUpdate: For any other direct status updates (e.g., ""application under review"").
-
-                INSTRUCTIONS:
-                1. Read the EMAIL INFO and EMAIL TEXT provided below.
-                2. First, decide if the email matches ANY job-related case (applied, interview, offer, rejection, status update, recruiter outreach).  
-                   - If yes, you MUST set `""isJobRelated"": true`.  
-                   - If no, set `""isJobRelated"": false`.  
-                3. VERY IMPORTANT:  
-                   - If `""isJobRelated"": true`, `""category""` MUST be one of the provided categories, and `""summary""` MUST be a concise 1–2 sentence summary.  
-                   - If `""isJobRelated"": false`, then `""category""` MUST be null AND `""summary""` MUST be null. Do not output anything else in these fields. 
-                4.  Provide a concise, 1-2 sentence summary of the email's content.
-
-                RESPOND ONLY with a valid JSON object. Do not include any extra text, commentary, or markdown formatting like ```json.
-
-                EMAIL INFO:
-                {{
-                    ""subject"": ""{existingEmail.Subject}"",
-                    ""from_address"": ""{existingEmail.FromAddress}"",
-                    ""from_name"": ""{existingEmail.FromName}"",
-                    ""snippet"": ""{existingEmail.Snippet}""
-                }}
-
-                EMAIL TEXT:
-                """"""
-                {decodedBody}
-                """"""
-
-                OUTPUT JSON FORMAT:
-                {{
-                  ""isJobRelated"": boolean,
-                  ""category"": ""string|null"",
-                  ""summary"": ""string|null""
-                }}
-                ";
-    
-            var result = await model.GenerateContent(promptText);
-
-            var cleanedText = EmailUtilities.CleanJsonResponse(result.Text);
-            
-            var aiJsonResult = JsonSerializer.Deserialize<JobDetectionPromptResult>(
-                cleanedText,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            
-            logger.LogInformation(
-                "AI response for email {EmailId}: isJobRelated={IsJobRelated}, category={Category}, summary={Summary}",
-                id,
-                aiJsonResult.IsJobRelated,
-                aiJsonResult.Category,
-                aiJsonResult.Summary
-            );
-            
-            existingEmail.IsJobRelated = aiJsonResult.IsJobRelated;
-            existingEmail.Category = aiJsonResult.Category;
-            existingEmail.Summary = aiJsonResult.Summary;
-
-            if (existingEmail.IsJobRelated)
-            {
-                await Task.Delay(1000, cancellationToken);
-                
-                promptText = $@"
-                You are an AI designed to match an incoming email to a specific job application from a user's 
-                tracked list.
-                Input: 
-                1. The email content.
-                2. A JSON array of job applications the user has previously entered. 
-                Each object in this array will have the following structure:
-                - id (unique integer)
-                - company_name
-                - company_email
-                - position
-                - job_link
-                - notes
-                - status
-                - type (e.g., onSite, remote)
-                - jobType (e.g., fullTime, internship)
-                - level (e.g., junior, senior)
- 
-                Task:
-                - Analyze the provided email_content and compare it against the job_applications list to find the 
-                most probable match.
-                Matching Criteria:
-                - Primary: Look for explicit mentions of company_name, position, or specific project/product names
-                mentioned in the job_description.
-                - Secondary: Check for any sender email addresses (company_email) that correspond to a company in
-                 the list.
-                - Tertiary: Look for context clues in the email body, such as recruiter names, interview scheduling
-                 details, or references to the user's resume/application for a specific role.
-                
-                RESPOND ONLY with a valid JSON object. Do not include any extra text, commentary, or
-                 markdown formatting like `json`.
-
-                EMAIL CONTENT:
-                """"""
-                {decodedBody}
-                """"""
-
-                JOB LIST:
-                {{{{JOB_LIST_JSON}}}}
-
-                OUTPUT JSON FORMAT:
-                {{
-                  ""id"": ""string|null"",
-                }}
-
-                Rules:
-                - Match using company name, job title, role, recruiter name, or context in the email.
-                - Use the `job_id` exactly as provided in the job list.
-                ";
-                
-                result = await model.GenerateContent(promptText);
-                var newCleanedText = EmailUtilities.CleanJsonResponse(result.Text);
-                
-                var newAiJsonResult = JsonSerializer.Deserialize<JobMatchingPromptResult>(
-                    newCleanedText,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                if ( newAiJsonResult is not null )
-                {
-                    logger.LogInformation(
-                        "An Application match was found for email {EmailId}: MatchedJobId={MatchedJobId}, category={Category}",
-                        id,
-                        newAiJsonResult!.Id,
-                        aiJsonResult.Category
-                    );
-                    existingEmail.MatchedJobId = newAiJsonResult.Id;
-                    existingEmail.Category = aiJsonResult.Category;
-                    
-                    Application? matchedApplication = await dbContext.Applications
-                        .FirstOrDefaultAsync(a => a.Id == newAiJsonResult.Id && a.UserId == userId, cancellationToken);
-                    
-                    matchedApplication.Status = aiJsonResult.Category;
-                    
-                    var notificationType = EmailUtilities.MapCategoryToNotificationType(aiJsonResult.Category);
-                    
-                    var notificationRequestDto = new NotificationRequestDto
-                    {
-                        Title = "Application Match Found",
-                        Message = $"An incoming email (\"{existingEmail.Subject}\") was matched to your application (ID: {newAiJsonResult.Id}). Category: {aiJsonResult.Category ?? "N/A"}.",
-                        Type = notificationType, 
-                        IsRead = false,
-                        CreatedAt = DateTime.UtcNow
-                    };
-
-                    await notificationService.AddNotificationAsync(userId, notificationRequestDto,cancellationToken);
-                }
-            }
-            
-            existingEmail.UpdatedAt = DateTime.UtcNow;
-
-            await Task.Delay(2000, cancellationToken);
+            await generativeAiService.ClassifyAndMatchEmailAsync(userId, id, model, userApplications, cancellationToken);
         }
-        await dbContext.SaveChangesAsync(cancellationToken);
     }
     
     public async Task FetchInitialEmailsAsync(
@@ -354,7 +176,7 @@ public class EmailService(
             await dbContext.SaveChangesAsync(cancellationToken);
             
             var emailIds = emails.OrderByDescending(e => e.InternalDate).Select(e => e.Id).ToList();
-            backgroundJobClient.Enqueue(() => ProcessEmailsWithAI(emailIds, userId, CancellationToken.None));
+            backgroundJobClient.Enqueue(() => ClassifyAndMatchEmailsAsync(emailIds, userId, CancellationToken.None));
             
             cacheService.InvalidateUserEmailCache(userId);
             

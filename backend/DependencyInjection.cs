@@ -154,6 +154,7 @@ public static class DependencyInjection
         builder.Services.AddScoped<CoverLetterService>();
         builder.Services.AddScoped<UserService>();
         builder.Services.AddScoped<NotificationService>();
+        builder.Services.AddScoped<AiService>();
         builder.Services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>("Database");
         builder.Services.AddGenerativeAI(builder.Configuration.GetSection("Gemini"));

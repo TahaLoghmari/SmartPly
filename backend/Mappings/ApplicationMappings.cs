@@ -105,6 +105,27 @@ internal static class ApplicationMappings
             IsLiked = application.IsLiked,
         };
     }
+    
+    public static ApplicationAiPromptDto ToApplicationAiPromptDto(this Application application)
+    {
+        return new ApplicationAiPromptDto
+        {
+            Id = application.Id,
+            CompanyName = application.CompanyName,
+            CompanyEmail = application.CompanyEmail,
+            CreatedAt = application.CreatedAt,
+            JobDescription = application.JobDescription,
+            JobType = application.JobType,
+            Level = application.Level,
+            Link = application.Link,
+            Location = application.Location,
+            Notes = application.Notes,
+            Position = application.Position,
+            Status = application.Status,
+            Type = application.Type,
+        };
+    }
+    
     public static void UpdateFromDto(this Application application, ApplicationRequestDto dto)
     {
         application.ResumeId = dto.ResumeId;
