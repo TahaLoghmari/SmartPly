@@ -31,10 +31,9 @@ public class EmailService(
     IMemoryCache cache,
     CacheService cacheService,
     IBackgroundJobClient backgroundJobClient,
-    IConfiguration configuration,
     NotificationService notificationService,
     IGenerativeModelService aiService,
-    AiService generativeAiService)
+    IServiceProvider serviceProvider)
 {
     private readonly GoogleSettings _googleSettings = googleSettings.Value;
     private GmailService? _gmailService;
@@ -96,6 +95,9 @@ public class EmailService(
     string userId,
     CancellationToken cancellationToken)
     {
+        using var scope = serviceProvider.CreateScope();
+        var generativeAiService = scope.ServiceProvider.GetRequiredService<AiService>();
+        
         var model = aiService.CreateInstance();
         var userApplications = await dbContext.Applications
             .Where(a => a.UserId == userId)

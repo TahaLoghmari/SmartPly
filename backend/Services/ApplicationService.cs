@@ -1,7 +1,9 @@
 ﻿using backend.DTOs;
 using backend.Entities;
+using backend.Enums;
 using backend.Exceptions;
 using backend.Mappings;
+using backend.Utilities;
 using FluentValidation;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +31,14 @@ public class ApplicationService(
         }
         
         Application application = applicationRequestDto.ToApplication(userId);
+        
+        foreach (ApplicationStatus status in Enum.GetValues(typeof(ApplicationStatus)))
+        {
+            if (status <= application.Status)
+            {
+                EmailUtilities.UpdateApplicationStatusDate(application, status.ToString());
+            }
+        }
         
         dbContext.Applications.Add(application);
         
@@ -149,6 +159,21 @@ public class ApplicationService(
         }
         
         application.UpdateFromDto(applicationEditRequestDto);
+        // this is to ensure that the status dates are updated correctly if the status has changed
+        foreach (ApplicationStatus status in Enum.GetValues(typeof(ApplicationStatus)))
+        {
+            if (status <= application.Status)
+            {
+                EmailUtilities.UpdateApplicationStatusDate(application, status.ToString());
+            }
+        }
+        foreach (ApplicationStatus status in Enum.GetValues(typeof(ApplicationStatus)))
+        {
+            if (status > application.Status)
+            {
+                EmailUtilities.UpdateApplicationStatusDate(application, status.ToString(),true);
+            }
+        }
         logger.LogInformation("Updated application entity from DTO. ApplicationId: {ApplicationId}", application.Id);
         
         await dbContext.SaveChangesAsync(cancellationToken);

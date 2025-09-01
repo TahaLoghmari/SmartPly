@@ -9,6 +9,6 @@ public enum ApplicationStatus
     applied,
     interview,
     offer,
-    rejected,
     ghosted,
+    rejected,
 }

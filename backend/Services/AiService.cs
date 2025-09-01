@@ -3,6 +3,7 @@ using backend.DTOs;
 using backend.Entities;
 using backend.Enums;
 using backend.Utilities;
+using FluentValidation;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Mscc.GenerativeAI;
@@ -15,12 +16,14 @@ public class AiService(
     ApplicationDbContext dbContext,
     NotificationService notificationService,
     EmailService emailService,
-    IBackgroundJobClient backgroundJobClient)
+    CacheService cacheService,
+    IBackgroundJobClient backgroundJobClient,
+    IValidator<JobDetectionPromptResult> jobDetectionValidator,
+    IValidator<JobMatchingPromptResult> jobMatchingValidator)
 {
     public async Task<JobDetectionPromptResult?> ClassifyEmailAsync(
         Email existingEmail,
         GenerativeModel model,
-        string id,
         string decodedBody)
     {
         var promptText = $@"
@@ -60,57 +63,44 @@ public class AiService(
 
         EMAIL INFO:
         {{
-            ""subject"": ""{existingEmail.Subject}"",
-            ""from_address"": ""{existingEmail.FromAddress}"",
-            ""from_name"": ""{existingEmail.FromName}"",
-            ""snippet"": ""{existingEmail.Snippet}""
+            subject: {existingEmail.Subject},
+            from_address: {existingEmail.FromAddress},
+            from_name: {existingEmail.FromName},
+            snippet: {existingEmail.Snippet}
         }}
 
         EMAIL TEXT:
-        """"""
         {decodedBody}
-        """"""
 
         OUTPUT JSON FORMAT:
         {{
-          ""isJobRelated"": boolean,
-          ""category"": ""string|null"",
-          ""summary"": ""string|null""
+          isJobRelated: boolean,
+          category: string|null,
+          summary: string|null
         }}
         ";
-
+        
         GenerateContentResponse result = await model.GenerateContent(promptText);
 
         var cleanedText = EmailUtilities.CleanJsonResponse(result.Text);
-        
+    
         JobDetectionPromptResult? aiJsonResult = JsonSerializer.Deserialize<JobDetectionPromptResult>(
             cleanedText,
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-        if (aiJsonResult is null)
+        if (aiJsonResult is not null)
         {
-            logger.LogWarning("AI returned null classification for email {EmailId}. Skipping.", id);
-            return null;
+            logger.LogInformation(
+                "AI classification for email {EmailId}: isJobRelated={IsJobRelated}, category={Category}",
+                existingEmail.Id, aiJsonResult.IsJobRelated, aiJsonResult.Category);
+            await jobDetectionValidator.ValidateAndThrowAsync(aiJsonResult);
         }
-        
-        logger.LogInformation(
-            "AI response for email {EmailId}: isJobRelated={IsJobRelated}, category={Category}, summary={Summary}",
-            id,
-            aiJsonResult.IsJobRelated,
-            aiJsonResult.Category,
-            aiJsonResult.Summary
-        );
-        
-        existingEmail.IsJobRelated = aiJsonResult.IsJobRelated;
-        existingEmail.Category = aiJsonResult.Category;
-        existingEmail.Summary = aiJsonResult.Summary;
-
+    
         return aiJsonResult;
     }
 
     public async Task HandleClassificationAsync(
         GenerativeModel model,
-        string id,
         string userId,
         string category,
         Email existingEmail,
@@ -150,68 +140,82 @@ public class AiService(
 
         EMAIL INFO:
         {{
-          ""subject"": ""{{existingEmail.Subject}}"",
-          ""from_address"": ""{{existingEmail.FromAddress}}"",
-          ""from_name"": ""{{existingEmail.FromName}}"",
-          ""snippet"": ""{{existingEmail.Snippet}}""
+          subject: {existingEmail.Subject},
+          from_address: {existingEmail.FromAddress},
+          from_name: {existingEmail.FromName},
+          snippet: {existingEmail.Snippet}
         }}
 
         EMAIL CONTENT:
-        """"""""""
         {decodedBody}
-        """"""""""
+        
 
         JOB LIST:
         {userApplications}
 
         OUTPUT JSON FORMAT:
         {{
-          ""id"": ""string|null""
+          id: string|null
         }}
 
         RULES:
         - Always return exactly one field: `id`.
         - Use the `id` exactly as provided in the job list.
-        - Return `""id"": null` if no reliable match exists.
+        - Return id as null if no reliable match exists.
         ";
 
         GenerateContentResponse result = await model.GenerateContent(promptText);
         
         var newCleanedText = EmailUtilities.CleanJsonResponse(result.Text);
         
-        JobMatchingPromptResult? newAiJsonResult = JsonSerializer.Deserialize<JobMatchingPromptResult>(
+        JobMatchingPromptResult? aiJsonResult = JsonSerializer.Deserialize<JobMatchingPromptResult>(
             newCleanedText,
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        
+        await jobMatchingValidator.ValidateAndThrowAsync(aiJsonResult!,cancellationToken);
 
-        if ( newAiJsonResult is not null && newAiJsonResult.Id != Guid.Empty )
+        if ( aiJsonResult?.Id is not null && aiJsonResult.Id != Guid.Empty )
         {
             logger.LogInformation(
                 "An Application match was found for email {EmailId}: MatchedJobId={MatchedJobId}, category={Category}",
-                id,
-                newAiJsonResult!.Id,
+                existingEmail.Id,
+                aiJsonResult!.Id,
                 category
             );
-            existingEmail.MatchedJobId = newAiJsonResult.Id;
+            existingEmail.MatchedJobId = aiJsonResult.Id;
             existingEmail.Category = category;
             
             Application? matchedApplication = await dbContext.Applications
-                .FirstOrDefaultAsync(a => a.Id == newAiJsonResult.Id && a.UserId == userId, cancellationToken);
+                .FirstOrDefaultAsync(a => a.Id == aiJsonResult.Id && a.UserId == userId, cancellationToken);
             
             if (matchedApplication is null)
             {
-                logger.LogWarning("Get current application failed - application not found for Id: {applicationId}", id);
+                logger.LogWarning("Get current application failed - application not found for Id: {applicationId}", existingEmail.Id);
             }
             else
             {
                 matchedApplication.Status = EmailUtilities.MapCategoryToStatusType(category);
                 EmailUtilities.UpdateApplicationStatusDate(matchedApplication, category);
             }
+            
+            var notificationType = EmailUtilities.MapCategoryToNotificationType(category);
+            
+            var notificationRequestDto = new NotificationRequestDto
+            {
+                Title = "Application Match Found",
+                Message = $"An incoming email (\"{existingEmail.Subject}\") was matched to your application (ID: {aiJsonResult.Id}). Category: {category ?? "N/A"}.",
+                Type = notificationType, 
+                IsRead = false,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await notificationService.AddNotificationAsync(userId, notificationRequestDto,cancellationToken);
         }
         else
         {
             logger.LogInformation(
                 "An Application match was not found for email {EmailId}",
-                id
+                existingEmail.Id
             );
 
             Application newApplication = new Application
@@ -232,22 +236,25 @@ public class AiService(
             
             EmailUtilities.UpdateApplicationStatusDate(newApplication, category);
             
-            existingEmail.MatchedJobId = newAiJsonResult.Id;
-            existingEmail.Category = category;
-        }
-        
-        var notificationType = EmailUtilities.MapCategoryToNotificationType(category);
+            dbContext.Applications.Add(newApplication);
+            cacheService.InvalidateUserApplicationCache(newApplication.UserId);
             
-        var notificationRequestDto = new NotificationRequestDto
-        {
-            Title = "Application Match Found",
-            Message = $"An incoming email (\"{existingEmail.Subject}\") was matched to your application (ID: {newAiJsonResult.Id}). Category: {category ?? "N/A"}.",
-            Type = notificationType, 
-            IsRead = false,
-            CreatedAt = DateTime.UtcNow
-        };
+            existingEmail.MatchedJobId = newApplication.Id;
+            existingEmail.Category = category;
+            
+            var notificationType = EmailUtilities.MapCategoryToNotificationType(category);
+            
+            var notificationRequestDto = new NotificationRequestDto
+            {
+                Title = "New Application Created",
+                Message = $"An email ('{existingEmail.Subject}') was received. Since no match was found, a new application was automatically created for you with the status: {category}.",
+                Type = notificationType,
+                IsRead = false,
+                CreatedAt = DateTime.UtcNow
+            };
 
-        await notificationService.AddNotificationAsync(userId, notificationRequestDto,cancellationToken);
+            await notificationService.AddNotificationAsync(userId, notificationRequestDto,cancellationToken);
+        }
     }
 
     public async Task ClassifyAndMatchEmailAsync(
@@ -259,22 +266,39 @@ public class AiService(
     {
         var existingEmail = await dbContext.Emails
             .FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId, cancellationToken);
+        
+        if (existingEmail is null)
+        {
+            logger.LogWarning("Email with ID {EmailId} not found for user {UserId}.", id, userId);
+            return;
+        }
+        
         try
         {
             Message? fullEmail = await emailService.GetEmailByIdAsync(id, userId, cancellationToken);
                 
             var decodedBody = EmailUtilities.GetDecodedEmailBody(fullEmail);
 
-            JobDetectionPromptResult aiJsonResult = await ClassifyEmailAsync(existingEmail, model, id, decodedBody);
+            JobDetectionPromptResult? aiJsonResult = await ClassifyEmailAsync(existingEmail, model, decodedBody);
+
+            if (aiJsonResult is null) throw new InvalidOperationException("AI classification returned a null or invalid result for email {id}.");
+            
+            existingEmail.IsJobRelated = aiJsonResult.IsJobRelated;
 
             if (existingEmail.IsJobRelated)
             {
-                await Task.Delay(1000, cancellationToken);
-                await HandleClassificationAsync(model,id,userId,aiJsonResult.Category,existingEmail,decodedBody,userApplications,cancellationToken);
-            }
+                existingEmail.Category = aiJsonResult.Category;
+                existingEmail.Summary = aiJsonResult.Summary;
                 
-            existingEmail.UpdatedAt = DateTime.UtcNow;
-            await dbContext.SaveChangesAsync(cancellationToken);
+                await Task.Delay(1000, cancellationToken);
+                
+                await HandleClassificationAsync(model,userId,aiJsonResult.Category,existingEmail,decodedBody,userApplications,cancellationToken);
+                
+                existingEmail.UpdatedAt = DateTime.UtcNow;
+                
+                cacheService.InvalidateUserEmailCache(userId);
+                await dbContext.SaveChangesAsync(cancellationToken);
+            }
             
             logger.LogInformation("Email {EmailId} processed successfully.", id);
             
@@ -283,7 +307,7 @@ public class AiService(
         catch (Exception e)
         {
             logger.LogError(e, "Unexpected error while processing email {EmailId}. Will retry tomorrow.", id);
-            if ( existingEmail is not null && existingEmail?.AiProcessingRetryCount == 0)
+            if ( existingEmail.AiProcessingRetryCount == 0)
             {
                 backgroundJobClient.Schedule<AiService>(
                     s => 
