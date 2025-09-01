@@ -55,7 +55,7 @@ public class AiService(
            - If yes, you MUST set `""isJobRelated"": true`.  
            - If no, set `""isJobRelated"": false`.  
         3. VERY IMPORTANT:  
-           - If `""isJobRelated"": true`, `""category""` MUST be one of the provided categories, and `""summary""` MUST be a concise 1–2 sentence summary.  
+           - If `""isJobRelated"": true`, `""category""` MUST be one of the provided categories, `""summary""` MUST be a concise 1–2 sentence summary . and ""companyName"" MUST be set to the company's name. If the company name cannot be determined from the email, use the literal string ""Unknown"".  
            - If `""isJobRelated"": false`, then `""category""` MUST be null AND `""summary""` MUST be null. Do not output anything else in these fields. 
         4.  Provide a concise, 1-2 sentence summary of the email's content.
 
@@ -63,10 +63,10 @@ public class AiService(
 
         EMAIL INFO:
         {{
-            subject: {existingEmail.Subject},
-            from_address: {existingEmail.FromAddress},
-            from_name: {existingEmail.FromName},
-            snippet: {existingEmail.Snippet}
+            ""subject"": {existingEmail.Subject},
+            ""from_address"": {existingEmail.FromAddress},
+            ""from_name"": {existingEmail.FromName},
+            ""snippet"": {existingEmail.Snippet}
         }}
 
         EMAIL TEXT:
@@ -74,9 +74,10 @@ public class AiService(
 
         OUTPUT JSON FORMAT:
         {{
-          isJobRelated: boolean,
-          category: string|null,
-          summary: string|null
+          ""isJobRelated"": boolean,
+          ""category"": string|null,
+          ""summary"": string|null,
+          ""companyName"": string,
         }}
         ";
         
@@ -103,6 +104,7 @@ public class AiService(
         GenerativeModel model,
         string userId,
         string category,
+        string companyName,
         Email existingEmail,
         string decodedBody,
         List<ApplicationAiPromptDto> userApplications,
@@ -177,10 +179,11 @@ public class AiService(
         if ( aiJsonResult?.Id is not null && aiJsonResult.Id != Guid.Empty )
         {
             logger.LogInformation(
-                "An Application match was found for email {EmailId}: MatchedJobId={MatchedJobId}, category={Category}",
+                "An Application match was found for email {EmailId}: MatchedJobId={MatchedJobId}, category={Category}, companyName={CompanyName}",
                 existingEmail.Id,
                 aiJsonResult!.Id,
-                category
+                category,
+                companyName
             );
             existingEmail.MatchedJobId = aiJsonResult.Id;
             existingEmail.Category = category;
@@ -227,7 +230,7 @@ public class AiService(
             Application newApplication = new Application
             {
                 UserId = userId,
-                CompanyName = existingEmail.FromName,
+                CompanyName = companyName,
                 CompanyEmail = existingEmail.FromAddress,
                 Position = "Unknown Position",
                 Link = "N/A",
@@ -304,7 +307,7 @@ public class AiService(
                 
                 await Task.Delay(1000, cancellationToken);
                 
-                await HandleClassificationAsync(model,userId,aiJsonResult.Category,existingEmail,decodedBody,userApplications,cancellationToken);
+                await HandleClassificationAsync(model,userId,aiJsonResult.Category,aiJsonResult.CompanyName,existingEmail,decodedBody,userApplications,cancellationToken);
                 
                 existingEmail.UpdatedAt = DateTime.UtcNow;
                 
