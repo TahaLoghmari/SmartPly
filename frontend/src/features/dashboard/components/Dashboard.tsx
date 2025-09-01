@@ -75,6 +75,12 @@ export function Dashboard() {
         if (notification.title === "Initial Email Sync Completed") {
           queryClient.invalidateQueries({ queryKey: ["currentUser"] });
         }
+
+        if (notification.title === "New Application Created") {
+          queryClient.invalidateQueries({
+            queryKey: ["applications", user.id],
+          });
+        }
       },
     );
 

@@ -30,7 +30,7 @@ export default function ApplicationCard({
         >
           <div
             onClick={(e) => {
-              e.stopPropagation();
+              e.preventDefault();
             }}
           >
             <Checkbox
@@ -45,7 +45,13 @@ export default function ApplicationCard({
           </div>
         </div>
       ) : (
-        <ApplicationLikeButton applicationCard={applicationCard} />
+        <div
+          onClick={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <ApplicationLikeButton applicationCard={applicationCard} />
+        </div>
       )}
       <div className="flex flex-1 flex-col gap-4 md:flex-row md:items-center">
         <ApplicationCardInfo applicationCard={applicationCard} />

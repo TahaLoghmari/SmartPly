@@ -2,9 +2,7 @@ import { type JsonPatchDto } from "@/types/api.types";
 import {
   STATUS_TO_VALUE,
   STEPS,
-  STATUS_TO_DATE_KEY,
   type ApplicationResponseDto,
-  type ApplicationsFormHandleStatusChangeProps,
 } from "#/applications";
 
 export function ApplicationsStatusControlBuildPatch(
@@ -14,7 +12,7 @@ export function ApplicationsStatusControlBuildPatch(
   const stepsWithLastStatus = [...STEPS, "Offer", "Rejected", "Ghosted"];
   const newStatus_UpperCase = capitalize(newStatus);
 
-  return [
+  const patchRequest: JsonPatchDto[] = [
     {
       op: "replace",
       path: "/status",
@@ -46,35 +44,9 @@ export function ApplicationsStatusControlBuildPatch(
         };
       }),
   ];
-}
 
-export const ApplicationsFormHandleStatusChange = ({
-  credentials,
-  applicationCard,
-}: ApplicationsFormHandleStatusChangeProps) => {
-  const allSteps = [...STEPS, "Offer", "Ghosted", "Rejected"];
-  allSteps.map((step) => {
-    const step_lowerCase = uncapitalize(step);
-    const field = STATUS_TO_DATE_KEY[step_lowerCase];
-    if (
-      STATUS_TO_VALUE[step] <= STATUS_TO_VALUE[capitalize(credentials.status)]
-    ) {
-      // If the date is already set and is in the past or now, keep it.
-      // Otherwise, set it to the current date.
-      if (
-        applicationCard &&
-        applicationCard[field] &&
-        applicationCard[field] <= new Date()
-      ) {
-        // Keep the existing date
-        (credentials as any)[field] = applicationCard[field];
-      } else {
-        // Set to now
-        (credentials as any)[field] = new Date().toISOString();
-      }
-    } else (credentials as any)[field] = null;
-  });
-};
+  return patchRequest;
+}
 
 export function capitalize(status: string) {
   return status[0].toUpperCase() + status.slice(1);

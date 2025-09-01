@@ -14,7 +14,6 @@ import {
   ApplicationFormAdditionalInformation,
   ApplicationFormTechnologies,
   ApplicationFormDocuments,
-  ApplicationsFormHandleStatusChange,
   ApplicationsFormDefaultValues,
   ApplicationsFormRequestSchema,
   useApplicationFormMutation,
@@ -51,7 +50,12 @@ export default function ApplicationForm({
   }, [isError]);
 
   async function onSubmit(credentials: ApplicationRequestDto) {
-    ApplicationsFormHandleStatusChange({ credentials, applicationCard });
+    credentials.wishListDate = applicationCard?.wishListDate;
+    credentials.appliedDate = applicationCard?.appliedDate;
+    credentials.interviewDate = applicationCard?.interviewDate;
+    credentials.offerDate = applicationCard?.offerDate;
+    credentials.rejectedDate = applicationCard?.rejectedDate;
+    credentials.ghostedDate = applicationCard?.ghostedDate;
     mutate(credentials, {
       onSuccess: () => setOpenDialog(false),
     });

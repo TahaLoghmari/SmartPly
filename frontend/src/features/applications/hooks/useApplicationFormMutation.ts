@@ -25,6 +25,7 @@ export function useApplicationFormMutation(
         onError: (error) => handleApiError({ apiError: error }),
       });
     } else {
+      console.log(credentials);
       edit.mutate(
         { id: editId!, data: credentials },
         { onSuccess, onError: (error) => handleApiError({ apiError: error }) },
