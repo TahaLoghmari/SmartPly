@@ -82,7 +82,7 @@ public class AiService(
         
         GenerateContentResponse result = await model.GenerateContent(promptText);
 
-        var cleanedText = EmailUtilities.CleanJsonResponse(result.Text);
+        var cleanedText = AiUtilities.CleanJsonResponse(result.Text);
     
         JobDetectionPromptResult? aiJsonResult = JsonSerializer.Deserialize<JobDetectionPromptResult>(
             cleanedText,
@@ -166,7 +166,7 @@ public class AiService(
 
         GenerateContentResponse result = await model.GenerateContent(promptText);
         
-        var newCleanedText = EmailUtilities.CleanJsonResponse(result.Text);
+        var newCleanedText = AiUtilities.CleanJsonResponse(result.Text);
         
         JobMatchingPromptResult? aiJsonResult = JsonSerializer.Deserialize<JobMatchingPromptResult>(
             newCleanedText,
@@ -194,11 +194,17 @@ public class AiService(
             }
             else
             {
-                matchedApplication.Status = EmailUtilities.MapCategoryToStatusType(category);
-                EmailUtilities.UpdateApplicationStatusDate(matchedApplication, category);
+                matchedApplication.Status = ApplicationUtilities.MapCategoryToStatusType(category);
+                foreach (ApplicationStatus status in Enum.GetValues(typeof(ApplicationStatus)))
+                {
+                    if (status <= matchedApplication.Status)
+                    {
+                        ApplicationUtilities.UpdateApplicationStatusDate(matchedApplication, status.ToString());
+                    }
+                }
             }
             
-            var notificationType = EmailUtilities.MapCategoryToNotificationType(category);
+            var notificationType = NotificationUtilities.MapCategoryToNotificationType(category);
             
             var notificationRequestDto = new NotificationRequestDto
             {
@@ -225,7 +231,7 @@ public class AiService(
                 CompanyEmail = existingEmail.FromAddress,
                 Position = "Unknown Position",
                 Link = "N/A",
-                Status = EmailUtilities.MapCategoryToStatusType(category),
+                Status = ApplicationUtilities.MapCategoryToStatusType(category),
                 Type = ApplicationType.onSite,
                 JobType = ApplicationJobType.fullTime,
                 Level = ApplicationLevel.mid,
@@ -234,7 +240,13 @@ public class AiService(
                 EndSalary = 0,
             };
             
-            EmailUtilities.UpdateApplicationStatusDate(newApplication, category);
+            foreach (ApplicationStatus status in Enum.GetValues(typeof(ApplicationStatus)))
+            {
+                if (status <= newApplication.Status)
+                {
+                    ApplicationUtilities.UpdateApplicationStatusDate(newApplication, status.ToString());
+                }
+            }
             
             dbContext.Applications.Add(newApplication);
             cacheService.InvalidateUserApplicationCache(newApplication.UserId);
@@ -242,7 +254,7 @@ public class AiService(
             existingEmail.MatchedJobId = newApplication.Id;
             existingEmail.Category = category;
             
-            var notificationType = EmailUtilities.MapCategoryToNotificationType(category);
+            var notificationType = NotificationUtilities.MapCategoryToNotificationType(category);
             
             var notificationRequestDto = new NotificationRequestDto
             {

@@ -36,7 +36,7 @@ public class ApplicationService(
         {
             if (status <= application.Status)
             {
-                EmailUtilities.UpdateApplicationStatusDate(application, status.ToString());
+                ApplicationUtilities.UpdateApplicationStatusDate(application, status.ToString());
             }
         }
         
@@ -164,14 +164,14 @@ public class ApplicationService(
         {
             if (status <= application.Status)
             {
-                EmailUtilities.UpdateApplicationStatusDate(application, status.ToString());
+                ApplicationUtilities.UpdateApplicationStatusDate(application, status.ToString());
             }
         }
         foreach (ApplicationStatus status in Enum.GetValues(typeof(ApplicationStatus)))
         {
             if (status > application.Status)
             {
-                EmailUtilities.UpdateApplicationStatusDate(application, status.ToString(),true);
+                ApplicationUtilities.UpdateApplicationStatusDate(application, status.ToString(),true);
             }
         }
         logger.LogInformation("Updated application entity from DTO. ApplicationId: {ApplicationId}", application.Id);
