@@ -9,7 +9,7 @@ export function EmailCard({ email }: { email: Email }) {
       to={`/app/inbox/${email.id}`}
       className={({ isActive }) =>
         [
-          "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex cursor-pointer flex-col items-start gap-2 border-b p-4 text-sm leading-tight whitespace-nowrap last:border-b-0",
+          "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex cursor-pointer flex-col items-start gap-2 border-b p-4 text-sm leading-tight whitespace-nowrap",
           isActive ? "border-l-primary border-l-4" : "",
         ].join(" ")
       }
