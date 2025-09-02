@@ -212,10 +212,11 @@ RULES:
             var notificationRequestDto = new NotificationRequestDto
             {
                 Title = "Application Match Found",
-                Message = $"An incoming email (\"{existingEmail.Subject}\") was matched to your application (ID: {aiJsonResult.Id}). Category: {category ?? "N/A"}.",
+                Message = $"An incoming email (\"{existingEmail.Subject}\") was matched to your application (companyName: {companyName}). Category: {category ?? "N/A"}.",
                 Type = notificationType, 
                 IsRead = false,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                ApplicationId = matchedApplication!.Id
             };
 
             await notificationService.AddNotificationAsync(userId, notificationRequestDto,cancellationToken);
@@ -265,7 +266,8 @@ RULES:
                 Message = $"An email ('{existingEmail.Subject}') was received. Since no match was found, a new application was automatically created for you with the status: {category}.",
                 Type = notificationType,
                 IsRead = false,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                ApplicationId = newApplication.Id
             };
 
             await notificationService.AddNotificationAsync(userId, notificationRequestDto,cancellationToken);

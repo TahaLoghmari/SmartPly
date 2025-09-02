@@ -31,6 +31,11 @@ public class NotificationConfiguration
             .WithMany(u => u.Notifications)
             .HasForeignKey(n => n.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.HasOne(n => n.Application)
+            .WithMany(a => a.Notifications)
+            .HasForeignKey(n => n.ApplicationId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasIndex(n => n.UserId);
     }

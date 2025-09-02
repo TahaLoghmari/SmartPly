@@ -10,4 +10,5 @@ public class NotificationResponseDto
     public bool IsRead { get; set; }
     public DateTime CreatedAt { get; set; }
     public NotificationType Type { get; set; } 
+    public Guid? ApplicationId { get; set; }
 }

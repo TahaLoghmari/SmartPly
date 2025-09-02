@@ -14,7 +14,8 @@ public static class NotificationMappings
             Message = notification.Message,
             IsRead = notification.IsRead,
             CreatedAt = notification.CreatedAt,
-            Type = notification.Type
+            Type = notification.Type,
+            ApplicationId = notification.ApplicationId,
         };
     }
     public static Notification ToNotification(this NotificationRequestDto request, string userId)
@@ -27,6 +28,7 @@ public static class NotificationMappings
             IsRead = request.IsRead,
             CreatedAt = request.CreatedAt,
             Type = request.Type,
+            ApplicationId = request.ApplicationId,
         };
     }
 }

@@ -12,5 +12,7 @@ public record Notification
     // Add other properties as needed
     public bool IsRead { get; set; } = false ;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public Guid? ApplicationId { get; set; }
     public User? User { get; set; }
+    public Application? Application { get; set; }
 }

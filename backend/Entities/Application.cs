@@ -38,4 +38,5 @@ public sealed class Application
     public Resume? ResumeUsed { get; set; } 
     public User? User { get; set; }
     public CoverLetter? CoverLetterUsed { get; set; }
+    public List<Notification> Notifications { get; set; } = new List<Notification>();
 }
