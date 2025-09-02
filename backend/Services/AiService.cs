@@ -314,8 +314,9 @@ RULES:
                 existingEmail.UpdatedAt = DateTime.UtcNow;
                 
                 cacheService.InvalidateUserEmailCache(userId);
-                await dbContext.SaveChangesAsync(cancellationToken);
             }
+            
+            await dbContext.SaveChangesAsync(cancellationToken);
             
             logger.LogInformation("Email {EmailId} processed successfully.", id);
             

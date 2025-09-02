@@ -175,7 +175,6 @@ public class EmailService(
             }
 
             await userManager.UpdateAsync(user);
-            await dbContext.SaveChangesAsync(cancellationToken);
             
             var emailIds = emails.OrderByDescending(e => e.InternalDate).Select(e => e.Id).ToList();
             backgroundJobClient.Enqueue(() => ClassifyAndMatchEmailsAsync(emailIds, userId, CancellationToken.None));
