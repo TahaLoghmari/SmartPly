@@ -17,13 +17,13 @@ public class EmailController(
     EmailService emailService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<Message>> GetEmails(
+    public async Task<ActionResult<EmailResponseDto>> GetEmails(
         CancellationToken cancellationToken,
         [FromQuery] EmailQueryParameters query)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         
-        PaginationResultDto<Email> paginationResultDto = await emailService.GetEmailsAsync(query, userId,cancellationToken);
+        PaginationResultDto<EmailResponseDto> paginationResultDto = await emailService.GetEmailsAsync(query, userId,cancellationToken);
         
         return Ok(paginationResultDto);
     }

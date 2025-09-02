@@ -85,7 +85,7 @@ public sealed class CacheService(
         logger.LogDebug("Cached cover letter results with key: {CacheKey}", cacheKey);
     }
     
-    public void CacheEmailsResult(string cacheKey, PaginationResultDto<Email> resultDto, string userId)
+    public void CacheEmailsResult(string cacheKey, PaginationResultDto<EmailResponseDto> resultDto, string userId)
     {
         var cacheOptions = new MemoryCacheEntryOptions()
             .SetAbsoluteExpiration(TimeSpan.FromMinutes(10))

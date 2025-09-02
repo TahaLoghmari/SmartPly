@@ -312,7 +312,7 @@ public class EmailService(
             userId, listResponse.Messages?.Count ?? 0);
     }
     
-    public async Task<PaginationResultDto<Email>> GetEmailsAsync( 
+    public async Task<PaginationResultDto<EmailResponseDto>> GetEmailsAsync( 
         EmailQueryParameters query,
         string? userId,
         CancellationToken cancellationToken)
@@ -327,7 +327,7 @@ public class EmailService(
 
         string cacheKey = cacheService.GenerateEmailsCacheKey(userId,query);
         
-        if (cache.TryGetValue(cacheKey, out PaginationResultDto<Email>? cachedResult))
+        if (cache.TryGetValue(cacheKey, out PaginationResultDto<EmailResponseDto>? cachedResult))
         {
             logger.LogDebug("Cache hit for emails query: {CacheKey}", cacheKey);
             return cachedResult!;
@@ -335,12 +335,13 @@ public class EmailService(
         
         logger.LogDebug("Cache miss for emails query: {CacheKey}", cacheKey);
 
-        IQueryable<Email> emailQuery = dbContext.Emails
+        IQueryable<EmailResponseDto> emailQuery = dbContext.Emails
             .AsNoTracking()
             .Where(a => a.UserId == userId)
-            .OrderByDescending(e => e.InternalDate);
+            .OrderByDescending(e => e.InternalDate)
+            .Select(e => e.ToEmailResponseDto());
         
-        var paginationResult = await PaginationResultDto<Email>.CreateAsync(
+        var paginationResult = await PaginationResultDto<EmailResponseDto>.CreateAsync(
             emailQuery, query.Page ?? 1, query.PageSize ?? DefaultPageSize,cancellationToken);
         
         cacheService.CacheEmailsResult(cacheKey, paginationResult, userId);

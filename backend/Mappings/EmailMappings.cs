@@ -1,6 +1,7 @@
 using backend.Entities;
 using Google.Apis.Gmail.v1.Data;
 using System.Text.Json;
+using backend.DTOs;
 using backend.Utilities;
 
 namespace backend.Mappings;
@@ -26,6 +27,29 @@ internal static class EmailMappings
             IsImportant = message.LabelIds?.Contains("IMPORTANT") ?? false,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
+        };
+    }
+
+    public static EmailResponseDto ToEmailResponseDto(this Email email)
+    {
+        return new EmailResponseDto
+        {
+            Id = email.Id,
+            UserId = email.UserId,
+            MatchedJobId = email.MatchedJobId,
+            InternalDate = email.InternalDate,
+            HeaderDate = email.HeaderDate,
+            Subject = email.Subject,
+            FromAddress = email.FromAddress,
+            FromName = email.FromName,
+            Snippet = email.Snippet,
+            Category = email.Category,
+            Summary = email.Summary,
+            IsRead = email.IsRead,
+            IsImportant = email.IsImportant,
+            IsJobRelated = email.IsJobRelated,
+            CreatedAt = email.CreatedAt,
+            UpdatedAt = email.UpdatedAt
         };
     }
     
