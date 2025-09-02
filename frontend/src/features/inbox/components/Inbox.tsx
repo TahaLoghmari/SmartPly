@@ -59,15 +59,8 @@ export function Inbox({ jobRelated }: { jobRelated?: boolean }) {
     return (
       <div className="flex h-[80svh] flex-1 flex-col items-center justify-center gap-4">
         <span className="text-muted-foreground text-lg">
-          Failed to load emails.
+          {jobRelated ? "Your job inbox is empty." : "Your inbox is empty."}
         </span>
-        <Button onClick={() => fetchNextPage()} className="cursor-pointer">
-          {isPending ? (
-            <Spinner className="h-6 w-6 border-2 invert" />
-          ) : (
-            "Retry"
-          )}
-        </Button>
       </div>
     );
   }

@@ -12,6 +12,7 @@ export type NotificationResponseDto = {
   isRead: boolean;
   createdAt: Date;
   type: NotificationType;
+  applicationId: string;
 };
 
 export type NotificationRequestDto = {
@@ -20,4 +21,5 @@ export type NotificationRequestDto = {
   type: NotificationType;
   isRead: boolean;
   createdAt: Date;
+  applicationId: string;
 };

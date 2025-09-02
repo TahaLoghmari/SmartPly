@@ -3,15 +3,13 @@ import {
   DashboardSidebarLogoutButton,
   DashboardHeader,
   useDashboardSidebarStateStore,
+  useSignalRNotifications,
 } from "#/dashboard";
 import { useSearchParams, Outlet } from "react-router-dom";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useCurrentUser } from "#/auth";
-import * as signalR from "@microsoft/signalr";
-import { useQueryClient } from "@tanstack/react-query";
-import type { NotificationResponseDto } from "#/notifications";
 import { useCurrentScreenSize } from "@/index";
 
 export function Dashboard() {
@@ -20,6 +18,8 @@ export function Dashboard() {
   const [searchParams, setSearchParams] = useSearchParams();
   const isInboxRoute = location.pathname.includes("inbox");
   const { currentScreenSize } = useCurrentScreenSize();
+
+  useSignalRNotifications(user?.id);
 
   // this is for google signin/signup failing or any error when the redirection is comming from the backend with an error
   useEffect(() => {
@@ -42,56 +42,6 @@ export function Dashboard() {
         <Spinner />
       </div>
     );
-
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    if (!user?.id) return;
-
-    const connection = new signalR.HubConnectionBuilder()
-      .withUrl("http://localhost:5000/hubs/notifications", {
-        withCredentials: true,
-      })
-      .withAutomaticReconnect()
-      .build();
-
-    connection
-      .start()
-      .then(() => {
-        console.log("Connected to SignalR");
-        // this is to handle the situation if my backend sends a notification before my websocket
-        // connection is established
-        queryClient.invalidateQueries({ queryKey: ["notifications", user.id] });
-      })
-      .catch((err) => console.error("Connection failed: ", err));
-
-    connection.on(
-      "NotificationReceived",
-      (notification: NotificationResponseDto) => {
-        queryClient.invalidateQueries({
-          queryKey: ["notifications", user?.id],
-        });
-
-        if (notification.title === "Initial Email Sync Completed") {
-          queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-        }
-
-        if (notification.title === "New Application Created") {
-          queryClient.invalidateQueries({
-            queryKey: ["applications", user.id],
-          });
-        }
-      },
-    );
-
-    connection.onclose((err) => {
-      console.error("SignalR disconnected", err);
-    });
-
-    return () => {
-      connection.stop();
-    };
-  }, [user?.id, queryClient]);
 
   return (
     <div className="flex">
