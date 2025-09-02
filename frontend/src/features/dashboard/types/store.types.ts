@@ -17,3 +17,8 @@ export interface DashboardOverallSidebarState {
   isOverallSidebarOpen: boolean;
   setIsOverallSidebarOpen: (state: boolean) => void;
 }
+
+export interface DashboardInboxTypeStore {
+  inboxType: string;
+  setInboxType: (type: string) => void;
+}

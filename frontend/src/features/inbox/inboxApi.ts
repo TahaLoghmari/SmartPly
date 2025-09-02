@@ -1,4 +1,4 @@
-import type { Email, EmailQueryParameters, Message } from "#/inbox";
+import type { EmailResponseDto, EmailQueryParameters, Message } from "#/inbox";
 import { request, type PaginationResultDto } from "@/index";
 
 export const getUserEmails = (params: EmailQueryParameters) => {
@@ -10,7 +10,7 @@ export const getUserEmails = (params: EmailQueryParameters) => {
   });
   const query = new URLSearchParams(queryObj).toString();
   const url = query ? `/emails?${query}` : "/emails";
-  return request<PaginationResultDto<Email>>(url, { method: "GET" });
+  return request<PaginationResultDto<EmailResponseDto>>(url, { method: "GET" });
 };
 
 export const getUserEmail = (id: string) => {

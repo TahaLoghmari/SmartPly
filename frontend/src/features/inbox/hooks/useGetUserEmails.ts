@@ -1,11 +1,11 @@
 import { useCurrentUser } from "#/auth";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getUserEmails, type Email } from "#/inbox";
+import { getUserEmails, type EmailResponseDto } from "#/inbox";
 import type { PaginationResultDto } from "@/index";
 
 export function useGetUserEmails() {
   const { data: user } = useCurrentUser();
-  return useInfiniteQuery<PaginationResultDto<Email>>({
+  return useInfiniteQuery<PaginationResultDto<EmailResponseDto>>({
     queryKey: ["emails", user?.id],
     queryFn: ({ pageParam = 1 }) =>
       getUserEmails({ page: pageParam as number, pageSize: 10 }),

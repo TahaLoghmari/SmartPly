@@ -1,6 +1,7 @@
-export interface Email {
+export interface EmailResponseDto {
   id: string;
   userId: string;
+  matchedJobId: string | null;
   internalDate?: number | null;
   headerDate?: string | null;
   subject: string;
@@ -8,8 +9,11 @@ export interface Email {
   fromName: string;
   labels: string;
   snippet: string;
+  category: string | null;
+  summary: string | null;
   isRead: boolean;
   isImportant: boolean;
+  isJobRelated: boolean;
   createdAt: string;
   updatedAt: string;
 }

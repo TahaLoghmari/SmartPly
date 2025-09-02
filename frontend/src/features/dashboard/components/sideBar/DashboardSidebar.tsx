@@ -1,6 +1,7 @@
 import {
   DashboardSidebarContent,
   useDashboardInboxStateStore,
+  useDashboardInboxTypeStore,
   useDashboardOverallSidebarState,
 } from "#/dashboard";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -13,6 +14,7 @@ export default function DashboardSidebar() {
   const { isOverallSidebarOpen, setIsOverallSidebarOpen } =
     useDashboardOverallSidebarState();
   const { currentScreenSize } = useCurrentScreenSize();
+  const { inboxType, setInboxType } = useDashboardInboxTypeStore();
   return (
     <>
       {currentScreenSize < 768 ? (
@@ -54,11 +56,31 @@ export default function DashboardSidebar() {
             >
               {isInboxOpen && (
                 <>
-                  <div className="text-foreground border-b p-4 pb-[7px] text-base font-medium">
-                    Inbox
+                  <div
+                    className="text-foreground flex gap-4 border-b p-4 pb-0 text-sm font-medium"
+                    onClick={(e) => {
+                      e.preventDefault();
+                    }}
+                  >
+                    <p
+                      className={`w-fit cursor-pointer pb-[9px] transition-all duration-200 ${inboxType === "Inbox" && "border-primary border-b-2"}`}
+                      onClick={() => setInboxType("Inbox")}
+                    >
+                      Inbox
+                    </p>
+                    <p
+                      className={`w-fit cursor-pointer pb-[9px] transition-all duration-200 ${inboxType === "Job Inbox" && "border-primary border-b-2"}`}
+                      onClick={() => setInboxType("Job Inbox")}
+                    >
+                      Job Inbox
+                    </p>
                   </div>
                   <div className="overflow-auto p-0">
-                    <Inbox />
+                    {inboxType === "Inbox" ? (
+                      <Inbox jobRelated={false} />
+                    ) : (
+                      <Inbox jobRelated={true} />
+                    )}
                   </div>
                 </>
               )}

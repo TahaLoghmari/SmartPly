@@ -1,10 +1,10 @@
 import { useCurrentUser } from "#/auth";
-import { EmailCard, useGetUserEmails, type Email } from "#/inbox";
+import { EmailCard, useGetUserEmails, type EmailResponseDto } from "#/inbox";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useInView } from "react-intersection-observer";
 
-export function Inbox() {
+export function Inbox({ jobRelated }: { jobRelated?: boolean }) {
   const { data: user } = useCurrentUser();
   const {
     data,
@@ -24,7 +24,11 @@ export function Inbox() {
     },
   });
 
-  const emails = data?.pages.flatMap((page) => page.items) ?? [];
+  const emails = !jobRelated
+    ? (data?.pages.flatMap((page) => page.items) ?? [])
+    : (data?.pages
+        .flatMap((page) => page.items)
+        .filter((e) => e.isJobRelated === true) ?? []);
 
   if (!user?.gmailConnected) {
     return (
@@ -70,7 +74,7 @@ export function Inbox() {
 
   return (
     <>
-      {emails.map((email: Email) => (
+      {emails.map((email: EmailResponseDto) => (
         <EmailCard email={email} key={email.id} />
       ))}
 
