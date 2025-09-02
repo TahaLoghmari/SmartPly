@@ -168,7 +168,7 @@ public class ResumeService(
         cacheService.InvalidateUserResumeCache(userId);
 
         backgroundJobClient.Enqueue(() =>
-            supabaseService.DeleteFileAsync(resume.Url, "resumes"));
+            supabaseService.DeleteFileAsync(userId,resume.Url, "resumes"));
         
         logger.LogInformation("Resume deleted with ID {ResumeId}", resume.Id);
     }
@@ -200,7 +200,7 @@ public class ResumeService(
         foreach (var resume in resumes)
         {
             backgroundJobClient.Enqueue(() =>
-                supabaseService.DeleteFileAsync(resume.Url, "resumes"));
+                supabaseService.DeleteFileAsync(userId,resume.Url, "resumes"));
         }
         
         logger.LogInformation("Bulk deleted {Count} resumes for user {UserId}",

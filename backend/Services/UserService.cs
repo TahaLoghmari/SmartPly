@@ -65,6 +65,42 @@ public class UserService(
         {
             recurringJobManager.RemoveIfExists(job.Id);
         }
+        logger.LogInformation("Removed all recurring jobs for UserId: {UserId}", userId);
+        using (var connection = JobStorage.Current.GetConnection())
+        {
+            var monitoringApi = JobStorage.Current.GetMonitoringApi();
+            
+            var scheduled = monitoringApi.ScheduledJobs(0, int.MaxValue);
+            foreach (var kvp in scheduled)
+            {
+                var jobId = kvp.Key;
+                var job = kvp.Value;
+
+                if (job.Job.Args.Contains(userId))
+                {
+                    BackgroundJob.Delete(jobId);
+                }
+            }
+            logger.LogInformation("Deleted all scheduled jobs for UserId: {UserId}", userId);
+
+            var queues = monitoringApi.Queues();
+            foreach (var queue in queues)
+            {
+                var enqueued = monitoringApi.EnqueuedJobs(queue.Name, 0, int.MaxValue);
+                foreach (var kvp in enqueued)
+                {
+                    var jobId = kvp.Key;
+                    var job = kvp.Value;
+
+                    if (job.Job.Args.Contains(userId))
+                    {
+                        BackgroundJob.Delete(jobId);
+                    }
+                }
+            }
+            logger.LogInformation("Deleted all queued jobs for UserId: {UserId}", userId);
+        }
+
         
         logger.LogInformation("Removed all jobs for UserId: {UserId}", userId);
         

@@ -64,7 +64,7 @@ public class SupabaseService
         return await _client.Storage.From($"{bucketName}").Download(objectPath, (TransformOptions?)null, (EventHandler<float>?)null);
     }
     
-    public async Task DeleteFileAsync(string url, string bucketName)
+    public async Task DeleteFileAsync(string userId, string url, string bucketName)
     {
         var objectPath = url.Replace($"{_supabaseUrl}/storage/v1/object/public/{bucketName}/", "");
         await _client.Storage.From($"{bucketName}").Remove(new List<string> { objectPath });

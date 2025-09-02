@@ -162,7 +162,7 @@ public class CoverLetterService(
         cacheService.InvalidateUserCoverLetterCache(userId);
         
         backgroundJobClient.Enqueue(() =>
-            supabaseService.DeleteFileAsync(coverLetter.Url, "cover-letters"));
+            supabaseService.DeleteFileAsync(userId,coverLetter.Url, "cover-letters"));
         
         logger.LogInformation("Cover letter deleted with ID {CoverLetterId}", coverLetter.Id);
     }
@@ -194,7 +194,7 @@ public class CoverLetterService(
         foreach (var coverLetter in coverLetters)
         {
             backgroundJobClient.Enqueue(() =>
-                supabaseService.DeleteFileAsync(coverLetter.Url, "cover-letters"));
+                supabaseService.DeleteFileAsync(userId,coverLetter.Url, "cover-letters"));
         }
         
         logger.LogInformation("Bulk deleted {Count} cover letters for user {UserId}", 

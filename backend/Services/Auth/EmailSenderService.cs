@@ -20,6 +20,7 @@ public sealed class EmailSenderService(
     private readonly EmailSettings _emailSettings = emailSettings.Value;
 
     public async Task SendEmailAsync(
+        string userId,
         SendEmailDto sendEmailDto,
         CancellationToken cancellationToken)
     {
@@ -172,7 +173,7 @@ public sealed class EmailSenderService(
 
         SendEmailDto sendEmailDto = new SendEmailDto(email, subject, messageBody, true);
         
-        backgroundJobClient.Enqueue(() => SendEmailAsync(sendEmailDto, CancellationToken.None));
+        backgroundJobClient.Enqueue(() => SendEmailAsync(user.Id,sendEmailDto, CancellationToken.None));
         
         logger.LogInformation("Password reset email queued for user {UserId}", user.Id);
     }
@@ -294,7 +295,7 @@ public sealed class EmailSenderService(
 
         SendEmailDto sendEmailDto = new SendEmailDto(email, subject, messageBody, true);
 
-        backgroundJobClient.Enqueue(() => SendEmailAsync(sendEmailDto, CancellationToken.None));
+        backgroundJobClient.Enqueue(() => SendEmailAsync(user.Id,sendEmailDto, CancellationToken.None));
         
         logger.LogInformation("Confirmation email queued for user {UserId}", user.Id);
     }

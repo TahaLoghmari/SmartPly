@@ -39,7 +39,7 @@ public class EmailService(
     private GmailService? _gmailService;
     private const int DefaultBatchSize = 10;
     private const int DefaultDelayMs = 200;
-    private const int InitialFetchLimit = 3; // raja3ha 100
+    private const int InitialFetchLimit = 5; // raja3ha 100
     private const int SyncFetchLimit = 20;
     private const int DefaultPageSize = 10;
     
@@ -243,6 +243,7 @@ public class EmailService(
 
         if (listResponse.Messages != null && listResponse.Messages.Any())
         {
+            List<string> emailIds = [];
             foreach (var batch in listResponse.Messages.Chunk(DefaultBatchSize))
             {
                 var batchTasks = batch.Select(async message =>
@@ -291,23 +292,24 @@ public class EmailService(
                 {
                     dbContext.Emails.UpdateRange(emailsToUpdate);
                 }
-
-                await dbContext.SaveChangesAsync(cancellationToken);
+                
+                emailIds.AddRange(emailsToAdd.OrderByDescending(e => e.InternalDate).Select(e => e.Id));
 
                 logger.LogInformation("Upserted {AddCount} new and {UpdateCount} existing emails for user {UserId}", 
                     emailsToAdd.Count, emailsToUpdate.Count, userId);
                 
                 await Task.Delay(DefaultDelayMs, cancellationToken);
             }
+            backgroundJobClient.Enqueue(() => ClassifyAndMatchEmailsAsync(emailIds, userId, CancellationToken.None));
+            cacheService.InvalidateUserEmailCache(userId);
         }
 
         user.LastSyncedAt = DateTime.UtcNow;
         await userManager.UpdateAsync(user);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Date-based sync completed for user {UserId}. Processed {Count} messages", 
             userId, listResponse.Messages?.Count ?? 0);
-        
-        cacheService.InvalidateUserEmailCache(userId);
     }
     
     public async Task<PaginationResultDto<Email>> GetEmailsAsync( 
