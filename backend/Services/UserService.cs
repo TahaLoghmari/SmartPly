@@ -50,54 +50,53 @@ public class UserService(
             throw new UnauthorizedException("User ID claim is missing.");
         }
 
-        using (var transaction = await dbContext.Database.BeginTransactionAsync())
+        var transaction = await dbContext.Database.BeginTransactionAsync();
+        try
         {
-            try
+            var user = await userManager.FindByIdAsync(userId);
+            if (user is null)
             {
-                var user = await userManager.FindByIdAsync(userId);
-                if (user is null)
-                {
-                    logger.LogWarning("Get current user failed - user ID not found");
-                    throw new UnauthorizedException("User not found.");
-                }
-        
-                var recurringJobs = JobStorage.Current.GetConnection().GetRecurringJobs();
-                foreach (var job in recurringJobs.Where(j => j.Id.StartsWith($"user-{userId}-")))
-                {
-                    recurringJobManager.RemoveIfExists(job.Id);
-                }
-        
-                var jobsToDelete = await dbContext.HangfireJobs
-                    .Where(j => j.UserId == userId)
-                    .ToListAsync();
+                logger.LogWarning("Get current user failed - user ID not found");
+                throw new UnauthorizedException("User not found.");
+            }
+    
+            var recurringJobs = JobStorage.Current.GetConnection().GetRecurringJobs();
+            foreach (var job in recurringJobs.Where(j => j.Id.StartsWith($"user-{userId}-")))
+            {
+                recurringJobManager.RemoveIfExists(job.Id);
+            }
+    
+            var jobsToDelete = await dbContext.HangfireJobs
+                .Where(j => j.UserId == userId)
+                .ToListAsync();
 
-                foreach (var job in jobsToDelete)
-                {
-                    BackgroundJob.Delete(job.HangfireJobId);
-                }
-        
-                logger.LogInformation("Removed all jobs for UserId: {UserId}", userId);
-        
-                logger.LogInformation("Deleting user with UserId: {UserId}", userId);
-                var result = await userManager.DeleteAsync(user);
-                if (!result.Succeeded)
-                {
-                    throw new InvalidOperationException("Failed to delete user.");
-                }
-                logger.LogInformation("User deleted successfully. UserId: {UserId}", userId);
-        
-                cookieService.RemoveCookies(httpContext.Response);
-                logger.LogInformation("Removed cookies for UserId: {UserId}", userId);
-        
-                await transaction.CommitAsync();
-            }
-            catch (Exception e)
+            foreach (var job in jobsToDelete)
             {
-                logger.LogError(e, "Failed during user deletion for UserId: {UserId}. Rolling back transaction.", userId);
-                await transaction.RollbackAsync();
-                throw;
+                BackgroundJob.Delete(job.HangfireJobId);
             }
+    
+            logger.LogInformation("Removed all jobs for UserId: {UserId}", userId);
+    
+            logger.LogInformation("Deleting user with UserId: {UserId}", userId);
+            var result = await userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                throw new InvalidOperationException("Failed to delete user.");
+            }
+            logger.LogInformation("User deleted successfully. UserId: {UserId}", userId);
+    
+            cookieService.RemoveCookies(httpContext.Response);
+            logger.LogInformation("Removed cookies for UserId: {UserId}", userId);
+    
+            await transaction.CommitAsync();
         }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed during user deletion for UserId: {UserId}. Rolling back transaction.", userId);
+            await transaction.RollbackAsync();
+            throw;
+        }
+        
     }
 
     public async Task UpdateCurrentUserAsync(

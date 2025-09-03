@@ -63,7 +63,7 @@ export default function ForgotPasswordForm() {
           )}
         </Button>
         <div className="flex w-full cursor-pointer items-center justify-center">
-          <Link to="/login" className="text-primary font-semibold">
+          <Link to="/login" className="text-primary font-semibold text-sm">
             Back to Login
           </Link>
         </div>
