@@ -113,8 +113,6 @@ internal static class ApplicationMappings
             Id = application.Id,
             CompanyName = application.CompanyName,
             CompanyEmail = application.CompanyEmail,
-            CreatedAt = application.CreatedAt,
-            JobDescription = application.JobDescription,
             JobType = application.JobType,
             Level = application.Level,
             Link = application.Link,

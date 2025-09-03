@@ -32,7 +32,7 @@ public class NotificationService(
         IQueryable<NotificationResponseDto> notificationQuery = dbContext.Notifications
             .AsNoTracking()
             .Where(a => a.UserId == userId)
-            .OrderBy(a => a.CreatedAt)
+            .OrderByDescending(a => a.CreatedAt)
             .Select(a => a.ToNotificationResponseDto());
         
         var paginationResult = await PaginationResultDto<NotificationResponseDto>.CreateAsync(

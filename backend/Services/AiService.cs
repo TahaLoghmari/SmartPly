@@ -55,8 +55,17 @@ INSTRUCTIONS:
    - If yes, you MUST set `""isJobRelated"": true`.  
    - If no, set `""isJobRelated"": false`.  
 3. VERY IMPORTANT:  
-   - If `""isJobRelated"": true`, `""category""` MUST be one of the provided categories, `""summary""` MUST be a concise 1–2 sentence summary . and ""companyName"" MUST be set to the company's name. If the company name cannot be determined from the email, use the literal string ""Unknown"".  
-   - If `""isJobRelated"": false`, then `""category""` MUST be null AND `""summary""` MUST be null. Do not output anything else in these fields. 
+   - If `""isJobRelated"": true` :
+     - `""category""` MUST be one of the provided categories
+     - `""summary""` MUST be a concise 1–2 sentence summary .
+     - ""companyName"" MUST be set to the company's name. If the company name cannot be determined from the email, use the literal string ""Unknown"".
+     - `""position"" must be set to the job's position`. If the position cannot be determined from the email, use the literal string ""Unknown"".
+   - If `""isJobRelated"": false`:
+     -`""category""` MUST be null.
+     - `""summary""` MUST be null.
+     -`""companyName""` MUST be null.
+     - `""position""` MUST be null.
+   - Do not output anything else in these fields. 
 4.  Provide a concise, 1-2 sentence summary of the email's content.
 
 RESPOND ONLY with a valid JSON object. Do not include any extra text, commentary, or markdown formatting like ```json.
@@ -77,7 +86,8 @@ OUTPUT JSON FORMAT:
   ""isJobRelated"": boolean,
   ""category"": string|null,
   ""summary"": string|null,
-  ""companyName"": string,
+  ""companyName"": string|null,
+  ""position"": string|null
 }}
 ";
         
@@ -92,8 +102,8 @@ OUTPUT JSON FORMAT:
         if (aiJsonResult is not null)
         {
             logger.LogInformation(
-                "AI classification for email {EmailId}: isJobRelated={IsJobRelated}, category={Category}",
-                existingEmail.Id, aiJsonResult.IsJobRelated, aiJsonResult.Category);
+                "AI classification for email {EmailId}: isJobRelated={IsJobRelated}, category={Category}, position={Position}, companyName={CompanyName}",
+                existingEmail.Id, aiJsonResult.IsJobRelated, aiJsonResult.Category, aiJsonResult.Position, aiJsonResult.CompanyName);
             await jobDetectionValidator.ValidateAndThrowAsync(aiJsonResult);
         }
     
@@ -103,8 +113,7 @@ OUTPUT JSON FORMAT:
     public async Task HandleClassificationAsync(
         GenerativeModel model,
         string userId,
-        string category,
-        string companyName,
+        JobDetectionPromptResult previousAiJsonResult,
         Email existingEmail,
         string decodedBody,
         List<ApplicationAiPromptDto> userApplications,
@@ -118,22 +127,23 @@ INPUTS:
 2. A JSON array of job applications previously entered by the user.
    Each object in the array has the following structure:
    - id (unique identifier, keep exactly as provided)
-   - company_name
-   - company_email
-   - position
-   - job_link
+   - companyName
+   - companyEmail
+   - jobType
+   - level
+   - link
+   - location
    - notes
+   - position
    - status
-   - type (e.g., onSite, remote)
-   - jobType (e.g., fullTime, internship)
-   - level (e.g., junior, senior)
+   - type
 
 TASK:
 - Determine if this email most likely relates to one of the job applications in the list.
 - Matching priority:
   1. **Company name or position title** explicitly mentioned in the email.
-  2. **Sender email (from_address)** matching or strongly resembling the company's `company_email`.
-  3. **Contextual clues** such as recruiter names, interview scheduling, references to application/resume, or product/project names mentioned in `notes` or `job_description`.
+  2. **Sender email (from_address)** matching or strongly resembling the company's `companyEmail`.
+  3. **Contextual clues** such as recruiter names, interview scheduling, references to application/resume, or product/project names mentioned in `notes` .
 - If multiple jobs match, choose the **single best match** based on the strongest overlap of company name + position.
 - If no job can be reasonably matched, return `null`.
 
@@ -182,11 +192,11 @@ RULES:
                 "An Application match was found for email {EmailId}: MatchedJobId={MatchedJobId}, category={Category}, companyName={CompanyName}",
                 existingEmail.Id,
                 aiJsonResult!.Id,
-                category,
-                companyName
+                previousAiJsonResult.Category,
+                previousAiJsonResult.CompanyName
             );
             existingEmail.MatchedJobId = aiJsonResult.Id;
-            existingEmail.Category = category;
+            existingEmail.Category = previousAiJsonResult.Category;
             
             Application? matchedApplication = await dbContext.Applications
                 .FirstOrDefaultAsync(a => a.Id == aiJsonResult.Id && a.UserId == userId, cancellationToken);
@@ -197,7 +207,7 @@ RULES:
             }
             else
             {
-                matchedApplication.Status = ApplicationUtilities.MapCategoryToStatusType(category);
+                matchedApplication.Status = ApplicationUtilities.MapCategoryToStatusType(previousAiJsonResult.Category);
                 foreach (ApplicationStatus status in Enum.GetValues(typeof(ApplicationStatus)))
                 {
                     if (status <= matchedApplication.Status)
@@ -207,12 +217,12 @@ RULES:
                 }
             }
             
-            var notificationType = NotificationUtilities.MapCategoryToNotificationType(category);
+            var notificationType = NotificationUtilities.MapCategoryToNotificationType(previousAiJsonResult.Category);
             
             var notificationRequestDto = new NotificationRequestDto
             {
                 Title = "Application Match Found",
-                Message = $"An incoming email (\"{existingEmail.Subject}\") was matched to your application (companyName: {companyName}). Category: {category ?? "N/A"}.",
+                Message = $"An incoming email (\"{existingEmail.Subject}\") was matched to your application (companyName: {previousAiJsonResult.CompanyName}). Category: {previousAiJsonResult.Category ?? "N/A"}.",
                 Type = notificationType, 
                 IsRead = false,
                 CreatedAt = DateTime.UtcNow,
@@ -231,11 +241,11 @@ RULES:
             Application newApplication = new Application
             {
                 UserId = userId,
-                CompanyName = companyName,
+                CompanyName = previousAiJsonResult.CompanyName,
                 CompanyEmail = existingEmail.FromAddress,
-                Position = "Unknown Position",
+                Position = previousAiJsonResult.Position,
                 Link = "N/A",
-                Status = ApplicationUtilities.MapCategoryToStatusType(category),
+                Status = ApplicationUtilities.MapCategoryToStatusType(previousAiJsonResult.Category),
                 Type = ApplicationType.onSite,
                 JobType = ApplicationJobType.fullTime,
                 Level = ApplicationLevel.mid,
@@ -256,14 +266,14 @@ RULES:
             cacheService.InvalidateUserApplicationCache(newApplication.UserId);
             
             existingEmail.MatchedJobId = newApplication.Id;
-            existingEmail.Category = category;
+            existingEmail.Category = previousAiJsonResult.Category;
             
-            var notificationType = NotificationUtilities.MapCategoryToNotificationType(category);
+            var notificationType = NotificationUtilities.MapCategoryToNotificationType(previousAiJsonResult.Category);
             
             var notificationRequestDto = new NotificationRequestDto
             {
                 Title = "New Application Created",
-                Message = $"An email ('{existingEmail.Subject}') was received. Since no match was found, a new application was automatically created for you with the status: {category}.",
+                Message = $"An email ('{existingEmail.Subject}') was received. Since no match was found, a new application was automatically created for you with the status: {previousAiJsonResult.Category}.",
                 Type = notificationType,
                 IsRead = false,
                 CreatedAt = DateTime.UtcNow,
@@ -309,7 +319,7 @@ RULES:
                 
                 await Task.Delay(1000, cancellationToken);
                 
-                await HandleClassificationAsync(model,userId,aiJsonResult.Category,aiJsonResult.CompanyName,existingEmail,decodedBody,userApplications,cancellationToken);
+                await HandleClassificationAsync(model,userId,aiJsonResult,existingEmail,decodedBody,userApplications,cancellationToken);
                 
                 existingEmail.UpdatedAt = DateTime.UtcNow;
                 

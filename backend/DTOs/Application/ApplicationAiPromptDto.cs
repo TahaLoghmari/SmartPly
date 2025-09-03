@@ -7,8 +7,6 @@ public record ApplicationAiPromptDto
     public Guid Id { get; set; }
     public string CompanyName { get; set; }
     public string? CompanyEmail { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public string? JobDescription { get; set; }
     public ApplicationJobType JobType { get; set; }
     public ApplicationLevel Level { get; set; }
     public string Link { get; set; }

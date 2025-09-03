@@ -39,4 +39,13 @@ public class EmailController(
         
         return Ok(application);
     }
+    
+    [HttpPost("sync")]
+    public async Task<IActionResult> SyncEmails(
+        CancellationToken cancellationToken)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        await emailService.SyncUserEmailAsync(userId, cancellationToken);
+        return Ok();
+    }
 }

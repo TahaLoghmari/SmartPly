@@ -13,4 +13,7 @@ public class JobDetectionPromptResult
     
     [Newtonsoft.Json.JsonProperty("companyName")]
     public string CompanyName { get; set; } = "Unknown";
+    
+    [Newtonsoft.Json.JsonProperty("position")]
+    public string Position { get; set; } = "Unknown";
 }
