@@ -337,12 +337,19 @@ RULES:
             logger.LogError(e, "Unexpected error while processing email {EmailId}. Will retry tomorrow.", id);
             if ( existingEmail.AiProcessingRetryCount == 0)
             {
-                backgroundJobClient.Schedule<AiService>(
+                var jobId = backgroundJobClient.Schedule<AiService>(
                     s => 
                         s.ClassifyAndMatchEmailAsync(userId, id,model,userApplications,CancellationToken.None),
                     TimeSpan.FromDays(1));
                 
+                HangfireJob hangfireJob = new HangfireJob
+                {
+                    HangfireJobId = jobId,
+                    UserId = userId,
+                };
+                
                 existingEmail.AiProcessingRetryCount++;
+                dbContext.HangfireJobs.Add(hangfireJob);
                 await dbContext.SaveChangesAsync(cancellationToken);
             }
         }

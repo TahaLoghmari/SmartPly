@@ -15,7 +15,8 @@ public sealed class EmailSenderService(
     IOptions<EmailSettings> emailSettings,
     UserManager<User> userManager,
     ILogger<EmailSenderService> logger,
-    IBackgroundJobClient backgroundJobClient)
+    IBackgroundJobClient backgroundJobClient,
+    ApplicationDbContext dbContext)
 {
     private readonly EmailSettings _emailSettings = emailSettings.Value;
 
@@ -173,7 +174,16 @@ public sealed class EmailSenderService(
 
         SendEmailDto sendEmailDto = new SendEmailDto(email, subject, messageBody, true);
         
-        backgroundJobClient.Enqueue(() => SendEmailAsync(user.Id,sendEmailDto, CancellationToken.None));
+        var jobId = backgroundJobClient.Enqueue(() => SendEmailAsync(user.Id,sendEmailDto, CancellationToken.None));
+        
+        HangfireJob hangfireJob = new HangfireJob
+        {
+            HangfireJobId = jobId,
+            UserId = user.Id,
+        };
+        
+        dbContext.HangfireJobs.Add(hangfireJob);
+        await dbContext.SaveChangesAsync();
         
         logger.LogInformation("Password reset email queued for user {UserId}", user.Id);
     }
@@ -295,7 +305,16 @@ public sealed class EmailSenderService(
 
         SendEmailDto sendEmailDto = new SendEmailDto(email, subject, messageBody, true);
 
-        backgroundJobClient.Enqueue(() => SendEmailAsync(user.Id,sendEmailDto, CancellationToken.None));
+        var jobId = backgroundJobClient.Enqueue(() => SendEmailAsync(user.Id,sendEmailDto, CancellationToken.None));
+        
+        HangfireJob hangfireJob = new HangfireJob
+        {
+            HangfireJobId = jobId,
+            UserId = user.Id,
+        };
+        
+        dbContext.HangfireJobs.Add(hangfireJob);
+        await dbContext.SaveChangesAsync();
         
         logger.LogInformation("Confirmation email queued for user {UserId}", user.Id);
     }

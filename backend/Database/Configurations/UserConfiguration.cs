@@ -63,6 +63,16 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
             .HasForeignKey(c => c.UserId)
             .OnDelete(DeleteBehavior.Cascade);
         
+        builder.HasMany(u => u.Notifications)
+            .WithOne(n => n.User)
+            .HasForeignKey(n => n.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.HasMany(u => u.HangfireJobs)
+            .WithOne(h => h.User)
+            .HasForeignKey(h => h.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
         builder.HasIndex(u => u.Name);
     }
 }

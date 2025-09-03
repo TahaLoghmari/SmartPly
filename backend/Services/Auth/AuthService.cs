@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 namespace backend.Services;
 
 public class AuthService(
+    ApplicationDbContext dbContext,
     ILogger<AuthService> logger,
     UserManager<User> userManager,
     EmailSenderService emailSenderService,
@@ -273,7 +274,17 @@ public class AuthService(
             await userManager.UpdateAsync(user);
             logger.LogInformation("Initial sync started for UserId: {UserId}", user.Id);
             
-            backgroundJobClient.Enqueue(() => emailService.FetchInitialEmailsAsync(user.Id, CancellationToken.None));
+            var jobId = backgroundJobClient.Enqueue(() => emailService.FetchInitialEmailsAsync(user.Id, CancellationToken.None));
+            
+            HangfireJob hangfireJob = new HangfireJob
+            {
+                HangfireJobId = jobId,
+                UserId = user.Id,
+            };
+        
+            dbContext.HangfireJobs.Add(hangfireJob);
+            await dbContext.SaveChangesAsync(cancellationToken);
+            
             logger.LogInformation("Enqueued initial email fetch for UserId: {UserId}", user.Id);
         }
         

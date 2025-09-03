@@ -158,11 +158,19 @@ public class CoverLetterService(
         }
         
         dbContext.CoverLetters.Remove(coverLetter);
-        await dbContext.SaveChangesAsync(cancellationToken);
         cacheService.InvalidateUserCoverLetterCache(userId);
         
-        backgroundJobClient.Enqueue(() =>
+        var jobId = backgroundJobClient.Enqueue(() =>
             supabaseService.DeleteFileAsync(userId,coverLetter.Url, "cover-letters"));
+
+        HangfireJob hangfireJob = new HangfireJob
+        {
+            HangfireJobId = jobId,
+            UserId = userId,
+        };
+        dbContext.HangfireJobs.Add(hangfireJob);
+        
+        await dbContext.SaveChangesAsync(cancellationToken);
         
         logger.LogInformation("Cover letter deleted with ID {CoverLetterId}", coverLetter.Id);
     }
@@ -188,14 +196,23 @@ public class CoverLetterService(
         }
         
         dbContext.CoverLetters.RemoveRange(coverLetters);
-        await dbContext.SaveChangesAsync(cancellationToken);
         cacheService.InvalidateUserCoverLetterCache(userId);
         
         foreach (var coverLetter in coverLetters)
         {
-            backgroundJobClient.Enqueue(() =>
+            var jobId = backgroundJobClient.Enqueue(() =>
                 supabaseService.DeleteFileAsync(userId,coverLetter.Url, "cover-letters"));
+            
+            HangfireJob hangfireJob = new HangfireJob
+            {
+                HangfireJobId = jobId,
+                UserId = userId,
+            };
+        
+            dbContext.HangfireJobs.Add(hangfireJob);
         }
+        
+        await dbContext.SaveChangesAsync(cancellationToken);
         
         logger.LogInformation("Bulk deleted {Count} cover letters for user {UserId}", 
             coverLetters.Count, userId);

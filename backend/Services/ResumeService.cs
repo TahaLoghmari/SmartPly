@@ -164,11 +164,18 @@ public class ResumeService(
         }
         
         dbContext.Resumes.Remove(resume);
-        await dbContext.SaveChangesAsync(cancellationToken);
         cacheService.InvalidateUserResumeCache(userId);
 
-        backgroundJobClient.Enqueue(() =>
+        var jobId = backgroundJobClient.Enqueue(() =>
             supabaseService.DeleteFileAsync(userId,resume.Url, "resumes"));
+        HangfireJob hangfireJob = new HangfireJob
+        {
+            HangfireJobId = jobId,
+            UserId = userId,
+        };
+        
+        dbContext.HangfireJobs.Add(hangfireJob);
+        await dbContext.SaveChangesAsync(cancellationToken);
         
         logger.LogInformation("Resume deleted with ID {ResumeId}", resume.Id);
     }
@@ -194,14 +201,22 @@ public class ResumeService(
         }
         
         dbContext.Resumes.RemoveRange(resumes);
-        await dbContext.SaveChangesAsync(cancellationToken);
         cacheService.InvalidateUserResumeCache(userId);
         
         foreach (var resume in resumes)
         {
-            backgroundJobClient.Enqueue(() =>
+            var jobId = backgroundJobClient.Enqueue(() =>
                 supabaseService.DeleteFileAsync(userId,resume.Url, "resumes"));
+            HangfireJob hangfireJob = new HangfireJob
+            {
+                HangfireJobId = jobId,
+                UserId = userId,
+            };
+        
+            dbContext.HangfireJobs.Add(hangfireJob);
         }
+        
+        await dbContext.SaveChangesAsync(cancellationToken);
         
         logger.LogInformation("Bulk deleted {Count} resumes for user {UserId}",
             resumes.Count, userId);

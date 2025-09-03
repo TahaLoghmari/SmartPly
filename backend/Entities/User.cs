@@ -18,4 +18,5 @@ public sealed class User : IdentityUser
     public ICollection<Resume> Resumes { get; set; } = new List<Resume>();
     public ICollection<CoverLetter> CoverLetters { get; set; } = new List<CoverLetter>();
     public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+    public ICollection<HangfireJob> HangfireJobs { get; set; } = new List<HangfireJob>();
 }

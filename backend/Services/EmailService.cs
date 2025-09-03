@@ -177,7 +177,15 @@ public class EmailService(
             await userManager.UpdateAsync(user);
             
             var emailIds = emails.OrderByDescending(e => e.InternalDate).Select(e => e.Id).ToList();
-            backgroundJobClient.Enqueue(() => ClassifyAndMatchEmailsAsync(emailIds, userId, CancellationToken.None));
+            var jobId = backgroundJobClient.Enqueue(() => ClassifyAndMatchEmailsAsync(emailIds, userId, CancellationToken.None));
+            
+            HangfireJob hangfireJob = new HangfireJob
+            {
+                HangfireJobId = jobId,
+                UserId = user.Id,
+            };
+        
+            dbContext.HangfireJobs.Add(hangfireJob);
             
             cacheService.InvalidateUserEmailCache(userId);
             
@@ -299,7 +307,14 @@ public class EmailService(
                 
                 await Task.Delay(DefaultDelayMs, cancellationToken);
             }
-            backgroundJobClient.Enqueue(() => ClassifyAndMatchEmailsAsync(emailIds, userId, CancellationToken.None));
+            var jobId = backgroundJobClient.Enqueue(() => ClassifyAndMatchEmailsAsync(emailIds, userId, CancellationToken.None));
+            HangfireJob hangfireJob = new HangfireJob
+            {
+                HangfireJobId = jobId,
+                UserId = user.Id,
+            };
+        
+            dbContext.HangfireJobs.Add(hangfireJob);
             cacheService.InvalidateUserEmailCache(userId);
         }
 

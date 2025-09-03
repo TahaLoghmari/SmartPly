@@ -5,6 +5,7 @@ using backend.Mappings;
 using Hangfire;
 using Hangfire.Storage;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Services;
 
@@ -49,60 +50,54 @@ public class UserService(
             throw new UnauthorizedException("User ID claim is missing.");
         }
 
-        var user = await userManager.FindByIdAsync(userId);
-        if (user is null)
+        using (var transaction = await dbContext.Database.BeginTransactionAsync())
         {
-            logger.LogWarning("Get current user failed - user ID not found");
-            throw new UnauthorizedException("User not found.");
-        }
-
-        logger.LogInformation("Deleting user with UserId: {UserId}", userId);
-        await userManager.DeleteAsync(user);
-        logger.LogInformation("User deleted successfully. UserId: {UserId}", userId);
-        
-        var recurringJobs = JobStorage.Current.GetConnection().GetRecurringJobs();
-        foreach (var job in recurringJobs.Where(j => j.Id.StartsWith($"user-{userId}-")))
-        {
-            recurringJobManager.RemoveIfExists(job.Id);
-        }
-        using (var connection = JobStorage.Current.GetConnection())
-        {
-            var monitoringApi = JobStorage.Current.GetMonitoringApi();
-            
-            var scheduled = monitoringApi.ScheduledJobs(0, int.MaxValue);
-            foreach (var kvp in scheduled)
+            try
             {
-                var jobId = kvp.Key;
-                var job = kvp.Value;
-
-                if (job.Job.Args.Contains(userId))
+                var user = await userManager.FindByIdAsync(userId);
+                if (user is null)
                 {
-                    BackgroundJob.Delete(jobId);
+                    logger.LogWarning("Get current user failed - user ID not found");
+                    throw new UnauthorizedException("User not found.");
                 }
+        
+                var recurringJobs = JobStorage.Current.GetConnection().GetRecurringJobs();
+                foreach (var job in recurringJobs.Where(j => j.Id.StartsWith($"user-{userId}-")))
+                {
+                    recurringJobManager.RemoveIfExists(job.Id);
+                }
+        
+                var jobsToDelete = await dbContext.HangfireJobs
+                    .Where(j => j.UserId == userId)
+                    .ToListAsync();
+
+                foreach (var job in jobsToDelete)
+                {
+                    BackgroundJob.Delete(job.HangfireJobId);
+                }
+        
+                logger.LogInformation("Removed all jobs for UserId: {UserId}", userId);
+        
+                logger.LogInformation("Deleting user with UserId: {UserId}", userId);
+                var result = await userManager.DeleteAsync(user);
+                if (!result.Succeeded)
+                {
+                    throw new InvalidOperationException("Failed to delete user.");
+                }
+                logger.LogInformation("User deleted successfully. UserId: {UserId}", userId);
+        
+                cookieService.RemoveCookies(httpContext.Response);
+                logger.LogInformation("Removed cookies for UserId: {UserId}", userId);
+        
+                await transaction.CommitAsync();
             }
-
-            var queues = monitoringApi.Queues();
-            foreach (var queue in queues)
+            catch (Exception e)
             {
-                var enqueued = monitoringApi.EnqueuedJobs(queue.Name, 0, int.MaxValue);
-                foreach (var kvp in enqueued)
-                {
-                    var jobId = kvp.Key;
-                    var job = kvp.Value;
-
-                    if (job.Job.Args.Contains(userId))
-                    {
-                        BackgroundJob.Delete(jobId);
-                    }
-                }
+                logger.LogError(e, "Failed during user deletion for UserId: {UserId}. Rolling back transaction.", userId);
+                await transaction.RollbackAsync();
+                throw;
             }
         }
-        
-        logger.LogInformation("Removed all jobs for UserId: {UserId}", userId);
-        
-        cookieService.RemoveCookies(httpContext.Response);
-        
-        logger.LogInformation("Removed cookies for UserId: {UserId}", userId);
     }
 
     public async Task UpdateCurrentUserAsync(
