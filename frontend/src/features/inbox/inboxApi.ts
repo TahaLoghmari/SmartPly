@@ -18,3 +18,9 @@ export const getUserEmail = (id: string) => {
     method: "GET",
   });
 };
+
+export const syncUserEmails = () => {
+  return request<void>("/emails/sync", {
+    method: "POST",
+  });
+};
