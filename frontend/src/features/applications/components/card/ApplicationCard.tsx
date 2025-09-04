@@ -53,7 +53,7 @@ export default function ApplicationCard({
           <ApplicationLikeButton applicationCard={applicationCard} />
         </div>
       )}
-      <div className="flex flex-1 flex-col gap-4 md:flex-row md:items-center">
+      <div className="flex min-w-0 flex-1 flex-col gap-4 md:flex-row md:items-center">
         <ApplicationCardInfo applicationCard={applicationCard} />
         <ApplicationCardStatus applicationCard={applicationCard} />
       </div>
