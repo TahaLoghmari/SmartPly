@@ -58,8 +58,8 @@ INSTRUCTIONS:
    - If `""isJobRelated"": true` :
      - `""category""` MUST be one of the provided categories
      - `""summary""` MUST be a concise 1–2 sentence summary .
-     - ""companyName"" MUST be set to the company's name. If the company name cannot be determined from the email, use the literal string ""Unknown"".
-     - `""position"" must be set to the job's position`. If the position cannot be determined from the email, use the literal string ""Unknown"".
+     - ""companyName"" MUST be set to the company's name. If the company name cannot be determined from the email, use the literal string ""N/A"".
+     - `""position"" must be set to the job's position`. If the position cannot be determined from the email, use the literal string ""N/A"".
    - If `""isJobRelated"": false`:
      -`""category""` MUST be null.
      - `""summary""` MUST be null.
@@ -256,7 +256,7 @@ RULES:
                 Type = ApplicationType.onSite,
                 JobType = ApplicationJobType.fullTime,
                 Level = ApplicationLevel.mid,
-                Location = "Unknown",
+                Location = "N/A",
                 StartSalary = 0,
                 EndSalary = 0,
             };

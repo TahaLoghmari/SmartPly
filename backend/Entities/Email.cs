@@ -21,4 +21,5 @@ public class Email
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public User? User { get; set; }
+    public Application? Application { get; set; }
 }

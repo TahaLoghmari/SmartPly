@@ -39,4 +39,5 @@ public sealed class Application
     public User? User { get; set; }
     public CoverLetter? CoverLetterUsed { get; set; }
     public List<Notification> Notifications { get; set; } = new List<Notification>();
+    public List<Email> Emails { get; set; } = new List<Email>();
 }

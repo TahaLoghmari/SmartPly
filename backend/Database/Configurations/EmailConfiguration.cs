@@ -72,6 +72,11 @@ public class EmailConfiguration : IEntityTypeConfiguration<Email>
             .WithMany(u => u.Emails)
             .HasForeignKey(e => e.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.HasOne(e => e.Application)
+            .WithMany(a => a.Emails)
+            .HasForeignKey(e => e.MatchedJobId)
+            .OnDelete(DeleteBehavior.SetNull);
             
         builder.HasIndex(e => e.UserId);
         builder.HasIndex(e => e.IsRead);
