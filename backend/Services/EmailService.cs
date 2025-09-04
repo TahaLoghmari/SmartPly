@@ -39,7 +39,7 @@ public class EmailService(
     private GmailService? _gmailService;
     private const int DefaultBatchSize = 10;
     private const int DefaultDelayMs = 200;
-    private const int InitialFetchLimit = 5; // raja3ha 100
+    private const int InitialFetchLimit = 10; 
     private const int SyncFetchLimit = 20;
     private const int DefaultPageSize = 10;
     
