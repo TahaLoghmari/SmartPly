@@ -101,10 +101,10 @@ OUTPUT JSON FORMAT:
 
         if (aiJsonResult is not null)
         {
+            await jobDetectionValidator.ValidateAndThrowAsync(aiJsonResult);
             logger.LogInformation(
                 "AI classification for email {EmailId}: isJobRelated={IsJobRelated}, category={Category}, position={Position}, companyName={CompanyName}",
                 existingEmail.Id, aiJsonResult.IsJobRelated, aiJsonResult.Category, aiJsonResult.Position, aiJsonResult.CompanyName);
-            await jobDetectionValidator.ValidateAndThrowAsync(aiJsonResult);
         }
     
         return aiJsonResult;
@@ -215,6 +215,13 @@ RULES:
                         ApplicationUtilities.UpdateApplicationStatusDate(matchedApplication, status.ToString());
                     }
                 }
+                foreach (ApplicationStatus status in Enum.GetValues(typeof(ApplicationStatus)))
+                {
+                    if (status > matchedApplication.Status)
+                    {
+                        ApplicationUtilities.UpdateApplicationStatusDate(matchedApplication, status.ToString(),true);
+                    }
+                }
             }
             
             var notificationType = NotificationUtilities.MapCategoryToNotificationType(previousAiJsonResult.Category);
@@ -319,9 +326,9 @@ RULES:
                 
                 await Task.Delay(1000, cancellationToken);
                 
-                await HandleClassificationAsync(model,userId,aiJsonResult,existingEmail,decodedBody,userApplications,cancellationToken);
-                
                 existingEmail.UpdatedAt = DateTime.UtcNow;
+                
+                await HandleClassificationAsync(model,userId,aiJsonResult,existingEmail,decodedBody,userApplications,cancellationToken);
                 
                 cacheService.InvalidateUserEmailCache(userId);
             }

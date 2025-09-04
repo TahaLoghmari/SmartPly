@@ -159,7 +159,7 @@ public class ApplicationService(
         }
         
         application.UpdateFromDto(applicationEditRequestDto);
-        // this is to ensure that the status dates are updated correctly if the status has changed
+
         foreach (ApplicationStatus status in Enum.GetValues(typeof(ApplicationStatus)))
         {
             if (status <= application.Status)
