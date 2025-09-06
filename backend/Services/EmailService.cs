@@ -351,7 +351,7 @@ public class EmailService(
 
         IQueryable<EmailResponseDto> emailQuery = dbContext.Emails
             .AsNoTracking()
-            .Where(a => a.UserId == userId)
+            .Where(a => a.UserId == userId && (!query.jobEmail || a.IsJobRelated))
             .OrderByDescending(e => e.InternalDate)
             .Select(e => e.ToEmailResponseDto());
         

@@ -13,7 +13,7 @@ export function Inbox({ jobRelated }: { jobRelated?: boolean }) {
     isFetchingNextPage,
     isPending,
     isError,
-  } = useGetUserEmails();
+  } = useGetUserEmails(jobRelated);
 
   const { ref } = useInView({
     threshold: 1,

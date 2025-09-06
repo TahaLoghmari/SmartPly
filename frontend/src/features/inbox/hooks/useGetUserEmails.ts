@@ -3,12 +3,16 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { getUserEmails, type EmailResponseDto } from "#/inbox";
 import type { PaginationResultDto } from "@/index";
 
-export function useGetUserEmails() {
+export function useGetUserEmails(jobEmail?: boolean) {
   const { data: user } = useCurrentUser();
   return useInfiniteQuery<PaginationResultDto<EmailResponseDto>>({
-    queryKey: ["emails", user?.id],
+    queryKey: ["emails", user?.id, jobEmail ?? false],
     queryFn: ({ pageParam = 1 }) =>
-      getUserEmails({ page: pageParam as number, pageSize: 10 }),
+      getUserEmails({
+        page: pageParam as number,
+        jobEmail: jobEmail ?? false,
+        pageSize: 10,
+      }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, pages) => {
       return lastPage.hasNextPage ? pages.length + 1 : undefined;

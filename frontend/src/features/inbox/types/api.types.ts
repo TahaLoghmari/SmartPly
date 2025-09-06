@@ -56,5 +56,6 @@ export interface Message {
 
 export interface EmailQueryParameters {
   page: number;
+  jobEmail: boolean | false;
   pageSize: number;
 }

@@ -18,7 +18,7 @@ export default function ApplicationAddButton() {
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
-        <Button className="flex cursor-pointer items-center justify-center rounded-md p-2!">
+        <Button className="flex cursor-pointer items-center justify-center rounded-md lg:p-4!">
           <Plus className="h-4 w-4" />
           {currentScreenSize >= 1024 && <p>Add Application</p>}
         </Button>

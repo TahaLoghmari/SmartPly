@@ -40,7 +40,7 @@ public sealed class CacheService(
     
     public string GenerateEmailsCacheKey(string userId, EmailQueryParameters query)
     {
-        return $"{UserEmailsPrefix}{userId}_{query.Page}_{query.PageSize}";
+        return $"{UserEmailsPrefix}{userId}_{query.jobEmail}_{query.Page}_{query.PageSize}";
     }
     
     public void CacheApplicationsResult(string cacheKey, PaginationResultDto<ApplicationResponseDto> resultDto, string userId)
