@@ -12,9 +12,7 @@ namespace backend.Services;
 public class NotificationService(
     IHubContext<NotificationHub> hubContext,
     ApplicationDbContext dbContext,
-    ILogger<NotificationService> logger,
-    IMemoryCache cache,
-    CacheService cacheService)
+    ILogger<NotificationService> logger)
 {
     public async Task<PaginationResultDto<NotificationResponseDto>> GetNotificationsAsync(
         string? userId,

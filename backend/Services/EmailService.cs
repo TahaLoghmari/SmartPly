@@ -39,7 +39,7 @@ public class EmailService(
     private GmailService? _gmailService;
     private const int DefaultBatchSize = 10;
     private const int DefaultDelayMs = 200;
-    private const int InitialFetchLimit = 10; 
+    private const int InitialFetchLimit = 2; 
     private const int SyncFetchLimit = 20;
     private const int DefaultPageSize = 10;
     
@@ -99,14 +99,10 @@ public class EmailService(
         var generativeAiService = scope.ServiceProvider.GetRequiredService<AiService>();
         
         var model = aiService.CreateInstance();
-        var userApplications = await dbContext.Applications
-            .Where(a => a.UserId == userId)
-            .Select(a => a.ToApplicationAiPromptDto())
-            .ToListAsync(cancellationToken);
         
         foreach (var id in emailIds)
         {
-            await generativeAiService.ClassifyAndMatchEmailAsync(userId, id, model, userApplications, cancellationToken);
+            await generativeAiService.ClassifyAndMatchEmailAsync(userId, id, model, cancellationToken);
         }
     }
     
@@ -176,7 +172,7 @@ public class EmailService(
 
             await userManager.UpdateAsync(user);
             
-            var emailIds = emails.OrderByDescending(e => e.InternalDate).Select(e => e.Id).ToList();
+            var emailIds = emails.OrderBy(e => e.InternalDate).Select(e => e.Id).ToList();
             var jobId = backgroundJobClient.Enqueue(() => ClassifyAndMatchEmailsAsync(emailIds, userId, CancellationToken.None));
             
             HangfireJob hangfireJob = new HangfireJob
@@ -300,7 +296,7 @@ public class EmailService(
                     dbContext.Emails.UpdateRange(emailsToUpdate);
                 }
                 
-                emailIds.AddRange(emailsToAdd.OrderByDescending(e => e.InternalDate).Select(e => e.Id));
+                emailIds.AddRange(emailsToAdd.OrderBy(e => e.InternalDate).Select(e => e.Id));
 
                 logger.LogInformation("Upserted {AddCount} new and {UpdateCount} existing emails for user {UserId}", 
                     emailsToAdd.Count, emailsToUpdate.Count, userId);

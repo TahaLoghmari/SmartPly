@@ -2,6 +2,7 @@ using System.Text.Json;
 using backend.DTOs;
 using backend.Entities;
 using backend.Enums;
+using backend.Mappings;
 using backend.Utilities;
 using FluentValidation;
 using Hangfire;
@@ -115,52 +116,70 @@ OUTPUT JSON FORMAT:
         string userId,
         JobDetectionPromptResult previousAiJsonResult,
         Email existingEmail,
-        string decodedBody,
         List<ApplicationAiPromptDto> userApplications,
         CancellationToken cancellationToken)
     {
         var userApplicationsJson = JsonSerializer.Serialize(userApplications);
         var promptText = $@"
-You are an AI designed to match an incoming email to a specific job application from a user's tracked list.
+You are an AI designed to match an incoming email to a specific job application from a user’s tracked list.
+
 INPUTS:
-1. Email content (subject, from_address, from_name, snippet, and body).
-2. A JSON array of job applications previously entered by the user.
-   Each object in the array has the following structure:
-   - id (unique identifier, keep exactly as provided)
-   - companyName
-   - companyEmail
-   - jobType
-   - level
-   - link
-   - location
-   - notes
-   - position
-   - status
-   - type
+
+1. Email Info (structured data):
+- subject
+- from_address
+- from_name
+- from_company
+- position
+- category
+- snippet
+- summary
+2. Job Applications: A JSON array where each object has:
+- id (unique identifier, must be preserved exactly)
+- companyName
+- companyEmail
+- jobType
+- level
+- link
+- location
+- notes
+- position
+- status
+- type
 
 TASK:
-- Determine if this email most likely relates to one of the job applications in the list.
-- Matching priority:
-  1. **Company name or position title** explicitly mentioned in the email.
-  2. **Sender email (from_address)** matching or strongly resembling the company's `companyEmail`.
-  3. **Contextual clues** such as recruiter names, interview scheduling, references to application/resume, or product/project names mentioned in `notes` .
-- If multiple jobs match, choose the **single best match** based on the strongest overlap of company name + position.
-- If no job can be reasonably matched, return `null`.
+- Determine if the email most likely corresponds to one of the jobs in the application list.
+
+Matching priority (highest → lowest):
+1. Company name and/or position title appearing in the email (subject, snippet, summary, from_company, position).
+2. Sender email (from_address) matching or strongly resembling the company’s companyEmail.
+3. Contextual clues: recruiter names, interview mentions, “application/resume” references, or product/project names matching job notes.
+
+Decision rules:
+- If multiple jobs match, select the single best match (strongest overlap on company name + position).
+- If no reasonable match exists, return null.
 
 OUTPUT:
-- Respond ONLY with a valid JSON object.
-- Do not include extra text, commentary, or markdown formatting.
+{{
+  id: string|null
+}}
+
+Rules:
+- Always return exactly one field: id.
+- Use the id exactly as given in the job list (no alterations).
+- Return ""id"": null if no reliable match exists.
 
 EMAIL INFO:
 {{
   subject: {existingEmail.Subject},
   from_address: {existingEmail.FromAddress},
   from_name: {existingEmail.FromName},
+  from_company: {previousAiJsonResult.CompanyName}
+  position: {previousAiJsonResult.Position}
+  category: {previousAiJsonResult.Category}
   snippet: {existingEmail.Snippet}
+  summary: {previousAiJsonResult.Summary}
 }}
-
-EMAIL CONTENT:
-{decodedBody}
 
 JOB LIST:
 {userApplicationsJson}
@@ -169,11 +188,6 @@ OUTPUT JSON FORMAT:
 {{
   id: string|null
 }}
-
-RULES:
-- Always return exactly one field: `id`.
-- Use the `id` exactly as provided in the job list.
-- Return id as null if no reliable match exists.
 ";
 
         GenerateContentResponse result = await model.GenerateContent(promptText);
@@ -222,6 +236,7 @@ RULES:
                         ApplicationUtilities.UpdateApplicationStatusDate(matchedApplication, status.ToString(),true);
                     }
                 }
+                cacheService.InvalidateUserApplicationCache(matchedApplication.UserId);
             }
             
             var notificationType = NotificationUtilities.MapCategoryToNotificationType(previousAiJsonResult.Category);
@@ -295,11 +310,15 @@ RULES:
         string userId,
         string id,
         GenerativeModel model,
-        List<ApplicationAiPromptDto> userApplications,
         CancellationToken cancellationToken)
     {
         var existingEmail = await dbContext.Emails
             .FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId, cancellationToken);
+        
+        var userApplications = await dbContext.Applications
+            .Where(a => a.UserId == userId)
+            .Select(a => a.ToApplicationAiPromptDto())
+            .ToListAsync(cancellationToken);
         
         if (existingEmail is null)
         {
@@ -328,7 +347,7 @@ RULES:
                 
                 existingEmail.UpdatedAt = DateTime.UtcNow;
                 
-                await HandleClassificationAsync(model,userId,aiJsonResult,existingEmail,decodedBody,userApplications,cancellationToken);
+                await HandleClassificationAsync(model,userId,aiJsonResult,existingEmail,userApplications,cancellationToken);
                 
                 cacheService.InvalidateUserEmailCache(userId);
             }
@@ -346,7 +365,7 @@ RULES:
             {
                 var jobId = backgroundJobClient.Schedule<AiService>(
                     s => 
-                        s.ClassifyAndMatchEmailAsync(userId, id,model,userApplications,CancellationToken.None),
+                        s.ClassifyAndMatchEmailAsync(userId, id,model,CancellationToken.None),
                     TimeSpan.FromDays(1));
                 
                 HangfireJob hangfireJob = new HangfireJob
