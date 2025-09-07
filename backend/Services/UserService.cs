@@ -14,7 +14,9 @@ public class UserService(
     ILogger<UserService> logger,
     IRecurringJobManager recurringJobManager,
     CookieService cookieService,
-    ApplicationDbContext dbContext)
+    ApplicationDbContext dbContext,
+    CoverLetterService coverLetterService,
+    ResumeService resumeService)
 {
     public async Task<UserDto> GetCurrentUser(
         string? userId)
@@ -42,7 +44,8 @@ public class UserService(
     
     public async Task DeleteCurrentUserAsync(
         string? userId,
-        HttpContext httpContext)
+        HttpContext httpContext,
+        CancellationToken cancellationToken)
     {
         if (userId is null)
         {
@@ -50,7 +53,7 @@ public class UserService(
             throw new UnauthorizedException("User ID claim is missing.");
         }
 
-        var transaction = await dbContext.Database.BeginTransactionAsync();
+        var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
         try
         {
             var user = await userManager.FindByIdAsync(userId);
@@ -59,6 +62,20 @@ public class UserService(
                 logger.LogWarning("Get current user failed - user ID not found");
                 throw new UnauthorizedException("User not found.");
             }
+            
+            var coverLetterIds = await dbContext.CoverLetters
+                .Where(r => r.UserId == userId)
+                .Select(c => c.Id)
+                .ToListAsync(cancellationToken);
+            await coverLetterService.BulkDeleteCoverLetters(coverLetterIds,userId,cancellationToken);
+            logger.LogInformation("Deleted all cover letters for UserId: {UserId}", userId);
+            
+            var resumeIds = await dbContext.Resumes
+                .Where(r => r.UserId == userId)
+                .Select(r => r.Id)
+                .ToListAsync(cancellationToken);
+            await resumeService.BulkDeleteResumes(resumeIds,userId,cancellationToken);
+            logger.LogInformation("Deleted all resumes for UserId: {UserId}", userId);
     
             var recurringJobs = JobStorage.Current.GetConnection().GetRecurringJobs();
             foreach (var job in recurringJobs.Where(j => j.Id.StartsWith($"user-{userId}-")))
@@ -68,7 +85,7 @@ public class UserService(
     
             var jobsToDelete = await dbContext.HangfireJobs
                 .Where(j => j.UserId == userId)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             foreach (var job in jobsToDelete)
             {
@@ -88,12 +105,12 @@ public class UserService(
             cookieService.RemoveCookies(httpContext.Response);
             logger.LogInformation("Removed cookies for UserId: {UserId}", userId);
     
-            await transaction.CommitAsync();
+            await transaction.CommitAsync(cancellationToken);
         }
         catch (Exception e)
         {
             logger.LogError(e, "Failed during user deletion for UserId: {UserId}. Rolling back transaction.", userId);
-            await transaction.RollbackAsync();
+            await transaction.RollbackAsync(cancellationToken);
             throw;
         }
         

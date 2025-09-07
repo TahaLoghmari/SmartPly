@@ -18,16 +18,6 @@ export function getNavigationData(user: {
         url: "applications",
         icon: ClipboardList,
       },
-      // {
-      //   title: "Analytics",
-      //   url: "analytics",
-      //   icon: IconFileAnalytics,
-      // },
-      // {
-      //   title: "Contacts",
-      //   url: "contacts",
-      //   icon: Users,
-      // },
       {
         title: "Documents",
         url: "documents",
@@ -44,11 +34,6 @@ export function getNavigationData(user: {
         title: "Settings",
         url: "settings",
         icon: IconSettings,
-      },
-      {
-        title: "AI",
-        url: "ai",
-        icon: Sparkles,
       },
     ],
   };

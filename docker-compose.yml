@@ -50,7 +50,7 @@ services:
         - path: ./backend/*.csproj
           action: rebuild
   db:
-    image: postgres
+    image: postgres:latest
     restart: always
     user: postgres
     volumes:

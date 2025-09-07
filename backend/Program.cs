@@ -42,10 +42,15 @@ app.MapControllers();
 
 app.UseSerilogRequestLogging();
 app.UseRateLimiter();
-app.UseHangfireDashboard("/hangfire-dashboard");
+app.UseHangfireDashboard("/hangfire-dashboard", new DashboardOptions
+{
+    Authorization = new[] { new HangfireAuthorizationFilter() }
+});
 app.MapHub<NotificationHub>("/hubs/notifications");
 
 var supabaseService = app.Services.GetRequiredService<SupabaseService>();
 await supabaseService.InitializeAsync();
 
 app.Run();
+
+public partial class Program { }

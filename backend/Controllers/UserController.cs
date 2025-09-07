@@ -24,11 +24,12 @@ public sealed class UserController(
     }
     
     [HttpDelete]
-    public async Task<IActionResult> DeleteCurrentUser()
+    public async Task<IActionResult> DeleteCurrentUser(
+        CancellationToken cancellationToken)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         
-        await userService.DeleteCurrentUserAsync(userId,HttpContext);
+        await userService.DeleteCurrentUserAsync(userId,HttpContext,cancellationToken);
         
         return NoContent();
     }

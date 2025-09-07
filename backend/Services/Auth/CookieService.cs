@@ -5,7 +5,8 @@ using Microsoft.Extensions.Options;
 namespace backend.Services;
 
 public sealed class CookieService(
-    IOptions<JwtAuthSettings> jwtAuthSettings)
+    IOptions<JwtAuthSettings> jwtAuthSettings,
+    IWebHostEnvironment environment)
 {
     private readonly JwtAuthSettings _jwtAuthSettings = jwtAuthSettings.Value;
     private CookieOptions CreateCookieOptions()
@@ -13,8 +14,8 @@ public sealed class CookieService(
         return new CookieOptions
         {
             HttpOnly = true,
-            Secure = false, 
-            SameSite = SameSiteMode.Lax, 
+            Secure = environment.IsProduction(),
+            SameSite = !environment.IsProduction() ? SameSiteMode.Lax : SameSiteMode.None, 
             Expires = DateTime.UtcNow.AddMinutes(_jwtAuthSettings.ExpirationInMinutes)
         };
     }
@@ -24,8 +25,8 @@ public sealed class CookieService(
         return new CookieOptions
         {
             HttpOnly = true,
-            Secure = false, 
-            SameSite = SameSiteMode.Lax, 
+            Secure = environment.IsProduction(), 
+            SameSite = !environment.IsProduction() ? SameSiteMode.Lax : SameSiteMode.None, 
             Expires = DateTime.UtcNow.AddDays(_jwtAuthSettings.RefreshTokenExpirationDays)
         };
     }
@@ -45,8 +46,8 @@ public sealed class CookieService(
         var expiredOptions = new CookieOptions
         {
             HttpOnly = true,
-            Secure = false,
-            SameSite = SameSiteMode.Lax ,
+            Secure = environment.IsProduction(),
+            SameSite = !environment.IsProduction() ? SameSiteMode.Lax : SameSiteMode.None ,
             Expires = DateTime.UtcNow.AddDays(-1)
         };
 

@@ -31,13 +31,15 @@ public static class DependencyInjection
             });
 
         builder.Services.AddOpenApi();
+        
+        var frontendUrl = builder.Configuration["Frontend:BaseUrl"]!;
 
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowReactApp",
                 policy =>
                 {
-                    policy.WithOrigins("http://localhost:5173")
+                    policy.WithOrigins(frontendUrl)
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials();
@@ -49,15 +51,18 @@ public static class DependencyInjection
     
     public static WebApplicationBuilder AddSwagger(this WebApplicationBuilder builder)
     {
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen(options =>
+        if (builder.Environment.IsDevelopment())
         {
-            options.SwaggerDoc("v1", new OpenApiInfo
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(options =>
             {
-                Title = "SmartPly",
-                Description = "An ASP.NET Core Web API for your application.",
-            });
-        });
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "SmartPly",
+                    Description = "An ASP.NET Core Web API for your application.",
+                });
+            }); 
+        }
         
         return builder;
     }
