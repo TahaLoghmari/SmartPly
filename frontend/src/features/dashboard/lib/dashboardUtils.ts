@@ -1,5 +1,5 @@
 import { IconSettings } from "@tabler/icons-react";
-import { Inbox, ClipboardList, FileText, Sparkles } from "lucide-react";
+import { Inbox, ClipboardList, FileText } from "lucide-react";
 
 export function getNavigationData(user: {
   name: string;

@@ -5,6 +5,7 @@ import InboxImage from "@/assets/Inbox.png";
 import JobInboxImage from "@/assets/Job Inbox.png";
 import DocumentsImage from "@/assets/Documents.png";
 import { ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function HomePage() {
   return (
@@ -25,9 +26,12 @@ export function HomePage() {
                 Automatically track your applications from start to finish on
                 one simple platform.
               </p>
-              <button className="mt-8 flex items-center gap-3 rounded-full bg-gradient-to-r from-gray-600 to-gray-400 p-4 font-bold text-white">
+              <Link
+                to="/login"
+                className="mt-8 flex cursor-pointer items-center gap-3 rounded-full bg-gradient-to-r from-gray-600 to-gray-400 p-4 font-bold text-white"
+              >
                 START NOW FOR FREE <ChevronRight className="h-4 w-4" />
-              </button>
+              </Link>
             </div>
             <img
               className="h-auto w-full flex-1 rounded-lg shadow-2xl lg:w-56"
