@@ -191,8 +191,8 @@ public class CoverLetterService(
             .ToListAsync(cancellationToken);
         if (coverLetters.Count == 0)
         {
-            logger.LogWarning("No cover letters found for bulk delete with IDs: {CoverLetterIds}", string.Join(", ", coverLetterIds));
-            throw new NotFoundException("No cover letters found for the provided IDs.");
+            logger.LogWarning("No cover letters found for bulk delete with IDs: {ResumeIds}", string.Join(", ", coverLetters));
+            return;
         }
         
         dbContext.CoverLetters.RemoveRange(coverLetters);

@@ -197,7 +197,7 @@ public class ResumeService(
         if (resumes.Count == 0)
         {
             logger.LogWarning("No resumes found for bulk delete with IDs: {ResumeIds}", string.Join(", ", resumeIds));
-            throw new NotFoundException("No resumes found for the provided IDs.");
+            return;
         }
         
         dbContext.Resumes.RemoveRange(resumes);
