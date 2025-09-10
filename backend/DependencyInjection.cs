@@ -98,7 +98,7 @@ public static class DependencyInjection
         .AddDefaultTokenProviders();
 
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         builder.Services.Configure<JwtAuthSettings>(builder.Configuration.GetSection("Jwt"));
         builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
@@ -161,7 +161,7 @@ public static class DependencyInjection
         builder.Services.AddScoped<NotificationService>();
         builder.Services.AddScoped<AiService>();
         builder.Services.AddHealthChecks()
-            .AddDbContextCheck<ApplicationDbContext>("Database");
+            .AddDbContextCheck<ApplicationDbContext>("DefaultConnection");
         builder.Services.AddGenerativeAI(builder.Configuration.GetSection("Gemini"));
         
         return builder; 
@@ -205,7 +205,7 @@ public static class DependencyInjection
                 .UseRecommendedSerializerSettings()
                 .UsePostgreSqlStorage(options =>
                     options.UseNpgsqlConnection(
-                        builder.Configuration.GetConnectionString("Database"))));
+                        builder.Configuration.GetConnectionString("DefaultConnection"))));
         builder.Services.AddHangfireServer();
 
         return builder;
