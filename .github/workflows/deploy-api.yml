@@ -18,14 +18,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: "9.0.x"
-
-      - name: Build
-        run: dotnet build --configuration Release
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -56,7 +48,7 @@ jobs:
           containerAppName: ${{ env.CONTAINER_APP_NAME }}
           environmentVariables: |
             ASPNETCORE_ENVIRONMENT=Production
-            ConnectionStrings__DefaultConnection=${{ secrets.DefaultConnection }}
+            ConnectionStrings__DefaultConnection=${{ secrets.DEFAULT_CONNECTION }}
             Jwt__Key=${{ secrets.JWT_KEY }}
             Jwt__Issuer=${{ secrets.JWT_ISSUER }}
             Jwt__Audience=${{ secrets.JWT_AUDIENCE }}
