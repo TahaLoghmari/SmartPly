@@ -65,8 +65,8 @@ jobs:
             EmailSettings__FromEmail=medtahalog@gmail.com
             EmailSettings__Password=${{ secrets.EMAIL_SETTINGS_PASSWORD }}
             Frontend__BaseUrl=${{ secrets.FRONTEND_URL }}
-            VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
             Supabase__ServiceRoleKey=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
             Supabase__Url=${{ secrets.SUPABASE_URL }}
             Gemini__Credentials__ApiKey=${{ secrets.GEMINI_CREDENTIALS_API_KEY }}
             Gemini__Model=gemini-2.5-flash
+            Are_Environment_Variabales_Passing=true
