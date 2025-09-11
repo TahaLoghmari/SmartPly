@@ -9,6 +9,7 @@ env:
   AZURE_CONTAINER_REGISTRY: smartplyapi
   CONTAINER_APP_NAME: smartply-api
   RESOURCE_GROUP: personal-projects
+  CONTAINER_ENVIRONMENT: managedEnvironment-personalproject-9387
 
 jobs:
   build-and-deploy:
@@ -46,7 +47,7 @@ jobs:
           az containerapp update \
             --name ${{ env.CONTAINER_APP_NAME }} \
             --resource-group ${{ env.RESOURCE_GROUP }} \
-            --environment <YOUR_ENVIRONMENT_NAME> \
+            --environment ${{ env.CONTAINER_ENVIRONMENT }} \
             --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_APP_NAME }}:${{ github.sha }} \
             --ingress external \
             --target-port 8080 \
