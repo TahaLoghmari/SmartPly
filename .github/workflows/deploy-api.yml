@@ -9,7 +9,6 @@ env:
   AZURE_CONTAINER_REGISTRY: smartplyapi
   CONTAINER_APP_NAME: smartply-api
   RESOURCE_GROUP: personal-projects
-  CONTAINER_ENVIRONMENT: managedEnvironment-personalproject-9387
 
 jobs:
   build-and-deploy:
@@ -42,49 +41,43 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Deploy and configure Azure Container App
-        run: |
-          az containerapp update \
-            --name ${{ env.CONTAINER_APP_NAME }} \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --environment ${{ env.CONTAINER_ENVIRONMENT }} \
-            --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_APP_NAME }}:${{ github.sha }} \
-            --ingress external \
-            --target-port 8080 \
-            --set-env-vars ASPNETCORE_ENVIRONMENT=Production \
-            --set-env-vars ConnectionStrings__DefaultConnection='${{ secrets.DEFAULT_CONNECTION }}' \
-            --set-env-vars Jwt__Key='${{ secrets.JWT_KEY }}' \
-            --set-env-vars Jwt__Issuer='${{ secrets.JWT_ISSUER }}' \
-            --set-env-vars Jwt__Audience='${{ secrets.JWT_AUDIENCE }}' \
-            --set-env-vars Jwt__ExpirationInMinutes=15 \
-            --set-env-vars Jwt__RefreshTokenExpirationDays=30 \
-            --set-env-vars Google__ClientId='${{ secrets.GOOGLE_CLIENT_ID }}' \
-            --set-env-vars Google__ClientSecret='${{ secrets.GOOGLE_CLIENT_SECRET }}' \
-            --set-env-vars Google__RedirectUri='${{ secrets.GOOGLE_REDIRECT_URI }}' \
-            --set-env-vars Google__Scopes='openid email profile https://www.googleapis.com/auth/gmail.readonly' \
-            --set-env-vars EmailSettings__MailServer=smtp.gmail.com \
-            --set-env-vars EmailSettings__MailPort=587 \
-            --set-env-vars EmailSettings__SenderName=SmartPly \
-            --set-env-vars EmailSettings__FromEmail=medtahalog@gmail.com \
-            --set-env-vars EmailSettings__Password='${{ secrets.EMAIL_SETTINGS_PASSWORD }}' \
-            --set-env-vars Frontend__BaseUrl='${{ secrets.FRONTEND_URL }}' \
-            --set-env-vars Supabase__ServiceRoleKey='${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}' \
-            --set-env-vars Supabase__Url='${{ secrets.SUPABASE_URL }}' \
-            --set-env-vars Gemini__Credentials__ApiKey='${{ secrets.GEMINI_CREDENTIALS_API_KEY }}' \
-            --set-env-vars Gemini__Model=gemini-2.5-flash \
-            --set probes='[
-              {
-                "type": "liveness",
-                "httpGet": { "path": "/health", "port": 8080 },
-                "intervalSeconds": 10,
-                "timeoutSeconds": 5,
-                "failureThreshold": 3
-              },
-              {
-                "type": "readiness",
-                "httpGet": { "path": "/health", "port": 8080 },
-                "intervalSeconds": 10,
-                "timeoutSeconds": 5,
-                "failureThreshold": 3
-              }
-            ]'
+      - name: Deploy to Azure Container Apps
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          imageToDeploy: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_APP_NAME }}:${{ github.sha }}
+          resourceGroup: ${{ env.RESOURCE_GROUP }}
+          containerAppName: ${{ env.CONTAINER_APP_NAME }}
+          environmentVariables: >-
+            ASPNETCORE_ENVIRONMENT=Production
+            ConnectionStrings__DefaultConnection='${{ secrets.DEFAULT_CONNECTION }}'
+            Jwt__Key='${{ secrets.JWT_KEY }}'
+            Jwt__Issuer='${{ secrets.JWT_ISSUER }}'
+            Jwt__Audience='${{ secrets.JWT_AUDIENCE }}'
+            Jwt__ExpirationInMinutes=15
+            Jwt__RefreshTokenExpirationDays=30
+            Google__ClientId='${{ secrets.GOOGLE_CLIENT_ID }}'
+            Google__ClientSecret='${{ secrets.GOOGLE_CLIENT_SECRET }}'
+            Google__RedirectUri='${{ secrets.GOOGLE_REDIRECT_URI }}'
+            Google__Scopes='openid email profile https://www.googleapis.com/auth/gmail.readonly'
+            EmailSettings__MailServer=smtp.gmail.com
+            EmailSettings__MailPort=587
+            EmailSettings__SenderName=SmartPly
+            EmailSettings__FromEmail=medtahalog@gmail.com
+            EmailSettings__Password='${{ secrets.EMAIL_SETTINGS_PASSWORD }}'
+            Frontend__BaseUrl='${{ secrets.FRONTEND_URL }}'
+            Supabase__ServiceRoleKey='${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}'
+            Supabase__Url='${{ secrets.SUPABASE_URL }}'
+            Gemini__Credentials__ApiKey='${{ secrets.GEMINI_CREDENTIALS_API_KEY }}'
+            Gemini__Model=gemini-2.5-flash
+
+      - name: Configure Health Probe
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            az containerapp probe set \
+              --name ${{ env.CONTAINER_APP_NAME }} \
+              --resource-group ${{ env.RESOURCE_GROUP }} \
+              --path /health \
+              --type readiness \
+              --transport http \
+              --port 8080
