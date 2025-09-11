@@ -69,12 +69,6 @@ jobs:
             Supabase__Url='${{ secrets.SUPABASE_URL }}'
             Gemini__Credentials__ApiKey='${{ secrets.GEMINI_CREDENTIALS_API_KEY }}'
             Gemini__Model=gemini-2.5-flash
-          readinessProbePath: /health
-          readinessProbePort: 8080
-          readinessProbeTransport: http
-          livenessProbePath: /health
-          livenessProbePort: 8080
-          livenessProbeTransport: http
-          startupProbePath: /health
-          startupProbePort: 8080
-          startupProbeTransport: http
+          startupProbe: '{"httpGet": {"path": "/health/startup", "port": 80}, "initialDelaySeconds": 5, "periodSeconds": 10, "failureThreshold": 3}'
+          livenessProbe: '{"httpGet": {"path": "/health/live", "port": 80}, "periodSeconds": 10, "failureThreshold": 3}'
+          readinessProbe: '{"httpGet": {"path": "/health/ready", "port": 80}, "periodSeconds": 10, "failureThreshold": 3}'
