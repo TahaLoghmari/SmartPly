@@ -42,33 +42,9 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy to Azure Container Apps
-        uses: azure/container-apps-deploy-action@v2
+        uses: azure/container-apps-deploy-action@v1
         with:
           imageToDeploy: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_APP_NAME }}:${{ github.sha }}
           resourceGroup: ${{ env.RESOURCE_GROUP }}
           containerAppName: ${{ env.CONTAINER_APP_NAME }}
-          environmentVariables: >-
-            ASPNETCORE_ENVIRONMENT=Production
-            ConnectionStrings__DefaultConnection='${{ secrets.DEFAULT_CONNECTION }}'
-            Jwt__Key='${{ secrets.JWT_KEY }}'
-            Jwt__Issuer='${{ secrets.JWT_ISSUER }}'
-            Jwt__Audience='${{ secrets.JWT_AUDIENCE }}'
-            Jwt__ExpirationInMinutes=15
-            Jwt__RefreshTokenExpirationDays=30
-            Google__ClientId='${{ secrets.GOOGLE_CLIENT_ID }}'
-            Google__ClientSecret='${{ secrets.GOOGLE_CLIENT_SECRET }}'
-            Google__RedirectUri='${{ secrets.GOOGLE_REDIRECT_URI }}'
-            Google__Scopes='openid email profile https://www.googleapis.com/auth/gmail.readonly'
-            EmailSettings__MailServer=smtp.gmail.com
-            EmailSettings__MailPort=587
-            EmailSettings__SenderName=SmartPly
-            EmailSettings__FromEmail=medtahalog@gmail.com
-            EmailSettings__Password='${{ secrets.EMAIL_SETTINGS_PASSWORD }}'
-            Frontend__BaseUrl='${{ secrets.FRONTEND_URL }}'
-            Supabase__ServiceRoleKey='${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}'
-            Supabase__Url='${{ secrets.SUPABASE_URL }}'
-            Gemini__Credentials__ApiKey='${{ secrets.GEMINI_CREDENTIALS_API_KEY }}'
-            Gemini__Model=gemini-2.5-flash
-          startupProbe: '{"httpGet": {"path": "/health/startup", "port": 80}, "initialDelaySeconds": 5, "periodSeconds": 10, "failureThreshold": 3}'
-          livenessProbe: '{"httpGet": {"path": "/health/live", "port": 80}, "periodSeconds": 10, "failureThreshold": 3}'
-          readinessProbe: '{"httpGet": {"path": "/health/ready", "port": 80}, "periodSeconds": 10, "failureThreshold": 3}'
+          yamlConfigPath: ./containerapp.yml
