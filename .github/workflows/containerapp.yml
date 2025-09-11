@@ -6,11 +6,12 @@ properties:
   configuration:
     ingress:
       external: true
-      targetPort: 80
+      targetPort: 8080
+      transport: auto
   template:
     containers:
-      - image: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_APP_NAME }}:${{ github.sha }}
-        name: ${{ env.CONTAINER_APP_NAME }}
+      - name: smartply-api 
+        image: placeholder 
         env:
           - name: ASPNETCORE_ENVIRONMENT
             value: Production
@@ -23,9 +24,9 @@ properties:
           - name: Jwt__Audience
             secretRef: JWT_AUDIENCE
           - name: Jwt__ExpirationInMinutes
-            value: 15
+            value: "15"
           - name: Jwt__RefreshTokenExpirationDays
-            value: 30
+            value: "30"
           - name: Google__ClientId
             secretRef: GOOGLE_CLIENT_ID
           - name: Google__ClientSecret
@@ -37,7 +38,7 @@ properties:
           - name: EmailSettings__MailServer
             value: smtp.gmail.com
           - name: EmailSettings__MailPort
-            value: 587
+            value: "587"
           - name: EmailSettings__SenderName
             value: SmartPly
           - name: EmailSettings__FromEmail
@@ -57,48 +58,23 @@ properties:
         probes:
           - type: Liveness
             httpGet:
-              path: "/health/live"
-              port: 80
+              path: "/health"
+              port: 8080
             periodSeconds: 10
             failureThreshold: 3
           - type: Readiness
             httpGet:
-              path: "/health/ready"
-              port: 80
+              path: "/health"
+              port: 8080
             periodSeconds: 10
             failureThreshold: 3
           - type: Startup
             httpGet:
-              path: "/health/startup"
-              port: 80
+              path: "/health"
+              port: 8080
             initialDelaySeconds: 5
             periodSeconds: 10
             failureThreshold: 3
     scale:
       minReplicas: 1
       maxReplicas: 1
-  secrets:
-    - name: DEFAULT_CONNECTION
-      value: "${{ secrets.DEFAULT_CONNECTION }}"
-    - name: JWT_KEY
-      value: "${{ secrets.JWT_KEY }}"
-    - name: JWT_ISSUER
-      value: "${{ secrets.JWT_ISSUER }}"
-    - name: JWT_AUDIENCE
-      value: "${{ secrets.JWT_AUDIENCE }}"
-    - name: GOOGLE_CLIENT_ID
-      value: "${{ secrets.GOOGLE_CLIENT_ID }}"
-    - name: GOOGLE_CLIENT_SECRET
-      value: "${{ secrets.GOOGLE_CLIENT_SECRET }}"
-    - name: GOOGLE_REDIRECT_URI
-      value: "${{ secrets.GOOGLE_REDIRECT_URI }}"
-    - name: EMAIL_SETTINGS_PASSWORD
-      value: "${{ secrets.EMAIL_SETTINGS_PASSWORD }}"
-    - name: FRONTEND_URL
-      value: "${{ secrets.FRONTEND_URL }}"
-    - name: SUPABASE_SERVICE_ROLE_KEY
-      value: "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"
-    - name: SUPABASE_URL
-      value: "${{ secrets.SUPABASE_URL }}"
-    - name: GEMINI_CREDENTIALS_API_KEY
-      value: "${{ secrets.GEMINI_CREDENTIALS_API_KEY }}"
