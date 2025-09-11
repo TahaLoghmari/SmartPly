@@ -1,33 +1,33 @@
-FROM node:20.14-alpine AS builder
+FROM node:20-alpine AS build
+
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN npm ci --no-audit --no-fund
+COPY package*.json ./
+
+RUN npm install
 
 COPY . .
 
-ARG VITE_API_BASE_URL=http://localhost:5000
-ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
-
 RUN npm run build
 
-FROM nginx:1.27-alpine
+FROM nginx:alpine AS production
 
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY nginx/nginx.conf /etc/nginx/nginx.conf
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
-RUN mkdir -p /var/run/nginx && \
-    chown -R nginx:nginx /var/run/nginx && \
-    chown -R nginx:nginx /var/cache/nginx && \
-    chown -R nginx:nginx /var/log/nginx && \
-    chown -R nginx:nginx /usr/share/nginx/html
-
-USER nginx
+COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 80
 
-HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
-  CMD curl --fail --silent --show-error http://localhost:80/ || exit 1
+FROM node:20-alpine AS development
 
-CMD ["nginx", "-g", "daemon off;"]
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 5173
+
+CMD ["npm", "run", "dev"]

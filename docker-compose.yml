@@ -5,39 +5,44 @@ services:
         condition: service_healthy
     build:
       context: ./frontend
+      target: development
       args:
         VITE_API_BASE_URL: ${VITE_API_BASE_URL}
     ports:
-      - 5173:80
+      - 5173:5173
     environment:
       VITE_API_BASE_URL: ${VITE_API_BASE_URL}
-    develop:
-      watch:
-        - path: ./frontend/package.json
-          action: rebuild
-        - path: ./frontend/package-lock.json
-          action: rebuild
-        - path: ./frontend
-          target: /app
-          action: sync
+
   api:
     depends_on:
       db:
         condition: service_healthy
-    build: ./backend
+    build:
+      context: ./backend
+      target: dev
     ports:
       - 5000:8080
     env_file:
       - .env
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-    develop:
-      watch:
-        - path: ./backend
-          target: /app
-          action: sync
-        - path: ./backend/*.csproj
-          action: rebuild
+    volumes:
+      - ./backend:/src
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:8080/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
   db:
     image: postgres:latest
     restart: always
