@@ -69,3 +69,31 @@ jobs:
             Supabase__Url='${{ secrets.SUPABASE_URL }}'
             Gemini__Credentials__ApiKey='${{ secrets.GEMINI_CREDENTIALS_API_KEY }}'
             Gemini__Model=gemini-2.5-flash
+
+      - name: Configure health probes
+        run: |
+          az containerapp update \
+            --name ${{ env.CONTAINER_APP_NAME }} \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --set probes='[
+              {
+                "type": "liveness",
+                "httpGet": {
+                  "path": "/health",
+                  "port": 8080
+                },
+                "intervalSeconds": 10,
+                "timeoutSeconds": 5,
+                "failureThreshold": 3
+              },
+              {
+                "type": "readiness",
+                "httpGet": {
+                  "path": "/health",
+                  "port": 8080
+                },
+                "intervalSeconds": 10,
+                "timeoutSeconds": 5,
+                "failureThreshold": 3
+              }
+            ]'
