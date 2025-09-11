@@ -69,15 +69,12 @@ jobs:
             Supabase__Url='${{ secrets.SUPABASE_URL }}'
             Gemini__Credentials__ApiKey='${{ secrets.GEMINI_CREDENTIALS_API_KEY }}'
             Gemini__Model=gemini-2.5-flash
-
-      - name: Configure Health Probe
-        uses: azure/cli@v2
-        with:
-          inlineScript: |
-            az containerapp probe set \
-              --name ${{ env.CONTAINER_APP_NAME }} \
-              --resource-group ${{ env.RESOURCE_GROUP }} \
-              --path /health \
-              --type readiness \
-              --transport http \
-              --port 8080
+          readinessProbePath: /health
+          readinessProbePort: 8080
+          readinessProbeTransport: http
+          livenessProbePath: /health
+          livenessProbePort: 8080
+          livenessProbeTransport: http
+          startupProbePath: /health
+          startupProbePort: 8080
+          startupProbeTransport: http
