@@ -1,6 +1,7 @@
 using System.Text.Json;
 using backend.DTOs;
 using backend.Entities;
+using backend.Exceptions;
 using backend.Settings;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
@@ -11,7 +12,8 @@ namespace backend.Services;
 public sealed class GoogleTokensProvider(
     UserManager<User> userManager,
     IOptions<GoogleSettings> googleSettings,
-    ILogger<GoogleTokensProvider> logger)
+    ILogger<GoogleTokensProvider> logger,
+    IHttpClientFactory httpClientFactory)
 {
     private readonly GoogleSettings _googleSettings = googleSettings.Value;
     public async Task<GoogleTokenResponse?> ExchangeCodeForTokens(
@@ -183,5 +185,43 @@ public sealed class GoogleTokensProvider(
         await userManager.UpdateAsync(userToLink);
 
         return userToLink;
+    }
+    
+    public async Task RevokeTokenAsync(string userId)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+        if (user is null)
+        {
+            logger.LogWarning("User not found for token revocation. UserId: {UserId}", userId);
+            return;
+        }
+
+        var refreshToken = await userManager.GetAuthenticationTokenAsync(user, "Google", "refresh_token");
+
+        if (refreshToken is null)
+        {
+            logger.LogInformation("No Google refresh token found for user {UserId}. Skipping revocation.", userId);
+            return;
+        }
+
+        var client = httpClientFactory.CreateClient();
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://oauth2.googleapis.com/revoke")
+        {
+            Content = new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                ["token"] = refreshToken
+            })
+        };
+
+        var response = await client.SendAsync(request);
+        
+        if ( !response.IsSuccessStatusCode )
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            logger.LogError("Failed to revoke Google token for user {UserId}. Status: {StatusCode}, Response: {ErrorContent}",
+                userId, response.StatusCode, errorContent);
+            throw new BadRequestException("Failed to revoke Google token.","Google token revocation failed");
+        }
+        
     }
 }

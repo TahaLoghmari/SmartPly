@@ -9,6 +9,7 @@ using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Mscc.GenerativeAI;
 using Message = Google.Apis.Gmail.v1.Data.Message;
+using Mscc.GenerativeAI.Web;
 
 namespace backend.Services;
 
@@ -16,11 +17,11 @@ public class AiService(
     ILogger<AiService> logger,
     ApplicationDbContext dbContext,
     NotificationService notificationService,
-    EmailService emailService,
     CacheService cacheService,
     IBackgroundJobClient backgroundJobClient,
     IValidator<JobDetectionPromptResult> jobDetectionValidator,
-    IValidator<JobMatchingPromptResult> jobMatchingValidator)
+    IValidator<JobMatchingPromptResult> jobMatchingValidator,
+    IGenerativeModelService geminiService)
 {
     public async Task<JobDetectionPromptResult?> ClassifyEmailAsync(
         Email existingEmail,
@@ -121,7 +122,7 @@ OUTPUT JSON FORMAT:
     {
         var userApplicationsJson = JsonSerializer.Serialize(userApplications);
         var promptText = $@"
-You are an AI designed to match an incoming email to a specific job application from a user’s tracked list.
+You are an AI system that links an incoming email to a job application from a tracked list.
 
 INPUTS:
 
@@ -134,8 +135,9 @@ INPUTS:
 - category
 - snippet
 - summary
-2. Job Applications: A JSON array where each object has:
-- id (unique identifier, must be preserved exactly)
+2. Job Applications (JSON array):
+Each object includes:
+- id (unique identifier, must be returned exactly as given)
 - companyName
 - companyEmail
 - jobType
@@ -148,12 +150,18 @@ INPUTS:
 - type
 
 TASK:
-- Determine if the email most likely corresponds to one of the jobs in the application list.
+- Identify whether the email most likely corresponds to one of the applications.
 
 Matching priority (highest → lowest):
-1. Company name and/or position title appearing in the email (subject, snippet, summary, from_company, position).
-2. Sender email (from_address) matching or strongly resembling the company’s companyEmail.
-3. Contextual clues: recruiter names, interview mentions, “application/resume” references, or product/project names matching job notes.
+1. Company name :
+    - Match if exact or normalized similarity (ignore case, punctuation, and suffixes like “Inc,” “LLC,” “Ltd,” “GmbH,” “Corp”).
+    - Example: “Google LLC” ≈ “Google”.
+2. Sender email :
+    - Extract domain from from_address.
+    - Consider a match if it equals or is a clear subdomain/variant of the job’s companyEmail domain.
+    - Example: @careers.microsoft.com ≈ @microsoft.com, @jobs.amazon.co.uk ≈ @amazon.com.
+3. Contextual clues:
+    - Look for recruiter names, mentions of interview/application/resume, or overlap with job notes (e.g., product/project names).
 
 Decision rules:
 - If multiple jobs match, select the single best match (strongest overlap on company name + position).
@@ -224,17 +232,8 @@ OUTPUT JSON FORMAT:
                 matchedApplication.Status = ApplicationUtilities.MapCategoryToStatusType(previousAiJsonResult.Category);
                 foreach (ApplicationStatus status in Enum.GetValues(typeof(ApplicationStatus)))
                 {
-                    if (status <= matchedApplication.Status)
-                    {
-                        ApplicationUtilities.UpdateApplicationStatusDate(matchedApplication, status.ToString());
-                    }
-                }
-                foreach (ApplicationStatus status in Enum.GetValues(typeof(ApplicationStatus)))
-                {
-                    if (status > matchedApplication.Status)
-                    {
-                        ApplicationUtilities.UpdateApplicationStatusDate(matchedApplication, status.ToString(),true);
-                    }
+                    bool shouldSetDate = status <= matchedApplication.Status;
+                    ApplicationUtilities.UpdateApplicationStatusDate(matchedApplication, status.ToString(), !shouldSetDate);
                 }
                 cacheService.InvalidateUserApplicationCache(matchedApplication.UserId);
             }
@@ -309,17 +308,11 @@ OUTPUT JSON FORMAT:
     public async Task ClassifyAndMatchEmailAsync(
         string userId,
         string id,
-        GenerativeModel model,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        Message fullEmail )
     {
         var existingEmail = await dbContext.Emails
             .FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId, cancellationToken);
-        
-        var userApplications = await dbContext.Applications
-            .Where(a => a.UserId == userId)
-            .Select(a => a.ToApplicationAiPromptDto())
-            .ToListAsync(cancellationToken);
-        
         if (existingEmail is null)
         {
             logger.LogWarning("Email with ID {EmailId} not found for user {UserId}.", id, userId);
@@ -328,8 +321,12 @@ OUTPUT JSON FORMAT:
         
         try
         {
-            Message? fullEmail = await emailService.GetEmailByIdAsync(id, userId, cancellationToken);
-                
+            var model = geminiService.CreateInstance();
+            var userApplications = await dbContext.Applications
+                .Where(a => a.UserId == userId)
+                .Select(a => a.ToApplicationAiPromptDto())
+                .ToListAsync(cancellationToken);
+            
             var decodedBody = EmailUtilities.GetDecodedEmailBody(fullEmail);
 
             JobDetectionPromptResult? aiJsonResult = await ClassifyEmailAsync(existingEmail, model, decodedBody);
@@ -343,8 +340,6 @@ OUTPUT JSON FORMAT:
                 existingEmail.Category = aiJsonResult.Category;
                 existingEmail.Summary = aiJsonResult.Summary;
                 
-                await Task.Delay(1000, cancellationToken);
-                
                 existingEmail.UpdatedAt = DateTime.UtcNow;
                 
                 await HandleClassificationAsync(model,userId,aiJsonResult,existingEmail,userApplications,cancellationToken);
@@ -352,20 +347,19 @@ OUTPUT JSON FORMAT:
                 cacheService.InvalidateUserEmailCache(userId);
             }
             
-            await dbContext.SaveChangesAsync(cancellationToken);
-            
             logger.LogInformation("Email {EmailId} processed successfully.", id);
-            
-            await Task.Delay(2000, cancellationToken);
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Unexpected error while processing email {EmailId}. Will retry tomorrow.", id);
-            if ( existingEmail.AiProcessingRetryCount == 0)
+            logger.LogError("Unexpected error while processing email {EmailId}. Will retry tomorrow.", id);
+            logger.LogInformation("Error details: {ErrorMessage}", e.Message);
+            
+            var emailToUpdate = await dbContext.Emails.FirstOrDefaultAsync(em => em.Id == id, cancellationToken);
+            if ( emailToUpdate!.AiProcessingRetryCount == 0)
             {
                 var jobId = backgroundJobClient.Schedule<AiService>(
                     s => 
-                        s.ClassifyAndMatchEmailAsync(userId, id,model,CancellationToken.None),
+                        s.ClassifyAndMatchEmailAsync(userId, id,CancellationToken.None,fullEmail),
                     TimeSpan.FromDays(1));
                 
                 HangfireJob hangfireJob = new HangfireJob
@@ -374,7 +368,7 @@ OUTPUT JSON FORMAT:
                     UserId = userId,
                 };
                 
-                existingEmail.AiProcessingRetryCount++;
+                emailToUpdate.AiProcessingRetryCount++;
                 dbContext.HangfireJobs.Add(hangfireJob);
                 await dbContext.SaveChangesAsync(cancellationToken);
             }

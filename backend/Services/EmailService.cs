@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Microsoft.AspNetCore.Identity;
@@ -8,7 +7,6 @@ using backend.Enums;
 using backend.Exceptions;
 using backend.Settings;
 using backend.Mappings;
-using backend.Utilities;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Gmail.v1;
@@ -17,7 +15,6 @@ using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using Mscc.GenerativeAI.Web;
 using ClientSecrets = Google.Apis.Auth.OAuth2.ClientSecrets;
 using Message = Google.Apis.Gmail.v1.Data.Message;
 
@@ -31,15 +28,13 @@ public class EmailService(
     IMemoryCache cache,
     CacheService cacheService,
     IBackgroundJobClient backgroundJobClient,
-    NotificationService notificationService,
-    IGenerativeModelService aiService,
-    IServiceProvider serviceProvider)
+    NotificationService notificationService)
 {
     private readonly GoogleSettings _googleSettings = googleSettings.Value;
     private GmailService? _gmailService;
     private const int DefaultBatchSize = 10;
     private const int DefaultDelayMs = 200;
-    private const int InitialFetchLimit = 20; 
+    private const int InitialFetchLimit = 5; 
     private const int SyncFetchLimit = 20;
     private const int DefaultPageSize = 10;
     
@@ -90,22 +85,6 @@ public class EmailService(
         });
     }
     
-    public async Task ClassifyAndMatchEmailsAsync(
-    List<string> emailIds,
-    string userId,
-    CancellationToken cancellationToken)
-    {
-        using var scope = serviceProvider.CreateScope();
-        var generativeAiService = scope.ServiceProvider.GetRequiredService<AiService>();
-        
-        var model = aiService.CreateInstance();
-        
-        foreach (var id in emailIds)
-        {
-            await generativeAiService.ClassifyAndMatchEmailAsync(userId, id, model, cancellationToken);
-        }
-    }
-    
     public async Task FetchInitialEmailsAsync(
         string? userId,
         CancellationToken cancellationToken)
@@ -127,66 +106,27 @@ public class EmailService(
 
         try
         {
-            var messages = new List<Message>();
-        
             var listRequest = _gmailService!.Users.Messages.List("me");
             listRequest.MaxResults = InitialFetchLimit; 
 
-            var listResponse = await listRequest.ExecuteAsync(cancellationToken);
-        
-            if (listResponse.Messages is not null && listResponse.Messages.Any())
+            var messages = await FetchEmailMetadataInBatchesAsync(listRequest, cancellationToken);
+            
+            if (!messages.Any())
             {
-                foreach (var batch in listResponse.Messages.Chunk(DefaultBatchSize))
-                {
-                    var batchTasks = batch.Select(async msg =>
-                    {
-                        var getRequest = _gmailService.Users.Messages.Get("me", msg.Id);
-                        getRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Metadata; 
-                        return await getRequest.ExecuteAsync(cancellationToken);
-                    });
-
-                    var fetchedBatch = await Task.WhenAll(batchTasks);
-                    messages.AddRange(fetchedBatch);
-                
-                    await Task.Delay(DefaultDelayMs, cancellationToken);
-                }
+                logger.LogInformation("No initial emails found for UserId: {UserId}", userId);
+                return;
             }
         
             var emails = messages.Select(msg => EmailMappings.MapToEmailEntity(msg, userId)).ToList();
             await dbContext.Emails.AddRangeAsync(emails, cancellationToken);
+            
+            await EnqueueClassificationJobsAsync(emails, user, cancellationToken);
 
             user.LastSyncedAt = DateTime.UtcNow;
             user.IsInitialSyncComplete = true;
-            
-            if (!user.IsRecurringSyncScheduled)
-            {
-                RecurringJob.AddOrUpdate<EmailService>(
-                    $"user-{userId}-email-sync",
-                    s => s.SyncUserEmailAsync(userId, CancellationToken.None),
-                    "*/10 * * * *",
-                    new RecurringJobOptions { TimeZone = TimeZoneInfo.Utc });
-
-                user.IsRecurringSyncScheduled = true;
-                logger.LogInformation("Recurring sync scheduled for UserId: {UserId}", user.Id);
-            }
+            ScheduleRecurringSync(user);
 
             await userManager.UpdateAsync(user);
-            
-            var emailIds = emails.OrderBy(e => e.InternalDate).Select(e => e.Id).ToList();
-            var jobId = backgroundJobClient.Enqueue(() => ClassifyAndMatchEmailsAsync(emailIds, userId, CancellationToken.None));
-            
-            HangfireJob hangfireJob = new HangfireJob
-            {
-                HangfireJobId = jobId,
-                UserId = user.Id,
-            };
-        
-            dbContext.HangfireJobs.Add(hangfireJob);
-            
-            cacheService.InvalidateUserEmailCache(userId);
-            
-            logger.LogInformation("Initial email fetch completed for UserId: {UserId}. Processed {Count} messages",
-                user.Id, listResponse.Messages?.Count ?? 0);
 
             NotificationRequestDto notificationRequestDto = new NotificationRequestDto
             {
@@ -196,10 +136,10 @@ public class EmailService(
                 IsRead = false,
                 CreatedAt = DateTime.UtcNow
             };
-
             await notificationService.AddNotificationAsync(userId, notificationRequestDto,cancellationToken);
             
-            logger.LogInformation("Notification sent to user {UserId} for initial email sync completion", userId);
+            cacheService.InvalidateUserEmailCache(userId);
+            logger.LogInformation("Initial email fetch completed for UserId: {UserId}. Processed {Count} messages.", user.Id, messages.Count);
         }
         catch (Exception ex)
         {
@@ -235,91 +175,49 @@ public class EmailService(
         
         await InitializeAsync(user, cancellationToken);
         
-        var lastSyncTimestamp = user.LastSyncedAt?.ToUniversalTime() ?? DateTime.UtcNow.AddDays(-30).ToUniversalTime();
-        var unixTimestamp = ((DateTimeOffset)lastSyncTimestamp).ToUnixTimeSeconds();
-
+        var lastSyncTimestamp = ((DateTimeOffset)(user.LastSyncedAt ?? DateTime.UtcNow.AddDays(-30))).ToUnixTimeSeconds();
         var listRequest = _gmailService!.Users.Messages.List("me");
-        listRequest.Q = $"after:{unixTimestamp}";
+        listRequest.Q = $"after:{lastSyncTimestamp}";
         listRequest.MaxResults = SyncFetchLimit;
 
-        var listResponse = await listRequest.ExecuteAsync(cancellationToken);
-
-        if (listResponse.Messages != null && listResponse.Messages.Any())
+        var messages = await FetchEmailMetadataInBatchesAsync(listRequest, cancellationToken);
+        if (!messages.Any())
         {
-            List<string> emailIds = [];
-            foreach (var batch in listResponse.Messages.Chunk(DefaultBatchSize))
+            logger.LogInformation("No new emails to sync for user {UserId}", userId);
+            user.LastSyncedAt = DateTime.UtcNow; 
+            await userManager.UpdateAsync(user);
+            return;
+        }
+
+        var messageIds = messages.Select(m => m.Id).ToList();
+        var existingEmailIds = await dbContext.Emails
+            .Where(e => e.UserId == userId && messageIds.Contains(e.Id))
+            .Select(e => e.Id)
+            .ToHashSetAsync(cancellationToken);
+
+        var emailsToAdd = new List<Email>();
+        foreach (var message in messages)
+        {
+            if (!existingEmailIds.Contains(message.Id))
             {
-                var batchTasks = batch.Select(async message =>
-                {
-                    var getRequest = _gmailService.Users.Messages.Get("me", message.Id);
-                    getRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Metadata;
-                    return await getRequest.ExecuteAsync(cancellationToken);
-                });
-
-                var fetchedBatch = await Task.WhenAll(batchTasks);
-                
-                var messages = fetchedBatch.ToList();
-                var messageIds = messages.Select(m => m.Id).ToList();
-
-                var existingEmails = await dbContext.Emails
-                    .Where(e => e.UserId == userId && messageIds.Contains(e.Id))
-                    .ToListAsync(cancellationToken);
-
-                var existingEmailIds = existingEmails.Select(e => e.Id).ToHashSet();
-    
-                var emailsToAdd = new List<Email>();
-                var emailsToUpdate = new List<Email>();
-
-                foreach (var message in messages)
-                {
-                    var email = EmailMappings.MapToEmailEntity(message, userId);
-        
-                    if (existingEmailIds.Contains(message.Id))
-                    {
-                        var existingEmail = existingEmails.First(e => e.Id == message.Id);
-                        existingEmail.UpdateEmail(email);
-                        emailsToUpdate.Add(existingEmail);
-                    }
-                    else
-                    {
-                        emailsToAdd.Add(email);
-                    }
-                }
-
-                if (emailsToAdd.Any())
-                {
-                    await dbContext.Emails.AddRangeAsync(emailsToAdd, cancellationToken);
-                }
-
-                if (emailsToUpdate.Any())
-                {
-                    dbContext.Emails.UpdateRange(emailsToUpdate);
-                }
-                
-                emailIds.AddRange(emailsToAdd.OrderBy(e => e.InternalDate).Select(e => e.Id));
-
-                logger.LogInformation("Upserted {AddCount} new and {UpdateCount} existing emails for user {UserId}", 
-                    emailsToAdd.Count, emailsToUpdate.Count, userId);
-                
-                await Task.Delay(DefaultDelayMs, cancellationToken);
+                emailsToAdd.Add(EmailMappings.MapToEmailEntity(message, userId!));
             }
-            var jobId = backgroundJobClient.Enqueue(() => ClassifyAndMatchEmailsAsync(emailIds, userId, CancellationToken.None));
-            HangfireJob hangfireJob = new HangfireJob
-            {
-                HangfireJobId = jobId,
-                UserId = user.Id,
-            };
-        
-            dbContext.HangfireJobs.Add(hangfireJob);
-            cacheService.InvalidateUserEmailCache(userId);
+        }
+
+        if (emailsToAdd.Any())
+        {
+            await dbContext.Emails.AddRangeAsync(emailsToAdd, cancellationToken);
+            await EnqueueClassificationJobsAsync(emailsToAdd, user, cancellationToken);
+            logger.LogInformation("Added {AddCount} new emails for user {UserId}", emailsToAdd.Count, userId);
         }
 
         user.LastSyncedAt = DateTime.UtcNow;
         await userManager.UpdateAsync(user);
+
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("Date-based sync completed for user {UserId}. Processed {Count} messages", 
-            userId, listResponse.Messages?.Count ?? 0);
+        cacheService.InvalidateUserEmailCache(userId!);
+        logger.LogInformation("Date-based sync completed for user {UserId}. Processed {Count} messages.", userId, messages.Count);
     }
     
     public async Task<PaginationResultDto<EmailResponseDto>> GetEmailsAsync( 
@@ -393,6 +291,74 @@ public class EmailService(
         return await getRequest.ExecuteAsync(cancellationToken);
     }
     
-    
+    private async Task<IReadOnlyList<Message>> FetchEmailMetadataInBatchesAsync(
+        UsersResource.MessagesResource.ListRequest request,
+        CancellationToken cancellationToken)
+    {
+        var messages = new List<Message>();
+        var listResponse = await request.ExecuteAsync(cancellationToken);
 
+        if (listResponse.Messages is null || !listResponse.Messages.Any())
+        {
+            return messages;
+        }
+
+        foreach (var batch in listResponse.Messages.Chunk(DefaultBatchSize))
+        {
+            var batchTasks = batch.Select(msg =>
+            {
+                var getRequest = _gmailService!.Users.Messages.Get("me", msg.Id);
+                getRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Metadata;
+                return getRequest.ExecuteAsync(cancellationToken);
+            });
+            
+            messages.AddRange(await Task.WhenAll(batchTasks));
+            await Task.Delay(DefaultDelayMs, cancellationToken);
+        }
+
+        return messages;
+    }
+    
+    private async Task EnqueueClassificationJobsAsync(IEnumerable<Email> emails, User user, CancellationToken cancellationToken)
+    {
+        var hangfireJobs = new List<HangfireJob>();
+        string? previousJobId = null;
+
+        foreach (var email in emails.OrderBy(e => e.InternalDate))
+        {
+            var fullEmail = await GetEmailByIdAsync(email.Id, user.Id, cancellationToken);
+
+            string currentJobId;
+            if (string.IsNullOrEmpty(previousJobId))
+            {
+                currentJobId = backgroundJobClient.Enqueue<AiService>(s =>
+                    s.ClassifyAndMatchEmailAsync(user.Id, fullEmail.Id, CancellationToken.None, fullEmail));
+            }
+            else
+            {
+                currentJobId = backgroundJobClient.ContinueJobWith<AiService>(previousJobId, s =>
+                    s.ClassifyAndMatchEmailAsync(user.Id, fullEmail.Id, CancellationToken.None, fullEmail));
+            }
+
+            previousJobId = currentJobId;
+            hangfireJobs.Add(new HangfireJob { HangfireJobId = currentJobId, UserId = user.Id });
+        }
+
+        await dbContext.HangfireJobs.AddRangeAsync(hangfireJobs, cancellationToken);
+    }
+    
+    private void ScheduleRecurringSync(User user)
+    {
+        if (user.IsRecurringSyncScheduled) return;
+
+        RecurringJob.AddOrUpdate<EmailService>(
+            $"user-{user.Id}-email-sync",
+            s => s.SyncUserEmailAsync(user.Id, CancellationToken.None),
+            "*/10 * * * *",
+            new RecurringJobOptions { TimeZone = TimeZoneInfo.Utc });
+
+        user.IsRecurringSyncScheduled = true;
+        logger.LogInformation("Recurring sync scheduled for UserId: {UserId}", user.Id);
+    }
 }
+
