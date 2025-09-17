@@ -3,6 +3,8 @@ import * as signalR from "@microsoft/signalr";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { NotificationResponseDto } from "#/notifications";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 export function useSignalRNotifications(userId: string | undefined) {
   const queryClient = useQueryClient();
@@ -11,7 +13,7 @@ export function useSignalRNotifications(userId: string | undefined) {
     if (!userId) return;
 
     const connection = new signalR.HubConnectionBuilder()
-      .withUrl("http://localhost:5000/hubs/notifications", {
+      .withUrl(`${API_BASE_URL}/hubs/notifications`, {
         withCredentials: true,
       })
       .withAutomaticReconnect()
