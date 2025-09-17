@@ -3,6 +3,7 @@ import App from "./App";
 import { authRoutes } from "#/auth";
 import { HomePage } from "#/home";
 import { dashboardRoutes } from "#/dashboard";
+import { PrivacyPolicyPage } from "./PrivacyPolicyPage";
 
 export const router = createBrowserRouter([
   {
@@ -12,6 +13,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />,
+      },
+      {
+        path: "/privacy-policy",
+        element: <PrivacyPolicyPage />,
       },
       ...authRoutes,
       ...dashboardRoutes,
