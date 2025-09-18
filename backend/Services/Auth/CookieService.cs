@@ -6,11 +6,9 @@ namespace backend.Services;
 
 public sealed class CookieService(
     IOptions<JwtAuthSettings> jwtAuthSettings,
-    IOptions<CookieSettings> cookieSettings,
     IWebHostEnvironment environment)
 {
     private readonly JwtAuthSettings _jwtAuthSettings = jwtAuthSettings.Value;
-    private readonly CookieSettings _cookieSettings = cookieSettings.Value;
     private CookieOptions CreateCookieOptions()
     {
         return new CookieOptions
@@ -19,8 +17,6 @@ public sealed class CookieService(
             Secure = environment.IsProduction(),
             SameSite = !environment.IsProduction() ? SameSiteMode.Lax : SameSiteMode.None, 
             Expires = DateTime.UtcNow.AddMinutes(_jwtAuthSettings.ExpirationInMinutes),
-            Domain = _cookieSettings.Domain,
-            Path = _cookieSettings.Path
         };
     }
     
@@ -31,9 +27,7 @@ public sealed class CookieService(
             HttpOnly = true,
             Secure = environment.IsProduction(), 
             SameSite = !environment.IsProduction() ? SameSiteMode.Lax : SameSiteMode.None, 
-            Expires = DateTime.UtcNow.AddDays(_jwtAuthSettings.RefreshTokenExpirationDays),
-            Domain = _cookieSettings.Domain,
-            Path = _cookieSettings.Path
+            Expires = DateTime.UtcNow.AddDays(_jwtAuthSettings.RefreshTokenExpirationDays)
         };
     }
     
@@ -54,9 +48,7 @@ public sealed class CookieService(
             HttpOnly = true,
             Secure = environment.IsProduction(),
             SameSite = !environment.IsProduction() ? SameSiteMode.Lax : SameSiteMode.None ,
-            Expires = DateTime.UtcNow.AddDays(-1),
-            Domain = _cookieSettings.Domain,
-            Path = _cookieSettings.Path
+            Expires = DateTime.UtcNow.AddDays(-1)
         };
 
         response.Cookies.Append("accessToken", "", expiredOptions);
