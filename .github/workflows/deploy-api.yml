@@ -69,6 +69,7 @@ jobs:
             Jwt__Key='${{ secrets.JWT_KEY }}'
             Jwt__Issuer='${{ secrets.JWT_ISSUER }}'
             Jwt__Audience='${{ secrets.JWT_AUDIENCE }}'
+            VITE_API_BASE_URL='${{ secrets.JWT_ISSUER }}'
             Jwt__ExpirationInMinutes=15
             Jwt__RefreshTokenExpirationDays=30
             Google__ClientId='${{ secrets.GOOGLE_CLIENT_ID }}'
