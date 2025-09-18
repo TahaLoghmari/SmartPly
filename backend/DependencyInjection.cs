@@ -105,10 +105,10 @@ public static class DependencyInjection
         builder.Services.Configure<GoogleSettings>(builder.Configuration.GetSection("Google"));
         builder.Services.Configure<CookieSettings>(options =>
         {
-            var apiBaseUrl = Environment.GetEnvironmentVariable("VITE_API_BASE_URL");
+            var frontendUrl = builder.Configuration["Frontend:BaseUrl"];
             if (builder.Environment.IsProduction() && 
-                !string.IsNullOrEmpty(apiBaseUrl) && 
-                Uri.TryCreate(apiBaseUrl, UriKind.Absolute, out var uri))
+                !string.IsNullOrEmpty(frontendUrl) && 
+                Uri.TryCreate(frontendUrl, UriKind.Absolute, out var uri))
             {
                 options.Domain = uri.Host;
             }
