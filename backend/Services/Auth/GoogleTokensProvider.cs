@@ -220,7 +220,7 @@ public sealed class GoogleTokensProvider(
             var errorContent = await response.Content.ReadAsStringAsync();
             logger.LogError("Failed to revoke Google token for user {UserId}. Status: {StatusCode}, Response: {ErrorContent}",
                 userId, response.StatusCode, errorContent);
-            throw new BadRequestException("Failed to revoke Google token.","Google token revocation failed");
+            return;
         }
         
     }

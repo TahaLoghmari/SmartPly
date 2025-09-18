@@ -103,6 +103,16 @@ public static class DependencyInjection
         builder.Services.Configure<JwtAuthSettings>(builder.Configuration.GetSection("Jwt"));
         builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
         builder.Services.Configure<GoogleSettings>(builder.Configuration.GetSection("Google"));
+        builder.Services.Configure<CookieSettings>(options =>
+        {
+            var apiBaseUrl = Environment.GetEnvironmentVariable("VITE_API_BASE_URL");
+            if (builder.Environment.IsProduction() && 
+                !string.IsNullOrEmpty(apiBaseUrl) && 
+                Uri.TryCreate(apiBaseUrl, UriKind.Absolute, out var uri))
+            {
+                options.Domain = uri.Host;
+            }
+        });
 
         JwtAuthSettings jwtAuthOptions = builder.Configuration.GetSection("Jwt").Get<JwtAuthSettings>()!;
 

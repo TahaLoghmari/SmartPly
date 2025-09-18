@@ -63,9 +63,12 @@ public class UserService(
                 logger.LogWarning("Get current user failed - user ID not found");
                 throw new UnauthorizedException("User not found.");
             }
-            
-            await googleTokensProvider.RevokeTokenAsync(userId);
-            logger.LogInformation("Revoked Google token for UserId: {UserId}", userId);
+
+            if (user.GmailConnected == true)
+            {
+                await googleTokensProvider.RevokeTokenAsync(userId);
+                logger.LogInformation("Revoked Google token for UserId: {UserId}", userId);
+            }
             
             var coverLetterIds = await dbContext.CoverLetters
                 .Where(r => r.UserId == userId)
