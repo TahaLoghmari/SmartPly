@@ -109,7 +109,7 @@ public class UserService(
             }
             logger.LogInformation("User deleted successfully. UserId: {UserId}", userId);
     
-            cookieService.RemoveCookies(httpContext.Response);
+            cookieService.RemoveCookies(httpContext.Response,httpContext.Request.IsHttps);
             logger.LogInformation("Removed cookies for UserId: {UserId}", userId);
     
             await transaction.CommitAsync(cancellationToken);
