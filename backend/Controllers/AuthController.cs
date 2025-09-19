@@ -109,7 +109,7 @@ public sealed class AuthController(
     {
         var refreshTokenValue = Request.Cookies["refreshToken"];
 
-        await authService.Logout(refreshTokenValue,HttpContext,cancellationToken);
+        await authService.Logout(refreshTokenValue,Response,cancellationToken);
 
         return NoContent();
     }

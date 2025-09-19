@@ -296,7 +296,7 @@ public class AuthService(
 
     public async Task Logout(
         string? refreshTokenValue,
-        HttpContext httpContext,
+        HttpResponse response,
         CancellationToken cancellationToken)
     {
         logger.LogInformation("Logout attempt started");
@@ -307,7 +307,7 @@ public class AuthService(
             logger.LogInformation("Refresh token removed during logout");
         }
 
-        cookieService.RemoveCookies(httpContext.Response,httpContext.Request.IsHttps);
+        cookieService.RemoveCookies(response);
         
         logger.LogInformation("Logout successful");
     }

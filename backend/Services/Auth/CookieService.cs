@@ -2,55 +2,55 @@ using backend.DTOs;
 using backend.Settings;
 using Microsoft.Extensions.Options;
 
+namespace backend.Services;
+
 public sealed class CookieService(
     IOptions<JwtAuthSettings> jwtAuthSettings,
     IWebHostEnvironment environment)
 {
     private readonly JwtAuthSettings _jwtAuthSettings = jwtAuthSettings.Value;
-
-    private CookieOptions CreateCookieOptions(bool isHttps)
+    private CookieOptions CreateCookieOptions()
     {
         return new CookieOptions
         {
             HttpOnly = true,
-            Secure = isHttps,
+            Secure = environment.IsProduction(),
             Path = "/",
-            SameSite = isHttps? SameSiteMode.None : SameSiteMode.Lax,
+            SameSite = !environment.IsProduction() ? SameSiteMode.Lax : SameSiteMode.None, 
             Expires = DateTime.UtcNow.AddMinutes(_jwtAuthSettings.ExpirationInMinutes),
         };
     }
-
-    private CookieOptions CreateRefreshCookieOptions(bool isHttps)
+    
+    private CookieOptions CreateRefreshCookieOptions()
     {
         return new CookieOptions
         {
             HttpOnly = true,
-            Secure = isHttps,
+            Secure = environment.IsProduction(), 
             Path = "/",
-            SameSite = isHttps? SameSiteMode.None : SameSiteMode.Lax,
+            SameSite = !environment.IsProduction() ? SameSiteMode.Lax : SameSiteMode.None, 
             Expires = DateTime.UtcNow.AddDays(_jwtAuthSettings.RefreshTokenExpirationDays)
         };
     }
-
+    
     public void AddCookies(
         HttpResponse response,
         AccessTokensDto accessTokens
-    )
+    ) 
     {
-        var isHttps = response.HttpContext.Request.IsHttps;
-        RemoveCookies(response, isHttps);
-        response.Cookies.Append("accessToken", accessTokens.AccessToken, CreateCookieOptions(isHttps));
-        response.Cookies.Append("refreshToken", accessTokens.RefreshToken, CreateRefreshCookieOptions(isHttps));
+        RemoveCookies(response);
+        response.Cookies.Append("accessToken", accessTokens.AccessToken, CreateCookieOptions());
+        response.Cookies.Append("refreshToken", accessTokens.RefreshToken, CreateRefreshCookieOptions());
     }
-
-    public void RemoveCookies(HttpResponse response, bool isHttps)
+    
+    public void RemoveCookies(HttpResponse response)
     {
         var expiredOptions = new CookieOptions
         {
             HttpOnly = true,
-            Secure = isHttps,
+            Secure = environment.IsProduction(),
             Path = "/",
-            SameSite = isHttps? SameSiteMode.None : SameSiteMode.Lax,
+            SameSite = !environment.IsProduction() ? SameSiteMode.Lax : SameSiteMode.None ,
             Expires = DateTime.UtcNow.AddDays(-1)
         };
 
