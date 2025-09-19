@@ -253,7 +253,8 @@ public class AuthService(
             await googleTokensProvider.StoreGoogleTokens(user, googleTokens);
             accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, user.Email!,cancellationToken);
             cookieService.AddCookies(response, accessTokens);
-            logger.LogInformation("User created and tokens stored for UserId: {UserId}, Email: {Email}", user.Id, user.Email);
+            logger.LogInformation("User created for UserId: {UserId}, Email: {Email}", user.Id, user.Email);
+            logger.LogInformation("Sent Set-Cookie header: {SetCookie}", response.Headers["Set-Cookie"].ToString());
             
             if (!user.IsRecurringCleanupScheduled)
             {

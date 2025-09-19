@@ -3,6 +3,7 @@ using backend.Extensions;
 using backend.Hubs;
 using backend.Services;
 using Hangfire;
+using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
 
 
@@ -29,6 +30,11 @@ if ( app.Environment.IsDevelopment() )
     app.UseSwaggerUI();
     await app.ApplyMigrationsAsync();
 }
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions {
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
 app.UseCors("AllowReactApp");
 
 app.UseAuthentication();
