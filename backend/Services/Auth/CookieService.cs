@@ -16,7 +16,7 @@ public sealed class CookieService(
             HttpOnly = true,
             Secure = environment.IsProduction(),
             Path = "/",
-            SameSite = !environment.IsProduction() ? SameSiteMode.Lax : SameSiteMode.None, 
+            SameSite = SameSiteMode.Lax, 
             Expires = DateTime.UtcNow.AddMinutes(_jwtAuthSettings.ExpirationInMinutes),
         };
     }
@@ -28,7 +28,7 @@ public sealed class CookieService(
             HttpOnly = true,
             Secure = environment.IsProduction(), 
             Path = "/",
-            SameSite = !environment.IsProduction() ? SameSiteMode.Lax : SameSiteMode.None, 
+            SameSite = SameSiteMode.Lax, 
             Expires = DateTime.UtcNow.AddDays(_jwtAuthSettings.RefreshTokenExpirationDays)
         };
     }
@@ -50,7 +50,7 @@ public sealed class CookieService(
             HttpOnly = true,
             Secure = environment.IsProduction(),
             Path = "/",
-            SameSite = !environment.IsProduction() ? SameSiteMode.Lax : SameSiteMode.None ,
+            SameSite = SameSiteMode.Lax ,
             Expires = DateTime.UtcNow.AddDays(-1)
         };
 
