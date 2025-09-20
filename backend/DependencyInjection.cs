@@ -115,10 +115,19 @@ public static class DependencyInjection
             })
             .AddJwtBearer(options =>
             {
+                var env = builder.Environment;
+                options.RequireHttpsMetadata = !env.IsDevelopment();
+                options.SaveToken = true;
+                
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
+                    ValidateIssuer = true,
                     ValidIssuer = jwtAuthOptions.Issuer,
+
+                    ValidateAudience = true,
                     ValidAudience = jwtAuthOptions.Audience,
+
+                    ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAuthOptions.Key)),
 
                 };
@@ -140,6 +149,7 @@ public static class DependencyInjection
                 options.ClientSecret = builder.Configuration["Google:ClientSecret"]!;
             });
 
+        builder.Services.AddAuthorization();
         builder.Services.AddHttpClient();
 
         return builder;

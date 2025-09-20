@@ -1,12 +1,8 @@
 using backend.DTOs;
-using backend.Entities;
 using backend.Services;
-using backend.Settings;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using Microsoft.AspNetCore.RateLimiting;
 

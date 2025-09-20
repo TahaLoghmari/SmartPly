@@ -223,7 +223,6 @@ public class AuthService(
         GoogleUserInfo googleUser = await googleTokensProvider.GetGoogleUserInfo(googleTokens.IdToken);
 
         User? user;
-        AccessTokensDto? accessTokens = null;
 
         if (linkAccountUserId != null)
         {
@@ -251,7 +250,7 @@ public class AuthService(
             }
             
             await googleTokensProvider.StoreGoogleTokens(user, googleTokens);
-            accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, user.Email!,cancellationToken);
+            AccessTokensDto? accessTokens = await tokenManagementService.CreateAndStoreTokens(user.Id, user.Email!,cancellationToken);
             cookieService.AddCookies(response, accessTokens);
             logger.LogInformation("User created for UserId: {UserId}, Email: {Email}", user.Id, user.Email);
             logger.LogInformation("Sent Set-Cookie header: {SetCookie}", response.Headers["Set-Cookie"].ToString());
