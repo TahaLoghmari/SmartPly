@@ -4,6 +4,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Text.Json;
 using Microsoft.AspNetCore.RateLimiting;
 
 namespace backend.Controllers;
@@ -84,6 +85,7 @@ public sealed class AuthController(
             Response,cancellationToken);
 
         var frontendBaseUrl = configuration["Frontend:BaseUrl"]!;
+        var frontendAppUrl = $"{frontendBaseUrl}/app";
 
         if (!string.IsNullOrEmpty(error))
         {
@@ -95,8 +97,51 @@ public sealed class AuthController(
         {
             return Redirect($"{frontendBaseUrl}/auth?type=user_creation&message={Uri.EscapeDataString("Failed to create or link user account")}");
         }
+        
+        var serializedFrontendOrigin = JsonSerializer.Serialize(new Uri(frontendBaseUrl).GetLeftPart(UriPartial.Authority));
+        var serializedAppUrl = JsonSerializer.Serialize(frontendAppUrl);
 
-        return Redirect($"{frontendBaseUrl}/app");
+        var html = $@"
+    <!doctype html>
+    <html>
+      <head>
+        <meta charset='utf-8'/>
+        <title>Signing you in…</title>
+        <meta name='viewport' content='width=device-width,initial-scale=1' />
+      </head>
+      <body>
+        <script>
+          (function() {{
+            const openerOrigin = {serializedFrontendOrigin}; // e.g. ""https://smart-ply.vercel.app""
+            const appUrl = {serializedAppUrl};
+
+            try {{
+              // If this callback was opened as a popup from the SPA, notify the opener and close.
+              if (window.opener && window.opener !== window && window.opener.origin === openerOrigin) {{
+                window.opener.postMessage({{ type: 'oauth_success' }}, openerOrigin);
+                // give the browser a moment to persist cookies, then close
+                setTimeout(() => window.close(), 150);
+                return;
+              }}
+            }} catch (e) {{
+              // Some browsers restrict access to opener properties; fall through to top-level navigation
+            }}
+
+            // Default: top-level navigation to the SPA. Use replace to avoid leaving this page in history.
+            window.location.replace(appUrl);
+          }})();
+        </script>
+
+        <noscript>
+          <meta http-equiv='refresh' content='0;url=' + {serializedAppUrl} />
+          <p>Redirecting… <a href={serializedAppUrl}>Continue</a></p>
+        </noscript>
+      </body>
+    </html>";
+
+        // Return the HTML 200 so the browser processes Set-Cookie headers and persists cookies reliably
+        return Content(html, "text/html");
+        // return Redirect($"{frontendBaseUrl}/app");
     }
     
     [HttpPost("logout")]
