@@ -18,6 +18,7 @@ public sealed class CookieService(
             Path = "/",
             SameSite = !environment.IsProduction() ? SameSiteMode.Lax : SameSiteMode.None, 
             Expires = DateTime.UtcNow.AddMinutes(_jwtAuthSettings.ExpirationInMinutes),
+            Domain = "smart-ply.vercel.app"
         };
     }
     
@@ -29,7 +30,8 @@ public sealed class CookieService(
             Secure = environment.IsProduction(), 
             Path = "/",
             SameSite = !environment.IsProduction() ? SameSiteMode.Lax : SameSiteMode.None, 
-            Expires = DateTime.UtcNow.AddDays(_jwtAuthSettings.RefreshTokenExpirationDays)
+            Expires = DateTime.UtcNow.AddDays(_jwtAuthSettings.RefreshTokenExpirationDays),
+            Domain = "smart-ply.vercel.app"
         };
     }
     
@@ -51,7 +53,8 @@ public sealed class CookieService(
             Secure = environment.IsProduction(),
             Path = "/",
             SameSite = !environment.IsProduction() ? SameSiteMode.Lax : SameSiteMode.None ,
-            Expires = DateTime.UtcNow.AddDays(-1)
+            Expires = DateTime.UtcNow.AddDays(-1),
+            Domain = "smart-ply.vercel.app"
         };
 
         response.Cookies.Append("accessToken", "", expiredOptions);
