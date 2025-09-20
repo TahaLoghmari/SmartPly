@@ -38,7 +38,7 @@ public sealed class CookieService(
         AccessTokensDto accessTokens
     ) 
     {
-        RemoveCookies(response);
+        // RemoveCookies(response);
         response.Cookies.Append("accessToken", accessTokens.AccessToken, CreateCookieOptions());
         response.Cookies.Append("refreshToken", accessTokens.RefreshToken, CreateRefreshCookieOptions());
     }
