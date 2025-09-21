@@ -32,7 +32,7 @@ public static class DependencyInjection
 
         builder.Services.AddOpenApi();
         
-        var frontendUrl = builder.Configuration["Frontend:BaseUrl"]!;
+        var frontendUrl = builder.Configuration["FRONTEND_URL"]!;
 
         builder.Services.AddCors(options =>
         {

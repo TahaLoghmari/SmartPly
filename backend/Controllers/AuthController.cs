@@ -83,7 +83,7 @@ public sealed class AuthController(
             googleCallbackDto.error,
             Response,cancellationToken);
 
-        var frontendBaseUrl = configuration["Frontend:BaseUrl"]!;
+        var frontendBaseUrl = configuration["FRONTEND_URL"]!;
 
         if (!string.IsNullOrEmpty(error))
         {
@@ -121,7 +121,7 @@ public sealed class AuthController(
         bool success = await authService.ConfirmEmail(confirmationDto.UserId,
             confirmationDto.Token);
         
-        var frontendUrl = configuration["Frontend:BaseUrl"];
+        var frontendUrl = configuration["FRONTEND_URL"];
         
         return success ? Redirect($"{frontendUrl}/email-confirmed?status=success") 
                        : Redirect($"{frontendUrl}/email-confirmed?status=failure");
@@ -160,7 +160,7 @@ public sealed class AuthController(
     IValidator<EmailResetPasswordDto> validator,
     CancellationToken cancellationToken)
     {
-        var frontendUrl = configuration["Frontend:BaseUrl"];
+        var frontendUrl = configuration["FRONTEND_URL"];
         
         var validationResult = await validator.ValidateAsync(emailResetPasswordDto,cancellationToken);
         if (!validationResult.IsValid)
