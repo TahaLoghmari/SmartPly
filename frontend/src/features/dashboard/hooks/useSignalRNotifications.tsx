@@ -3,8 +3,7 @@ import * as signalR from "@microsoft/signalr";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { NotificationResponseDto } from "#/notifications";
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export function useSignalRNotifications(userId: string | undefined) {
   const queryClient = useQueryClient();
