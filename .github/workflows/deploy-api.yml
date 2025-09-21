@@ -71,7 +71,7 @@ jobs:
             Jwt__Audience='${{ secrets.FRONTEND_URL }}'
             VITE_API_URL='${{ secrets.VITE_API_URL }}'
             FRONTEND_URL='${{ secrets.FRONTEND_URL }}'
-            DOMAIN=`${{ secrets.DOMAIN }}`
+            DOMAIN='${{ secrets.DOMAIN }}'
             Jwt__ExpirationInMinutes=15
             Jwt__RefreshTokenExpirationDays=30
             Google__ClientId='${{ secrets.GOOGLE_CLIENT_ID }}'
