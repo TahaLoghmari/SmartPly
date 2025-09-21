@@ -67,9 +67,11 @@ jobs:
             ASPNETCORE_ENVIRONMENT=Production
             ConnectionStrings__DefaultConnection='${{ secrets.DEFAULT_CONNECTION }}'
             Jwt__Key='${{ secrets.JWT_KEY }}'
-            Jwt__Issuer='${{ secrets.JWT_ISSUER }}'
-            Jwt__Audience='${{ secrets.JWT_AUDIENCE }}'
-            VITE_API_BASE_URL='${{ secrets.JWT_ISSUER }}'
+            Jwt__Issuer='${{ secrets.VITE_API_URL }}'
+            Jwt__Audience='${{ secrets.FRONTEND_URL }}'
+            VITE_API_URL='${{ secrets.VITE_API_URL }}'
+            FRONTEND_URL='${{ secrets.FRONTEND_URL }}'
+            DOMAIN=`${{ secrets.DOMAIN }}`
             Jwt__ExpirationInMinutes=15
             Jwt__RefreshTokenExpirationDays=30
             Google__ClientId='${{ secrets.GOOGLE_CLIENT_ID }}'
@@ -81,7 +83,6 @@ jobs:
             EmailSettings__SenderName=SmartPly
             EmailSettings__FromEmail=medtahalog@gmail.com
             EmailSettings__Password='${{ secrets.EMAIL_SETTINGS_PASSWORD }}'
-            Frontend__BaseUrl='${{ secrets.FRONTEND_URL }}'
             Supabase__ServiceRoleKey='${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}'
             Supabase__Url='${{ secrets.SUPABASE_URL }}'
             Gemini__Credentials__ApiKey='${{ secrets.GEMINI_CREDENTIALS_API_KEY }}'
