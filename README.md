@@ -39,7 +39,11 @@ A modern job application tracker that integrates **AI + Gmail** to help you stay
 
 ### Backend (ASP.NET Core)
 
-- Authentication: ASP.NET Identity + JWT/Refresh Tokens (HTTP-Only cookies), Google OAuth
+- Authentication: 
+  - Sign up / Log in with email verification and forgot password support.
+  - ASP.NET Identity + JWT/Refresh Tokens (HTTP-Only cookies).
+  - Google OAuth Login and SignUp ( With Gmail Scope )
+  - Link an existing non-Google account to a Google account for unified login.
 - Reliability: Caching, DTOs, validation, error handling (`ProblemDetails`), rate limiting
 - Developer-friendly: Swagger docs, health checks, structured logging
 - Extras: Hangfire (background jobs), Supabase (file storage)
@@ -76,19 +80,17 @@ A modern job application tracker that integrates **AI + Gmail** to help you stay
 <img width="1020" height="732" alt="JobInbox" src="https://github.com/user-attachments/assets/a3f0bea0-eb6d-4dcb-8a6f-490593b2f84a" />
 
 ---
-
-````markdown
 ## Run Locally
 
 1. Clone the repository:
-   ```bash
+````markdown
    git clone git@github.com:TahaLoghmari/SmartPly.git
    cd SmartPly
 ````
 
 2. Configure external services:
 
-   * Set up **Google Cloud Console** for OAuth & Gmail API
+   * Set up **Google Cloud Console** for OAuth, Gmail API & Gemini API
    * Set up a **Supabase** database for file storage
 
 ---
