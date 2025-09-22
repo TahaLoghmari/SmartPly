@@ -2,7 +2,7 @@
 
 A modern job application tracker that integrates **AI + Gmail** to help you stay on top of applications, recruiter replies, and interviews — all in one place.
 
-[Frontend](https://smartply.me) | [Backend API](https://api.smartply.me)
+[Live Demo](https://smartply.me)
 
 ---
 
@@ -60,14 +60,74 @@ A modern job application tracker that integrates **AI + Gmail** to help you stay
 ---
 
 ## Preview
+### Applications
+<img width="1020" height="727" alt="Applications" src="https://github.com/user-attachments/assets/e626d4f9-f699-4d10-b7ce-b403382c5356" />
 
-> _(Add screenshots or GIFs here — e.g. dashboard view, AI-powered inbox, job application form, notifications in action)_
+### Notifications
+<img width="1020" height="732" alt="Notifications" src="https://github.com/user-attachments/assets/18bb06fc-e609-4884-a5d7-8c31ef6db98f" />
+
+### Documents
+<img width="1020" height="732" alt="Documents" src="https://github.com/user-attachments/assets/c0af7b9f-a457-47e2-a0d5-a80b13d32cad" />
+
+### Inbox
+<img width="1020" height="732" alt="Inbox" src="https://github.com/user-attachments/assets/b2812dbc-c42f-4554-b805-da63b1cbd958" />
+
+### Job Inbox
+<img width="1020" height="732" alt="JobInbox" src="https://github.com/user-attachments/assets/a3f0bea0-eb6d-4dcb-8a6f-490593b2f84a" />
 
 ---
 
-## ⚡ Live Demo
+````markdown
+## Run Locally
 
-- **Frontend** → [smartply.me](https://smartply.me)
-- **Backend API** → [api.smartply.me](https://api.smartply.me)
+1. Clone the repository:
+   ```bash
+   git clone git@github.com:TahaLoghmari/SmartPly.git
+   cd SmartPly
+````
+
+2. Configure external services:
+
+   * Set up **Google Cloud Console** for OAuth & Gmail API
+   * Set up a **Supabase** database for file storage
 
 ---
+
+### Option 1: Run with Docker
+
+1. Rename `.env.example` → `.env` and fill in required environment variables (Google, Supabase, etc.).
+2. From the project root, run:
+
+   ```bash
+   docker compose up --build
+   ```
+3. Access the app:
+
+   * Frontend → [http://localhost:5173/](http://localhost:5173/)
+   * Backend → [http://localhost:5000/](http://localhost:5000/)
+
+---
+
+### Option 2: Run without Docker
+
+1. Backend:
+
+   ```bash
+   cd backend
+   ```
+
+   * Use `.env.example` as reference to generate a `secrets.json` file for .NET User Secrets.
+   * Run the backend with .NET.
+
+2. Frontend:
+
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+
+3. Access the app:
+
+   * Frontend → [http://localhost:5173/](http://localhost:5173/)
+   * Backend → [http://localhost:5000/](http://localhost:5000/)
