@@ -79,6 +79,11 @@ A modern job application tracker that integrates **AI + Gmail** to help you stay
 ### Job Inbox
 <img width="1020" height="732" alt="JobInbox" src="https://github.com/user-attachments/assets/a3f0bea0-eb6d-4dcb-8a6f-490593b2f84a" />
 
+### Application Page 
+<img width="1020" height="806" alt="AppPageOverview" src="https://github.com/user-attachments/assets/b5c95876-daff-4c1b-957d-8185ec3b8098" />
+<img width="1020" height="806" alt="AppPageDocuments" src="https://github.com/user-attachments/assets/bd3c0538-b469-42ab-85f1-269e6b018183" />
+<img width="1020" height="806" alt="AppPageEdit" src="https://github.com/user-attachments/assets/097c2d72-0c24-402b-bbfa-bf61bcb95f5d" />
+
 ---
 ## Run Locally
 
