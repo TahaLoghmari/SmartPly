@@ -175,7 +175,7 @@ export function HomePage() {
           </div>
         </div>
       </div>
-      <div className="flex w-full justify-center gap-40 bg-gray-200/30 py-20">
+      <div className="flex w-full flex-col justify-center gap-20 bg-gray-200/30 px-10 py-20 sm:flex-row sm:gap-40 sm:px-0 md:items-start">
         <div className="flex flex-col gap-2">
           <img src={FullLogo} alt="Logo" className="-mt-2 -ml-4 h-auto w-50" />
           <p className="text-[16px] text-gray-700">AI That Gets You Hired</p>
