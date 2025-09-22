@@ -6,6 +6,7 @@ import JobInboxImage from "@/assets/Job Inbox.png";
 import DocumentsImage from "@/assets/Documents.png";
 import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import FullLogo from "@/assets/Full_Logo.png";
 
 export function HomePage() {
   return (
@@ -172,6 +173,29 @@ export function HomePage() {
               </p>
             </div>
           </div>
+        </div>
+      </div>
+      <div className="flex w-full justify-center gap-40 bg-gray-200/30 py-20">
+        <div className="flex flex-col gap-2">
+          <img src={FullLogo} alt="Logo" className="-mt-2 -ml-4 h-auto w-50" />
+          <p className="text-[16px] text-gray-700">AI That Gets You Hired</p>
+          <p className="text-[16px] text-gray-400">
+            Created with ❤️ by SmartPly
+          </p>
+          <p className="text-[16px] text-gray-400">
+            © 2025 SmartPly - All rights reserved.
+          </p>
+        </div>
+        <div className="flex flex-col gap-2">
+          <p className="text-[18px] text-gray-500">Legal</p>
+          <a
+            href="/privacy-policy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cursor-pointer text-[16px] text-gray-800 transition-colors duration-200 hover:text-gray-600 hover:underline hover:underline-offset-4"
+          >
+            Privacy Policy
+          </a>
         </div>
       </div>
     </div>
