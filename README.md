@@ -2,6 +2,8 @@
 
 A modern job application tracker that integrates **AI + Gmail** to help you stay on top of applications, recruiter replies, and interviews — all in one place.
 
+<img width="1021" height="489" alt="Home_Page" src="https://github.com/user-attachments/assets/fdec33d8-1cfa-4ede-b96d-ae3acca5f258" />
+
 [Live Demo](https://smartply.me)
 
 ---
