@@ -4,6 +4,8 @@ A modern job application tracker that integrates **AI + Gmail** to help you stay
 
 [Live Demo](https://smartply.me)
 
+[Video Demo](https://www.linkedin.com/feed/update/urn:li:activity:7376308844169302016/)
+
 <img width="1021" height="489" alt="Home_Page" src="https://github.com/user-attachments/assets/fdec33d8-1cfa-4ede-b96d-ae3acca5f258" />
 
 ---
