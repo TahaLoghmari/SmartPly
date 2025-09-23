@@ -81,8 +81,46 @@ export function PrivacyPolicyPage() {
           alteration. However, no system is completely secure, and we cannot
           guarantee absolute protection.
         </p>
-        <p className="text-[27px] font-extrabold xl:text-[27px]">
-          5. Contact Us
+        <p className="mt-8 text-[27px] font-extrabold xl:text-[27px]">
+          5. Retention and Deletion of Google User Data
+        </p>
+        <p className="text-[16px] font-semibold text-gray-700">
+          If you sign in with Google or connect your Google account, SmartPly
+          only stores your Google user data as long as necessary to provide our
+          services.
+          <br />
+          <br />
+          <span className="font-bold">Data Retention:</span> We retain your
+          Google account information and any data accessed via Google APIs only
+          while your account is active or as needed to provide you with our
+          services.
+          <br />
+          <br />
+          <span className="font-bold">Data Deletion:</span> You can request
+          deletion of your Google data at any time by contacting us at{" "}
+          <a
+            href="mailto:medtahalog@gmail.com"
+            className="text-blue-600 underline"
+          >
+            medtahalog@gmail.com
+          </a>{" "}
+          or by deleting your SmartPly account. Upon such a request, or if you
+          disconnect your Google account from SmartPly, all associated Google
+          data will be permanently deleted from our servers within 30 days.
+          <br />
+          <br />
+          <span className="font-bold">Account Disconnection:</span> You may
+          disconnect your Google account from SmartPly at any time in your
+          account settings. This will immediately revoke our access to your
+          Google data.
+          <br />
+          <br />
+          We do not share your Google data with third parties except as required
+          to provide our services or as required by law.
+        </p>
+
+        <p className="mt-8 text-[27px] font-extrabold xl:text-[27px]">
+          6. Contact Us
         </p>
         <p className="text-[16px] font-semibold text-gray-700">
           If you have questions or concerns about this Privacy Policy, please
