@@ -12,6 +12,20 @@ A modern job application tracker that integrates **AI + Gmail** to help you stay
 
 ## Key Features
 
+### AI-Powered Inbox
+
+- Gmail integration (with user consent).
+- Automatically detects and categorizes recruiter emails (interviews, rejections, info requests).
+- Matches emails to applications or creates new ones if unmatched.
+- Keeps a dedicated **Job Inbox** for all job-related emails.
+
+### Real-time Notifications
+
+- Built with **SignalR** for instant updates:
+  - Recruiter replies
+  - Interview invites
+  - Application status changes
+
 ### Job Application Management
 
 - Add, edit, and track applications with detailed fields (status, type, level, salary, deadlines, resumes, cover letters, etc.).
@@ -22,20 +36,6 @@ A modern job application tracker that integrates **AI + Gmail** to help you stay
 
 - Filter by status, type, framework/language, contract type, and level.
 - Search by company or position to find what you need instantly.
-
-### Real-time Notifications
-
-- Built with **SignalR** for instant updates:
-  - Recruiter replies
-  - Interview invites
-  - Application status changes
-
-### AI-Powered Inbox
-
-- Gmail integration (with user consent).
-- Automatically detects and categorizes recruiter emails (interviews, rejections, info requests).
-- Matches emails to applications or creates new ones if unmatched.
-- Keeps a dedicated **Job Inbox** for all job-related emails.
 
 ---
 
