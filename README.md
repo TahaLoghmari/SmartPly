@@ -2,11 +2,27 @@
 
 A modern job application tracker that integrates **AI + Gmail** to help you stay on top of applications, recruiter replies, and interviews — all in one place.
 
-[Live Demo](https://smartply.me)
+[Repo](https://github.com/TahaLoghmari/SmartPly) • [Live Demo](https://smartply.me) • [Video Demo](https://www.linkedin.com/feed/update/urn:li:activity:7376308844169302016/)
+
+<img width="1021" height="489" alt="Home_Page" src="https://github.com/user-attachments/assets/fdec33d8-1cfa-4ede-b96d-ae3acca5f258" />
 
 ---
 
 ## Key Features
+
+### AI-Powered Inbox
+
+- Gmail integration (with user consent).
+- Automatically detects and categorizes recruiter emails (interviews, rejections, info requests).
+- Matches emails to applications or creates new ones if unmatched.
+- Keeps a dedicated **Job Inbox** for all job-related emails.
+
+### Real-time Notifications
+
+- Built with **SignalR** for instant updates:
+  - Recruiter replies
+  - Interview invites
+  - Application status changes
 
 ### Job Application Management
 
@@ -18,20 +34,6 @@ A modern job application tracker that integrates **AI + Gmail** to help you stay
 
 - Filter by status, type, framework/language, contract type, and level.
 - Search by company or position to find what you need instantly.
-
-### Real-time Notifications
-
-- Built with **SignalR** for instant updates:
-  - Recruiter replies
-  - Interview invites
-  - Application status changes
-
-### AI-Powered Inbox
-
-- Gmail integration (with user consent).
-- Automatically detects and categorizes recruiter emails (interviews, rejections, info requests).
-- Matches emails to applications or creates new ones if unmatched.
-- Keeps a dedicated **Job Inbox** for all job-related emails.
 
 ---
 
@@ -59,7 +61,7 @@ A modern job application tracker that integrates **AI + Gmail** to help you stay
 - Dockerized (frontend + backend + docker-compose for local dev)
 - CI/CD with GitHub Actions
 - Hosting: Frontend on Vercel, Backend on Azure Container Apps (ACR)
-- Secrets managed via `.env` + User Secrets
+- Secrets managed via `.env` + User Secrets for Local Development And Github Secrets for Production
 
 ---
 
