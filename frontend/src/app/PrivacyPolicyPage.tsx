@@ -5,7 +5,7 @@ export function PrivacyPolicyPage() {
         <p className="mt-12 self-center text-[32px] font-extrabold xl:text-[32px]">
           Privacy Policy
         </p>
-        <p className="text-[16px] font-semibold text-gray-700">
+        <p className="text-[16px] font-semibold text-gray-700 ">
           SmartPly (“we,” “our,” or “us”) values your privacy. This Privacy
           Policy explains how we collect, use, and protect your information when
           you use our AI-powered job application tracker.
